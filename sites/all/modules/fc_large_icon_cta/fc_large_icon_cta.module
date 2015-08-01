@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FC Large Icon CTA feature.
+ */
+
+include_once 'fc_large_icon_cta.features.inc';

@@ -1,0 +1,13 @@
+diff --git a/sites/all/modules/webform/webform.module b/sites/all/modules/webform/webform.module
+index 5936c26..4d0d7cb 100644
+--- a/sites/all/modules/webform/webform.module
++++ b/sites/all/modules/webform/webform.module
+@@ -2464,7 +2464,7 @@ function webform_client_form($form, &$form_state, $node, $submission = FALSE, $r
+       // edit page (where they presummably know what submission they are
+       // editing).
+       if ($resume_draft && empty($form_state['input'])) {
+-        drupal_set_message(t('A partially-completed form was found. Please complete the remaining portions.'));
++       // drupal_set_message(t('A partially-completed form was found. Please complete the remaining portions.'));
+       }
+     }
+     else {

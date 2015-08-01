@@ -1,0 +1,12 @@
+diff --git a/themes/seven/style.css b/themes/seven/style.css
+index c52d661..5a3a4d9 100644
+--- a/themes/seven/style.css
++++ b/themes/seven/style.css
+@@ -988,3 +988,6 @@ div.add-or-remove-shortcuts {
+   -webkit-border-radius: 8px;
+   border-radius: 8px;
+ }
++.crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img{
++ width:100% !important;
++}
+\ No newline at end of file

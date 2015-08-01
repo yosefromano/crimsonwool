@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FC Content Types feature.
+ */
+
+include_once 'fc_content_types.features.inc';

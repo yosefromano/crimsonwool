@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FC Social Media Links feature.
+ */
+
+include_once 'fc_social_media_links.features.inc';

@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FC Homepage Image feature.
+ */
+
+include_once 'fc_homepage_image.features.inc';

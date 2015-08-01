@@ -1,0 +1,13 @@
+name = "GA Login"
+description = "This modules allows two step logins using Google Authenticator."
+core = 7.x
+configure = admin/config/people/ga_login
+
+files[] = ga_login.test
+
+; Information added by Drupal.org packaging script on 2014-11-12
+version = "7.x-1.6"
+core = "7.x"
+project = "ga_login"
+datestamp = "1415822891"
+

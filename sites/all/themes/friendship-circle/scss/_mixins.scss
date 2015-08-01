@@ -1,0 +1,15 @@
+@mixin blue-gradient{
+ background-image: -webkit-gradient(
+	linear,
+	left top,
+	left bottom,
+	color-stop(0.12, #C677C5),
+	color-stop(1, #692468),
+	color-stop(1, #894188),
+	color-stop(1, #A55BA4) );
+background-image: -o-linear-gradient(bottom, #C677C5 12%, #692468 100%, #894188 100%, #A55BA4 100%);
+background-image: -moz-linear-gradient(bottom, #C677C5 12%, #692468 100%, #894188 100%, #A55BA4 100%);
+background-image: -webkit-linear-gradient(bottom, #C677C5 12%, #692468 100%, #894188 100%, #A55BA4 100%);
+background-image: -ms-linear-gradient(bottom, #C677C5 12%, #692468 100%, #894188 100%, #A55BA4 100%);
+background-image: linear-gradient(to bottom, #C677C5 12%, #692468 100%, #894188 100%, #A55BA4 100%);
+}

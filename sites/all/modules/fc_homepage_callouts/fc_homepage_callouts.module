@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the FC Homepage Callouts feature.
+ */
+
+include_once 'fc_homepage_callouts.features.inc';
