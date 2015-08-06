@@ -146,7 +146,7 @@ background-image: linear-gradient(to top, #1BC9BC 15%, #00A79C 100%);
  }
 body{
  background:$grey-f2;
- font-family: 'Comfortaa';
+ font-family: 'open sans';
  background-repeat:repeat-x;
  
  }
@@ -166,7 +166,7 @@ h4,
 h5,
 h6{
  font-weight:400;
- font-family: Comfortaa;
+ font-family: 'open sans';
  color:$purple
  }
 h1 {
@@ -500,7 +500,7 @@ margin-top: 300px;
  }
 .front .columns.hpslideshow {
   margin-top: 0;
-	padding-bottom: 1em;
+  padding-left:0;
 	}
 }
 /*////////// HOMEPAGE CALLOUTS ///////////////*/
@@ -733,16 +733,20 @@ min-height:220px;
 .newsletter-signup{
  font-size: 20px;
  line-height: 2;
+ height: 90px;
+ border-radius: 8px 8px 0 0;
+ background:#884B87;
  text-align: center;
  font-family: "Open Sans";
- background: none !important;
- padding: 0 15px 20px;
- color: $purple;
+ padding-top:20px;
  float:left;
  width:400px;
  /*/width:80%;/*/
   input{
 	 color:#999999;
+	 }
+	 section{
+		 float:left;
 	 }
  }
 .emaillink{
@@ -751,9 +755,7 @@ min-height:220px;
 	text-align:left;
 	}
 @media all and (max-width:767px){
- .newsletter-signup{
-  width:100%;
-	}
+ 
 }
 .social {
   /* text-align: right; */
@@ -765,49 +767,70 @@ min-height:220px;
 }
 
  .social{
-  padding-left:60%;
+  padding-left:70%;
 	}
 
 @media all and (max-width:1316px){
  .social{
-  padding-left:50%;
+  padding-left:60%;
 	}
 }
 @media all and (max-width:1065px){
  .social{
-  padding-left:40%;
+  padding-left:50%;
 	}
 }
 @media all and (max-width:893px){
  .social{
-  padding-left:30%;
+  padding-left:40%;
 	}
 }
 @media all and (max-width:768px){
  .social{
   padding-left:0;
-	overflow:visible;
+  overflow:visible;
 	}
+  .newsletter-signup{
+  height:70px;
+  }
+}
+@media all and (max-width:480px){
+ .social{
+  padding-left:0;
+  overflow:visible;
+	}
+  .newsletter-signup{
+  height:70px;
+  border-radius:0;
+  margin:0;
+  }
 }
 .bean-social-media-links {
   float: left;
 	 img{
-		opacity:.5;
+		padding-bottom: 10px;
 		}
 }
 .signup-blurb {
-  float: left;
-	padding-right:1em;
-	color:$grey-c;
-}
+    float: left;
+    padding-right: 18px;
+    padding-left: 18px;
+    line-height: 34px;
+    color: $white;
+    font-size: 35px;
+	}
 a.emaillink {
-  float: left;
-  display: inline;
+    float: left;
+    display: inline;
+    padding-right: 16px;
+	padding-top: 4px;
 }
 input.emaillink {
-  float: left;
-  width: 250px;
-  display: inline;
+	 float: left;
+	 width: 183px;
+	 height: 29px;
+	 border-radius: 4px;
+	 display: inline;	
 }
 /*///////////// YOSEF'S TWEAKS AND OVERRIDES //////////////////*/
 .page-programs .row{
@@ -818,11 +841,7 @@ input.emaillink {
    border-radius: 12px;
    border-color: white;
 }
-.newsletter-signup {
-height: 90px;
-border-radius: 5px;
-background:#884B87;
-}
+
 
 .l-triptych.row {
 border-radius: 5px;

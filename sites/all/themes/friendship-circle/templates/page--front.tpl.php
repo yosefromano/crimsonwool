@@ -94,14 +94,14 @@ echo $site_slogan;
     </h1>
     <div class="social">
       <div class="newsletter-signup">
-        <div class="signup-blurb">Follow FC</div>
+        <div class="signup-blurb"><i class="fa fa-envelope"></i></div>
         <a href="#" data-reveal-id="myModal2" class="emaillink">
-        <input type="text" value="Your Email" size="3" max-length-"3" class="emaillink">
-        </a></div>
+        <input type="text" value="JOIN OUR NEWSLETTER" size="3" max-length-"3" class="emaillink">
+        </a>
       <?php if (!empty($page['social'])): ?>
       <?php print render($page['social']); ?>
       <?php endif; ?>
-    </div>
+    </div></div>
     <?php if (!empty($page['slideshow'])): ?>
     <?php print render($page['slideshow']); ?>
     <?php endif; ?>
