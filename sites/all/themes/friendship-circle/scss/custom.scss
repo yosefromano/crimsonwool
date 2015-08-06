@@ -740,7 +740,7 @@ min-height:220px;
  font-family: "Open Sans";
  padding-top:20px;
  float:left;
- width:400px;
+ max-width:400px;
  /*/width:80%;/*/
   input{
 	 color:#999999;
@@ -756,6 +756,11 @@ min-height:220px;
 	}
 @media all and (max-width:767px){
  
+}
+
+.socialicons {
+    padding-right: 18px;
+    float: left;
 }
 .social {
   /* text-align: right; */

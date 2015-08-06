@@ -99,7 +99,9 @@ echo $site_slogan;
         <input type="text" value="JOIN OUR NEWSLETTER" size="3" max-length-"3" class="emaillink">
         </a>
       <?php if (!empty($page['social'])): ?>
+	  <div class="socialicons">
       <?php print render($page['social']); ?>
+      </div>
       <?php endif; ?>
     </div></div>
     <?php if (!empty($page['slideshow'])): ?>

@@ -8138,7 +8138,7 @@ h1.hp-sitename {
   font-family: "Open Sans";
   padding-top: 20px;
   float: left;
-  width: 400px;
+  max-width: 400px;
   /*/width:80%;/*/
 }
 /* line 745, ../scss/custom.scss */
@@ -8157,7 +8157,13 @@ h1.hp-sitename {
   text-align: left;
 }
 
-/* line 760, ../scss/custom.scss */
+/* line 761, ../scss/custom.scss */
+.socialicons {
+  padding-right: 18px;
+  float: left;
+}
+
+/* line 765, ../scss/custom.scss */
 .social {
   /* text-align: right; */
   width: 100%;
@@ -8167,65 +8173,65 @@ h1.hp-sitename {
   overflow: hidden;
 }
 
-/* line 769, ../scss/custom.scss */
+/* line 774, ../scss/custom.scss */
 .social {
   padding-left: 70%;
 }
 
 @media all and (max-width: 1316px) {
-  /* line 774, ../scss/custom.scss */
+  /* line 779, ../scss/custom.scss */
   .social {
     padding-left: 60%;
   }
 }
 @media all and (max-width: 1065px) {
-  /* line 779, ../scss/custom.scss */
+  /* line 784, ../scss/custom.scss */
   .social {
     padding-left: 50%;
   }
 }
 @media all and (max-width: 893px) {
-  /* line 784, ../scss/custom.scss */
+  /* line 789, ../scss/custom.scss */
   .social {
     padding-left: 40%;
   }
 }
 @media all and (max-width: 768px) {
-  /* line 789, ../scss/custom.scss */
+  /* line 794, ../scss/custom.scss */
   .social {
     padding-left: 0;
     overflow: visible;
   }
 
-  /* line 793, ../scss/custom.scss */
+  /* line 798, ../scss/custom.scss */
   .newsletter-signup {
     height: 70px;
   }
 }
 @media all and (max-width: 480px) {
-  /* line 798, ../scss/custom.scss */
+  /* line 803, ../scss/custom.scss */
   .social {
     padding-left: 0;
     overflow: visible;
   }
 
-  /* line 802, ../scss/custom.scss */
+  /* line 807, ../scss/custom.scss */
   .newsletter-signup {
     height: 70px;
     border-radius: 0;
     margin: 0;
   }
 }
-/* line 808, ../scss/custom.scss */
+/* line 813, ../scss/custom.scss */
 .bean-social-media-links {
   float: left;
 }
-/* line 810, ../scss/custom.scss */
+/* line 815, ../scss/custom.scss */
 .bean-social-media-links img {
   padding-bottom: 10px;
 }
 
-/* line 814, ../scss/custom.scss */
+/* line 819, ../scss/custom.scss */
 .signup-blurb {
   float: left;
   padding-right: 18px;
@@ -8235,7 +8241,7 @@ h1.hp-sitename {
   font-size: 35px;
 }
 
-/* line 822, ../scss/custom.scss */
+/* line 827, ../scss/custom.scss */
 a.emaillink {
   float: left;
   display: inline;
@@ -8243,7 +8249,7 @@ a.emaillink {
   padding-top: 4px;
 }
 
-/* line 828, ../scss/custom.scss */
+/* line 833, ../scss/custom.scss */
 input.emaillink {
   float: left;
   width: 183px;
@@ -8253,25 +8259,25 @@ input.emaillink {
 }
 
 /*///////////// YOSEF'S TWEAKS AND OVERRIDES //////////////////*/
-/* line 836, ../scss/custom.scss */
+/* line 841, ../scss/custom.scss */
 .page-programs .row {
   background: none;
 }
 
-/* line 839, ../scss/custom.scss */
+/* line 844, ../scss/custom.scss */
 .page-programs .panel {
   background: #ffffff;
   border-radius: 12px;
   border-color: white;
 }
 
-/* line 846, ../scss/custom.scss */
+/* line 851, ../scss/custom.scss */
 .l-triptych.row {
   border-radius: 5px;
 }
 
 @media (min-width: 950px) {
-  /* line 852, ../scss/custom.scss */
+  /* line 857, ../scss/custom.scss */
   .top-bar {
     position: fixed;
     width: 100%;
@@ -8279,7 +8285,7 @@ input.emaillink {
   }
 }
 /*/////////// BH ///////////////*/
-/* line 859, ../scss/custom.scss */
+/* line 864, ../scss/custom.scss */
 .bh {
   text-align: right;
   padding-right: 1em;
@@ -8294,20 +8300,20 @@ input.emaillink {
 }
 
 @media all and (max-width: 480px) {
-  /* line 870, ../scss/custom.scss */
+  /* line 875, ../scss/custom.scss */
   .bh {
     position: absolute;
     top: -30px;
   }
 }
 /*///////// CIVI DONATE PAGE ///////////*/
-/* line 876, ../scss/custom.scss */
+/* line 881, ../scss/custom.scss */
 .crm-container .crm-section .content {
   margin-left: 40%;
 }
 
 /*//////////// MEERKAT STUFF /////////////*/
-/* line 882, ../scss/custom.scss */
+/* line 887, ../scss/custom.scss */
 div#meerkat-wrap {
   background: rgba(255, 255, 255, 0.93);
   padding: 1em;
@@ -8317,30 +8323,30 @@ div#meerkat-wrap {
   color: #2B9C94;
   min-height: 600px;
 }
-/* line 890, ../scss/custom.scss */
+/* line 895, ../scss/custom.scss */
 div#meerkat-wrap h2 {
   color: #983997;
   font-weight: 700;
   font-size: 36px;
 }
-/* line 895, ../scss/custom.scss */
+/* line 900, ../scss/custom.scss */
 div#meerkat-wrap .field-name-field-meerkat-verbiage {
   font-size: 18px;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-/* line 900, ../scss/custom.scss */
+/* line 905, ../scss/custom.scss */
 div#meerkat-wrap a {
   font-size: 23px;
 }
 
 /*//////// MISC TWEAKS ////////////*/
-/* line 906, ../scss/custom.scss */
+/* line 911, ../scss/custom.scss */
 .alert-box.alert {
   margin-top: 50px;
 }
 
-/* line 910, ../scss/custom.scss */
+/* line 915, ../scss/custom.scss */
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img {
   width: 100%;
 }
