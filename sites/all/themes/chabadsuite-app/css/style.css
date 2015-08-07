@@ -50,9 +50,10 @@ body :-ms-input-placeholder {
     top: 20%;
     left: 0;
     width: 100%;
-    height: 50%;
+    
 	min-height: 490px;
     overflow: hidden;
+    padding-bottom:1em;
 }
 
 .cloud-logo {
@@ -112,8 +113,19 @@ form#user-login {
     position: relative;
     z-index: 2;
 }
+#user-login label {
+    position: relative;
+    width: 100%;
+    top: 36px;
+}
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+    background-color: #ffffff !important;
+    background-image: none !important;
+    color: green !important;
+}
 input:-webkit-autofill,
-form#user-login input {
+form#user-login input,
+.form-text {
     -webkit-appearance: none;
        -moz-appearance: none;
             appearance: none;
@@ -132,9 +144,16 @@ form#user-login input {
             transition-duration: 0.25s;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight:400;
-    margin-top: -36px;
+   
     margin-bottom: 2em;
   }
+ .password-strength {
+    width: 17em;
+    float: none;
+    margin-top: 1.4em;
+    text-align: center;
+    width: 100%;
+}
   div#edit-actions input#edit-submit{
      background-color:#ffffff;
      color: #52912C;
@@ -404,4 +423,62 @@ a.u-p:hover {
 }
 label {
   font-weight:200;
+}
+div.password-confirm {
+    float: right;
+    margin-top: 1.5em;
+    visibility: hidden;
+    width: 100%;
+}
+#user-profile-form label {
+    position: relative;
+    top: 33px;
+}
+#user-profile-form .form-type-radios label {
+    position: relative;
+    top: 0;
+}
+span#user-page-profile-Nam a,
+span#user-page-contact a,
+span#user-page-dashboard a{
+  border: 1px solid rgba(255, 255, 255, 0.54);
+    padding: 0 .5em;
+    border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.28);
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+span.user-page-bullet {
+    display: none;
+}
+span#user-page-contact {
+    display: block;
+}
+.page-user-password .actions-box{
+   display:none;
+}
+.page-user-edit-name-and-address input#edit-submit,
+.page-user-reset- input#edit-submit{
+  -webkit-appearance: none;
+       -moz-appearance: none;
+            appearance: none;
+    outline: 0;
+    background-color: white;
+    border: 0;
+    padding: 10px 15px;
+    color: #52912C;
+    border-radius: 3px;
+    width: 250px;
+    cursor: pointer;
+    font-size: 18px;
+    -webkit-transition-duration: 0.25s;
+            transition-duration: 0.25s;
+}
+.page-user-edit-name-and-address input#last_name,
+.page-user-edit-name-and-address input#first_name{
+   color:#000000;
+}
+.page-user-edit-name-and-address #user-profile-form label{
+   top:0;
 }
