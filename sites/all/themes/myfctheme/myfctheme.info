@@ -1,0 +1,39 @@
+name = Friendship Circle Custom Theme
+description = Custom theme for Friendship Circle using Friendship-Circle base theme
+screenshot = images/screenshot.png
+
+core = 7.x
+engine = phptemplate
+base theme = friendship_circle
+
+stylesheets[all][] = css/myfctheme.css
+
+
+regions[header]              = Header
+regions[slideshow]           = Slideshow
+regions[homepage_image]      = Homepage Image
+regions[help]                = Help
+regions[highlighted]         = Highlighted
+regions[featured]            = Featured
+regions[content]             = Content
+regions[under_content]       = Under Content
+regions[social]              = Social
+regions[sidebar_first]       = Left Sidebar
+regions[sidebar_second]      = Right Sidebar
+regions[triptych_header_1]   = Section Header 1
+regions[triptych_first]      = Callout one
+regions[triptych_middle]     = Callout two
+regions[triptych_last]       = Callout three
+regions[triptych_icon1]      = Icon one
+regions[triptych_icon2]      = ICon two
+regions[triptych_icon3]      = Icon three
+regions[triptych_header]     = Section Header
+regions[triptych_first_2]    = Callout four
+regions[triptych_middle_2]   = Callout five
+regions[triptych_last_2]     = Callout six
+regions[footer_firstcolumn]  = Footer one
+regions[footer_secondcolumn] = Footer two
+regions[footer_thirdcolumn]  = Footer three
+regions[footer_fourthcolumn] = Footer four
+regions[footer]              = Footer
+regions[meerkat]             = Promo PopIn
