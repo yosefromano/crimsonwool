@@ -45,7 +45,12 @@ body :-ms-input-placeholder {
  
 .wrapper {
 	margin:0;
-    background-image:url(../images/gradient.png);
+	background-image: -webkit-gradient(linear, right bottom, left top, color-stop(0, #097D47), color-stop(1, #24B574));
+	    background-image: -o-linear-gradient(left top, #097D47 0%, #24B574 100%);
+	    background-image: -moz-linear-gradient(left top, #097D47 0%, #24B574 100%);
+	    background-image: -webkit-linear-gradient(left top, #097D47 0%, #24B574 100%);
+	    background-image: -ms-linear-gradient(left top, #097D47 0%, #24B574 100%);
+	    background-image: linear-gradient(to left top, #097d47 0%, #24b574 100%);
     position: absolute;
     top: 20%;
     left: 0;
