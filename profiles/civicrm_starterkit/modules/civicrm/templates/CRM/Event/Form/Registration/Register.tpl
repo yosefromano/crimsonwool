@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.6                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2015                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -25,7 +25,7 @@
 *}
 {* Callback snippet: Load payment processor *}
 {if $snippet}
-  {include file="CRM/Core/BillingBlock.tpl" context="front-end"}
+  {include file="CRM/Core/BillingBlock.tpl"}
   <div id="paypalExpress">
     {* Put PayPal Express button after customPost block since it's the submit button in this case. *}
     {if $paymentProcessor.payment_processor_type EQ 'PayPal_Express'}
@@ -60,7 +60,7 @@
     {/if}
 
     {if $contact_id}
-      <div class="messages status no-popup" id="crm-event-register-different">
+      <div class="messages status no-popup crm-not-you-message" id="crm-event-register-different">
         {ts 1=$display_name}Welcome %1{/ts}. (<a
           href="{crmURL p='civicrm/event/register' q="cid=0&reset=1&id=`$event.id`"}"
           title="{ts}Click here to register a different person for this event.{/ts}">{ts 1=$display_name}Not %1, or want to register a different person{/ts}</a>?)
@@ -71,6 +71,7 @@
         <p>{$event.intro_text}</p>
       </div>
     {/if}
+
     {include file="CRM/common/cidzero.tpl"}
     {if $pcpSupporterText}
       <div class="crm-section pcpSupporterText-section">
@@ -90,6 +91,12 @@
         <div class="clear"></div>
       </div>
     {/if}
+
+    {* User account registration option. Displays if enabled for one of the profiles on this page. *}
+    {include file="CRM/common/CMSUser.tpl"}
+
+    {* Display "Top of page" profile immediately after the introductory text *}
+    {include file="CRM/UF/Form/Block.tpl" fields=$customPre}
 
     {if $priceSet}
       {if ! $quickConfig}<fieldset id="priceset" class="crm-group priceset-group">
@@ -134,11 +141,6 @@
       </fieldset>
     {/if}
 
-    {* User account registration option. Displays if enabled for one of the profiles on this page. *}
-    {include file="CRM/common/CMSUser.tpl"}
-
-    {include file="CRM/UF/Form/Block.tpl" fields=$customPre}
-
     {if $form.payment_processor.label}
       <fieldset class="crm-group payment_options-group" style="display:none;">
         <legend>{ts}Payment Options{/ts}</legend>
@@ -152,7 +154,7 @@
 
     <div id="billing-payment-block">
       {* If we have a payment processor, load it - otherwise it happens via ajax *}
-      {if $ppType}
+      {if $paymentProcessorID or $isBillingAddressRequiredForPayLater}
         {include file="CRM/Event/Form/Registration/Register.tpl" snippet=4}
       {/if}
     </div>
@@ -198,37 +200,49 @@
       toggleConfirmButton();
     });
 
-    cj(function () {
+    cj("#additional_participants").change(function () {
+      skipPaymentMethod();
+    });
+
+    CRM.$(function($) {
       toggleConfirmButton();
       skipPaymentMethod();
     });
 
+    // Hides billing and payment options block - but only if a price set is used.
+    // Called from display() in Calculate.tpl, depends on display() having been called.
     function skipPaymentMethod() {
-      var symbol = '{/literal}{$currencySymbol}{literal}';
+      // If we're in quick-config price set, we do not have the pricevalue hidden element, so just return.
+      if (cj('#pricevalue').length == 0) {
+        return;
+      }
+      // CRM-15433 Remove currency symbol, decimal separator so we can check for zero numeric total regardless of localization.
+      currentTotal = cj('#pricevalue').text().replace(/[^\/\d]/g,'');
       var isMultiple = '{/literal}{$event.is_multiple_registrations}{literal}';
 
       var flag = 1;
-      if (isMultiple && cj("#additional_participants").val()) {
+      var payment_options = cj(".payment_options-group");
+      var payment_processor = cj("div.payment_processor-section");
+      var payment_information = cj("div#payment_information");
+
+      // Do not hide billing and payment blocks if user is registering additional participants, since we do not know total owing.
+      if (isMultiple && cj("#additional_participants").val() && currentTotal == 0) {
         flag = 0;
       }
 
-      if ((cj('#pricevalue').text() == symbol + " 0.00") && flag) {
-        cj(".payment_options-group").hide();
-        cj("div.payment_processor-section").hide();
-        cj("div#payment_information").hide();
+      if (currentTotal == 0 && flag) {
+        payment_options.hide();
+        payment_processor.hide();
+        payment_information.hide();
         // also unset selected payment methods
         cj('input[name="payment_processor"]').removeProp('checked');
       }
       else {
-        cj(".payment_options-group").show();
-        cj("div.payment_processor-section").show();
-        cj("div#payment_information").show();
+        payment_options.show();
+        payment_processor.show();
+        payment_information.show();
       }
     }
-
-    cj('#priceset input, #priceset select').change(function () {
-      skipPaymentMethod();
-    });
 
     {/literal}
   </script>

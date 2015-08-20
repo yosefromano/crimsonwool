@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.6                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2015                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
-*/
+ */
 
 /**
  * Implement the "reload" option. This option can be used with "create" to force
@@ -38,11 +38,15 @@
  * @endcode
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2013
+ * @copyright CiviCRM LLC (c) 2004-2015
  * $Id$
  */
 
 require_once 'api/Wrapper.php';
+
+/**
+ * Class CRM_Utils_API_ReloadOption
+ */
 class CRM_Utils_API_ReloadOption implements API_Wrapper {
 
   /**
@@ -61,18 +65,18 @@ class CRM_Utils_API_ReloadOption implements API_Wrapper {
   }
 
   /**
-   * {@inheritDoc}
+   * @inheritDoc
    */
   public function fromApiInput($apiRequest) {
     return $apiRequest;
   }
 
   /**
-   * {@inheritDoc}
+   * @inheritDoc
    */
   public function toApiOutput($apiRequest, $result) {
     $reloadMode = NULL;
-    if ($apiRequest['action'] === 'create' && isset($apiRequest['params'], $apiRequest['params']['options'], $apiRequest['params']['options']['reload'])) {
+    if ($apiRequest['action'] === 'create' && isset($apiRequest['params'], $apiRequest['params']['options']) && is_array($apiRequest['params']['options']) && isset($apiRequest['params']['options']['reload'])) {
       if (!CRM_Utils_Array::value('is_error', $result, FALSE)) {
         $reloadMode = $apiRequest['params']['options']['reload'];
       }
@@ -82,6 +86,7 @@ class CRM_Utils_API_ReloadOption implements API_Wrapper {
       case NULL:
       case '0':
       case 'null':
+      case '':
         return $result;
 
       case '1':
@@ -106,12 +111,12 @@ class CRM_Utils_API_ReloadOption implements API_Wrapper {
         return $result;
 
       default:
-        throw new API_Exception("Unknown reload mode");
+        throw new API_Exception("Unknown reload mode " . $reloadMode);
     }
   }
 
   /**
-   * Identify the fields which should be returned
+   * Identify the fields which should be returned.
    *
    * @param $apiRequest
    * @return array
@@ -124,4 +129,5 @@ class CRM_Utils_API_ReloadOption implements API_Wrapper {
     );
     return $returnKeys;
   }
+
 }

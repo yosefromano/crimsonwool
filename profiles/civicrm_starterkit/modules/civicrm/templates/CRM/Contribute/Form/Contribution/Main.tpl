@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.4                                                |
+ | CiviCRM version 4.6                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2013                                |
+ | Copyright CiviCRM LLC (c) 2004-2015                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
 
 {* Callback snippet: Load payment processor *}
 {elseif $snippet}
-{include file="CRM/Core/BillingBlock.tpl" context="front-end"}
+{include file="CRM/Core/BillingBlock.tpl"}
   {if $is_monetary}
   {* Put PayPal Express button after customPost block since it's the submit button in this case. *}
     {if $paymentProcessor.payment_processor_type EQ 'PayPal_Express'}
@@ -99,6 +99,13 @@
 
   {capture assign='reqMark'}<span class="marker" title="{ts}This field is required.{/ts}">*</span>{/capture}
   <div class="crm-contribution-page-id-{$contributionPageID} crm-block crm-contribution-main-form-block">
+
+  {if $contact_id}
+    <div class="messages status no-popup crm-not-you-message">
+      {ts 1=$display_name}Welcome %1{/ts}. (<a href="{crmURL p='civicrm/contribute/transact' q="cid=0&reset=1&id=`$contributionPageID`"}" title="{ts}Click here to do this for a different person.{/ts}">{ts 1=$display_name}Not %1, or want to do this for a different person{/ts}</a>?)
+    </div>
+  {/if}
+
   <div id="intro_text" class="crm-section intro_text-section">
     {$intro_text}
   </div>
@@ -151,8 +158,19 @@
         {$form.frequency_unit.html}
       {/if}
       {if $is_recur_installments}
+        <span id="recur_installments_num">
         {ts}for{/ts} {$form.installments.html} {$form.installments.label}
+        </span>
       {/if}
+      <div id="recurHelp" class="description">
+        {ts}Your recurring contribution will be processed automatically.{/ts}
+        {if $is_recur_installments}
+          {ts}You can specify the number of installments, or you can leave the number of installments blank if you want to make an open-ended commitment. In either case, you can choose to cancel at any time.{/ts}
+        {/if}
+        {if $is_email_receipt}
+          {ts}You will receive an email receipt for each recurring contribution.{/ts}
+        {/if}
+      </div>
     </div>
     <div class="clear"></div>
   </div>
@@ -195,44 +213,9 @@
 
   {if $honor_block_is_active}
   <fieldset class="crm-group honor_block-group">
-    <legend>{$honor_block_title}</legend>
-    <div class="crm-section honor_block_text-section">
-      {$honor_block_text}
-    </div>
-    {if $form.honor_type_id.html}
-      <div class="crm-section {$form.honor_type_id.name}-section">
-        <div class="content" >
-          {$form.honor_type_id.html}
-          <span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('honor_type_id', '{$form.formName}');enableHonorType(); return false;">{ts}clear{/ts}</a>)</span>
-          <div class="description">{ts}Select an option to reveal honoree information fields.{/ts}</div>
-        </div>
-      </div>
-    {/if}
+    {include file="CRM/Contribute/Form/SoftCredit.tpl"}
     <div id="honorType" class="honoree-name-email-section">
-      <div class="crm-section {$form.honor_prefix_id.name}-section">
-        <div class="content">{$form.honor_prefix_id.html}</div>
-      </div>
-      <div class="crm-section {$form.honor_first_name.name}-section">
-        <div class="label">{$form.honor_first_name.label}</div>
-        <div class="content">
-          {$form.honor_first_name.html}
-        </div>
-        <div class="clear"></div>
-      </div>
-      <div class="crm-section {$form.honor_last_name.name}-section">
-        <div class="label">{$form.honor_last_name.label}</div>
-        <div class="content">
-          {$form.honor_last_name.html}
-        </div>
-        <div class="clear"></div>
-      </div>
-      <div id="honorTypeEmail" class="crm-section {$form.honor_email.name}-section">
-        <div class="label">{$form.honor_email.label}</div>
-        <div class="content">
-          {$form.honor_email.html}
-        </div>
-        <div class="clear"></div>
-      </div>
+      {include file="CRM/UF/Form/Block.tpl" fields=$honoreeProfileFields mode=8 prefix='honor'}
     </div>
   </fieldset>
   {/if}
@@ -303,7 +286,7 @@
 
   <div id="billing-payment-block">
     {* If we have a payment processor, load it - otherwise it happens via ajax *}
-    {if $ppType}
+    {if $paymentProcessorID or $isBillingAddressRequiredForPayLater}
       {include file="CRM/Contribute/Form/Contribution/Main.tpl" snippet=4}
     {/if}
   </div>
@@ -362,7 +345,7 @@
       //disabled auto renew settings.
     var allowAutoRenew = {/literal}'{$allowAutoRenewMembership}'{literal};
       if ( allowAutoRenew && cj("#auto_renew") ) {
-        cj("#auto_renew").attr( 'checked', false );
+        cj("#auto_renew").prop('checked', false );
         cj('#allow_auto_renew').hide( );
       }
     }
@@ -370,37 +353,38 @@
 
   {/literal}
   {if $relatedOrganizationFound and $reset}
-    cj( "#is_for_organization" ).attr( 'checked', true );
+    cj( "#is_for_organization" ).prop('checked', true );
     showOnBehalf(false);
   {elseif $onBehalfRequired}
     showOnBehalf(true);
   {/if}
-
-  {if $honor_block_is_active AND $form.honor_type_id.html}
-    enableHonorType();
-  {/if}
   {literal}
 
+  cj('input[name="soft_credit_type_id"]').on('change', function() {
+    enableHonorType();
+  });
+
   function enableHonorType( ) {
-    var element = document.getElementsByName("honor_type_id");
-    for (var i = 0; i < element.length; i++ ) {
-      var isHonor = false;
-      if ( element[i].checked == true ) {
-        var isHonor = true;
-        break;
-      }
-    }
-    if ( isHonor ) {
+    var selectedValue = cj('input[name="soft_credit_type_id"]:checked');
+    if ( selectedValue.val() > 0) {
       cj('#honorType').show();
-      cj('#honorTypeEmail').show();
     }
     else {
-      document.getElementById('honor_first_name').value = '';
-      document.getElementById('honor_last_name').value  = '';
-      document.getElementById('honor_email').value      = '';
-      document.getElementById('honor_prefix_id').value  = '';
       cj('#honorType').hide();
-      cj('#honorTypeEmail').hide();
+    }
+  }
+
+  cj('input[id="is_recur"]').on('change', function() {
+    showRecurHelp();
+  });
+
+  function showRecurHelp( ) {
+    var showHelp = cj('input[id="is_recur"]:checked');
+    if ( showHelp.val() > 0) {
+      cj('#recurHelp').show();
+    }
+    else {
+      cj('#recurHelp').hide();
     }
   }
 
@@ -456,8 +440,10 @@
     toggleConfirmButton();
   });
 
-  cj(function() {
+  CRM.$(function($) {
     toggleConfirmButton();
+    enableHonorType();
+    showRecurHelp();
   });
 
   function showHidePayPalExpressOption() {
@@ -471,14 +457,29 @@
     }
   }
 
-  cj(function(){
+  CRM.$(function($) {
     // highlight price sets
     function updatePriceSetHighlight() {
-      cj('#priceset .price-set-row').removeClass('highlight');
-      cj('#priceset .price-set-row input:checked').parent().parent().addClass('highlight');
+      cj('#priceset .price-set-row span').removeClass('highlight');
+      cj('#priceset .price-set-row input:checked').parent().addClass('highlight');
     }
     cj('#priceset input[type="radio"]').change(updatePriceSetHighlight);
     updatePriceSetHighlight();
+
+    function toggleBillingBlockIfFree(){
+      var total_amount_tmp =  $(this).data('raw-total');
+      // Hide billing questions if this is free
+      if (total_amount_tmp == 0){
+        cj("#billing-payment-block").hide();
+        cj(".payment_options-group").hide();
+      }
+      else {
+        cj("#billing-payment-block").show();
+        cj(".payment_options-group").show();
+      }
+    }
+
+    $('#pricevalue').each(toggleBillingBlockIfFree).on('change', toggleBillingBlockIfFree);
   });
   {/literal}
 </script>
