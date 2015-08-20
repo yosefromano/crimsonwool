@@ -189,6 +189,10 @@ class CRM_Contact_BAO_Relationship extends CRM_Contact_DAO_Relationship {
           continue;
         }
 
+        //CRM-16978:check duplicate relationship as per case id.
+        if ($caseId = CRM_Utils_Array::value('case_id', $params)) {
+          $contactFields['case_id'] = $caseId;
+        }
         if (
         self::checkDuplicateRelationship(
           $contactFields,
@@ -696,7 +700,7 @@ class CRM_Contact_BAO_Relationship extends CRM_Contact_DAO_Relationship {
   public static function disableEnableRelationship($id, $action, $params = array(), $ids = array(), $active = FALSE) {
     $relationship = self::clearCurrentEmployer($id, $action);
 
-    if (CRM_Core_Permission::access('CiviMember')) {
+    if ($id) {
       // create $params array which is required to delete memberships
       // of the related contacts.
       if (empty($params)) {

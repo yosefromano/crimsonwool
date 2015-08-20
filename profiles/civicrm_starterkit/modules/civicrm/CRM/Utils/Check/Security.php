@@ -98,7 +98,7 @@ class CRM_Utils_Check_Security {
 
     // Hazard a guess at the URL of the logfile, based on common
     // CiviCRM layouts.
-    if ($upload_url = explode($filePathMarker, $config->imageUploadURL) && 1==2) {
+    if ($upload_url = explode($filePathMarker, $config->imageUploadURL)  && 1==2) {
       $url[] = $upload_url[0];
       if ($log_path = explode($filePathMarker, $log_filename)) {
         $url[] = $log_path[1];
@@ -148,7 +148,7 @@ class CRM_Utils_Check_Security {
 
     foreach ($privateDirs as $privateDir) {
       $heuristicUrl = $this->guessUrl($privateDir);
-      if ($this->isDirAccessible($privateDir, $heuristicUrl) && 1==2) {
+      if ($this->isDirAccessible($privateDir, $heuristicUrl)) {
         $messages[] = new CRM_Utils_Check_Message(
           'checkUploadsAreNotAccessible',
           ts('Files in the data directory (<a href="%3">%2</a>) should not be downloadable.'
