@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,13 +23,14 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
+ *
  */
 
 /**
@@ -41,6 +42,7 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
    * Are we forced to run a search
    *
    * @var int
+   * @access protected
    */
   protected $_force;
 
@@ -49,9 +51,11 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
   protected $_searchVoterFor;
 
   /**
-   * Processing needed for buildForm and later.
-   */
-  public function preProcess() {
+   * processing needed for buildForm and later
+   *
+   * @return void
+   * @access public
+   */ function preProcess() {
     $this->_search = CRM_Utils_Array::value('search', $_GET);
     $this->_force = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE);
     $this->_surveyId = CRM_Utils_Request::retrieve('sid', 'Positive', $this);
@@ -93,9 +97,13 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Build the form
+   *
+   * @access public
+   *
+   * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     if ($this->_search) {
       return;
     }
@@ -130,6 +138,11 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
       );
 
       $defaults['survey_interviewer_id'] = $cid;
+      $defaults['survey_interviewer_name'] = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact',
+        $cid,
+        'sort_name',
+        'id'
+      );
     }
     if ($this->_surveyId) {
       $defaults['campaign_survey_id'] = $this->_surveyId;
@@ -142,7 +155,7 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
     $this->validateIds();
   }
 
-  public function validateIds() {
+  function validateIds() {
     $errorMessages = array();
     //check for required permissions.
     if (!CRM_Core_Permission::check('manage campaign') &&
@@ -165,5 +178,5 @@ class CRM_Campaign_Form_Gotv extends CRM_Core_Form {
 
     $this->assign('errorMessages', empty($errorMessages) ? FALSE : $errorMessages);
   }
-
 }
+

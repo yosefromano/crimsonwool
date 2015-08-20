@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,29 +39,30 @@
 class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
 
   /**
-   * The field id
+   * the field id
    *
    * @var int
+   * @access protected
    */
   protected $_id;
 
   /**
-   * Array of custom field values
+   * array of custom field values
    */
   protected $_values;
 
   /**
-   * Mapper array of valid field type
+   * mapper array of valid field type
    */
   protected $_htmlTypeTransitions;
 
   /**
-   * Set up variables to build the form.
+   * set up variables to build the form
    *
    * @return void
    * @acess protected
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_id = CRM_Utils_Request::retrieve('id', 'Positive',
       $this, TRUE
     );
@@ -85,14 +86,15 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
     $session->pushUserContext($url);
 
     CRM_Utils_System::setTitle(ts('Change Field Type: %1',
-      array(1 => $this->_values['label'])
-    ));
+        array(1 => $this->_values['label'])
+      ));
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
 
@@ -112,8 +114,7 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
       'dst_html_type',
       ts('New HTML Type'),
       array(
-        '' => ts('- select -'),
-      ) + $this->_htmlTypeTransitions,
+        '' => ts('- select -')) + $this->_htmlTypeTransitions,
       TRUE
     );
 
@@ -133,9 +134,10 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
   }
 
   /**
-   * Process the form when submitted.
+   * Process the form when submitted
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
@@ -166,11 +168,7 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
     $customField->find(TRUE);
 
     if ($dstHtmlType == 'Text' && in_array($srcHtmlType, array(
-        'Select',
-        'Radio',
-        'Autocomplete-Select',
-      ))
-    ) {
+      'Select', 'Radio', 'Autocomplete-Select'))) {
       $customField->option_group_id = "NULL";
       CRM_Core_BAO_CustomField::checkOptionGroup($this->_values['option_group_id']);
     }
@@ -193,17 +191,11 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
     CRM_Core_BAO_Cache::deleteGroup('contact fields');
 
     CRM_Core_Session::setStatus(ts('Input type of custom field \'%1\' has been successfully changed to \'%2\'.',
-      array(1 => $this->_values['label'], 2 => $dstHtmlType)
-    ), ts('Field Type Changed'), 'success');
+        array(1 => $this->_values['label'], 2 => $dstHtmlType)
+      ), ts('Field Type Changed'), 'success');
   }
 
-  /**
-   * @param $dataType
-   * @param $htmlType
-   *
-   * @return array|null
-   */
-  public static function fieldTypeTransitions($dataType, $htmlType) {
+  static function fieldTypeTransitions($dataType, $htmlType) {
     // Text field is single value field,
     // can not be change to other single value option which contains option group
     if ($htmlType == 'Text') {
@@ -271,14 +263,13 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
   public function firstValueToFlatten($table, $column) {
     $selectSql = "SELECT id, $column FROM $table WHERE $column IS NOT NULL";
     $updateSql = "UPDATE $table SET $column = %1 WHERE id = %2";
-    $dao = CRM_Core_DAO::executeQuery($selectSql);
+    $dao       = CRM_Core_DAO::executeQuery($selectSql);
     while ($dao->fetch()) {
       if (!$dao->{$column}) {
         continue;
       }
       $value = CRM_Core_DAO::VALUE_SEPARATOR . $dao->{$column} . CRM_Core_DAO::VALUE_SEPARATOR;
-      $params = array(
-        1 => array((string) $value, 'String'),
+      $params = array(1 => array((string)$value, 'String'),
         2 => array($dao->id, 'Integer'),
       );
       CRM_Core_DAO::executeQuery($updateSql, $params);
@@ -292,23 +283,17 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
   public function flattenToFirstValue($table, $column) {
     $selectSql = "SELECT id, $column FROM $table WHERE $column IS NOT NULL";
     $updateSql = "UPDATE $table SET $column = %1 WHERE id = %2";
-    $dao = CRM_Core_DAO::executeQuery($selectSql);
+    $dao       = CRM_Core_DAO::executeQuery($selectSql);
     while ($dao->fetch()) {
       $values = self::explode($dao->{$column});
-      $params = array(
-        1 => array((string) array_shift($values), 'String'),
+      $params = array(1 => array((string)array_shift($values), 'String'),
         2 => array($dao->id, 'Integer'),
       );
       CRM_Core_DAO::executeQuery($updateSql, $params);
     }
   }
 
-  /**
-   * @param $str
-   *
-   * @return array
-   */
-  public static function explode($str) {
+  static function explode($str) {
     if (empty($str) || $str == CRM_Core_DAO::VALUE_SEPARATOR . CRM_Core_DAO::VALUE_SEPARATOR) {
       return array();
     }
@@ -316,5 +301,5 @@ class CRM_Custom_Form_ChangeFieldType extends CRM_Core_Form {
       return explode(CRM_Core_DAO::VALUE_SEPARATOR, trim($str, CRM_Core_DAO::VALUE_SEPARATOR));
     }
   }
-
 }
+

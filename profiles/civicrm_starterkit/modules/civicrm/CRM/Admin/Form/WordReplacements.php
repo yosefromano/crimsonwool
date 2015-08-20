@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,13 +23,14 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
+ *
  */
 class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
   protected $_numStrings = 10;
@@ -38,27 +39,24 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
 
   protected $_defaults = NULL;
 
-  public $unsavedChangesWarn = TRUE;
-
-  /**
-   * Pre process function.
-   */
-  public function preProcess() {
+  function preProcess() {
     // This controller was originally written to CRUD $config->locale_custom_strings,
     // but that's no longer the canonical store. Re-sync from canonical store to ensure
     // that we display that latest data. This is inefficient - at some point, we
     // should rewrite this UI.
-    CRM_Core_BAO_WordReplacement::rebuild(FALSE);
+    CRM_Core_BAO_WordReplacement::rebuild();
 
     $this->_soInstance = CRM_Utils_Array::value('instance', $_GET);
     $this->assign('soInstance', $this->_soInstance);
+    $breadCrumbUrl = CRM_Utils_System::url('civicrm/admin/options/wordreplacements',
+      "reset=1"
+    );
+    $breadCrumb = array(array('title' => ts('Word Replacements'),
+        'url' => $breadCrumbUrl,
+      ));
+    CRM_Utils_System::appendBreadCrumb($breadCrumb);
   }
 
-  /**
-   * Set default values.
-   *
-   * @return array
-   */
   public function setDefaultValues() {
     if ($this->_defaults !== NULL) {
       return $this->_defaults;
@@ -110,16 +108,19 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
+   *
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
-    $config = CRM_Core_Config::singleton();
-    $values = $config->localeCustomStrings[$config->lcMessages];
+    $config    = CRM_Core_Config::singleton();
+    $values    = $config->localeCustomStrings[$config->lcMessages];
 
     //CRM-14179
     $instances = 0;
-    foreach ($values as $valMatchType) {
-      foreach ($valMatchType as $valPairs) {
+    foreach ( $values as $valMatchType ) {
+      foreach ( $valMatchType as $valPairs ) {
         $instances += count($valPairs);
       }
     }
@@ -133,7 +134,7 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
     if ($this->_soInstance) {
       $soInstances = array($this->_soInstance);
     }
-    elseif (!empty($_POST['old'])) {
+    elseif (CRM_Utils_Array::value('old', $_POST)) {
       $soInstances = $stringOverrideInstances = array_keys($_POST['old']);
     }
     elseif (!empty($this->_defaults) && is_array($this->_defaults)) {
@@ -171,20 +172,20 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $values
-   *   Posted values of the form.
+   * @param array $values posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($values) {
+  static function formRule($values) {
     $errors = array();
 
-    $oldValues = CRM_Utils_Array::value('old', $values);
-    $newValues = CRM_Utils_Array::value('new', $values);
-    $enabled = CRM_Utils_Array::value('enabled', $values);
+    $oldValues  = CRM_Utils_Array::value('old', $values);
+    $newValues  = CRM_Utils_Array::value('new', $values);
+    $enabled    = CRM_Utils_Array::value('enabled', $values);
     $exactMatch = CRM_Utils_Array::value('cb', $values);
 
     foreach ($oldValues as $k => $v) {
@@ -194,8 +195,8 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
       elseif (!$v && $newValues[$k]) {
         $errors['old[' . $k . ']'] = ts('Please Enter the value for Original Word');
       }
-      elseif ((empty($newValues[$k]) && empty($oldValues[$k]))
-        && (!empty($enabled[$k]) || !empty($exactMatch[$k]))
+      elseif ((!CRM_Utils_Array::value($k, $newValues) && !CRM_Utils_Array::value($k, $oldValues))
+        && (CRM_Utils_Array::value($k, $enabled) || CRM_Utils_Array::value($k, $exactMatch))
       ) {
         $errors['old[' . $k . ']'] = ts('Please Enter the value for Original Word');
         $errors['new[' . $k . ']'] = ts('Please Enter the value for Replacement Word');
@@ -206,17 +207,25 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
+   *
+   * @access public
+   *
+   * @return None
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
-    $this->_numStrings = count($params['old']);
+    $this->_numStrings = sizeof($params['old']);
 
     $enabled['exactMatch'] = $enabled['wildcardMatch'] = $disabled['exactMatch'] = $disabled['wildcardMatch'] = array();
     for ($i = 1; $i <= $this->_numStrings; $i++) {
-      if (!empty($params['new'][$i]) && !empty($params['old'][$i])) {
-        if (isset($params['enabled']) && !empty($params['enabled'][$i])) {
-          if (!empty($params['cb']) && !empty($params['cb'][$i])) {
+      if (CRM_Utils_Array::value($i, $params['new']) &&
+        CRM_Utils_Array::value($i, $params['old'])
+      ) {
+        if (isset($params['enabled']) && CRM_Utils_Array::value($i, $params['enabled'])) {
+          if (CRM_Utils_Array::value('cb', $params) &&
+            CRM_Utils_Array::value($i, $params['cb'])
+          ) {
             $enabled['exactMatch'] += array($params['old'][$i] => $params['new'][$i]);
           }
           else {
@@ -268,9 +277,9 @@ class CRM_Admin_Form_WordReplacements extends CRM_Core_Form {
 
       CRM_Core_Session::setStatus("", ts("Settings Saved"), "success");
       CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/admin/options/wordreplacements',
-        "reset=1"
-      ));
+          "reset=1"
+        ));
     }
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,14 +23,14 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * The extension manager handles installing, disabling enabling, and
  * uninstalling extensions.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,69 +42,68 @@ class CRM_Extension_Manager_Base implements CRM_Extension_Manager_Interface {
   public $autoReplace;
 
   /**
-   * @param bool $autoReplace
-   *   Whether to automatically uninstall and install during 'replace'.
+   * @param bool $autoReplace whether to automatically uninstall and install during 'replace'
    */
   public function __construct($autoReplace = FALSE) {
     $this->autoReplace = $autoReplace;
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPreInstall(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostInstall(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostPostInstall(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPreEnable(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostEnable(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPreDisable(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostDisable(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPreUninstall(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostUninstall(CRM_Extension_Info $info) {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPreReplace(CRM_Extension_Info $oldInfo, CRM_Extension_Info $newInfo) {
     if ($this->autoReplace) {
@@ -114,7 +113,7 @@ class CRM_Extension_Manager_Base implements CRM_Extension_Manager_Interface {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
   public function onPostReplace(CRM_Extension_Info $oldInfo, CRM_Extension_Info $newInfo) {
     if ($this->autoReplace) {
@@ -122,5 +121,4 @@ class CRM_Extension_Manager_Base implements CRM_Extension_Manager_Interface {
       $this->onPostInstall($oldInfo);
     }
   }
-
 }

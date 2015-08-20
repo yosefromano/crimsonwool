@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 
 /*
@@ -34,14 +34,8 @@
 
 require_once '../civicrm.config.php';
 require_once 'CRM/Core/Config.php';
-
-/**
- * Class CRM_ParticipantProcessor
- */
 class CRM_ParticipantProcessor {
-  /**
-   */
-  public function __construct() {
+  function __construct() {
     $config = CRM_Core_Config::singleton();
 
     //this does not return on failure
@@ -113,7 +107,7 @@ LEFT JOIN  civicrm_event event ON ( event.id = participant.event_id )
       foreach ($participantDetails as $participantId => $values) {
         //process the additional participant at the time of
         //primary participant, don't process separately.
-        if (!empty($values['registered_by_id'])) {
+        if (CRM_Utils_Array::value('registered_by_id', $values)) {
           continue;
         }
 
@@ -132,9 +126,9 @@ LEFT JOIN  civicrm_event event ON ( event.id = participant.event_id )
             $transaction = new CRM_Core_Transaction();
 
             require_once 'CRM/Event/BAO/Participant.php';
-            $ids = array($participantId);
+            $ids       = array($participantId);
             $expiredId = array_search('Expired', $expiredStatuses);
-            $results = CRM_Event_BAO_Participant::transitionParticipants($ids, $expiredId, $values['status_id'], TRUE, TRUE);
+            $results   = CRM_Event_BAO_Participant::transitionParticipants($ids, $expiredId, $values['status_id'], TRUE, TRUE);
             $transaction->commit();
 
             if (!empty($results)) {
@@ -162,7 +156,7 @@ LEFT JOIN  civicrm_event event ON ( event.id = participant.event_id )
       foreach ($participantDetails as $participantId => $values) {
         //process the additional participant at the time of
         //primary participant, don't process separately.
-        if (!empty($values['registered_by_id'])) {
+        if (CRM_Utils_Array::value('registered_by_id', $values)) {
           continue;
         }
 
@@ -257,10 +251,11 @@ LEFT JOIN  civicrm_event event ON ( event.id = participant.event_id )
       }
     }
   }
-
 }
 
 $obj = new CRM_ParticipantProcessor();
 echo "Updating..";
 $obj->updateParticipantStatus();
 echo "<br />Participant records updated. (Done)";
+
+

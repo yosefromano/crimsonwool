@@ -1,9 +1,9 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.6                                                |
+  | CiviCRM version 4.4                                                |
   +--------------------------------------------------------------------+
-  | Copyright CiviCRM LLC (c) 2004-2015                                |
+  | Copyright CiviCRM LLC (c) 2004-2013                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -23,12 +23,12 @@
   | GNU Affero General Public License or the licensing of CiviCRM,     |
   | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
   +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,33 +39,34 @@
 class CRM_Utils_Geocode_Google {
 
   /**
-   * Server to retrieve the lat/long
+   * server to retrieve the lat/long
    *
    * @var string
+   * @static
    */
   static protected $_server = 'maps.googleapis.com';
 
   /**
-   * Uri of service.
+   * uri of service
    *
    * @var string
+   * @static
    */
   static protected $_uri = '/maps/api/geocode/xml?sensor=false&address=';
 
   /**
-   * Function that takes an address object and gets the latitude / longitude for this
+   * function that takes an address object and gets the latitude / longitude for this
    * address. Note that at a later stage, we could make this function also clean up
    * the address into a more valid format
    *
-   * @param array $values
-   * @param bool $stateName
+   * @param object $address
    *
-   * @return bool
-   *   true if we modified the address, false otherwise
+   * @return boolean true if we modified the address, false otherwise
+   * @static
    */
-  public static function format(&$values, $stateName = FALSE) {
+  static function format(&$values, $stateName = FALSE) {
     // we need a valid country, else we ignore
-    if (empty($values['country'])) {
+    if (!CRM_Utils_Array::value('country', $values)) {
       return FALSE;
     }
 
@@ -73,7 +74,7 @@ class CRM_Utils_Geocode_Google {
 
     $add = '';
 
-    if (!empty($values['street_address'])) {
+    if (CRM_Utils_Array::value('street_address', $values)) {
       $add = urlencode(str_replace('', '+', $values['street_address']));
       $add .= ',+';
     }
@@ -84,8 +85,8 @@ class CRM_Utils_Geocode_Google {
       $add .= ',+';
     }
 
-    if (!empty($values['state_province'])) {
-      if (!empty($values['state_province_id'])) {
+    if (CRM_Utils_Array::value('state_province', $values)) {
+      if (CRM_Utils_Array::value('state_province_id', $values)) {
         $stateProvince = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_StateProvince', $values['state_province_id']);
       }
       else {
@@ -108,12 +109,12 @@ class CRM_Utils_Geocode_Google {
       }
     }
 
-    if (!empty($values['postal_code'])) {
+    if (CRM_Utils_Array::value('postal_code', $values)) {
       $add .= '+' . urlencode(str_replace('', '+', $values['postal_code']));
       $add .= ',+';
     }
 
-    if (!empty($values['country'])) {
+    if (CRM_Utils_Array::value('country', $values)) {
       $add .= '+' . urlencode(str_replace('', '+', $values['country']));
     }
 
@@ -140,8 +141,8 @@ class CRM_Utils_Geocode_Google {
       ) {
         $ret = $xml->result->geometry->location->children();
         if ($ret->lat && $ret->lng) {
-          $values['geo_code_1'] = (float) $ret->lat;
-          $values['geo_code_2'] = (float) $ret->lng;
+          $values['geo_code_1'] = (float)$ret->lat;
+          $values['geo_code_2'] = (float)$ret->lng;
           return TRUE;
         }
       }
@@ -157,5 +158,5 @@ class CRM_Utils_Geocode_Google {
     $values['geo_code_1'] = $values['geo_code_2'] = 'null';
     return FALSE;
   }
-
 }
+

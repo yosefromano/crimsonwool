@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,18 +44,18 @@ class CRM_Contribute_Page_ContributionRecur extends CRM_Core_Page {
   public $_contactId = NULL;
 
   /**
-   * View details of a recurring contribution.
+   * View details of a recurring contribution
    *
    * @return void
-   */
-  public function view() {
+   * @access public
+   */ function view() {
     $recur = new CRM_Contribute_DAO_ContributionRecur();
     $recur->id = $this->_id;
     if ($recur->find(TRUE)) {
       $values = array();
       CRM_Core_DAO::storeValues($recur, $values);
       // if there is a payment processor ID, get the name of the payment processor
-      if (!empty($values['payment_processor_id'])) {
+      if (CRM_Utils_Array::value('payment_processor_id', $values)) {
         $values['payment_processor'] = CRM_Core_DAO::getFieldValue(
           'CRM_Financial_DAO_PaymentProcessor',
           $values['payment_processor_id'],
@@ -63,7 +63,7 @@ class CRM_Contribute_Page_ContributionRecur extends CRM_Core_Page {
         );
       }
       // get contribution status label
-      if (!empty($values['contribution_status_id'])) {
+      if (CRM_Utils_Array::value('contribution_status_id', $values)) {
         $values['contribution_status'] = CRM_Core_OptionGroup::getLabel('contribution_status', $values['contribution_status_id']);
       }
 
@@ -71,15 +71,18 @@ class CRM_Contribute_Page_ContributionRecur extends CRM_Core_Page {
     }
   }
 
-  public function preProcess() {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
-    $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 'view');
-    $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+  function preProcess() {
+    $context          = CRM_Utils_Request::retrieve('context', 'String', $this);
+    $this->_action    = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 'view');
+    $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
     $this->assign('contactId', $this->_contactId);
 
     // check logged in url permission
     CRM_Contact_Page_View::checkUserPermission($this);
+
+    // set page title
+    CRM_Contact_Page_View::setTitle($this->_contactId);
 
     $this->assign('action', $this->_action);
 
@@ -91,12 +94,13 @@ class CRM_Contribute_Page_ContributionRecur extends CRM_Core_Page {
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     if ($this->_action & CRM_Core_Action::VIEW) {
@@ -105,5 +109,5 @@ class CRM_Contribute_Page_ContributionRecur extends CRM_Core_Page {
 
     return parent::run();
   }
-
 }
+

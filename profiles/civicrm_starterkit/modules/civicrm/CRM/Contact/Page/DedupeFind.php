@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,32 +39,30 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
   protected $_gid;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Dedupe_BAO_RuleGroup';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return void
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
-  }
+  function &links() {}
 
   /**
-   * Browse all rule groups.
+   * Browse all rule groups
    *
    * @return void
+   * @access public
    */
-  public function run() {
-    $gid = CRM_Utils_Request::retrieve('gid', 'Positive', $this, FALSE, 0);
-    $action = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 0);
+  function run() {
+    $gid     = CRM_Utils_Request::retrieve('gid', 'Positive', $this, FALSE, 0);
+    $action  = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 0);
     $context = CRM_Utils_Request::retrieve('context', 'String', $this);
 
     $session = CRM_Core_Session::singleton();
@@ -98,8 +96,8 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
 
       $skippedCount = CRM_Utils_Request::retrieve('skipped', 'Positive', $this, FALSE, 0);
       $skippedCount = $skippedCount + count($result['skipped']);
-      $mergedCount = CRM_Utils_Request::retrieve('merged', 'Positive', $this, FALSE, 0);
-      $mergedCount = $mergedCount + count($result['merged']);
+      $mergedCount  = CRM_Utils_Request::retrieve('merged', 'Positive', $this, FALSE, 0);
+      $mergedCount  = $mergedCount + count($result['merged']);
 
       if (empty($result['merged']) && empty($result['skipped'])) {
         $message = '';
@@ -138,8 +136,8 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
     if ($action & CRM_Core_Action::UPDATE ||
       $action & CRM_Core_Action::BROWSE
     ) {
-      $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this, FALSE, 0);
-      $rgid = CRM_Utils_Request::retrieve('rgid', 'Positive', $this, FALSE, 0);
+      $cid          = CRM_Utils_Request::retrieve('cid', 'Positive', $this, FALSE, 0);
+      $rgid         = CRM_Utils_Request::retrieve('rgid', 'Positive', $this, FALSE, 0);
       $this->action = CRM_Core_Action::UPDATE;
 
       //calculate the $contactType
@@ -211,8 +209,8 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
             $cids[$dupe[1]] = 1;
           }
           $cidString = implode(', ', array_keys($cids));
-          $sql = "SELECT id, display_name FROM civicrm_contact WHERE id IN ($cidString) ORDER BY sort_name";
-          $dao = new CRM_Core_DAO();
+          $sql       = "SELECT id, display_name FROM civicrm_contact WHERE id IN ($cidString) ORDER BY sort_name";
+          $dao       = new CRM_Core_DAO();
           $dao->query($sql);
           $displayNames = array();
           while ($dao->fetch()) {
@@ -224,8 +222,8 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
           // (also, consider sorting by dupe count first)
           // lobo - change the sort to by threshold value
           // so the more likely dupes are sorted first
-          $session = CRM_Core_Session::singleton();
-          $userId = $session->get('userID');
+          $session      = CRM_Core_Session::singleton();
+          $userId       = $session->get('userID');
           $mainContacts = $permission = array();
 
           foreach ($foundDupes as $dupes) {
@@ -240,14 +238,14 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
              * Eliminate this since it introduces 3 queries PER merge row
              * and hence is very expensive
              * CRM-8822
-             * if ( !array_key_exists( $srcID, $permission ) ) {
-             * $permission[$srcID] = CRM_Contact_BAO_Contact_Permission::allow( $srcID, CRM_Core_Permission::EDIT );
-             * }
-             * if ( !array_key_exists( $dstID, $permission ) ) {
-             * $permission[$dstID] = CRM_Contact_BAO_Contact_Permission::allow( $dstID, CRM_Core_Permission::EDIT );
-             * }
-             *
-             * $canMerge = ( $permission[$dstID] && $permission[$srcID] );
+             if ( !array_key_exists( $srcID, $permission ) ) {
+             $permission[$srcID] = CRM_Contact_BAO_Contact_Permission::allow( $srcID, CRM_Core_Permission::EDIT );
+             }
+             if ( !array_key_exists( $dstID, $permission ) ) {
+             $permission[$dstID] = CRM_Contact_BAO_Contact_Permission::allow( $dstID, CRM_Core_Permission::EDIT );
+             }
+
+             $canMerge = ( $permission[$dstID] && $permission[$srcID] );
              *
              */
 
@@ -279,13 +277,13 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
           $session = CRM_Core_Session::singleton();
           if ($this->_cid) {
             $session->pushUserContext(CRM_Utils_System::url('civicrm/contact/deduperules',
-              "action=update&rgid={$this->_rgid}&gid={$this->_gid}&cid={$this->_cid}"
-            ));
+                "action=update&rgid={$this->_rgid}&gid={$this->_gid}&cid={$this->_cid}"
+              ));
           }
           else {
             $session->pushUserContext(CRM_Utils_System::url('civicrm/contact/dedupefind',
-              "reset=1&action=update&rgid={$this->_rgid}"
-            ));
+                "reset=1&action=update&rgid={$this->_rgid}"
+              ));
           }
         }
       }
@@ -314,11 +312,12 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Browse all rule groups.
+   * Browse all rule groups
    *
    * @return void
+   * @access public
    */
-  public function browse() {
+  function browse() {
     $this->assign('main_contacts', $this->_mainContacts);
 
     if ($this->_cid) {
@@ -331,35 +330,30 @@ class CRM_Contact_Page_DedupeFind extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   classname of edit form
+   * @return string  classname of edit form
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Contact_Form_DedupeFind';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page
+   * @return string  name of this page
    */
-  public function editName() {
+  function editName() {
     return 'DedupeFind';
   }
 
   /**
-   * Get user context.
+   * Get user context
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context
+   * @return string  user context
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/contact/dedupefind';
   }
-
 }
+

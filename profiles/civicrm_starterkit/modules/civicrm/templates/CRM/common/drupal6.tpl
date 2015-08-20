@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -60,23 +60,20 @@
     {include file="CRM/common/localNav.tpl"}
 {/if}
 
-<div id="crm-main-content-wrapper">
-  {include file="CRM/common/status.tpl"}
-  {crmRegion name='page-body'}
-    <!-- .tpl file invoked: {$tplFile}. Call via form.tpl if we have a form in the page. -->
-    {if isset($isForm) and $isForm and isset($formTpl)}
-      {include file="CRM/Form/$formTpl.tpl"}
-    {else}
-      {include file=$tplFile}
-    {/if}
-  {/crmRegion}
-</div>
+{include file="CRM/common/status.tpl"}
+
+{crmRegion name='page-body'}
+<!-- .tpl file invoked: {$tplFile}. Call via form.tpl if we have a form in the page. -->
+{if isset($isForm) and $isForm}
+    {include file="CRM/Form/$formTpl.tpl"}
+{else}
+    {include file=$tplFile}
+{/if}
+{/crmRegion}
 
 {crmRegion name='page-footer'}
-{if $urlIsPublic}
-  {include file="CRM/common/publicFooter.tpl"}
-{else}
-  {include file="CRM/common/footer.tpl"}
+{if ! $urlIsPublic}
+{include file="CRM/common/footer.tpl"}
 {/if}
 {/crmRegion}
 

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,13 +39,7 @@
 class CRM_Core_BAO_Log extends CRM_Core_DAO_Log {
   static $_processed = NULL;
 
-  /**
-   * @param int $id
-   * @param string $table
-   *
-   * @return array|null
-   */
-  public static function &lastModified($id, $table = 'civicrm_contact') {
+  static function &lastModified($id, $table = 'civicrm_contact') {
 
     $log = new CRM_Core_DAO_Log();
 
@@ -67,27 +61,20 @@ class CRM_Core_BAO_Log extends CRM_Core_DAO_Log {
   }
 
   /**
-   * Add log to civicrm_log table.
+   * add log to civicrm_log table
    *
-   * @param array $params
-   *   Array of name-value pairs of log table.
+   * @param array $params  array of name-value pairs of log table.
    *
+   * @static
    */
-  public static function add(&$params) {
+  static function add(&$params) {
 
     $log = new CRM_Core_DAO_Log();
     $log->copyValues($params);
     $log->save();
   }
 
-  /**
-   * @param int $contactID
-   * @param string $tableName
-   * @param int $tableID
-   * @param int $userID
-   */
-  public static function register(
-    $contactID,
+  static function register($contactID,
     $tableName,
     $tableID,
     $userID = NULL
@@ -99,14 +86,6 @@ class CRM_Core_BAO_Log extends CRM_Core_DAO_Log {
     if (!$userID) {
       $session = CRM_Core_Session::singleton();
       $userID = $session->get('userID');
-    }
-
-    if (!$userID) {
-      $api_key = CRM_Utils_Request::retrieve('api_key', 'String', $store, FALSE, NULL, 'REQUEST');
-
-      if ($api_key && strtolower($api_key) != 'null') {
-        $userID = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Contact', $api_key, 'id', 'api_key');
-      }
     }
 
     if (!$userID) {
@@ -132,11 +111,11 @@ class CRM_Core_BAO_Log extends CRM_Core_DAO_Log {
 
     $logData = "$tableName,$tableID";
     if (!$log->id) {
-      $log->entity_table = 'civicrm_contact';
-      $log->entity_id = $contactID;
-      $log->modified_id = $userID;
+      $log->entity_table  = 'civicrm_contact';
+      $log->entity_id     = $contactID;
+      $log->modified_id   = $userID;
       $log->modified_date = date("YmdHis");
-      $log->data = $logData;
+      $log->data          = $logData;
       $log->save();
     }
     else {
@@ -152,27 +131,29 @@ UPDATE civicrm_log
   }
 
   /**
-   * Get log record count for a Contact.
+   * Function to get log record count for a Contact
    *
-   * @param int $contactID
+   * @param int $contactId Contact ID
    *
-   * @return int
-   *   count of log records
+   * @return int count of log records
+   * @access public
+   * @static
    */
-  public static function getContactLogCount($contactID) {
+  static function getContactLogCount($contactID) {
     $query = "SELECT count(*) FROM civicrm_log
                    WHERE civicrm_log.entity_table = 'civicrm_contact' AND civicrm_log.entity_id = {$contactID}";
     return CRM_Core_DAO::singleValueQuery($query);
   }
 
   /**
-   * Function for find out whether to use logging schema entries for contact.
+   * Function for find out whether to use logging schema entries for contact
    * summary, instead of normal log entries.
    *
-   * @return int
-   *   report id of Contact Logging Report (Summary) / false
+   * @return int report id of Contact Logging Report (Summary) / false
+   * @access public
+   * @static
    */
-  public static function useLoggingReport() {
+  static function useLoggingReport() {
     // first check if logging is enabled
     $config = CRM_Core_Config::singleton();
     if (!$config->logging) {
@@ -187,8 +168,8 @@ UPDATE civicrm_log
       CRM_Report_BAO_ReportInstance::retrieve($params, $instance);
 
       if (!empty($instance) &&
-        (empty($instance['permission']) ||
-          (!empty($instance['permission']) && CRM_Core_Permission::check($instance['permission']))
+        (!CRM_Utils_Array::value('permission', $instance) ||
+          (CRM_Utils_Array::value('permission', $instance) && CRM_Core_Permission::check($instance['permission']))
         )
       ) {
         return $instance['id'];
@@ -197,5 +178,5 @@ UPDATE civicrm_log
 
     return FALSE;
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,32 +38,29 @@
  */
 class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
 
-  public $useLivePageJS = TRUE;
-
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Member_BAO_MembershipStatus';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::UPDATE => array(
@@ -74,12 +71,14 @@ class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
         ),
         CRM_Core_Action::DISABLE => array(
           'name' => ts('Disable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Member_BAO_MembershipStatus' . '\',\'' . 'enable-disable' . '\' );"',
+          'ref' => 'disable-action',
           'title' => ts('Disable Membership Status'),
         ),
         CRM_Core_Action::ENABLE => array(
           'name' => ts('Enable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Member_BAO_MembershipStatus' . '\',\'' . 'disable-enable' . '\' );"',
+          'ref' => 'enable-action',
           'title' => ts('Enable Membership Status'),
         ),
         CRM_Core_Action::DELETE => array(
@@ -101,8 +100,10 @@ class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
    * Finally it calls the parent's run method.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // get the requested action
     $action = CRM_Utils_Request::retrieve('action', 'String',
       // default to 'browse'
@@ -131,8 +132,10 @@ class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
    *
    *
    * @return void
+   * @access public
+   * @static
    */
-  public function browse() {
+  function browse() {
     // get all custom groups sorted by weight
     $membershipStatus = array();
     $dao = new CRM_Member_DAO_MembershipStatus();
@@ -155,12 +158,7 @@ class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
           $action -= CRM_Core_Action::DISABLE;
         }
         $membershipStatus[$dao->id]['action'] = CRM_Core_Action::formLink(self::links(), $action,
-          array('id' => $dao->id),
-          ts('more'),
-          FALSE,
-          'membershipStatus.manage.action',
-          'MembershipStatus',
-          $dao->id
+          array('id' => $dao->id)
         );
       }
       if ($startEvent = CRM_Utils_Array::value('start_event', $membershipStatus[$dao->id])) {
@@ -180,35 +178,30 @@ class CRM_Member_Page_MembershipStatus extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Member_Form_MembershipStatus';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'Membership Status';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/member/membershipStatus';
   }
-
 }
+

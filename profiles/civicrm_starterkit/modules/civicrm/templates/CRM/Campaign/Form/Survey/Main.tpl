@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -95,23 +95,23 @@
 {literal}
 <script type="text/javascript">
     //show edit profile field links
-    CRM.$(function($) {
+    cj(function() {
         // show edit for profile
-        $('select[id="profile_id"]').change( function( ) {
-            buildLinks( $(this), $(this).val());
+        cj('select[id="profile_id"]').change( function( ) {
+            buildLinks( cj(this), cj(this).val());
         });
 
         // show edit links on form loads
-        var profileField =  $('select[id="profile_id"]');
+        var profileField =  cj('select[id="profile_id"]');
         buildLinks( profileField, profileField.val());
     });
 </script>
 {/literal}
-{* editor has already been included in TabHeader.tpl so set flag true *}
-{include file="CRM/common/customData.tpl" includeWysiwygEditor=true}
+
+{include file="CRM/common/customData.tpl"}
 {literal}
   <script type="text/javascript">
-    CRM.$(function($) {
+    cj(document).ready(function() {
       {/literal}
         CRM.buildCustomData( 'Survey' );
       {literal}

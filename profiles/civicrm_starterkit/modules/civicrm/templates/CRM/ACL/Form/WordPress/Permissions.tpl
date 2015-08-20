@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -48,12 +48,9 @@
             {else}
                 <tr style="background-color: #FFFFFF;">
             {/if}
-                <td style="height:3em;">
+                <td style="height:30px;">
                 {if $i eq 1}
                   {$form.$role_name.$name.label}
-                  {if $permDesc.$name}
-                    <br/><span class="description">{$permDesc.$name}</span>
-                  {/if}
                 {/if}
                 </td>
                 <td align="center">{$form.$role_name.$name.html}<br /></td>

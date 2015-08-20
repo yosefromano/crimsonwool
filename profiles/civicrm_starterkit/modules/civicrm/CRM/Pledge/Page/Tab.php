@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -37,38 +37,33 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
   public $_contactId = NULL;
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function browse() {
+  function browse() {
     $controller = new CRM_Core_Controller_Simple('CRM_Pledge_Form_Search', ts('Pledges'), $this->_action);
     $controller->setEmbedded(TRUE);
     $controller->reset();
     $controller->set('cid', $this->_contactId);
     $controller->set('context', 'pledge');
-    $controller->set('limit', '25');
     $controller->process();
     $controller->run();
 
     if ($this->_contactId) {
       $displayName = CRM_Contact_BAO_Contact::displayName($this->_contactId);
       $this->assign('displayName', $displayName);
-      $this->ajaxResponse['tabCount'] = CRM_Contact_BAO_Contact::getCountComponent('pledge', $this->_contactId);
-      // Refresh other tabs with related data
-      $this->ajaxResponse['updateTabs'] = array(
-        '#tab_contribute' => CRM_Contact_BAO_Contact::getCountComponent('contribution', $this->_contactId),
-        '#tab_activity' => CRM_Contact_BAO_Contact::getCountComponent('activity', $this->_contactId),
-      );
     }
   }
 
   /**
-   * called when action is view.
+   * This function is called when action is view
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function view() {
+  function view() {
     $controller = new CRM_Core_Controller_Simple('CRM_Pledge_Form_PledgeView',
       'View Pledge',
       $this->_action
@@ -81,11 +76,12 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
   }
 
   /**
-   * called when action is update or new.
+   * This function is called when action is update or new
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function edit() {
+  function edit() {
     $controller = new CRM_Core_Controller_Simple('CRM_Pledge_Form_Pledge',
       'Create Pledge',
       $this->_action
@@ -97,10 +93,10 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
     return $controller->run();
   }
 
-  public function preProcess() {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
+  function preProcess() {
+    $context       = CRM_Utils_Request::retrieve('context', 'String', $this);
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 'browse');
-    $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+    $this->_id     = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
     if ($context == 'standalone') {
       $this->_action = CRM_Core_Action::ADD;
@@ -111,6 +107,9 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
 
       // check logged in url permission
       CRM_Contact_Page_View::checkUserPermission($this);
+
+      // set page title
+      CRM_Contact_Page_View::setTitle($this->_contactId);
     }
 
     $this->assign('action', $this->_action);
@@ -123,17 +122,18 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
   }
 
   /**
-   * the main function that is called when the page loads, it decides the which action has to be taken for the page.
+   * This function is the main function that is called when the page loads, it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     // check if we can process credit card registration
-    $this->assign('newCredit', CRM_Core_Config::isEnabledBackOfficeCreditCardPayments());
+    CRM_Core_Payment::allowBackofficeCreditCard($this);
 
-    self::setContext($this);
+    $this->setContext();
 
     if ($this->_action & CRM_Core_Action::VIEW) {
       $this->view();
@@ -154,15 +154,10 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
     return parent::run();
   }
 
-  /**
-   * Get context.
-   *
-   * @param $form
-   */
-  public static function setContext(&$form) {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $form, FALSE, 'search');
+  function setContext() {
+    $context = CRM_Utils_Request::retrieve('context', 'String', $this, FALSE, 'search');
 
-    $qfKey = CRM_Utils_Request::retrieve('key', 'String', $form);
+    $qfKey = CRM_Utils_Request::retrieve('key', 'String', $this);
     //validate the qfKey
     if (!CRM_Utils_Rule::qfKey($qfKey)) {
       $qfKey = NULL;
@@ -189,7 +184,7 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
 
       case 'pledge':
         $url = CRM_Utils_System::url('civicrm/contact/view',
-          "reset=1&force=1&cid={$form->_contactId}&selectedChild=pledge"
+          "reset=1&force=1&cid={$this->_contactId}&selectedChild=pledge"
         );
         break;
 
@@ -199,7 +194,7 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
 
       case 'activity':
         $url = CRM_Utils_System::url('civicrm/contact/view',
-          "reset=1&force=1&cid={$form->_contactId}&selectedChild=activity"
+          "reset=1&force=1&cid={$this->_contactId}&selectedChild=activity"
         );
         break;
 
@@ -209,8 +204,8 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
 
       default:
         $cid = NULL;
-        if ($form->_contactId) {
-          $cid = '&cid=' . $form->_contactId;
+        if ($this->_contactId) {
+          $cid = '&cid=' . $this->_contactId;
         }
         $url = CRM_Utils_System::url('civicrm/pledge/search',
           'force=1' . $cid
@@ -220,5 +215,5 @@ class CRM_Pledge_Page_Tab extends CRM_Core_Page {
     $session = CRM_Core_Session::singleton();
     $session->pushUserContext($url);
   }
-
 }
+

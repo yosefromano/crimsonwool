@@ -1,4 +1,4 @@
-(function($, _) {
+(function($) {
   if (!CRM.Designer) CRM.Designer = {};
 
   /**
@@ -49,27 +49,21 @@
 
     initialize: function(options) {
       CRM.designerApp.vent.on('ufUnsaved', this.onUfChanged, this);
-      CRM.designerApp.vent.on('ufSaved', this.onUfSaved, this);
     },
     onClose: function() {
-      if (this.undoAlert && this.undoAlert.close) this.undoAlert.close();
+      this.undoAlert && this.undoAlert.close && this.undoAlert.close();
       CRM.designerApp.vent.off('ufUnsaved', this.onUfChanged, this);
     },
     onUfChanged: function(isUfUnsaved) {
       this.isUfUnsaved = isUfUnsaved;
     },
-    onUfSaved: function() {
-      CRM.designerApp.vent.off('ufUnsaved', this.onUfChanged, this);
-      this.isUfUnsaved = false;
-    },
     onRender: function() {
       var designerDialog = this;
       designerDialog.$el.dialog({
         autoOpen: true, // note: affects accordion height
-        title: ts('Edit Profile'),
-        modal: true,
+        title: 'Edit Profile',
         width: '75%',
-        height: parseInt($(window).height() * 0.8, 10),
+        height: 600,
         minWidth: 500,
         minHeight: 600, // to allow dropping in big whitespace, coordinate with min-height of .crm-designer-fields
         open: function() {
@@ -84,12 +78,12 @@
               return designerDialog.oldOnBeforeUnload.apply(arguments);
             }
           };
-          if (designerDialog.undoAlert && designerDialog.undoAlert.close) designerDialog.undoAlert.close();
+          designerDialog.undoAlert && designerDialog.undoAlert.close && designerDialog.undoAlert.close();
           designerDialog.isDialogOpen = true;
           // Initialize new dialog if we are not re-opening unsaved changes
           if (designerDialog.undoState === false) {
-            if (designerDialog.designerRegion && designerDialog.designerRegion.close) designerDialog.designerRegion.close();
-            designerDialog.$el.block();
+            designerDialog.designerRegion && designerDialog.designerRegion.close && designerDialog.designerRegion.close();
+            designerDialog.$el.block({message: 'Loading...', theme: true});
             designerDialog.options.findCreateUfGroupModel({
               onLoad: function(ufGroupModel) {
                 designerDialog.model = ufGroupModel;
@@ -112,13 +106,13 @@
           window.onbeforeunload = designerDialog.oldOnBeforeUnload;
           designerDialog.isDialogOpen = false;
 
-          if (designerDialog.undoAlert && designerDialog.undoAlert.close) designerDialog.undoAlert.close();
+          designerDialog.undoAlert && designerDialog.undoAlert.close && designerDialog.undoAlert.close();
           if (designerDialog.isUfUnsaved) {
-            designerDialog.undoAlert = CRM.alert('<p>' + ts('%1 has not been saved.', {1: designerDialog.model.get('title')}) + '</p><a href="#" class="crm-undo">' + ts('Restore') + '</a>', ts('Unsaved Changes'), 'alert', {expires: 60000});
-            $('.ui-notify-message a.crm-undo').button({icons: {primary: 'ui-icon-arrowreturnthick-1-w'}}).click(function(e) {
-              e.preventDefault();
+            designerDialog.undoAlert = CRM.alert('<p>' + ts('Your changes to "%1" have not been saved.', {1: designerDialog.model.get('title')}) + '</p><a href="#" class="crm-undo">' + ts('Restore unsaved changes') + '</a>', ts('Unsaved Changes'), 'alert', {expires: 60000});
+            $('.ui-notify-message a.crm-undo').click(function() {
               designerDialog.undoState = true;
               designerDialog.$el.dialog('open');
+              return false;
             });
           }
           // CRM-12188
@@ -198,29 +192,28 @@
       'click .crm-designer-preview': 'doPreview'
     },
     onRender: function() {
-      this.$('.crm-designer-save').button({icons: {primary: 'ui-icon-check'}}).attr({
+      this.$('.crm-designer-save').button().attr({
         disabled: 'disabled',
-        style: 'opacity:.5; cursor:default;'
+        style: 'opacity:.5; box-shadow:none; cursor:default;'
       });
-      this.$('.crm-designer-preview').button({icons: {primary: 'ui-icon-search'}});
+      this.$('.crm-designer-preview').button();
     },
     initialize: function(options) {
       CRM.designerApp.vent.on('ufUnsaved', this.onUfChanged, this);
     },
     onUfChanged: function(isUfUnsaved) {
       if (isUfUnsaved) {
-        this.$('.crm-designer-save').removeAttr('style').prop('disabled', false);
+        this.$('.crm-designer-save').removeAttr('style').removeAttr('disabled');
       }
     },
-    doSave: function(e) {
-      e.preventDefault();
+    doSave: function(event) {
       var ufGroupModel = this.model;
       if (ufGroupModel.getRel('ufFieldCollection').hasDuplicates()) {
         CRM.alert(ts('Please correct errors before saving.'), '', 'alert');
         return;
       }
       var $dialog = this.$el.closest('.crm-designer-dialog'); // FIXME use events
-      $dialog.block();
+      $dialog.block({message: 'Saving...', theme: true});
       var profile = ufGroupModel.toStrictJSON();
       profile["api.UFField.replace"] = {values: ufGroupModel.getRel('ufFieldCollection').toSortedJSON(), 'option.autoweight': 0};
       CRM.api('UFGroup', 'create', profile, {
@@ -247,14 +240,14 @@
           }
         }
       });
+      return false;
     },
-    doPreview: function(e) {
-      e.preventDefault();
+    doPreview: function(event) {
       this.previewMode = !this.previewMode;
       if (!this.previewMode) {
         $('.crm-designer-preview-canvas').html('');
         $('.crm-designer-canvas > *, .crm-designer-palette-region').show();
-        $('.crm-designer-preview').button('option', {icons: {primary: 'ui-icon-search'}}).find('span').text(ts('Preview'));
+        $('.crm-designer-preview span').html(ts('Preview'));
         return;
       }
       if (this.model.getRel('ufFieldCollection').hasDuplicates()) {
@@ -262,23 +255,28 @@
         return;
       }
       var $dialog = this.$el.closest('.crm-designer-dialog'); // FIXME use events
-      $dialog.block();
+      $dialog.block({message: 'Loading...', theme: true});
       // CRM-12188
       CRM.designerApp.clearPreviewArea();
-      $.post(CRM.url("civicrm/ajax/inline"), {
-        'qfKey': CRM.profilePreviewKey,
-        'class_name': 'CRM_UF_Form_Inline_Preview',
-        'snippet': 1,
-        'ufData': JSON.stringify({
-          ufGroup: this.model.toStrictJSON(),
-          ufFieldCollection: this.model.getRel('ufFieldCollection').toSortedJSON()
-        })
+      $.ajax({
+        url: CRM.url("civicrm/ajax/inline"),
+        type: 'POST',
+        data: {
+          'qfKey': CRM.profilePreviewKey,
+          'class_name': 'CRM_UF_Form_Inline_Preview',
+          'snippet': 1,
+          'ufData': JSON.stringify({
+            ufGroup: this.model.toStrictJSON(),
+            ufFieldCollection: this.model.getRel('ufFieldCollection').toSortedJSON()
+          })
+        }
       }).done(function(data) {
         $dialog.unblock();
         $('.crm-designer-canvas > *, .crm-designer-palette-region').hide();
-        $('.crm-designer-preview-canvas').html(data).show().trigger('crmLoad').find(':input').prop('readOnly', true);
-        $('.crm-designer-preview').button('option', {icons: {primary: 'ui-icon-pencil'}}).find('span').text(ts('Edit'));
+        $('.crm-designer-preview-canvas').html(data).show();
+        $('.crm-designer-preview span').html(ts('Edit'));
       });
+      return false;
     }
   });
 
@@ -292,15 +290,11 @@
     serializeData: extendedSerializeData,
     template: '#palette_template',
     el: '<div class="full-height"></div>',
-    openTreeNodes: [],
     events: {
       'keyup .crm-designer-palette-search input': 'doSearch',
-      'change .crm-contact-types': 'doSetPaletteEntity',
       'click .crm-designer-palette-clear-search': 'clearSearch',
-      'click .crm-designer-palette-toggle': 'toggleAll',
-      'click .crm-designer-palette-add button': 'doNewCustomFieldDialog',
-      'click #crm-designer-add-custom-set': 'doNewCustomSetDialog',
-      'dblclick .crm-designer-palette-field': 'doAddToCanvas'
+      'click .crm-designer-palette-refresh': 'doRefresh',
+      'click .crm-designer-palette-toggle': 'toggleAll'
     },
     initialize: function() {
       this.model.getRel('ufFieldCollection')
@@ -327,14 +321,6 @@
 
       paletteView.model.getRel('ufEntityCollection').each(function(ufEntityModel){
         _.each(ufEntityModel.getSections(), function(section, sectionKey){
-          var defaultValue = paletteView.selectedContactType;
-          if (!defaultValue) {
-            defaultValue = paletteView.model.calculateContactEntityType();
-          }
-
-          // set selected option as default, since we are rebuilding palette
-          paletteView.$('.crm-contact-types').val(defaultValue).prop('selected','selected');
-
           var entitySection = ufEntityModel.get('entity_name') + '-' + sectionKey;
           var items = [];
           if (paletteFieldsByEntitySection[entitySection]) {
@@ -343,21 +329,12 @@
             });
           }
           if (section.is_addable) {
-            items.push({data: ts('+ Add New Field'), attr: {'class': 'crm-designer-palette-add'}});
+            items.push({data: 'placeholder', attr: {'class': 'crm-designer-palette-add', 'data-entity': ufEntityModel.get('entity_name'), 'data-section': sectionKey}});
           }
           if (items.length > 0) {
-            treeData.push({
-              data: section.title,
-              children: items,
-              state: _.contains(paletteView.openTreeNodes, sectionKey) ? 'open' : 'closed',
-              attr: {
-                'class': 'crm-designer-palette-section',
-                'data-section': sectionKey,
-                'data-entity': ufEntityModel.get('entity_name')
-              }
-            });
+            treeData.push({data: section.title, children: items});
           }
-        });
+        })
       });
 
       this.$('.crm-designer-palette-tree').jstree({
@@ -380,12 +357,26 @@
           helper: 'clone',
           connectToSortable: '.crm-designer-fields' // FIXME: tight canvas/palette coupling
         });
-        paletteView.model.getRel('ufFieldCollection').each(function(ufFieldModel) {
-          paletteView.toggleActive(ufFieldModel, paletteView.model.getRel('ufFieldCollection'));
+        $('.crm-designer-palette-field', this).dblclick(function(event){
+          var paletteFieldModel = paletteView.model.getRel('paletteFieldCollection').get($(event.currentTarget).attr('data-plm-cid'));
+          paletteFieldModel.addToUFCollection(paletteView.model.getRel('ufFieldCollection'));
+          event.stopPropagation();
         });
-        paletteView.$('.crm-designer-palette-add a').replaceWith('<button>' + $('.crm-designer-palette-add a').first().text() + '</<button>');
-        paletteView.$('.crm-designer-palette-tree > ul').append('<li><button id="crm-designer-add-custom-set">+ ' + ts('Add Set of Custom Fields') + '</button></li>');
-        paletteView.$('.crm-designer-palette-tree button').button();
+        paletteView.model.getRel('ufFieldCollection').each(function(ufFieldModel) {
+          paletteView.toggleActive(ufFieldModel, paletteView.model.getRel('ufFieldCollection'))
+        });
+        paletteView.$('.crm-designer-palette-add a').remove();
+        paletteView.$('.crm-designer-palette-add').append('<button>'+ts('Add Field')+'</button>');
+        paletteView.$('.crm-designer-palette-add button').button()
+          .click(function(event){
+            var entityKey = $(event.currentTarget).closest('.crm-designer-palette-add').attr('data-entity');
+            var sectionKey = $(event.currentTarget).closest('.crm-designer-palette-add').attr('data-section');
+            var ufEntityModel = paletteView.model.getRel('ufEntityCollection').getByName(entityKey);
+            var sections = ufEntityModel.getSections();
+            paletteView.doAddField(sections[sectionKey]);
+            event.stopPropagation();
+          })
+        ;
       }).bind("select_node.jstree", function (e, data) {
         $(this).jstree("toggle_node", data.rslt.obj);
         $(this).jstree("deselect_node", data.rslt.obj);
@@ -405,96 +396,60 @@
       var div = this.$('.crm-designer-palette-tree').closest('.crm-container').height();
       this.$('.crm-designer-palette-tree').css({height: div - pos.top});
     },
-    doSearch: function(e) {
-      var str = $(e.target).val();
-      this.$('.crm-designer-palette-clear-search').css('visibility', str ? 'visible' : 'hidden');
-      this.$('.crm-designer-palette-tree').jstree("search", str);
+    doSearch: function(event) {
+      $('.crm-designer-palette-tree').jstree("search", $(event.target).val());
     },
-    doSetPaletteEntity: function(event) {
-      this.selectedContactType = $('.crm-contact-types :selected').val();
-      // loop through entity collection and remove non-valid entity section's
-      var newUfEntityModels = [];
-      this.model.getRel('ufEntityCollection').each(function(oldUfEntityModel){
-        var values = oldUfEntityModel.toJSON();
-        if (values.entity_name == 'contact_1') {
-          values.entity_type = $('.crm-contact-types :selected').val();
-        }
-        newUfEntityModels.push(new CRM.UF.UFEntityModel(values));
-      });
-      this.model.getRel('ufEntityCollection').reset(newUfEntityModels);
-    },
-    doAddToCanvas: function(event) {
-      var paletteFieldModel = this.model.getRel('paletteFieldCollection').get($(event.currentTarget).attr('data-plm-cid'));
-      paletteFieldModel.addToUFCollection(this.model.getRel('ufFieldCollection'));
-      event.stopPropagation();
-    },
-    doNewCustomFieldDialog: function(e) {
-      e.preventDefault();
+    doAddField: function(section) {
       var paletteView = this;
-      var entityKey = $(e.currentTarget).closest('.crm-designer-palette-section').attr('data-entity');
-      var sectionKey = $(e.currentTarget).closest('.crm-designer-palette-section').attr('data-section');
-      var ufEntityModel = paletteView.model.getRel('ufEntityCollection').getByName(entityKey);
-      var sections = ufEntityModel.getSections();
-      var url = CRM.url('civicrm/admin/custom/group/field/add', {
-        reset: 1,
-        action: 'add',
-        gid: sections[sectionKey].custom_group_id
-      });
-      CRM.loadForm(url).on('crmFormSuccess', function(e, data) {
-        paletteView.doRefresh('custom_' + data.id);
-      });
-    },
-    doNewCustomSetDialog: function(e) {
-      e.preventDefault();
-      var paletteView = this;
-      var url = CRM.url('civicrm/admin/custom/group', 'action=add&reset=1');
-      // Create custom field set and automatically go to next step (create fields) after save button is clicked.
-      CRM.loadForm(url, {refreshAction: ['next']})
-        .on('crmFormSuccess', function(e, data) {
-          // When form switches to create custom field context, modify button behavior to only continue for "save and new"
-          if (data.customField) ($(this).data('civiCrmSnippet').options.crmForm.refreshAction = ['next_new']);
-          paletteView.doRefresh(data.customField ? 'custom_' + data.id : null);
+      var openAddNewWindow = function() {
+        var url = CRM.url('civicrm/admin/custom/group/field/add', {
+          reset: 1,
+          action: 'add',
+          gid: section.custom_group_id
         });
+        window.open(url, '_blank');
+      };
+
+      if (paletteView.hideAddFieldAlert) {
+        openAddNewWindow();
+      } else {
+        CRM.confirm(function() {
+            paletteView.hideAddFieldAlert = true;
+            openAddNewWindow();
+          }, {
+            title: ts('Add Field'),
+            message: ts('A new window or tab will open. Use the new window to add your field, and then return to this window and click "Refresh."')
+          }
+        );
+      }
+      return false;
     },
-    doRefresh: function(fieldToAdd) {
+    doRefresh: function(event) {
       var ufGroupModel = this.model;
-      this.getOpenTreeNodes();
       CRM.Schema.reloadModels()
         .done(function(data){
           ufGroupModel.resetEntities();
-          if (fieldToAdd) {
-            var field = ufGroupModel.getRel('paletteFieldCollection').getFieldByName(null, fieldToAdd);
-            field.addToUFCollection(ufGroupModel.getRel('ufFieldCollection'));
-          }
         })
         .fail(function() {
           CRM.alert(ts('Failed to retrieve schema'), ts('Error'), 'error');
         });
+      return false;
     },
-    clearSearch: function(e) {
-      e.preventDefault();
+    clearSearch: function(event) {
       $('.crm-designer-palette-search input').val('').keyup();
+      return false;
     },
     toggleActive: function(ufFieldModel, ufFieldCollection, options) {
       var paletteFieldCollection = this.model.getRel('paletteFieldCollection');
       var paletteFieldModel = paletteFieldCollection.getFieldByName(ufFieldModel.get('entity_name'), ufFieldModel.get('field_name'));
       var isAddable = ufFieldCollection.isAddable(ufFieldModel);
-      if (paletteFieldModel) {
-        this.$('[data-plm-cid='+paletteFieldModel.cid+']').toggleClass('disabled', !isAddable);
-      }
+      this.$('[data-plm-cid='+paletteFieldModel.cid+']').toggleClass('disabled', !isAddable);
     },
-    toggleAll: function(e) {
-      if (_.isEmpty($('.crm-designer-palette-search input').val())) {
-        $('.crm-designer-palette-tree').jstree($(e.target).attr('rel'));
+    toggleAll: function(event) {
+      if ($('.crm-designer-palette-search input').val() == '') {
+        $('.crm-designer-palette-tree').jstree($(event.target).attr('rel'));
       }
-      e.preventDefault();
-    },
-    getOpenTreeNodes: function() {
-      var paletteView = this;
-      this.openTreeNodes = [];
-      this.$('.crm-designer-palette-section.jstree-open').each(function() {
-        paletteView.openTreeNodes.push($(this).data('section'));
-      });
+      return false;
     }
   });
 
@@ -509,15 +464,13 @@
       this.model.getRel('ufFieldCollection')
         .on('add', this.updatePlaceholder, this)
         .on('remove', this.updatePlaceholder, this)
-        .on('add', this.addUFFieldView, this)
-        .on('reset', this.render, this);
+        .on('add', this.addUFFieldView, this);
     },
     onClose: function() {
       this.model.getRel('ufFieldCollection')
         .off('add', this.updatePlaceholder, this)
         .off('remove', this.updatePlaceholder, this)
-        .off('add', this.addUFFieldView, this)
-        .off('reset', this.render, this);
+        .off('add', this.addUFFieldView, this);
     },
     render: function() {
       var ufFieldCanvasView = this;
@@ -535,14 +488,13 @@
       this.$(".crm-designer-fields").sortable({
         placeholder: 'crm-designer-row-placeholder',
         forcePlaceholderSize: true,
-        cancel: 'input,textarea,button,select,option,a,.crm-designer-open',
         receive: function(event, ui) {
           var paletteFieldModel = ufFieldCanvasView.model.getRel('paletteFieldCollection').get(ui.item.attr('data-plm-cid'));
           var ufFieldModel = paletteFieldModel.addToUFCollection(
             ufFieldCanvasView.model.getRel('ufFieldCollection'),
             {skipWeights: true}
           );
-          if (_.isEmpty(ufFieldModel)) {
+          if (null == ufFieldModel) {
             ufFieldCanvasView.$('.crm-designer-fields .ui-draggable').remove();
           } else {
             // Move from end to the 'dropped' position
@@ -607,7 +559,6 @@
     },
     events: {
       "click .crm-designer-action-settings": 'doToggleForm',
-      "click button.crm-designer-edit-custom": 'doEditCustomField',
       "click .crm-designer-action-remove": 'doRemove'
     },
     modelEvents: {
@@ -624,7 +575,7 @@
         model: this.model,
         fieldSchema: this.model.getFieldSchema()
       }));
-      this.onChangeIsDuplicate(this.model, this.model.get('is_duplicate'));
+      this.onChangeIsDuplicate(this.model, this.model.get('is_duplicate'))
       if (!this.expanded) {
         this.detail.$el.hide();
       }
@@ -644,7 +595,6 @@
       var $detail = this.detail.$el;
       if (!this.expanded) {
         $detail.toggle('blind', 250);
-        this.$('button.crm-designer-edit-custom').remove();
       }
       else {
         var $canvas = $('.crm-designer-canvas');
@@ -660,23 +610,7 @@
             }
           }
         });
-        if (this.model.get('field_name').split('_')[0] == 'custom') {
-          this.$('.crm-designer-field-summary > div').append('<button class="crm-designer-edit-custom">' + ts('Edit Custom Field') + '</button>');
-          this.$('button.crm-designer-edit-custom').button({icons: {primary: 'ui-icon-pencil'}}).attr('title', ts('Edit global settings for this custom field.'));
-        }
       }
-    },
-    doEditCustomField: function(e) {
-      e.preventDefault();
-      var url = CRM.url('civicrm/admin/custom/group/field/update', {
-        action: 'update',
-        reset: 1,
-        id: this.model.get('field_name').split('_')[1]
-      });
-      var form1 = CRM.loadForm(url)
-        .on('crmFormLoad', function() {
-          $(this).prepend('<div class="messages status"><div class="icon inform-icon"></div>' + ts('Note: This will modify the field system-wide, not just in this profile form.') + '</div>');
-        });
     },
     onChangeIsDuplicate: function(model, value, options) {
       this.$el.toggleClass('crm-designer-duplicate', value);
@@ -710,9 +644,6 @@
       var result = this.options.paletteFieldModel.getSection().title + ": " + this.options.paletteFieldModel.getLabel();
       if (this.options.fieldSchema.civiIsPhone) {
         result = result + '-' + CRM.PseudoConstant.phoneType[this.model.get('phone_type_id')];
-      }
-      if (this.options.fieldSchema.civiIsWebsite) {
-        result = result + '-' + CRM.PseudoConstant.websiteType[this.model.get('website_type_id')];
       }
       if (this.options.fieldSchema.civiIsLocation) {
         var locType = this.model.get('location_type_id') ? CRM.PseudoConstant.locationType[this.model.get('location_type_id')] : ts('Primary');
@@ -748,21 +679,15 @@
   CRM.Designer.UFFieldDetailView = Backbone.View.extend({
     initialize: function() {
       // FIXME: hide/display 'in_selector' if 'visibility' is one of the public options
-      var fields = ['location_type_id', 'website_type_id', 'phone_type_id', 'label', 'is_multi_summary', 'is_required', 'is_view', 'visibility', 'in_selector', 'is_searchable', 'help_pre', 'help_post', 'is_active'];
+      var fields = ['location_type_id', 'phone_type_id', 'label', 'is_multi_summary', 'is_required', 'is_view', 'visibility', 'in_selector', 'is_searchable', 'help_pre', 'help_post', 'is_active'];
       if (! this.options.fieldSchema.civiIsLocation) {
         fields = _.without(fields, 'location_type_id');
-      }
-      if (! this.options.fieldSchema.civiIsWebsite) {
-        fields = _.without(fields, 'website_type_id');
       }
       if (! this.options.fieldSchema.civiIsPhone) {
         fields = _.without(fields, 'phone_type_id');
       }
       if (!this.options.fieldSchema.civiIsMultiple) {
         fields = _.without(fields, 'is_multi_summary');
-      }
-      if (this.options.fieldSchema.type == 'Markup') {
-        fields = _.without(fields, 'is_required', 'is_view', 'visibility', 'in_selector', 'is_searchable', 'help_post');
       }
 
       this.form = new Backbone.Form({
@@ -785,12 +710,11 @@
       this.form.commit();
       this.$('.field-is_multi_summary').toggle(this.options.fieldSchema.civiIsMultiple ? true : false);
       this.$('.field-in_selector').toggle(this.model.isInSelectorAllowed());
+      // this.$(':input').attr('disabled', this.model.get("is_reserved") == 1);
 
       if (!this.model.isInSelectorAllowed() && this.model.get('in_selector') != "0") {
         this.model.set('in_selector', "0");
-        if (this.form.fields.in_selector) {
-          this.form.setValue('in_selector', "0");
-        }
+        this.form.setValue('in_selector', "0");
         // TODO: It might be nicer if we didn't completely discard in_selector -- e.g.
         // if the value could be restored when the user isInSelectorAllowed becomes true
         // again. However, I haven't found a simple way to do this.
@@ -875,4 +799,4 @@
     }
   });
 
-})(CRM.$, CRM._);
+})(cj);

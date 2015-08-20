@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,29 +39,28 @@
 class CRM_Admin_Page_PreferencesDate extends CRM_Core_Page_Basic {
 
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Core_BAO_PreferencesDate';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::UPDATE => array(
@@ -83,43 +82,40 @@ class CRM_Admin_Page_PreferencesDate extends CRM_Core_Page_Basic {
    * Finally it calls the parent's run method.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // set title and breadcrumb
     CRM_Utils_System::setTitle(ts('Settings - Date Preferences'));
     return parent::run();
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Admin_Form_PreferencesDate';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'Date Preferences';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/setting/preferences/date';
   }
-
 }
+

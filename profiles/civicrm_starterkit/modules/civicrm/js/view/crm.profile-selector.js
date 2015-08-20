@@ -1,4 +1,5 @@
-(function($, _) {
+(function($) {
+  var CRM = (window.CRM) ? (window.CRM) : (window.CRM = {});
   if (!CRM.ProfileSelector) CRM.ProfileSelector = {};
 
   CRM.ProfileSelector.Option = Backbone.Marionette.ItemView.extend({
@@ -43,11 +44,7 @@
       'change .crm-profile-selector-select select': 'onChangeUfGroupId',
       'click .crm-profile-selector-edit': 'doEdit',
       'click .crm-profile-selector-copy': 'doCopy',
-      'click .crm-profile-selector-create': 'doCreate',
-      'click .crm-profile-selector-preview': 'doShowPreview',
-      // prevent interaction with preview form
-      'click .crm-profile-selector-preview-pane': false,
-      'crmLoad .crm-profile-selector-preview-pane': 'disableForm'
+      'click .crm-profile-selector-create': 'doCreate'
     },
     /** @var Marionette.View which specifically builds on jQuery-UI's dialog */
     activeDialog: null,
@@ -58,8 +55,6 @@
       this.selectRegion.show(view);
       this.setUfGroupId(this.options.ufGroupId, {silent: true});
       this.toggleButtons();
-      this.$('.crm-profile-selector-select select').css('width', '25em').crmSelect2();
-      this.doShowPreview();
     },
     onChangeUfGroupId: function(event) {
       this.options.ufGroupId = $(event.target).val();
@@ -68,45 +63,49 @@
       this.doPreview();
     },
     toggleButtons: function() {
-      this.$('.crm-profile-selector-edit,.crm-profile-selector-copy').prop('disabled', !this.hasUfGroupId());
+      this.$('.crm-profile-selector-edit,.crm-profile-selector-copy').attr('disabled', !this.hasUfGroupId());
     },
     hasUfGroupId: function() {
-      return (this.getUfGroupId() && this.getUfGroupId() !== '') ? true : false;
+      return (this.getUfGroupId() && this.getUfGroupId() != '') ? true : false;
     },
     setUfGroupId: function(value, options) {
       this.options.ufGroupId = value;
       this.$('.crm-profile-selector-select select').val(value);
-      this.$('.crm-profile-selector-select select').select2('val', value, (!options || !options.silent));
+      if (!options || !options.silent) {
+        this.$('.crm-profile-selector-select select').change();
+      }
     },
     getUfGroupId: function() {
       return this.options.ufGroupId;
     },
     doPreview: function() {
       var $pane = this.$('.crm-profile-selector-preview-pane');
+
       if (!this.hasUfGroupId()) {
         $pane.html($('#profile_selector_empty_preview_template').html());
-      } else {
-        CRM.loadPage(CRM.url("civicrm/ajax/inline", {class_name: 'CRM_UF_Form_Inline_PreviewById', id: this.getUfGroupId()}), {target: $pane});
+        return;
       }
+
+      $pane.block({message: ts('Loading...'), theme: true});
+      $.ajax({
+        url: CRM.url("civicrm/ajax/inline"),
+        type: 'GET',
+        data: {
+          class_name: 'CRM_UF_Form_Inline_PreviewById',
+          id: this.getUfGroupId(),
+          snippet: 4
+        }
+      }).done(function(data) {
+        $pane
+          .unblock()
+          .html(data)
+          .click(function() {
+            return false; // disable buttons
+          });
+      });
+      return false;
     },
-    doShowPreview: function() {
-      var $preview = this.$('.crm-profile-selector-preview');
-      var $pane = this.$('.crm-profile-selector-preview-pane');
-      if ($preview.hasClass('crm-profile-selector-preview-show')) {
-        $preview.removeClass('crm-profile-selector-preview-show');
-        $preview.find('.icon').removeClass('ui-icon-zoomin').addClass('ui-icon-zoomout');
-        $pane.show();
-      } else {
-        $preview.addClass('crm-profile-selector-preview-show');
-        $preview.find('.icon').removeClass('ui-icon-zoomout').addClass('ui-icon-zoomin');
-        $pane.hide();
-      }
-    },
-    disableForm: function() {
-      this.$(':input', '.crm-profile-selector-preview-pane').not('.select2-input').prop('readOnly', true);
-    },
-    doEdit: function(e) {
-      e.preventDefault();
+    doEdit: function() {
       var profileSelectorView = this;
       var designerDialog = new CRM.Designer.DesignerDialog({
         findCreateUfGroupModel: function(options) {
@@ -116,7 +115,7 @@
             success: function(formData) {
               // Note: With chaining, API returns some extraneous keys that aren't part of UFGroupModel
               var ufGroupModel = new CRM.UF.UFGroupModel(_.pick(formData, _.keys(CRM.UF.UFGroupModel.prototype.schema)));
-              ufGroupModel.setUFGroupModel(ufGroupModel.calculateContactEntityType(), profileSelectorView.options.ufEntities);
+              ufGroupModel.getRel('ufEntityCollection').reset(profileSelectorView.options.ufEntities);
               ufGroupModel.getRel('ufFieldCollection').reset(_.values(formData["api.UFField.get"].values));
               options.onLoad(ufGroupModel);
             }
@@ -125,9 +124,9 @@
       });
       CRM.designerApp.vent.on('ufSaved', this.onSave, this);
       this.setDialog(designerDialog);
+      return false;
     },
-    doCopy: function(e) {
-      e.preventDefault();
+    doCopy: function() {
       // This is largely the same as doEdit, but we ultimately pass in a deepCopy of the ufGroupModel.
       var profileSelectorView = this;
       var designerDialog = new CRM.Designer.DesignerDialog({
@@ -138,7 +137,7 @@
             success: function(formData) {
               // Note: With chaining, API returns some extraneous keys that aren't part of UFGroupModel
               var ufGroupModel = new CRM.UF.UFGroupModel(_.pick(formData, _.keys(CRM.UF.UFGroupModel.prototype.schema)));
-              ufGroupModel.setUFGroupModel(ufGroupModel.calculateContactEntityType(), profileSelectorView.options.ufEntities);
+              ufGroupModel.getRel('ufEntityCollection').reset(profileSelectorView.options.ufEntities);
               ufGroupModel.getRel('ufFieldCollection').reset(_.values(formData["api.UFField.get"].values));
               options.onLoad(ufGroupModel.deepCopy());
             }
@@ -147,9 +146,9 @@
       });
       CRM.designerApp.vent.on('ufSaved', this.onSave, this);
       this.setDialog(designerDialog);
+      return false;
     },
-    doCreate: function(e) {
-      e.preventDefault();
+    doCreate: function() {
       var profileSelectorView = this;
       var designerDialog = new CRM.Designer.DesignerDialog({
         findCreateUfGroupModel: function(options) {
@@ -161,6 +160,7 @@
       });
       CRM.designerApp.vent.on('ufSaved', this.onSave, this);
       this.setDialog(designerDialog);
+      return false;
     },
     onSave: function() {
       CRM.designerApp.vent.off('ufSaved', this.onSave, this);
@@ -185,4 +185,4 @@
       view.render();
     }
   });
-})(CRM.$, CRM._);
+})(cj);

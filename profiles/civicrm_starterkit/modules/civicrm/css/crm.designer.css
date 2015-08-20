@@ -1,13 +1,12 @@
+.crm-profile-selector {
+    display: none;
+}
 .crm-profile-selector-preview-pane {
     width: 75%;
     min-width: 500px;
     height: 20em;
     border: 1px solid black;
     padding: 4px;
-}
-
-.crm-container .crm-profile-selector-preview .icon {
-  float: none;
 }
 
 .crm-designer-toolbar {
@@ -20,10 +19,6 @@
 .crm-designer-toolbar hr,
 .crm-designer-palette-search {
   margin: 0.5em 0;
-}
-
-.crm-designer-palette-search input {
-  max-width: 75%;
 }
 
 .crm-designer-toolbar .ui-resizable-w {
@@ -41,7 +36,7 @@
   height: 20em;
 }
 
-.crm-designer-palette-section > a {
+.crm-designer-palette-tree > ul > li > a {
   font-weight: bold;
 }
 
@@ -57,6 +52,10 @@
   cursor: move;
 }
 
+.crm-designer-palette .crm-designer-palette-field.disabled a {
+  cursor: default;
+}
+
 .crm-designer-palette .crm-designer-palette-field:hover,
 .crm-designer-fields-region .crm-designer-row:hover,
 .crm-designer-open .crm-designer-row,
@@ -64,11 +63,6 @@
   border: 1px dashed gray;
   cursor: move;
   background-color: #E9E9F5;
-}
-
-.crm-designer-palette .crm-designer-palette-field.disabled a,
-.crm-designer-open .crm-designer-row:hover {
-  cursor: default;
 }
 
 .crm-container .crm-designer-palette .crm-designer-palette-tree a {
@@ -151,26 +145,6 @@
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.crm-designer .crm-designer-palette-tree button {
-  font-size: .8em;
-}
-
-.crm-designer .crm-designer-palette-tree span.ui-button-text {
-  padding: 0.4em;
-}
-
-.crm-designer .crm-designer-edit-custom {
-  position: absolute;
-  right: 5px;
-  top: 35px;
-  font-size: .8em;
-  border: 1px solid #CFCEC3;
-}
-
-button#crm-designer-add-custom-set {
-  margin-top: 10px;
-}
-
 .ui-sortable-helper > .crm-designer-row {
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   opacity: 0.75;
@@ -193,7 +167,7 @@ button#crm-designer-add-custom-set {
 }
 
 .crm-designer-row-label {
-  padding: 0.5em 0;
+  padding: 0.5em 0px;
 }
 
 .crm-designer-label {
@@ -206,7 +180,7 @@ button#crm-designer-add-custom-set {
 }
 
 .crm-designer-dialog .description {
-  margin: 0 2em 0 0;
+  margin: 0px 2em 0px 0px;
 }
 
 .crm-designer-dialog .disabled .description {
@@ -245,6 +219,6 @@ button#crm-designer-add-custom-set {
 }
 
 /* Hide annoying 'preview' message */
-.crm-profile-selector-preview-pane div.profile-preview-msg {
+.crm-profile-selector-preview-pane > div.messages.status.info {
   display: none;
 }

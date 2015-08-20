@@ -1,80 +1,71 @@
 <?php
 /**
- * Test Generated example demonstrating the MailSettings.create API.
- *
- * @return array
- *   API result array
+ * Test Generated example of using mail_settings create API
+ * *
  */
-function mail_settings_create_example() {
-  $params = array(
-    'domain_id' => 1,
-    'name' => 'my mail setting',
-    'domain' => 'setting.com',
-    'local_part' => 'civicrm+',
-    'server' => 'localhost',
-    'username' => 'sue',
-    'password' => 'pass',
-    'is_default' => 1,
-  );
+function mail_settings_create_example(){
+$params = array(
+  'domain_id' => 1,
+  'name' => 'my mail setting',
+  'domain' => 'setting.com',
+  'local_part' => 'civicrm+',
+  'server' => 'localhost',
+  'username' => 'sue',
+  'password' => 'pass',
+);
 
-  try{
-    $result = civicrm_api3('MailSettings', 'create', $params);
-  }
-  catch (CiviCRM_API3_Exception $e) {
-    // Handle error here.
-    $errorMessage = $e->getMessage();
-    $errorCode = $e->getErrorCode();
-    $errorData = $e->getExtraParams();
-    return array(
-      'error' => $errorMessage,
-      'error_code' => $errorCode,
-      'error_data' => $errorData,
-    );
-  }
+try{
+  $result = civicrm_api3('mail_settings', 'create', $params);
+}
+catch (CiviCRM_API3_Exception $e) {
+  // handle error here
+  $errorMessage = $e->getMessage();
+  $errorCode = $e->getErrorCode();
+  $errorData = $e->getExtraParams();
+  return array('error' => $errorMessage, 'error_code' => $errorCode, 'error_data' => $errorData);
+}
 
-  return $result;
+return $result;
 }
 
 /**
- * Function returns array of result expected from previous function.
- *
- * @return array
- *   API result array
+ * Function returns array of result expected from previous function
  */
-function mail_settings_create_expectedresult() {
+function mail_settings_create_expectedresult(){
 
   $expectedResult = array(
-    'is_error' => 0,
-    'version' => 3,
-    'count' => 1,
-    'id' => 5,
-    'values' => array(
-      '5' => array(
-        'id' => '5',
-        'domain_id' => '1',
-        'name' => 'my mail setting',
-        'is_default' => '1',
-        'domain' => 'setting.com',
-        'localpart' => '',
-        'return_path' => '',
-        'protocol' => '',
-        'server' => 'localhost',
-        'port' => '',
-        'username' => 'sue',
-        'password' => 'pass',
-        'is_ssl' => '',
-        'source' => '',
-      ),
+  'is_error' => 0,
+  'version' => 3,
+  'count' => 1,
+  'id' => 2,
+  'values' => array(
+      '2' => array(
+          'id' => '2',
+          'domain_id' => '1',
+          'name' => 'my mail setting',
+          'is_default' => '',
+          'domain' => 'setting.com',
+          'localpart' => '',
+          'return_path' => '',
+          'protocol' => '',
+          'server' => 'localhost',
+          'port' => '',
+          'username' => 'sue',
+          'password' => 'pass',
+          'is_ssl' => '',
+          'source' => '',
+        ),
     ),
-  );
+);
 
   return $expectedResult;
 }
 
+
 /*
-* This example has been generated from the API test suite.
-* The test that created it is called "testDeleteMailSettings"
-* and can be found at:
+* This example has been generated from the API test suite. The test that created it is called
+*
+* testCreateMailSettings and can be found in
 * https://github.com/civicrm/civicrm-core/blob/master/tests/phpunit/api/v3/MailSettingsTest.php
 *
 * You can see the outcome of the API tests at
@@ -84,7 +75,7 @@ function mail_settings_create_expectedresult() {
 * http://wiki.civicrm.org/confluence/display/CRMDOC/Using+the+API
 *
 * Browse the api on your own site with the api explorer
-* http://MYSITE.ORG/path/to/civicrm/api
+* http://MYSITE.ORG/path/to/civicrm/api/explorer
 *
 * Read more about testing here
 * http://wiki.civicrm.org/confluence/display/CRM/Testing

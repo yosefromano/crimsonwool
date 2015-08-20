@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
@@ -34,26 +34,21 @@
  */
 
 /**
- * Retrieve CiviCRM settings from the api for use in templates.
- *
- * @param $params
- * @param $smarty
- *
- * @return int|string|null
+ * Retrieve CiviCRM settings from the api for use in templates
  */
 function smarty_function_crmSetting($params, &$smarty) {
 
-  $errorScope = CRM_Core_TemporaryErrorScope::create(array('CRM_Utils_REST', 'fatal'));
+  CRM_Core_Error::setCallback(array('CRM_Utils_REST', 'fatal'));
   unset($params['method']);
   unset($params['assign']);
   $params['version'] = 3;
 
   require_once 'api/api.php';
   $result = civicrm_api('setting', 'getvalue', $params);
-  unset($errorScope);
+  CRM_Core_Error::setCallback();
   if ($result === FALSE) {
     $smarty->trigger_error("Unknown error");
-    return NULL;
+    return;
   }
 
   if (empty($params['var'])) {

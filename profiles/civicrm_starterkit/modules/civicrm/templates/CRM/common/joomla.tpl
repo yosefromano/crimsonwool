@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,8 +29,7 @@
 
 <div id="crm-container" class="crm-container{if $urlIsPublic} crm-public{/if}" lang="{$config->lcMessages|truncate:2:"":true}" xml:lang="{$config->lcMessages|truncate:2:"":true}">
 
-{* Joomla-only container to hold the civicrm menu *}
-<div id="crm-nav-menu-container"></div>
+{* Only include joomla.css in administrator (backend). Page layout style ids and classes conflict with typical front-end css and break the page layout. *}
 {crmNavigationMenu is_default=1}
 
 {* include wysiwyg related files*}
@@ -81,23 +80,20 @@
         {include file="CRM/common/localNav.tpl"}
     {/if}
 
-    <div id="crm-main-content-wrapper">
-      {include file="CRM/common/status.tpl"}
-      {crmRegion name='page-body'}
-        <!-- .tpl file invoked: {$tplFile}. Call via form.tpl if we have a form in the page. -->
-        {if isset($isForm) and $isForm and isset($formTpl)}
-          {include file="CRM/Form/$formTpl.tpl"}
-        {else}
-          {include file=$tplFile}
-        {/if}
-      {/crmRegion}
-    </div>
+    {include file="CRM/common/status.tpl"}
+
+    <!-- .tpl file invoked: {$tplFile}. Call via form.tpl if we have a form in the page. -->
+    {crmRegion name='page-body'}
+    {if $isForm}
+        {include file="CRM/Form/$formTpl.tpl"}
+    {else}
+        {include file=$tplFile}
+    {/if}
+    {/crmRegion}
 
     {crmRegion name='page-footer'}
-    {if $urlIsPublic}
-      {include file="CRM/common/publicFooter.tpl"}
-    {else}
-      {include file="CRM/common/footer.tpl"}
+    {if ! $urlIsPublic}
+    {include file="CRM/common/footer.tpl"}
     {/if}
     {/crmRegion}
 

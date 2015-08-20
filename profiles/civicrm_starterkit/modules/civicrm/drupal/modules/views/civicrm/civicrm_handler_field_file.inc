@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,56 +23,53 @@
  +--------------------------------------------------------------------+
 */
 
-/*
-   / * Unchanged anonymous code contribution. No claim.
-   *
-   * civicrm_handler_field_custom_file.inc
-   * Displays File field uri instead of id.
-   *
-   */
 
-/**
- * Field handler to provide acess control for the File field
+/*
  *
- * @ingroup civicrm_field_handlers
+ * civicrm_handler_field_file.inc
+ * Provides URL to a file
+ *
  */
-class civicrm_handler_field_custom_file extends views_handler_field {
+class civicrm_handler_field_file extends views_handler_field {
   function construct() {
     parent::construct();
-    civicrm_initialize();
-    $this->additional_fields['entity_id'] = 'entity_id';
+    if (!civicrm_initialize()) {
+      return;
+    }
+
+    require_once 'CRM/Core/DAO/EntityFile.php';
+    require_once 'api/api.php';
+  }
+
+  function query() {
+    $this->ensure_my_table();
+    $this->add_additional_fields();
   }
 
   function render($values) {
-    $value = $values->{$this->field_alias};
-    if (!is_null($value)) {
-      $path = 'civicrm/file';
-      $fileType = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_File',
-        $value,
-        'mime_type'
+    $id = $values->{$this->field_alias};
+    if ($file_id = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_EntityFile', $id, 'file_id', 'entity_id')) {
+      $params = array(
+        'id' => $file_id,
+        'file_type_id' => NULL,
+        'version' => 3,
       );
+      $file = civicrm_api('File', 'get', $params);
 
-      if ($fileType && in_array($fileType, array(
-        "image/jpeg", "image/pjpeg", "image/gif", "image/x-png", "image/png"))) {
-        $uri = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_File',
-          $value,
-          'uri'
-        );
-
-        $path = sprintf('%s/imagefile',$path);
+      if (!civicrm_error($file)) {
+        $filepath = file_directory_path() . '/civicrm/custom/' . $file['values'][$file_id]['uri'];
+        // Prevent affecting the original
+        $v = clone$values;
+        $v->{$this->field_alias} = $filepath;
+        return parent::render($v);
       }
-        $entityField = $this->aliases['entity_id'];
-        $url = CRM_Utils_System::url($path,
-          "id={$value}&eid={$values->$entityField}",
-          TRUE, FALSE, FALSE, TRUE
-        );
-        return CRM_Utils_System::url($path,
-          "id={$value}&eid={$values->$entityField}",
-          TRUE, FALSE, FALSE, TRUE
-        );
+      else {
+        return NULL;
+      }
     }
-    return NULL;
+    else {
+      return NULL;
+    }
   }
 }
-
 

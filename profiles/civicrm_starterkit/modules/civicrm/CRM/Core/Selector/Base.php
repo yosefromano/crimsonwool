@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
@@ -32,14 +32,14 @@
  * and display names
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_Selector_Base {
 
   /**
-   * The sort order which is computed from the columnHeaders
+   * the sort order which is computed from the columnHeaders
    *
    * @var array
    */
@@ -60,16 +60,18 @@ class CRM_Core_Selector_Base {
   protected $_key;
 
   /**
-   * This function gets the attribute for the action that.
+   * This function gets the attribute for the action that
    * it matches.
    *
-   * @param string $match the action to match against
-   * @param string $attribute the attribute to return ( name, link, title )
+   * @param string  match      the action to match against
+   * @param string  attribute  the attribute to return ( name, link, title )
    *
-   * @return string
-   *   the attribute that matches the action if any
+   * @return string            the attribute that matches the action if any
+   *
+   * @access public
+   *
    */
-  public function getActionAttribute($match, $attribute = 'name') {
+  function getActionAttribute($match, $attribute = 'name') {
     $links = &$this->links();
 
     foreach ($link as $action => $item) {
@@ -92,32 +94,31 @@ class CRM_Core_Selector_Base {
    * qs      : the parameters to the above url along with any dynamic substitutions
    * title   : A more descriptive name, typically used in breadcrumbs / navigation
    */
-  public static function &links() {
+  static function &links() {
     return NULL;
   }
 
   /**
-   * Compose the template file name from the class name.
+   * compose the template file name from the class name
    *
-   * @param string $action
-   *   The action being performed.
+   * @param string $action the action being performed
    *
-   * @return string
-   *   template file name
+   * @return string template file name
+   * @access public
    */
-  public function getTemplateFileName($action = NULL) {
+  function getTemplateFileName($action = NULL) {
     return (str_replace('_', DIRECTORY_SEPARATOR, CRM_Utils_System::getClassName($this)) . ".tpl");
   }
 
   /**
-   * Getter for the sorting direction for the fields which will be displayed on the form.
+   * getter for the sorting direction for the fields which will be displayed on the form.
    *
-   * @param string $action the action being performed
+   * @param string action the action being performed
    *
-   * @return array
-   *   the elements that can be sorted along with their properties
+   * @return array the elements that can be sorted along with their properties
+   * @access public
    */
-  public function &getSortOrder($action) {
+  function &getSortOrder($action) {
     $columnHeaders = &$this->getColumnHeaders(NULL);
 
     if (!isset($this->_order)) {
@@ -147,47 +148,36 @@ class CRM_Core_Selector_Base {
   }
 
   /**
-   * Setter for permission.
+   * setter for permission
    *
    * @var string
+   * @access public
    */
   public function setPermission($permission) {
     $this->_permission = $permission;
   }
 
   /**
-   * Get the display text in plain language for the search
+   * get the display text in plain language for the search
    * to display on the results page
    *
-   * FIXME: the current internationalisation is bad, but should more or less work
-   * on most of "European" languages
-   *
-   * @return array
-   *   array of strings
+   * @return string
+   * @access public
    */
   public function getQill() {
     return NULL;
   }
 
-  /**
-   * @return null
-   */
   public function getSummary() {
     return NULL;
   }
 
-  /**
-   * @param $key
-   */
   public function setKey($key) {
     $this->_key = $key;
   }
 
-  /**
-   * @return string
-   */
   public function getKey() {
     return $this->_key;
   }
-
 }
+

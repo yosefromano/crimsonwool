@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,19 +23,19 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 /**
  * This class provides the functionality to delete a group of
- * Activities. This class provides functionality for the actual
+ * Activites. This class provides functionality for the actual
  * deletion.
  */
 class CRM_Activity_Form_Task_Delete extends CRM_Activity_Form_Task {
@@ -49,50 +49,44 @@ class CRM_Activity_Form_Task_Delete extends CRM_Activity_Form_Task {
   protected $_single = FALSE;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     parent::preProcess();
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     $this->addDefaultButtons(ts('Delete Activities'), 'done');
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
-    $deleted = $failed = 0;
+    $deletedActivities = 0;
     foreach ($this->_activityHolderIds as $activityId['id']) {
       $moveToTrash = CRM_Case_BAO_Case::isCaseActivity($activityId['id']);
       if (CRM_Activity_BAO_Activity::deleteActivity($activityId, $moveToTrash)) {
-        $deleted++;
-      }
-      else {
-        $failed++;
+        $deletedActivities++;
       }
     }
 
-    if ($deleted) {
-      $msg = ts('%count activity deleted.', array('plural' => '%count activities deleted.', 'count' => $deleted));
-      CRM_Core_Session::setStatus($msg, ts('Removed'), 'success');
-    }
-
-    if ($failed) {
-      CRM_Core_Session::setStatus(ts('1 could not be deleted.', array('plural' => '%count could not be deleted.', 'count' => $failed)), ts('Error'), 'error');
-    }
+    CRM_Core_Session::setStatus($deletedActivities, ts('Deleted Activities'), "success");
+    CRM_Core_Session::setStatus("", ts('Total Selected Activities: %1', array(1 => count($this->_activityHolderIds))), "info");
   }
-
 }
+

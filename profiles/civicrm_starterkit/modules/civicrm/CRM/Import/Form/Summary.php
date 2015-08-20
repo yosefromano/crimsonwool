@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,9 +41,10 @@
 abstract class CRM_Import_Form_Summary extends CRM_Core_Form {
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $this->addButtons(array(
@@ -60,9 +61,10 @@ abstract class CRM_Import_Form_Summary extends CRM_Core_Form {
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Summary');
   }
-
 }
+

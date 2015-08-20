@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,32 +27,34 @@
  */
 
 /**
- * This api exposes CiviCRM membership contribution link.
+ * File for the CiviCRM APIv3 membership contribution link functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_Membership
  * @todo delete function doesn't exist
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: MembershipContributionLink.php 30171 2010-10-14 09:11:27Z mover $
  */
 
 /**
- * Add or update a link between contribution and membership.
+ * Add or update a link between contribution and membership
  *
- * @param array $params
- *   Input parameters.
+ * @param  array   $params           (reference ) input parameters
  *
- * @return array
- *   API result array.
+ * @return array (reference )        membership_payment_id of created or updated record
+ * {@getfields MembershipPayment_create}
+ * @example MembershipPaymentCreate.php
+ * @access public
  */
 function civicrm_api3_membership_payment_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_membership_payment_create_spec(&$params) {
   $params['membership_id']['api.required'] = 1;
@@ -59,14 +62,17 @@ function _civicrm_api3_membership_payment_create_spec(&$params) {
 }
 
 /**
- * Retrieve one or more membership payment records.
+ * Retrieve one / all contribution(s) / membership(s) linked to a
+ * membership / contrbution.
  *
- * @param array $params
- *   Input parameters.
+ * @param  array   $params  input parameters
  *
- * @return array
- *   API result array.
+ * @return array  array of properties, if error an array with an error id and error message
+ *  @example MembershipPaymentGet
+ * {@getfields MembershipPayment_get}
+ * @access public
  */
 function civicrm_api3_membership_payment_get($params) {
   return _civicrm_api3_basic_get('CRM_Member_DAO_MembershipPayment', $params);
 }
+

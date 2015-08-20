@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,18 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 /**
- * When runing script from cli :
+ *When runing script from cli :
  * 1. By default script is being used for civimail processing.
  * eg : nice -19 php bin/EmailProcessor.php -u<login> -p<password> -s<sites(or default)>
  *
@@ -46,12 +46,13 @@
 // bootstrap the environment and run the processor
 // you can run this program either from an apache command, or from the cli
 if (php_sapi_name() == "cli") {
-  require_once "bin/cli.php";
+  require_once ("bin/cli.php");
   $cli = new civicrm_cli();
   //if it doesn't die, it's authenticated
   //log the execution of script
   CRM_Core_Error::debug_log_message('EmailProcessor.php from the cli');
-  $lock = Civi\Core\Container::singleton()->get('lockManager')->acquire('worker.mailing.EmailProcessor');
+  require_once 'CRM/Core/Lock.php';
+  $lock = new CRM_Core_Lock('EmailProcessor');
 
   if (!$lock->isAcquired()) {
     throw new Exception('Could not acquire lock, another EmailProcessor process is running');
@@ -82,7 +83,8 @@ else {
   //log the execution of script
   CRM_Core_Error::debug_log_message('EmailProcessor.php');
 
-  $lock = Civi\Core\Container::singleton()->get('lockManager')->acquire('worker.mailing.EmailProcessor');
+  require_once 'CRM/Core/Lock.php';
+  $lock = new CRM_Core_Lock('EmailProcessor');
 
   if (!$lock->isAcquired()) {
     throw new Exception('Could not acquire lock, another EmailProcessor process is running');
@@ -101,8 +103,9 @@ else {
 
   // check if the script is being used for civimail processing or email to
   // activity processing.
-  $isCiviMail = !empty($_REQUEST['emailtoactivity']) ? FALSE : TRUE;
+  $isCiviMail = CRM_Utils_Array::value('emailtoactivity', $_REQUEST) ? FALSE : TRUE;
   CRM_Utils_Mail_EmailProcessor::process($isCiviMail);
 
   $lock->release();
 }
+

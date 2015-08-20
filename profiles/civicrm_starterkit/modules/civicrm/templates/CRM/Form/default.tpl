@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -25,16 +25,12 @@
 *}
 {if ! $suppressForm}
 <form {$form.attributes} >
-  {crmRegion name='form-top'}{/crmRegion}
 {/if}
 
-  {crmRegion name='form-body'}
-    {include file="CRM/Form/body.tpl"}
+{include file="CRM/Form/body.tpl"}
 
-    {include file=$tplFile}
-  {/crmRegion}
+{include file=$tplFile}
 
 {if ! $suppressForm}
-  {crmRegion name='form-bottom'}{/crmRegion}
 </form>
 {/if}

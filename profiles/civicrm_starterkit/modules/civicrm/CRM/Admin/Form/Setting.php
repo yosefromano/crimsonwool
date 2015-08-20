@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,17 +23,19 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
+ *
  */
 
 /**
  * This class generates form components generic to CiviCRM settings
+ *
  */
 class CRM_Admin_Form_Setting extends CRM_Core_Form {
 
@@ -41,15 +43,18 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
   protected $_settings = array();
 
   /**
-   * Set default values for the form.
+   * This function sets the default values for the form.
+   * default values are retrieved from the database
    *
-   * Default values are retrieved from the database.
+   * @access public
+   *
+   * @return None
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     if (!$this->_defaults) {
       $this->_defaults = array();
-      $formArray = array('Component', 'Localization');
-      $formMode = FALSE;
+      $formArray       = array('Component', 'Localization');
+      $formMode        = FALSE;
       if (in_array($this->_name, $formArray)) {
         $formMode = TRUE;
       }
@@ -59,12 +64,12 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
       CRM_Core_Config_Defaults::setValues($this->_defaults, $formMode);
 
       $list = array_flip(CRM_Core_OptionGroup::values('contact_autocomplete_options',
-        FALSE, FALSE, TRUE, NULL, 'name'
-      ));
+          FALSE, FALSE, TRUE, NULL, 'name'
+        ));
 
       $cRlist = array_flip(CRM_Core_OptionGroup::values('contact_reference_options',
-        FALSE, FALSE, TRUE, NULL, 'name'
-      ));
+          FALSE, FALSE, TRUE, NULL, 'name'
+        ));
 
       $listEnabled = CRM_Core_BAO_Setting::valueOptions(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
         'contact_autocomplete_options'
@@ -85,20 +90,18 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
 
       //Set defaults for autocomplete and contact reference options
       $this->_defaults['autocompleteContactSearch'] = array(
-        '1' => 1,
-      ) + $autoSearchFields;
+        '1' => 1) + $autoSearchFields;
       $this->_defaults['autocompleteContactReference'] = array(
-        '1' => 1,
-      ) + $cRSearchFields;
+        '1' => 1) + $cRSearchFields;
 
       // we can handle all the ones defined in the metadata here. Others to be converted
-      foreach ($this->_settings as $setting => $group) {
+      foreach ($this->_settings as $setting => $group){
         $settingMetaData = civicrm_api('setting', 'getfields', array('version' => 3, 'name' => $setting));
         $this->_defaults[$setting] = civicrm_api('setting', 'getvalue', array(
-            'version' => 3,
-            'name' => $setting,
-            'group' => $group,
-            'default_value' => CRM_Utils_Array::value('default', $settingMetaData['values'][$setting]),
+          'version' => 3,
+          'name' => $setting,
+          'group' => $group,
+          'default_value' => CRM_Utils_Array::value('default', $settingMetaData['values'][$setting])
           )
         );
       }
@@ -111,7 +114,10 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
+   *
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $session = CRM_Core_Session::singleton();
@@ -131,29 +137,27 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
       )
     );
 
-    foreach ($this->_settings as $setting => $group) {
+    foreach ($this->_settings as $setting => $group){
       $settingMetaData = civicrm_api('setting', 'getfields', array('version' => 3, 'name' => $setting));
-      $props = $settingMetaData['values'][$setting];
-      if (isset($props['quick_form_type'])) {
-        $add = 'add' . $props['quick_form_type'];
-        if ($add == 'addElement') {
+      if(isset($settingMetaData['values'][$setting]['quick_form_type'])){
+        $add = 'add' . $settingMetaData['values'][$setting]['quick_form_type'];
+        if($add == 'addElement'){
           $this->$add(
-            $props['html_type'],
+            $settingMetaData['values'][$setting]['html_type'],
             $setting,
-            ts($props['title']),
-            CRM_Utils_Array::value($props['html_type'] == 'select' ? 'option_values' : 'html_attributes', $props, array()),
-            $props['html_type'] == 'select' ? CRM_Utils_Array::value('html_attributes', $props) : NULL
+            ts($settingMetaData['values'][$setting]['title']),
+            CRM_Utils_Array::value('html_attributes', $settingMetaData['values'][$setting], array())
           );
         }
-        else {
-          $this->$add($setting, ts($props['title']));
+        else{
+          $this->$add($setting, ts($settingMetaData['values'][$setting]['title']));
         }
-        $this->assign("{$setting}_description", ts($props['description']));
-        if ($setting == 'max_attachments') {
+        $this->assign("{$setting}_description", ts($settingMetaData['values'][$setting]['description']));
+        if($setting == 'max_attachments'){
           //temp hack @todo fix to get from metadata
           $this->addRule('max_attachments', ts('Value should be a positive number'), 'positiveInteger');
         }
-        if ($setting == 'maxFileSize') {
+        if($setting == 'maxFileSize'){
           //temp hack
           $this->addRule('maxFileSize', ts('Value should be a positive number'), 'positiveInteger');
         }
@@ -163,7 +167,11 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
+   *
+   * @access public
+   *
+   * @return None
    */
   public function postProcess() {
     // store the submitted values in an array
@@ -172,20 +180,13 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
     self::commonProcess($params);
   }
 
-  /**
-   * Common Process.
-   *
-   * @todo Document what I do.
-   *
-   * @param array $params
-   */
   public function commonProcess(&$params) {
 
     // save autocomplete search options
-    if (!empty($params['autocompleteContactSearch'])) {
+    if (CRM_Utils_Array::value('autocompleteContactSearch', $params)) {
       $value = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR,
-          array_keys($params['autocompleteContactSearch'])
-        ) . CRM_Core_DAO::VALUE_SEPARATOR;
+        array_keys($params['autocompleteContactSearch'])
+      ) . CRM_Core_DAO::VALUE_SEPARATOR;
 
       CRM_Core_BAO_Setting::setItem($value,
         CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
@@ -196,10 +197,10 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
     }
 
     // save autocomplete contact reference options
-    if (!empty($params['autocompleteContactReference'])) {
+    if (CRM_Utils_Array::value('autocompleteContactReference', $params)) {
       $value = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR,
-          array_keys($params['autocompleteContactReference'])
-        ) . CRM_Core_DAO::VALUE_SEPARATOR;
+        array_keys($params['autocompleteContactReference'])
+      ) . CRM_Core_DAO::VALUE_SEPARATOR;
 
       CRM_Core_BAO_Setting::setItem($value,
         CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
@@ -211,14 +212,16 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
 
     // save components to be enabled
     if (array_key_exists('enableComponents', $params)) {
-      civicrm_api3('setting', 'create', array(
-        'enable_components' => $params['enableComponents'],
-      ));
-      unset($params['enableComponents']);
+      CRM_Core_BAO_Setting::setItem($params['enableComponents'],
+        CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,'enable_components');
+
+      // unset params by emptying the values, so while retrieving we can detect and load from settings table
+      // instead of config-backend for backward compatibility. We could use unset() in later releases.
+      $params['enableComponents'] = $params['enableComponentIDs'] = array();
     }
 
     // save checksum timeout
-    if (!empty($params['checksumTimeout'])) {
+    if (CRM_Utils_Array::value('checksumTimeout', $params)) {
       CRM_Core_BAO_Setting::setItem($params['checksumTimeout'],
         CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
         'checksum_timeout'
@@ -226,7 +229,7 @@ class CRM_Admin_Form_Setting extends CRM_Core_Form {
     }
 
     // update time for date formats when global time is changed
-    if (!empty($params['timeInputFormat'])) {
+    if (CRM_Utils_Array::value('timeInputFormat', $params)) {
       $query = "
 UPDATE civicrm_preferences_date
 SET    time_format = %1
@@ -256,12 +259,12 @@ AND    time_format <> ''
     }
     $settings = array_intersect_key($params, $this->_settings);
     $result = civicrm_api('setting', 'create', $settings + array('version' => 3));
-    foreach ($settings as $setting => $settingGroup) {
+    foreach ($settings as $setting => $settingGroup){
       //@todo array_diff this
       unset($params[$setting]);
     }
     CRM_Core_BAO_ConfigSetting::create($params);
-    CRM_Core_Session::setStatus(" ", ts('Changes Saved'), "success");
+    CRM_Core_Session::setStatus(" ", ts('Changes Saved.'), "success");
   }
 
   public function rebuildMenu() {
@@ -275,5 +278,5 @@ AND    time_format <> ''
     $configFile = $config->uploadDir . 'Config.IDS.ini';
     @unlink($configFile);
   }
-
 }
+

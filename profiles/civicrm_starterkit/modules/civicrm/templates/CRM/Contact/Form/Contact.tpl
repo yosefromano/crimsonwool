@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -32,12 +32,15 @@
   {/if}
   <div class="crm-form-block crm-search-form-block">
     {if call_user_func(array('CRM_Core_Permission','check'), 'administer CiviCRM') }
-      <a href='{crmURL p="civicrm/admin/setting/preferences/display" q="reset=1"}' title="{ts}Click here to configure the panes.{/ts}"><span class="icon ui-icon-wrench"></span></a>
+      <a href='{crmURL p="civicrm/admin/setting/preferences/display" q="reset=1"}' title="{ts}Click here to configure the panes.{/ts}"><span class="icon settings-icon"></span></a>
     {/if}
     <span style="float:right;"><a href="#expand" id="expand">{ts}Expand all tabs{/ts}</a></span>
     <div class="crm-submit-buttons">
     {include file="CRM/common/formButtons.tpl" location="top"}
     </div>
+
+    {* include overlay js *}
+    {include file="CRM/common/overlay.tpl"}
 
     <div class="crm-accordion-wrapper crm-contactDetails-accordion">
       <div class="crm-accordion-header">
@@ -62,10 +65,7 @@
                 {$form.external_identifier.html}
               </td>
               {if $contactId}
-                <td>
-                  <label for="internal_identifier_display">{ts}CiviCRM ID{/ts} {help id="id-internal-id"}</label><br />
-                  <input id="internal_identifier_display" type="text" class="crm-form-text six" size="6" readonly="readonly" value="{$contactId}">
-                </td>
+                <td><label for="internal_identifier_display">{ts}CiviCRM ID{/ts}{help id="id-internal-id"}</label><br /><input id="internal_identifier_display" type="text" class="form-text eight" size="8" disabled="disabled" value="{$contactId}"></td>
               {/if}
             </tr>
           </table>
@@ -110,9 +110,9 @@
   {literal}
 
   <script type="text/javascript" >
-  CRM.$(function($) {
-    var $form = $("form.{/literal}{$form.formClass}{literal}");
+  cj(function($) {
     var action = "{/literal}{$action}{literal}";
+    $().crmAccordions();
 
     $('.crm-accordion-body').each( function() {
       //remove tab which doesn't have any element
@@ -240,20 +240,11 @@
     });
     {/literal}{/if}{literal}
 
-    // Handle delete of multi-record custom data
-    $form.on('click', '.crm-custom-value-del', function(e) {
-      e.preventDefault();
-      var $el = $(this),
-        msg = '{/literal}{ts escape="js"}The record will be deleted immediately. This action cannot be undone.{/ts}{literal}';
-      CRM.confirm({title: $el.attr('title'), message: msg})
-        .on('crmConfirm:yes', function() {
-          var url = CRM.url('civicrm/ajax/customvalue');
-          var request = $.post(url, $el.data('post'));
-          CRM.status({success: '{/literal}{ts escape="js"}Record Deleted{/ts}{literal}'}, request);
-          var addClass = '.add-more-link-' + $el.data('post').groupID;
-          $el.closest('div.crm-custom-accordion').remove();
-          $('div' + addClass).last().show();
-        });
+    $("select#contact_sub_type").crmasmSelect({
+      addItemTarget: 'bottom',
+      animate: false,
+      highlight: true,
+      respectParents: true
     });
   });
 
@@ -265,5 +256,8 @@
 
 {* include common additional blocks tpl *}
 {include file="CRM/common/additionalBlocks.tpl"}
+
+{* include jscript to warn if unsaved form field changes *}
+{include file="CRM/common/formNavigate.tpl"}
 
 {/if}

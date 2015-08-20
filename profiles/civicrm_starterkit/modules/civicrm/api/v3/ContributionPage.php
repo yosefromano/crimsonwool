@@ -1,9 +1,10 @@
 <?php
 /*
+/*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,83 +24,72 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 
 /**
- * This api exposes CiviCRM contribution pages.
+ * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_ContributionPage
+ * @copyright CiviCRM LLC (c) 20042012
  */
 
 /**
- * Create or update a ContributionPage.
+ * Create or update a contribution_page
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'contribution_page'
+ * @example ContributionPageCreate.php Std Create example
  *
- * @return array
- *   api result array
+ * @return array api result array
+ * {@getfields contribution_page_create}
+ * @access public
  */
 function civicrm_api3_contribution_page_create($params) {
-  $result = _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
-  CRM_Contribute_PseudoConstant::flush('contributionPageAll');
-  CRM_Contribute_PseudoConstant::flush('contributionPageActive');
-  return $result;
+  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array per getfields metadata.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_contribution_page_create_spec(&$params) {
   $params['financial_type_id']['api.required'] = 1;
   $params['payment_processor']['api.aliases'] = array('payment_processor_id');
-  $params['is_active']['api.default'] = 1;
 }
 
 /**
- * Returns array of ContributionPage(s) matching a set of one or more group properties.
+ * Returns array of contribution_pages  matching a set of one or more group properties
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  (referance) Array of one or more valid
+ *                       property_name=>value pairs. If $params is set
+ *                       as null, all contribution_pages will be returned
  *
- * @return array
- *   API Result array Array of matching contribution_pages
+ * @return array  (referance) Array of matching contribution_pages
+ * {@getfields contribution_page_get}
+ * @access public
  */
 function civicrm_api3_contribution_page_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Delete an existing ContributionPage.
+ * delete an existing contribution_page
  *
- * This method is used to delete any existing ContributionPage given its id.
+ * This method is used to delete any existing contribution_page. id of the group
+ * to be deleted is required field in $params array
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  (reference) array containing id of the group
+ *                       to be deleted
  *
- * @return array
- *   API result Array
+ * @return array  (referance) returns flag true if successfull, error
+ *                message otherwise
+ * {@getfields contribution_page_delete}
+ * @access public
  */
 function civicrm_api3_contribution_page_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
-}
-
-/**
- * Submit a ContributionPage.
- *
- * @param array $params
- *   Array per getfields metadata.
- *
- * @return array
- *   API result array
- */
-function civicrm_api3_contribution_page_submit($params) {
-  $result = CRM_Contribute_Form_Contribution_Confirm::submit($params);
-  return civicrm_api3_create_success($result, $params, 'ContributionPage', 'submit');
 }

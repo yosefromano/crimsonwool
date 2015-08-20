@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,19 +44,19 @@
 class CRM_Core_StateMachine {
 
   /**
-   * The controller of this state machine.
+   * the controller of this state machine
    * @var object
    */
   protected $_controller;
 
   /**
-   * The list of states that belong to this state machine.
+   * the list of states that belong to this state machine
    * @var array
    */
   protected $_states;
 
   /**
-   * The list of pages that belong to this state machine. Note
+   * the list of pages that belong to this state machine. Note
    * that a state and a form have a 1 <-> 1 relationship. so u
    * can always derive one from the other
    * @var array
@@ -64,35 +64,33 @@ class CRM_Core_StateMachine {
   protected $_pages;
 
   /**
-   * The names of the pages.
+   * The names of the pages
    *
    * @var array
    */
   protected $_pageNames;
 
   /**
-   * The mode that the state machine is operating in.
+   * the mode that the state machine is operating in
    * @var int
    */
   protected $_action = NULL;
 
   /**
-   * The display name for this machine.
+   * The display name for this machine
    * @var string
    */
   protected $_name = NULL;
 
   /**
-   * Class constructor.
+   * class constructor
    *
-   * @param object $controller
-   *   The controller for this state machine.
+   * @param object $controller the controller for this state machine
    *
-   * @param \const|int $action
-   *
-   * @return \CRM_Core_StateMachine
+   * @return object
+   * @access public
    */
-  public function __construct(&$controller, $action = CRM_Core_Action::NONE) {
+  function __construct(&$controller, $action = CRM_Core_Action::NONE) {
     $this->_controller = &$controller;
     $this->_action = $action;
 
@@ -100,42 +98,40 @@ class CRM_Core_StateMachine {
   }
 
   /**
-   * Getter for name.
+   * getter for name
    *
    * @return string
+   * @access public
    */
   public function getName() {
     return $this->_name;
   }
 
   /**
-   * Setter for name.
+   * setter for name
    *
-   * @param string $name
+   * @param string
    *
    * @return void
+   * @access public
    */
   public function setName($name) {
     $this->_name = $name;
   }
 
   /**
-   * Do a state transition jump.
-   *
-   * Currently only supported types are
+   * do a state transition jump. Currently only supported types are
    * Next and Back. The other actions (Cancel, Done, Submit etc) do
    * not need the state machine to figure out where to go
    *
-   * @param CRM_Core_Form $page
-   *   The current form-page.
-   * @param string $actionName
-   *   Current action name, as one Action object can serve multiple actions.
-   * @param string $type
-   *   The type of transition being requested (Next or Back).
+   * @param  object    $page       CRM_Core_Form the current form-page
+   * @param  string    $actionName Current action name, as one Action object can serve multiple actions
+   * @param  string    $type       The type of transition being requested (Next or Back)
    *
    * @return void
+   * @access public
    */
-  public function perform(&$page, $actionName, $type = 'Next') {
+  function perform(&$page, $actionName, $type = 'Next') {
     // save the form values and validation status to the session
     $page->isFormBuilt() or $page->buildForm();
 
@@ -173,33 +169,29 @@ class CRM_Core_StateMachine {
   }
 
   /**
-   * Helper function to add a State to the state machine.
+   * helper function to add a State to the state machine
    *
-   * @param string $name
-   *   The internal name.
-   * @param int $type
-   *   The type of state (START|FINISH|SIMPLE).
-   * @param object $prev
-   *   The previous page if any.
-   * @param object $next
-   *   The next page if any.
+   * @param string $name  the internal name
+   * @param int    $type  the type of state (START|FINISH|SIMPLE)
+   * @param object $prev  the previous page if any
+   * @param object $next  the next page if any
    *
    * @return void
+   * @access public
    */
-  public function addState($name, $type, $prev, $next) {
+  function addState($name, $type, $prev, $next) {
     $this->_states[$name] = new CRM_Core_State($name, $type, $prev, $next, $this);
   }
 
   /**
-   * Given a name find the corresponding state.
+   * Given a name find the corresponding state
    *
-   * @param string $name
-   *   The state name.
+   * @param string $name the state name
    *
-   * @return object
-   *   the state object
+   * @return object the state object
+   * @access public
    */
-  public function find($name) {
+  function find($name) {
     if (array_key_exists($name, $this->_states)) {
       return $this->_states[$name];
     }
@@ -209,68 +201,73 @@ class CRM_Core_StateMachine {
   }
 
   /**
-   * Return the list of state objects.
+   * return the list of state objects
    *
-   * @return array
-   *   array of states in the state machine
+   * @return array array of states in the state machine
+   * @access public
    */
-  public function getStates() {
+  function getStates() {
     return $this->_states;
   }
 
   /**
-   * Return the state object corresponding to the name.
+   * return the state object corresponding to the name
    *
-   * @param string $name
-   *   Name of page.
+   * @param string $name name of page
    *
-   * @return CRM_Core_State
-   *   state object matching the name
+   * @return CRM_Core_State state object matching the name
+   * @access public
    */
-  public function &getState($name) {
+  function &getState($name) {
     if (isset($this->_states[$name])) {
-      return $this->_states[$name];
-    }
+    return $this->_states[$name];
+  }
 
     /*
      * This is a gross hack for ajax driven requests where
      * we change the form name to allow multiple edits to happen
      * We need a cleaner way of doing this going forward
      */
-    foreach ($this->_states as $n => $s) {
+    foreach ($this->_states as $n => $s ) {
       if (substr($name, 0, strlen($n)) == $n) {
         return $s;
       }
     }
 
-    return NULL;
+    return null;
   }
 
   /**
-   * Return the list of form objects.
+   * return the list of form objects
    *
-   * @return array
-   *   array of pages in the state machine
+   * @return array array of pages in the state machine
+   * @access public
    */
-  public function getPages() {
+  function getPages() {
     return $this->_pages;
   }
 
   /**
-   * Add sequential pages.
+   * addSequentialStates: meta level function to create a simple
+   * wizard for a state machine that is completely sequential.
    *
-   * Meta level function to create a simple wizard for a state machine that is completely sequential.
+   * @access public
    *
-   * @param array $pages
-   *   (reference ) the array of page objects.
+   * @param array $states states is an array of arrays. Each element
+   * of the top level array describes a state. Each state description
+   * includes the name, the display name and the class name
+   *
+   * @param array $pages (reference ) the array of page objects
+   *
+   * @return void
    */
-  public function addSequentialPages(&$pages) {
+  function addSequentialPages(&$pages) {
     $this->_pages = &$pages;
     $numPages = count($pages);
 
     $this->_pageNames = array();
     foreach ($pages as $tempName => $value) {
-      if (!empty($value['className'])) {
+      if (CRM_Utils_Array::value('className', $value)) {
         $this->_pageNames[] = $tempName;
       }
       else {
@@ -317,69 +314,60 @@ class CRM_Core_StateMachine {
   }
 
   /**
-   * Reset the state machine.
+   * reset the state machine
    *
    * @return void
+   * @access public
    */
-  public function reset() {
+  function reset() {
     $this->_controller->reset();
   }
 
   /**
-   * Getter for action.
+   * getter for action
    *
    * @return int
+   * @access public
    */
-  public function getAction() {
+  function getAction() {
     return $this->_action;
   }
 
   /**
-   * Setter for content.
+   * setter for content
    *
-   * @param string $content
-   *   The content generated by this state machine.
+   * @param string $content the content generated by this state machine
    *
    * @return void
+   * @access public
    */
-  public function setContent(&$content) {
+  function setContent(&$content) {
     $this->_controller->setContent($content);
   }
 
   /**
-   * Getter for content.
+   * getter for content
    *
    * @return string
+   * @access public
    */
-  public function &getContent() {
+  function &getContent() {
     return $this->_controller->getContent();
   }
 
-  /**
-   * @return mixed
-   */
-  public function getDestination() {
+  function getDestination() {
     return $this->_controller->getDestination();
   }
 
-  /**
-   * @return mixed
-   */
-  public function getSkipRedirection() {
+  function getSkipRedirection() {
     return $this->_controller->getSkipRedirection();
   }
 
-  /**
-   * @return mixed
-   */
-  public function fini() {
+  function fini() {
     return $this->_controller->fini();
   }
 
-  /**
-   * @return mixed
-   */
-  public function cancelAction() {
+  function cancelAction() {
     return $this->_controller->cancelAction();
   }
 
@@ -390,10 +378,11 @@ class CRM_Core_StateMachine {
    * beginning from the final state, but retain the same session
    * values
    *
-   * @return bool
+   * @return boolean
    */
-  public function shouldReset() {
+  function shouldReset() {
     return TRUE;
-  }
+}
 
 }
+

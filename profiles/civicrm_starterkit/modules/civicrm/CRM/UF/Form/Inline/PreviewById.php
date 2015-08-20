@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,22 +41,26 @@
 class CRM_UF_Form_Inline_PreviewById extends CRM_UF_Form_AbstractPreview {
 
   /**
-   * Pre processing work done here.
+   * pre processing work done here.
    *
    * gets session variables for group or field id
    *
    * @param
    *
    * @return void
+   *
+   * @access public
+   *
    */
-  public function preProcess() {
+  function preProcess() {
     // Inline forms don't get menu-level permission checks
     if (!CRM_Core_Permission::check('access CiviCRM')) {
-      CRM_Core_Error::fatal(ts('Permission Denied'));
+      CRM_Core_Error::fatal(ts('Permission denied'));
     }
     $gid = CRM_Utils_Request::retrieve('id', 'Positive');
-    $fields = CRM_Core_BAO_UFGroup::getFields($gid, FALSE, NULL, NULL, NULL, FALSE, NULL, FALSE, NULL, CRM_Core_Permission::CREATE, 'field_name', NULL, TRUE);
+    $fields = CRM_Core_BAO_UFGroup::getFields($gid);
     $this->setProfile($fields);
   }
 
 }
+

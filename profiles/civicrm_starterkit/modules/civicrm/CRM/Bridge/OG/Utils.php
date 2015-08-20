@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,63 +23,43 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Bridge_OG_Utils {
-  const aclEnabled = 1, syncFromCiviCRM = 1;
+  CONST aclEnabled = 1, syncFromCiviCRM = 1;
 
-  /**
-   * @return int
-   */
-  public static function aclEnabled() {
+  static function aclEnabled() {
     return self::aclEnabled;
   }
 
   /**
-   * Switch to stop synchronization from CiviCRM.
+   * Switch to stop synchronization from CiviCRM
    * This was always false before, and is always true
    * now.  Most likely, this needs to be a setting.
    */
-  public static function syncFromCiviCRM() {
+  static function syncFromCiviCRM() {
     // make sure that acls are not enabled
     //RMT -- the following makes no f**king sense...
     //return ! self::aclEnabled & self::syncFromCiviCRM;
     return TRUE;
   }
 
-  /**
-   * @param int $ogID
-   *
-   * @return string
-   */
-  public static function ogSyncName($ogID) {
+  static function ogSyncName($ogID) {
     return "OG Sync Group :{$ogID}:";
   }
 
-  /**
-   * @param int $ogID
-   *
-   * @return string
-   */
-  public static function ogSyncACLName($ogID) {
+  static function ogSyncACLName($ogID) {
     return "OG Sync Group ACL :{$ogID}:";
   }
 
-  /**
-   * @param int $groupID
-   * @param bool $abort
-   *
-   * @return int|null|string
-   * @throws Exception
-   */
-  public static function ogID($groupID, $abort = TRUE) {
+  static function ogID($groupID, $abort = TRUE) {
     $source = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_Group',
       $groupID,
       'source'
@@ -97,13 +77,7 @@ class CRM_Bridge_OG_Utils {
     return NULL;
   }
 
-  /**
-   * @param int $ufID
-   *
-   * @return int
-   * @throws Exception
-   */
-  public static function contactID($ufID) {
+  static function contactID($ufID) {
     $contactID = CRM_Core_BAO_UFMatch::getContactId($ufID);
     if ($contactID) {
       return $contactID;
@@ -120,15 +94,7 @@ class CRM_Bridge_OG_Utils {
     return $contactID;
   }
 
-  /**
-   * @param $source
-   * @param null $title
-   * @param bool $abort
-   *
-   * @return null|string
-   * @throws Exception
-   */
-  public static function groupID($source, $title = NULL, $abort = FALSE) {
+  static function groupID($source, $title = NULL, $abort = FALSE) {
     $query = "
 SELECT id
   FROM civicrm_group
@@ -149,5 +115,5 @@ SELECT id
 
     return $groupID;
   }
-
 }
+

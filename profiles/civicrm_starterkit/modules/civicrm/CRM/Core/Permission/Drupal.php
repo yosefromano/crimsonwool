@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -36,10 +36,10 @@
 /**
  *
  */
-class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
+class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase{
 
   /**
-   * Is this user someone with access for the entire system.
+   * is this user someone with access for the entire system
    *
    * @var boolean
    */
@@ -47,14 +47,14 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
   protected $_editAdminUser = FALSE;
 
   /**
-   * Am in in view permission or edit permission?
+   * am in in view permission or edit permission?
    * @var boolean
    */
   protected $_viewPermission = FALSE;
   protected $_editPermission = FALSE;
 
   /**
-   * The current set of permissioned groups for the user.
+   * the current set of permissioned groups for the user
    *
    * @var array
    */
@@ -63,17 +63,14 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
 
 
   /**
-   * Given a permission string, check for access requirements
+   * given a permission string, check for access requirements
    *
-   * @param string $str
-   *   The permission to check.
+   * @param string $str the permission to check
    *
-   * @param int $contactID
-   *
-   * @return bool
-   *   true if yes, else false
+   * @return boolean true if yes, else false
+   * @access public
    */
-  public function check($str, $contactID = NULL) {
+  function check($str, $contactID = NULL) {
     $str = $this->translatePermission($str, 'Drupal', array(
       'view user account' => 'access user profiles',
       'administer users' => 'administer users',
@@ -93,15 +90,14 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
   /**
    * Given a roles array, check for access requirements
    *
-   * @param array $array
-   *   The roles to check.
+   * @param array $array the roles to check
    *
-   * @return bool
-   *   true if yes, else false
+   * @return boolean true if yes, else false
+   * @access public
    */
-  public function checkGroupRole($array) {
+  function checkGroupRole($array) {
     if (function_exists('user_load') && isset($array)) {
-      $user = user_load($GLOBALS['user']->uid);
+      $user = user_load( $GLOBALS['user']->uid);
       //if giver roles found in user roles - return true
       foreach ($array as $key => $value) {
         if (in_array($value, $user->roles)) {
@@ -113,16 +109,16 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
   }
 
   /**
-   * @inheritDoc
+   * {@inheritDoc}
    */
   public function isModulePermissionSupported() {
     return TRUE;
   }
 
   /**
-   * @inheritDoc
+   * {@inheritdoc}
    */
-  public function upgradePermissions($permissions) {
+  function upgradePermissions($permissions) {
     if (empty($permissions)) {
       throw new CRM_Core_Exception("Cannot upgrade permissions: permission list missing");
     }
@@ -133,13 +129,11 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
   }
 
   /**
-   * Get all the contact emails for users that have a specific permission.
+   * Get all the contact emails for users that have a specific permission
    *
-   * @param string $permissionName
-   *   Name of the permission we are interested in.
+   * @param string $permissionName name of the permission we are interested in
    *
-   * @return string
-   *   a comma separated list of email addresses
+   * @return string a comma separated list of email addresses
    */
   public function permissionEmails($permissionName) {
     static $_cache = array();
@@ -161,12 +155,12 @@ class CRM_Core_Permission_Drupal extends CRM_Core_Permission_DrupalBase {
     ";
 
     $result = db_query($sql);
-    foreach ($result as $record) {
+    foreach ( $result as $record ) {
       $uids[] = $record->uid;
     }
 
     $_cache[$permissionName] = self::getContactEmails($uids);
     return $_cache[$permissionName];
   }
-
 }
+

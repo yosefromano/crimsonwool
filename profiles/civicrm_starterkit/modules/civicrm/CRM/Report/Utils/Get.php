@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,24 +24,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Report_Utils_Get {
 
-  /**
-   * @param string $name
-   * @param $type
-   *
-   * @return mixed|null
-   */
-  public static function getTypedValue($name, $type) {
+  static function getTypedValue($name, $type) {
     $value = CRM_Utils_Array::value($name, $_GET);
     if ($value === NULL) {
       return NULL;
@@ -51,14 +46,7 @@ class CRM_Report_Utils_Get {
     );
   }
 
-  /**
-   * @param string $fieldName
-   * @param $field
-   * @param $defaults
-   *
-   * @return bool
-   */
-  public static function dateParam($fieldName, &$field, &$defaults) {
+  static function dateParam($fieldName, &$field, &$defaults) {
     // type = 12 (datetime) is not recognized by Utils_Type::escape() method,
     // and therefore the below hack
     $type = 4;
@@ -96,12 +84,7 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * @param string $fieldName
-   * @param $field
-   * @param $defaults
-   */
-  public static function stringParam($fieldName, &$field, &$defaults) {
+  static function stringParam($fieldName, &$field, &$defaults) {
     $fieldOP = CRM_Utils_Array::value("{$fieldName}_op", $_GET, 'like');
 
     switch ($fieldOP) {
@@ -122,7 +105,6 @@ class CRM_Report_Utils_Get {
       case 'nnll':
         $defaults["{$fieldName}_op"] = $fieldOP;
         break;
-
       case 'in':
       case 'notin':
       case 'mhas':
@@ -135,12 +117,7 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * @param string $fieldName
-   * @param $field
-   * @param $defaults
-   */
-  public static function intParam($fieldName, &$field, &$defaults) {
+  static function intParam($fieldName, &$field, &$defaults) {
     $fieldOP = CRM_Utils_Array::value("{$fieldName}_op", $_GET, 'eq');
 
     switch ($fieldOP) {
@@ -191,24 +168,15 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * @param $defaults
-   */
-  public static function processChart(&$defaults) {
+  static function processChart(&$defaults) {
     $chartType = CRM_Utils_Array::value("charts", $_GET);
     if (in_array($chartType, array(
-      'barChart',
-      'pieChart',
-    ))) {
+      'barChart', 'pieChart'))) {
       $defaults["charts"] = $chartType;
     }
   }
 
-  /**
-   * @param $fieldGrp
-   * @param $defaults
-   */
-  public static function processFilter(&$fieldGrp, &$defaults) {
+  static function processFilter(&$fieldGrp, &$defaults) {
     // process only filters for now
     foreach ($fieldGrp as $tableName => $fields) {
       foreach ($fields as $fieldName => $field) {
@@ -233,11 +201,8 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * unset default filters.
-   * @param $defaults
-   */
-  public static function unsetFilters(&$defaults) {
+  //unset default filters
+  static function unsetFilters(&$defaults) {
     static $unsetFlag = TRUE;
     if ($unsetFlag) {
       foreach ($defaults as $field_name => $field_value) {
@@ -254,11 +219,7 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * @param $fieldGrp
-   * @param $defaults
-   */
-  public static function processGroupBy(&$fieldGrp, &$defaults) {
+  static function processGroupBy(&$fieldGrp, &$defaults) {
     // process only group_bys for now
     $flag = FALSE;
 
@@ -282,11 +243,7 @@ class CRM_Report_Utils_Get {
     }
   }
 
-  /**
-   * @param $reportFields
-   * @param $defaults
-   */
-  public static function processFields(&$reportFields, &$defaults) {
+  static function processFields(&$reportFields, &$defaults) {
     //add filters from url
     if (is_array($reportFields)) {
       if ($urlFields = CRM_Utils_Array::value("fld", $_GET)) {
@@ -307,5 +264,5 @@ class CRM_Report_Utils_Get {
       }
     }
   }
-
 }
+

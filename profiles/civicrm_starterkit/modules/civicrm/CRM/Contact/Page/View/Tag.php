@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,23 +23,24 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Page_View_Tag extends CRM_Core_Page {
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function browse() {
+  function browse() {
     $controller = new CRM_Core_Controller_Simple('CRM_Tag_Form_Tag', ts('Contact Tags'), $this->_action);
     $controller->setEmbedded(TRUE);
 
@@ -53,7 +54,7 @@ class CRM_Contact_Page_View_Tag extends CRM_Core_Page {
     $controller->run();
   }
 
-  public function preProcess() {
+  function preProcess() {
     $this->_contactId = CRM_Utils_Request::retrieve('cid', 'Positive', $this, TRUE);
     $this->assign('contactId', $this->_contactId);
 
@@ -65,17 +66,18 @@ class CRM_Contact_Page_View_Tag extends CRM_Core_Page {
   }
 
   /**
-   * the main function that is called when the page loads
+   * This function is the main function that is called when the page loads
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     $this->browse();
 
     return parent::run();
   }
-
 }
+

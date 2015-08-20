@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * This interface defines the set of functions a class needs to implement
@@ -35,7 +35,7 @@
  *
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -51,90 +51,85 @@ interface CRM_Core_Selector_API {
    *  csvString - The html string to display for export as csv
    *  rowCount  - the number of rows to be included
    *
-   * @param string $action
-   *   The action being performed.
-   * @param array $params
-   *   The array that the pagerParams will be inserted into.
+   * @param string action the action being performed
+   * @param array  params the array that the pagerParams will be inserted into
    *
    * @return void
+   *
+   * @access public
+   *
    */
-  public function getPagerParams($action, &$params);
+  function getPagerParams($action, &$params);
 
   /**
-   * Returns the sort order array for the given action.
+   * returns the sort order array for the given action
    *
-   * @param string $action
-   *   The action being performed.
+   * @param string action the action being performed
    *
-   * @return array
-   *   the elements that can be sorted along with their properties
+   * @return array the elements that can be sorted along with their properties
+   * @access public
+   *
    */
-  public function &getSortOrder($action);
+  function &getSortOrder($action);
 
   /**
-   * Returns the column headers as an array of tuples:
+   * returns the column headers as an array of tuples:
    * (name, sortName (key to the sort array))
    *
-   * @param string $action
-   *   The action being performed.
-   * @param string $type
-   *   What should the result set include (web/email/csv).
+   * @param string $action the action being performed
+   * @param enum   $type   what should the result set include (web/email/csv)
    *
-   * @return array
-   *   the column headers that need to be displayed
+   * @return array the column headers that need to be displayed
+   * @access public
    */
-  public function &getColumnHeaders($action = NULL, $type = NULL);
+  function &getColumnHeaders($action = NULL, $type = NULL);
 
   /**
-   * Returns the number of rows for this action.
+   * returns the number of rows for this action
    *
-   * @param string $action
-   *   The action being performed.
+   * @param string action the action being performed
    *
-   * @return int
-   *   the total number of rows for this action
+   * @return int   the total number of rows for this action
+   *
+   * @access public
+   *
    */
-  public function getTotalCount($action);
+  function getTotalCount($action);
 
   /**
-   * Returns all the rows in the given offset and rowCount.
+   * returns all the rows in the given offset and rowCount
    *
-   * @param string $action
-   *   The action being performed.
-   * @param int $offset
-   *   The row number to start from.
-   * @param int $rowCount
-   *   The number of rows to return.
-   * @param string $sort
-   *   The sql string that describes the sort order.
-   * @param string $type
-   *   What should the result set include (web/email/csv).
+   * @param enum   $action   the action being performed
+   * @param int    $offset   the row number to start from
+   * @param int    $rowCount the number of rows to return
+   * @param string $sort     the sql string that describes the sort order
+   * @param enum   $type     what should the result set include (web/email/csv)
    *
-   * @return int
-   *   the total number of rows for this action
+   * @return int   the total number of rows for this action
+   * @access public
    */
-  public function &getRows($action, $offset, $rowCount, $sort, $type = NULL);
+  function &getRows($action, $offset, $rowCount, $sort, $type = NULL);
 
   /**
-   * Return the template (.tpl) filename
+   * return the template (.tpl) filename
    *
-   * @param string $action
-   *   The action being performed.
+   * @param string $action the action being performed
    *
    * @return string
+   * @access public
+   *
    */
-  public function getTemplateFileName($action = NULL);
+  function getTemplateFileName($action = NULL);
 
   /**
-   * Return the filename for the exported CSV.
+   * return the filename for the exported CSV
    *
-   * @param string $type
-   *   The type of export required: csv/xml/foaf etc.
+   * @param string type   the type of export required: csv/xml/foaf etc
    *
-   * @return string
-   *   the fileName which we will munge to skip spaces and
+   * @return string the fileName which we will munge to skip spaces and
    *                special characters to avoid various browser issues
+   *
    */
-  public function getExportFileName($type = 'csv');
-
+  function getExportFileName($type = 'csv');
 }
+

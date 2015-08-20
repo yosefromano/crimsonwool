@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,20 +39,21 @@
 class CRM_Campaign_Form_Search_Campaign extends CRM_Core_Form {
 
   /**
-   * Are we forced to run a search.
+   * Are we forced to run a search
    *
    * @var int
+   * @access protected
    */
   protected $_force;
 
   /**
-   * Processing needed for buildForm and later.
+   * processing needed for buildForm and later
    *
    * @return void
-   */
-  public function preProcess() {
-    $this->_search = CRM_Utils_Array::value('search', $_GET);
-    $this->_force = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE, FALSE);
+   * @access public
+   */ function preProcess() {
+    $this->_search    = CRM_Utils_Array::value('search', $_GET);
+    $this->_force     = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE, FALSE);
     $this->_searchTab = CRM_Utils_Request::retrieve('type', 'String', $this, FALSE, 'campaign');
 
     //when we do load tab, lets load the default objects.
@@ -69,12 +70,13 @@ class CRM_Campaign_Form_Search_Campaign extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     if ($this->_search) {
       return;
     }
@@ -95,8 +97,7 @@ class CRM_Campaign_Form_Search_Campaign extends CRM_Core_Form {
     $campaignTypes = CRM_Campaign_PseudoConstant::campaignType();
     $this->add('select', 'campaign_type_id', ts('Campaign Type'),
       array(
-        '' => ts('- select -'),
-      ) + $campaignTypes
+        '' => ts('- select -')) + $campaignTypes
     );
 
     $this->set('campaignTypes', $campaignTypes);
@@ -106,8 +107,7 @@ class CRM_Campaign_Form_Search_Campaign extends CRM_Core_Form {
     $campaignStatus = CRM_Campaign_PseudoConstant::campaignStatus();
     $this->addElement('select', 'status_id', ts('Campaign Status'),
       array(
-        '' => ts('- select -'),
-      ) + $campaignStatus
+        '' => ts('- select -')) + $campaignStatus
     );
     $this->set('campaignStatus', $campaignStatus);
     $this->assign('campaignStatus', json_encode($campaignStatus));
@@ -125,5 +125,5 @@ class CRM_Campaign_Form_Search_Campaign extends CRM_Core_Form {
     $this->set('searchParams', $this->_searchParams);
     $this->assign('searchParams', json_encode($this->_searchParams));
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,14 +39,14 @@
 class CRM_Group_Form_Edit extends CRM_Core_Form {
 
   /**
-   * The group id, used when editing a group
+   * the group id, used when editing a group
    *
    * @var int
    */
   protected $_id;
 
   /**
-   * The group object, if an id is present
+   * the group object, if an id is present
    *
    * @var object
    */
@@ -67,41 +67,39 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
   protected $_groupValues;
 
   /**
-   * What blocks should we show and hide.
+   * what blocks should we show and hide.
    *
    * @var CRM_Core_ShowHideBlocks
    */
   protected $_showHide;
 
   /**
-   * The civicrm_group_organization table id
+   * the civicrm_group_organization table id
    *
    * @var int
    */
   protected $_groupOrganizationID;
 
   /**
-   * Set up variables to build the form.
+   * set up variables to build the form
    *
    * @return void
    * @acess protected
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_id = $this->get('id');
+
     if ($this->_id) {
-      $breadCrumb = array(
-        array(
-          'title' => ts('Manage Groups'),
+      $breadCrumb = array(array('title' => ts('Manage Groups'),
           'url' => CRM_Utils_System::url('civicrm/group',
             'reset=1'
           ),
-        ),
-      );
+        ));
       CRM_Utils_System::appendBreadCrumb($breadCrumb);
 
       $this->_groupValues = array();
-      $params = array('id' => $this->_id);
-      $this->_group = CRM_Contact_BAO_Group::retrieve($params, $this->_groupValues);
+      $params             = array('id' => $this->_id);
+      $this->_group       = CRM_Contact_BAO_Group::retrieve($params, $this->_groupValues);
       $this->_title = $this->_groupValues['title'];
     }
 
@@ -114,19 +112,15 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
         $this->assign('count', CRM_Contact_BAO_Group::memberCount($this->_id));
         CRM_Utils_System::setTitle(ts('Confirm Group Delete'));
       }
-      if ($this->_groupValues['is_reserved'] == 1 && !CRM_Core_Permission::check('administer reserved groups')) {
-        CRM_Core_Error::statusBounce(ts("You do not have sufficient permission to delete this reserved group."));
-      }
     }
     else {
-      if ($this->_groupValues['is_reserved'] == 1 && !CRM_Core_Permission::check('administer reserved groups')) {
-        CRM_Core_Error::statusBounce(ts("You do not have sufficient permission to change settings for this reserved group."));
-      }
       if (isset($this->_id)) {
         $groupValues = array(
           'id' => $this->_id,
           'title' => $this->_title,
-          'saved_search_id' => isset($this->_groupValues['saved_search_id']) ? $this->_groupValues['saved_search_id'] : '',
+          'saved_search_id' =>
+          isset($this->_groupValues['saved_search_id']) ?
+          $this->_groupValues['saved_search_id'] : '',
         );
         if (isset($this->_groupValues['saved_search_id'])) {
           $groupValues['mapping_id'] = CRM_Core_DAO::getFieldValue('CRM_Contact_DAO_SavedSearch',
@@ -138,13 +132,9 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
             'search_custom_id'
           );
         }
-        if (!empty($this->_groupValues['created_id'])) {
-          $groupValues['created_by'] = CRM_Core_DAO::getFieldValue("CRM_Contact_DAO_Contact", $this->_groupValues['created_id'], 'sort_name', 'id');
-        }
-
-        if (!empty($this->_groupValues['modified_id'])) {
-          $groupValues['modified_by'] = CRM_Core_DAO::getFieldValue("CRM_Contact_DAO_Contact", $this->_groupValues['modified_id'], 'sort_name', 'id');
-        }
+        if (CRM_Utils_Array::value('created_id', $this->_groupValues))
+          $groupValues['created_by'] =
+            CRM_Core_DAO::getFieldValue("CRM_Contact_DAO_Contact", $this->_groupValues['created_id'] , 'sort_name', 'id');
 
         $this->assign_by_ref('group', $groupValues);
 
@@ -158,18 +148,19 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
     CRM_Custom_Form_CustomData::preProcess($this, NULL, NULL, 1, 'Group', $this->_id);
   }
 
-  /**
-   * Set default values for the form. LocationType that in edit/view mode
+  /*
+   * This function sets the default values for the form. LocationType that in edit/view mode
    * the default values are retrieved from the database
    *
-   * @return array
+   * @access public
+   * @return None
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
 
     if (isset($this->_id)) {
       $defaults = $this->_groupValues;
-      if (!empty($defaults['group_type'])) {
+      if (CRM_Utils_Array::value('group_type', $defaults)) {
         $types = explode(CRM_Core_DAO::VALUE_SEPARATOR,
           substr($defaults['group_type'], 1, -1)
         );
@@ -179,17 +170,25 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
         }
       }
 
-      if (CRM_Core_Permission::check('administer Multiple Organizations') && CRM_Core_Permission::isMultisiteEnabled()) {
+      if (CRM_Core_Permission::check('administer Multiple Organizations') &&
+        CRM_Core_Permission::isMultisiteEnabled()
+      ) {
         CRM_Contact_BAO_GroupOrganization::retrieve($this->_id, $defaults);
+
+        if (CRM_Utils_Array::value('group_organization', $defaults)) {
+          //used in edit mode
+          $this->_groupOrganizationID = $defaults['group_organization'];
+        }
+
+        $this->assign('organizationID', CRM_Utils_Array::value('organization_id',$defaults));
       }
     }
 
     if (!((CRM_Core_Permission::check('access CiviMail')) ||
-      (CRM_Mailing_Info::workflowEnabled() &&
-        CRM_Core_Permission::check('create mailings')
-      )
-    )
-    ) {
+        (CRM_Mailing_Info::workflowEnabled() &&
+          CRM_Core_Permission::check('create mailings')
+        )
+      )) {
       $groupTypes = CRM_Core_OptionGroup::values('group_type', TRUE);
       if ($defaults['group_type'][$groupTypes['Mailing List']] == 1) {
         $this->assign('freezeMailignList', $groupTypes['Mailing List']);
@@ -199,7 +198,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       }
     }
 
-    if (empty($defaults['parents'])) {
+    if (!CRM_Utils_Array::value('parents', $defaults)) {
       $defaults['parents'] = CRM_Core_BAO_Domain::getGroupId();
     }
 
@@ -209,9 +208,10 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     if ($this->_action == CRM_Core_Action::DELETE) {
@@ -230,11 +230,6 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       return;
     }
 
-    // We want the "new group" form to redirect the user
-    if ($this->_action == CRM_Core_Action::ADD) {
-      $this->preventAjaxSubmit();
-    }
-
     $this->applyFilter('__ALL__', 'trim');
     $this->add('text', 'title', ts('Name') . ' ',
       CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Group', 'title'), TRUE
@@ -246,7 +241,9 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
 
     $groupTypes = CRM_Core_OptionGroup::values('group_type', TRUE);
     $config = CRM_Core_Config::singleton();
-    if (isset($this->_id) && !empty($this->_groupValues['saved_search_id'])) {
+    if (isset($this->_id) &&
+      CRM_Utils_Array::value('saved_search_id', $this->_groupValues)
+    ) {
       unset($groupTypes['Access Control']);
     }
 
@@ -258,15 +255,66 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       );
     }
 
-    $this->add('select', 'visibility', ts('Visibility'), CRM_Core_SelectValues::groupVisibility(), TRUE);
+    $this->add('select', 'visibility', ts('Visibility'),
+      CRM_Core_SelectValues::ufVisibility(TRUE), TRUE
+    );
 
-    //CRM-14190
-    $parentGroups = self::buildParentGroups($this);
+    $groupNames = CRM_Core_PseudoConstant::group();
 
-    if (CRM_Core_Permission::check('administer Multiple Organizations') && CRM_Core_Permission::isMultisiteEnabled()) {
+    $parentGroups = $parentGroupElements = array();
+    if (isset($this->_id) &&
+      CRM_Utils_Array::value('parents', $this->_groupValues)
+    ) {
+      $parentGroupIds = explode(',', $this->_groupValues['parents']);
+      foreach ($parentGroupIds as $parentGroupId) {
+        $parentGroups[$parentGroupId] = $groupNames[$parentGroupId];
+        if (array_key_exists($parentGroupId, $groupNames)) {
+          $parentGroupElements[$parentGroupId] = $groupNames[$parentGroupId];
+          $this->addElement('checkbox', "remove_parent_group_$parentGroupId",
+            $groupNames[$parentGroupId]
+          );
+        }
+      }
+    }
+    $this->assign_by_ref('parent_groups', $parentGroupElements);
+
+    if (isset($this->_id)) {
+      $potentialParentGroupIds = CRM_Contact_BAO_GroupNestingCache::getPotentialCandidates($this->_id,
+        $groupNames
+      );
+    }
+    else {
+      $potentialParentGroupIds = array_keys($groupNames);
+    }
+
+    $parentGroupSelectValues = array('' => '- ' . ts('select') . ' -');
+    foreach ($potentialParentGroupIds as $potentialParentGroupId) {
+      if (array_key_exists($potentialParentGroupId, $groupNames)) {
+        $parentGroupSelectValues[$potentialParentGroupId] = $groupNames[$potentialParentGroupId];
+      }
+    }
+
+    if (count($parentGroupSelectValues) > 1) {
+      if (CRM_Core_Permission::isMultisiteEnabled()) {
+        $required = empty($parentGroups) ? TRUE : FALSE;
+        $required = (($this->_id && CRM_Core_BAO_Domain::isDomainGroup($this->_id)) ||
+          !isset($this->_id)
+        ) ? FALSE : $required;
+      }
+      else {
+        $required = FALSE;
+      }
+      $this->add('select', 'parents', ts('Add Parent'), $parentGroupSelectValues, $required);
+    }
+    if (CRM_Core_Permission::check('administer Multiple Organizations') &&
+      CRM_Core_Permission::isMultisiteEnabled()
+    ) {
       //group organization Element
-      $props = array('api' => array('params' => array('contact_type' => 'Organization')));
-      $this->addEntityRef('organization_id', ts('Organization'), $props);
+      $groupOrgDataURL = CRM_Utils_System::url('civicrm/ajax/search', 'org=1', FALSE, NULL, FALSE);
+      $this->assign('groupOrgDataURL', $groupOrgDataURL);
+
+      $this->addElement('text', 'organization', ts('Organization'), '');
+      $this->addElement('hidden', 'organization_id', '', array('id' => 'organization_id'));
     }
 
     // is_reserved property CRM-9936
@@ -281,7 +329,9 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
     $this->addButtons(array(
         array(
           'type' => 'upload',
-          'name' => ($this->_action == CRM_Core_Action::ADD) ? ts('Continue') : ts('Save'),
+          'name' =>
+          ($this->_action == CRM_Core_Action::ADD) ?
+          ts('Continue') : ts('Save'),
           'isDefault' => TRUE,
         ),
         array(
@@ -305,17 +355,15 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
-   * @param array $fileParams
-   * @param $options
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields, $fileParams, $options) {
+  static function formRule($fields, $fileParams, $options) {
     $errors = array();
 
     $doParentCheck = $options['doParentCheck'];
@@ -332,7 +380,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
       }
 
       $grpAdd = 0;
-      if (!empty($fields['parents'])) {
+      if (CRM_Utils_Array::value('parents', $fields)) {
         $grpAdd++;
       }
 
@@ -342,7 +390,7 @@ class CRM_Group_Form_Edit extends CRM_Core_Form {
     }
 
     // do check for both name and title uniqueness
-    if (!empty($fields['title'])) {
+    if (CRM_Utils_Array::value('title', $fields)) {
       $title = trim($fields['title']);
       $query = "
 SELECT count(*)
@@ -366,9 +414,10 @@ WHERE  title = %1
   }
 
   /**
-   * Process the form when submitted.
+   * Process the form when submitted
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     CRM_Utils_System::flushCache('CRM_Core_DAO_Group');
@@ -404,8 +453,11 @@ WHERE  title = %1
 
       $group = CRM_Contact_BAO_Group::create($params);
 
-      //Remove any parent groups requested to be removed
-      if (!empty($this->_groupValues['parents'])) {
+      /*
+             * Remove any parent groups requested to be removed
+             */
+
+      if (CRM_Utils_Array::value('parents', $this->_groupValues)) {
         $parentGroupIds = explode(',', $this->_groupValues['parents']);
         foreach ($parentGroupIds as $parentGroupId) {
           if (isset($params["remove_parent_group_$parentGroupId"])) {
@@ -417,7 +469,10 @@ WHERE  title = %1
 
       CRM_Core_Session::setStatus(ts('The Group \'%1\' has been saved.', array(1 => $group->title)), ts('Group Saved'), 'success');
 
-      // Add context to the session, in case we are adding members to the group
+      /*
+             * Add context to the session, in case we are adding members to the group
+             */
+
       if ($this->_action & CRM_Core_Action::ADD) {
         $this->set('context', 'amtg');
         $this->set('amtgID', $group->id);
@@ -432,57 +487,5 @@ WHERE  title = %1
       CRM_Contact_BAO_GroupNestingCache::update();
     }
   }
-
-  /**
-   * Build parent groups form elements.
-   *
-   * @param CRM_Core_Form $form
-   *
-   * @return array
-   *   parent groups
-   */
-  public static function buildParentGroups(&$form) {
-    $groupNames = CRM_Core_PseudoConstant::group();
-    $parentGroups = $parentGroupElements = array();
-    if (isset($form->_id) && !empty($form->_groupValues['parents'])) {
-      $parentGroupIds = explode(',', $form->_groupValues['parents']);
-      foreach ($parentGroupIds as $parentGroupId) {
-        $parentGroups[$parentGroupId] = $groupNames[$parentGroupId];
-        if (array_key_exists($parentGroupId, $groupNames)) {
-          $parentGroupElements[$parentGroupId] = $groupNames[$parentGroupId];
-          $form->addElement('checkbox', "remove_parent_group_$parentGroupId",
-            $groupNames[$parentGroupId]
-          );
-        }
-      }
-    }
-    $form->assign_by_ref('parent_groups', $parentGroupElements);
-
-    if (isset($form->_id)) {
-      $potentialParentGroupIds = CRM_Contact_BAO_GroupNestingCache::getPotentialCandidates($form->_id, $groupNames);
-    }
-    else {
-      $potentialParentGroupIds = array_keys($groupNames);
-    }
-
-    $parentGroupSelectValues = array('' => '- ' . ts('select group') . ' -');
-    foreach ($potentialParentGroupIds as $potentialParentGroupId) {
-      if (array_key_exists($potentialParentGroupId, $groupNames)) {
-        $parentGroupSelectValues[$potentialParentGroupId] = $groupNames[$potentialParentGroupId];
-      }
-    }
-
-    if (count($parentGroupSelectValues) > 1) {
-      if (CRM_Core_Permission::isMultisiteEnabled()) {
-        $required = !isset($form->_id) || ($form->_id && CRM_Core_BAO_Domain::isDomainGroup($form->_id)) ? FALSE : empty($parentGroups);
-      }
-      else {
-        $required = FALSE;
-      }
-      $form->add('select', 'parents', ts('Add Parent'), $parentGroupSelectValues, $required, array('class' => 'crm-select2'));
-    }
-
-    return $parentGroups;
-  }
-
 }
+

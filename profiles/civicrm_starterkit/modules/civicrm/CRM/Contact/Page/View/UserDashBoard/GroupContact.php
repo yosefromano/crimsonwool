@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,23 +23,24 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_View_UserDashBoard {
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function browse() {
+  function browse() {
     $count = CRM_Contact_BAO_GroupContact::getContactGroup(
       $this->_contactId,
       NULL,
@@ -75,16 +76,17 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
   }
 
   /**
-   * called when action is update.
+   * This function is called when action is update
    *
-   * @param int $groupId
+   * @param int    $groupID group id
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function edit($groupId = NULL) {
+  function edit($groupId = NULL) {
     $this->assign('edit', $this->_edit);
     if (!$this->_edit) {
-      return NULL;
+      return;
     }
 
     $action = CRM_Utils_Request::retrieve('action', 'String',
@@ -93,8 +95,10 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
     );
 
     if ($action == CRM_Core_Action::DELETE) {
-      $groupContactId = CRM_Utils_Request::retrieve('gcid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
-      $status = CRM_Utils_Request::retrieve('st', 'String', CRM_Core_DAO::$_nullObject, TRUE);
+      $groupContactId =
+        CRM_Utils_Request::retrieve('gcid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE);
+      $status =
+        CRM_Utils_Request::retrieve('st', 'String', CRM_Core_DAO::$_nullObject, TRUE);
       if (is_numeric($groupContactId) && $status) {
         CRM_Contact_Page_View_GroupContact::del($groupContactId, $status, $this->_contactId);
       }
@@ -127,14 +131,15 @@ class CRM_Contact_Page_View_UserDashBoard_GroupContact extends CRM_Contact_Page_
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->edit();
     $this->browse();
   }
-
 }
+

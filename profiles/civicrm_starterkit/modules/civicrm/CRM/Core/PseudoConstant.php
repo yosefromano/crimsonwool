@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
@@ -43,158 +43,172 @@
  * This provides greater consistency/predictability after flushing.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_PseudoConstant {
 
   /**
-   * Static cache for pseudoconstant arrays.
+   * static cache for pseudoconstant arrays
    * @var array
+   * @static
    */
   private static $cache;
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * activity type
    * @var array
+   * @static
    */
   private static $activityType;
 
   /**
-   * States, provinces
+   * states, provinces
    * @var array
+   * @static
    */
   private static $stateProvince;
 
   /**
-   * Counties.
+   * counties
    * @var array
+   * @static
    */
   private static $county;
 
   /**
-   * States/provinces abbreviations
+   * states/provinces abbreviations
    * @var array
+   * @static
    */
   private static $stateProvinceAbbreviation;
 
   /**
-   * Country.
+   * country
    * @var array
+   * @static
    */
   private static $country;
 
   /**
-   * CountryIsoCode.
+   * countryIsoCode
    * @var array
+   * @static
    */
   private static $countryIsoCode;
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * group
    * @var array
+   * @static
    */
   private static $group;
 
   /**
-   * GroupIterator
+   * groupIterator
    * @var mixed
+   * @static
    */
   private static $groupIterator;
 
   /**
-   * RelationshipType
+   * relationshipType
    * @var array
+   * @static
    */
   private static $relationshipType;
 
   /**
-   * Civicrm groups that are not smart groups
+   * civicrm groups that are not smart groups
    * @var array
+   * @static
    */
   private static $staticGroup;
 
   /**
-   * Currency codes
+   * currency codes
    * @var array
+   * @static
    */
   private static $currencyCode;
 
   /**
-   * Payment processor
+   * payment processor
    * @var array
+   * @static
    */
   private static $paymentProcessor;
 
   /**
-   * Payment processor types
+   * payment processor types
    * @var array
+   * @static
    */
   private static $paymentProcessorType;
 
   /**
    * World Region
    * @var array
+   * @static
    */
   private static $worldRegions;
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * activity status
    * @var array
+   * @static
    */
   private static $activityStatus;
 
   /**
    * Visibility
    * @var array
+   * @static
    */
   private static $visibility;
 
   /**
    * Greetings
    * @var array
+   * @static
    */
   private static $greeting;
 
   /**
    * Default Greetings
    * @var array
+   * @static
    */
   private static $greetingDefaults;
 
   /**
    * Extensions of type module
    * @var array
+   * @static
    */
   private static $extensions;
 
   /**
    * Financial Account Type
    * @var array
+   * @static
    */
   private static $accountOptionValues;
 
   /**
-   * Tax Rates
-   * @var array
-   */
-  private static $taxRates;
-
-  /**
    * Low-level option getter, rarely accessed directly.
    * NOTE: Rather than calling this function directly use CRM_*_BAO_*::buildOptions()
-   * @see http://wiki.civicrm.org/confluence/display/CRMDOC/Pseudoconstant+%28option+list%29+Reference
    *
-   * @param string $daoName
-   * @param string $fieldName
-   * @param array $params
+   * @param String $daoName
+   * @param String $fieldName
+   * @param Array $params
    * - name       string  name of the option group
    * - flip       boolean results are return in id => label format if false
    *                            if true, the results are reversed
@@ -206,11 +220,11 @@ class CRM_Core_PseudoConstant {
    * - orderColumn string the column to use for sorting, defaults to 'weight' column if one exists, else defaults to labelColumn
    * - onlyActive boolean return only the action option values
    * - fresh      boolean ignore cache entries and go back to DB
-   * @param string $context : Context string
+   * @param String $context: Context string
    *
-   * @return array|bool
-   *   array on success, FALSE on error.
+   * @return Array on success, FALSE on error.
    *
+   * @static
    */
   public static function get($daoName, $fieldName, $params = array(), $context = NULL) {
     CRM_Core_DAO::buildOptionsContext($context);
@@ -232,7 +246,7 @@ class CRM_Core_PseudoConstant {
 
       if (!empty($customField->option_group_id)) {
         $options = CRM_Core_OptionGroup::valuesByID($customField->option_group_id,
-          FALSE,
+          $flip,
           $params['grouping'],
           $params['localize'],
           // Note: for custom fields the 'name' column is NULL
@@ -249,34 +263,44 @@ class CRM_Core_PseudoConstant {
           $options = $context == 'validate' ? self::countryIsoCode() : self::country();
         }
         elseif ($customField->data_type === 'Boolean') {
-          $options = $context == 'validate' ? array(0, 1) : CRM_Core_SelectValues::boolean();
+          $options = $context == 'validate' ? array(0, 1) : array(1 => ts('Yes'), 0 => ts('No'));
         }
+        $options = $options && $flip ? array_flip($options) : $options;
       }
-      CRM_Utils_Hook::customFieldOptions($customField->id, $options, FALSE);
-      if ($options && $flip) {
-        $options = array_flip($options);
+      if ($options !== FALSE) {
+        CRM_Utils_Hook::customFieldOptions($customField->id, $options, FALSE);
       }
       $customField->free();
       return $options;
     }
 
     // Core field: load schema
-    $dao = new $daoName();
-    $fieldSpec = $dao->getFieldSpec($fieldName);
+    $dao = new $daoName;
+    $fields = $dao->fields();
+    $fieldKeys = $dao->fieldKeys();
     $dao->free();
+
+    // Support "unique names" as well as sql names
+    $fieldKey = $fieldName;
+    if (empty($fields[$fieldKey])) {
+      $fieldKey = CRM_Utils_Array::value($fieldName, $fieldKeys);
+    }
     // If neither worked then this field doesn't exist. Return false.
-    if (empty($fieldSpec)) {
+    if (empty($fields[$fieldKey])) {
       return FALSE;
+    }
+    $fieldSpec = $fields[$fieldKey];
+
+    // If the field is an enum, explode the enum definition and return the array.
+    if (isset($fieldSpec['enumValues'])) {
+      // use of a space after the comma is inconsistent in xml
+      $enumStr = str_replace(', ', ',', $fieldSpec['enumValues']);
+      $output = explode(',', $enumStr);
+      return array_combine($output, $output);
     }
 
     elseif (!empty($fieldSpec['pseudoconstant'])) {
       $pseudoconstant = $fieldSpec['pseudoconstant'];
-
-      // if callback is specified..
-      if (!empty($pseudoconstant['callback'])) {
-        return call_user_func(Civi\Core\Resolver::singleton()->get($pseudoconstant['callback']));
-      }
-
       // Merge params with schema defaults
       $params += array(
         'condition' => CRM_Utils_Array::value('condition', $pseudoconstant, array()),
@@ -284,27 +308,10 @@ class CRM_Core_PseudoConstant {
         'labelColumn' => CRM_Utils_Array::value('labelColumn', $pseudoconstant),
       );
 
-      if ($context == 'abbreviate') {
-        switch ($fieldName) {
-          case 'state_province_id':
-            $params['labelColumn'] = 'abbreviation';
-            break;
-
-          case 'country_id':
-            $params['labelColumn'] = 'iso_code';
-            break;
-
-          default:
-        }
-      }
-
       // Fetch option group from option_value table
-      if (!empty($pseudoconstant['optionGroupName'])) {
+      if(!empty($pseudoconstant['optionGroupName'])) {
         if ($context == 'validate') {
           $params['labelColumn'] = 'name';
-        }
-        if ($context == 'match') {
-          $params['keyColumn'] = 'name';
         }
         // Call our generic fn for retrieving from the option_value table
         return CRM_Core_OptionGroup::values(
@@ -337,7 +344,7 @@ class CRM_Core_PseudoConstant {
             return FALSE;
           }
           // Get list of fields for the option table
-          $dao = new $daoName();
+          $dao = new $daoName;
           $availableFields = array_keys($dao->fieldKeys());
           $dao->free();
 
@@ -346,14 +353,13 @@ class CRM_Core_PseudoConstant {
           $wheres = array();
           $order = "ORDER BY %2";
 
-          // Use machine name in certain contexts
-          if ($context == 'validate' || $context == 'match') {
-            $nameField = $context == 'validate' ? 'labelColumn' : 'keyColumn';
+          // Use machine name instead of label in validate context
+          if ($context == 'validate') {
             if (!empty($pseudoconstant['nameColumn'])) {
-              $params[$nameField] = $pseudoconstant['nameColumn'];
+              $params['labelColumn'] = $pseudoconstant['nameColumn'];
             }
             elseif (in_array('name', $availableFields)) {
-              $params[$nameField] = 'name';
+              $params['labelColumn'] = 'name';
             }
           }
           // Condition param can be passed as an sql clause string or an array of clauses
@@ -362,7 +368,7 @@ class CRM_Core_PseudoConstant {
           }
           // onlyActive param will automatically filter on common flags
           if (!empty($params['onlyActive'])) {
-            foreach (array('is_active' => 1, 'is_deleted' => 0, 'is_test' => 0, 'is_hidden' => 0) as $flag => $val) {
+            foreach (array('is_active' => 1, 'is_deleted' => 0, 'is_test' => 0) as $flag => $val) {
               if (in_array($flag, $availableFields)) {
                 $wheres[] = "$flag = $val";
               }
@@ -373,9 +379,9 @@ class CRM_Core_PseudoConstant {
             $wheres[] = 'domain_id = ' . CRM_Core_Config::domainID();
           }
           $queryParams = array(
-            1 => array($params['keyColumn'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
-            2 => array($params['labelColumn'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
-            3 => array($pseudoconstant['table'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
+             1 => array($params['keyColumn'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
+             2 => array($params['labelColumn'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
+             3 => array($pseudoconstant['table'], 'String', CRM_Core_DAO::QUERY_FORMAT_NO_QUOTES),
           );
           // Add orderColumn param
           if (!empty($params['orderColumn'])) {
@@ -434,11 +440,11 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * Fetch the translated label for a field given its key.
+   * Fetch the translated label for a field given its key
    *
-   * @param string $baoName
-   * @param string $fieldName
-   * @param string|Int $key
+   * @param String $baoName
+   * @param String $fieldName
+   * @param String|Int $key
    *
    * TODO: Accept multivalued input?
    *
@@ -447,7 +453,7 @@ class CRM_Core_PseudoConstant {
    *   NULL if the given key has no corresponding option
    *   String if label is found
    */
-  public static function getLabel($baoName, $fieldName, $key) {
+  static function getLabel($baoName, $fieldName, $key) {
     $values = $baoName::buildOptions($fieldName, 'get');
     if ($values === FALSE) {
       return FALSE;
@@ -456,18 +462,18 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * Fetch the machine name for a field given its key.
+   * Fetch the machine name for a field given its key
    *
-   * @param string $baoName
-   * @param string $fieldName
-   * @param string|Int $key
+   * @param String $baoName
+   * @param String $fieldName
+   * @param String|Int $key
    *
    * @return bool|null|string
    *   FALSE if the given field has no associated option list
    *   NULL if the given key has no corresponding option
    *   String if label is found
    */
-  public static function getName($baoName, $fieldName, $key) {
+  static function getName($baoName, $fieldName, $key) {
     $values = $baoName::buildOptions($fieldName, 'validate');
     if ($values === FALSE) {
       return FALSE;
@@ -476,18 +482,18 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * Fetch the key for a field option given its name.
+   * Fetch the key for a field option given its name
    *
-   * @param string $baoName
-   * @param string $fieldName
-   * @param string|Int $value
+   * @param String $baoName
+   * @param String $fieldName
+   * @param String|Int $value
    *
-   * @return bool|null|string|int
+   * @return bool|null|string|number
    *   FALSE if the given field has no associated option list
    *   NULL if the given key has no corresponding option
    *   String|Number if key is found
    */
-  public static function getKey($baoName, $fieldName, $value) {
+  static function getKey($baoName, $fieldName, $value) {
     $values = $baoName::buildOptions($fieldName, 'validate');
     if ($values === FALSE) {
       return FALSE;
@@ -496,59 +502,24 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * Lookup the admin page at which a field's option list can be edited
-   * @param $fieldSpec
-   * @return string|null
-   */
-  public static function getOptionEditUrl($fieldSpec) {
-    // If it's an option group, that's easy
-    if (!empty($fieldSpec['pseudoconstant']['optionGroupName'])) {
-      return 'civicrm/admin/options/' . $fieldSpec['pseudoconstant']['optionGroupName'];
-    }
-    // For everything else...
-    elseif (!empty($fieldSpec['pseudoconstant']['table'])) {
-      $daoName = CRM_Core_DAO_AllCoreTables::getClassForTable($fieldSpec['pseudoconstant']['table']);
-      if (!$daoName) {
-        return NULL;
-      }
-      // We don't have good mapping so have to do a bit of guesswork from the menu
-      list(, $parent, , $child) = explode('_', $daoName);
-      $sql = "SELECT path FROM civicrm_menu
-        WHERE page_callback LIKE '%CRM_Admin_Page_$child%' OR page_callback LIKE '%CRM_{$parent}_Page_$child%'
-        ORDER BY page_callback
-        LIMIT 1";
-      return CRM_Core_Dao::singleValueQuery($sql);
-    }
-    return NULL;
-  }
-
-  /**
-   * DEPRECATED generic populate method.
-   * All pseudoconstant functions that use this method are also @deprecated
+   * DEPRECATED generic populate method
+   * All pseudoconstant functions that use this method are also deprecated.
    *
    * The static array $var is populated from the db
    * using the <b>$name DAO</b>.
    *
    * Note: any database errors will be trapped by the DAO.
    *
-   * @param array $var
-   *   The associative array we will fill.
-   * @param string $name
-   *   The name of the DAO.
-   * @param bool $all
-   *   Get all objects. default is to get only active ones.
-   * @param string $retrieve
-   *   The field that we are interested in (normally name, differs in some objects).
-   * @param string $filter
-   *   The field that we want to filter the result set with.
-   * @param string $condition
-   *   The condition that gets passed to the final query as the WHERE clause.
-   *
-   * @param null $orderby
-   * @param string $key
-   * @param null $force
+   * @param array   $var        the associative array we will fill
+   * @param string  $name       the name of the DAO
+   * @param boolean $all        get all objects. default is to get only active ones.
+   * @param string  $retrieve   the field that we are interested in (normally name, differs in some objects)
+   * @param string  $filter     the field that we want to filter the result set with
+   * @param string  $condition  the condition that gets passed to the final query as the WHERE clause
    *
    * @return void
+   * @access public
+   * @static
    */
   public static function populate(
     &$var,
@@ -562,13 +533,13 @@ class CRM_Core_PseudoConstant {
     $force = NULL
   ) {
     $cacheKey = "CRM_PC_{$name}_{$all}_{$key}_{$retrieve}_{$filter}_{$condition}_{$orderby}";
-    $cache = CRM_Utils_Cache::singleton();
-    $var = $cache->get($cacheKey);
+    $cache    = CRM_Utils_Cache::singleton();
+    $var      = $cache->get($cacheKey);
     if ($var && empty($force)) {
       return $var;
     }
 
-    $object = new $name();
+    $object = new $name ( );
 
     $object->selectAdd();
     $object->selectAdd("$key, $retrieve");
@@ -597,11 +568,14 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * Flush given pseudoconstant so it can be reread from db.
+   * Flush given pseudoconstant so it can be reread from db
    * nex time it's requested.
    *
+   * @access public
+   * @static
    *
-   * @param bool|string $name pseudoconstant to be flushed
+   * @param boolean $name pseudoconstant to be flushed
+   *
    */
   public static function flush($name = 'cache') {
     if (isset(self::$$name)) {
@@ -613,15 +587,18 @@ class CRM_Core_PseudoConstant {
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * Get all Activty types.
    *
    * The static array activityType is returned
    *
+   * @param boolean $all - get All Activity  types - default is to get only active ones.
    *
-   * @return array
-   *   array reference of all activity types.
+   * @access public
+   * @static
+   *
+   * @return array - array reference of all activity types.
    */
   public static function &activityType() {
     $args = func_get_args();
@@ -693,13 +670,13 @@ class CRM_Core_PseudoConstant {
    *
    * Note: any database errors will be trapped by the DAO.
    *
+   * @access public
+   * @static
    *
-   * @param bool|int $id - Optional id to return
+   * @param int $id -  Optional id to return
    *
-   * @param bool $limit
+   * @return array - array reference of all State/Provinces.
    *
-   * @return array
-   *   array reference of all State/Provinces.
    */
   public static function &stateProvince($id = FALSE, $limit = TRUE) {
     if (($id && !CRM_Utils_Array::value($id, self::$stateProvince)) || !self::$stateProvince || !$id) {
@@ -707,8 +684,8 @@ class CRM_Core_PseudoConstant {
       $config = CRM_Core_Config::singleton();
       if ($limit) {
         $countryIsoCodes = self::countryIsoCode();
-        $limitCodes = $config->provinceLimit();
-        $limitIds = array();
+        $limitCodes      = $config->provinceLimit();
+        $limitIds        = array();
         foreach ($limitCodes as $code) {
           $limitIds = array_merge($limitIds, array_keys($countryIsoCodes, $code));
         }
@@ -726,8 +703,8 @@ class CRM_Core_PseudoConstant {
       if ($tsLocale != '' and $tsLocale != 'en_US') {
         $i18n = CRM_Core_I18n::singleton();
         $i18n->localizeArray(self::$stateProvince, array(
-          'context' => 'province',
-        ));
+            'context' => 'province',
+          ));
         self::$stateProvince = CRM_Utils_Array::asort(self::$stateProvince);
       }
     }
@@ -748,13 +725,12 @@ class CRM_Core_PseudoConstant {
    *
    * Same as above, except gets the abbreviations instead of the names.
    *
+   * @access public
+   * @static
    *
-   * @param bool|int $id - Optional id to return
+   * @param int $id  -     Optional id to return
    *
-   * @param bool $limit
-   *
-   * @return array
-   *   array reference of all State/Province abbreviations.
+   * @return array - array reference of all State/Province abbreviations.
    */
   public static function &stateProvinceAbbreviation($id = FALSE, $limit = TRUE) {
     if ($id > 1) {
@@ -776,10 +752,10 @@ WHERE  id = %1";
       $whereClause = FALSE;
 
       if ($limit) {
-        $config = CRM_Core_Config::singleton();
+        $config          = CRM_Core_Config::singleton();
         $countryIsoCodes = self::countryIsoCode();
-        $limitCodes = $config->provinceLimit();
-        $limitIds = array();
+        $limitCodes      = $config->provinceLimit();
+        $limitIds        = array();
         foreach ($limitCodes as $code) {
           $tmpArray = array_keys($countryIsoCodes, $code);
 
@@ -815,13 +791,13 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
+   * @access public
+   * @static
    *
-   * @param bool|int $id - Optional id to return
+   * @param int $id - Optional id to return
    *
-   * @param bool $applyLimit
+   * @return array - array reference of all countries.
    *
-   * @return array
-   *   array reference of all countries.
    */
   public static function country($id = FALSE, $applyLimit = TRUE) {
     if (($id && !CRM_Utils_Array::value($id, self::$country)) || !self::$country || !$id) {
@@ -867,8 +843,8 @@ WHERE  id = %1";
       if ($tsLocale != '' and $tsLocale != 'en_US') {
         $i18n = CRM_Core_I18n::singleton();
         $i18n->localizeArray(self::$country, array(
-          'context' => 'country',
-        ));
+            'context' => 'country',
+          ));
         self::$country = CRM_Utils_Array::asort(self::$country);
       }
     }
@@ -892,11 +868,11 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
+   * @access public
+   * @static
    *
-   * @param bool $id
+   * @return array - array reference of all country ISO codes.
    *
-   * @return array
-   *   array reference of all country ISO codes.
    */
   public static function &countryIsoCode($id = FALSE) {
     if (!self::$countryIsoCode) {
@@ -914,7 +890,7 @@ WHERE  id = %1";
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * Get all groups from database
    *
@@ -924,14 +900,14 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
-   * @param string $groupType
-   *   Type of group(Access/Mailing).
-   * @param bool $excludeHidden
-   *   Exclude hidden groups.
+   * @param string $groupType     type of group(Access/Mailing)
+   * @param boolen $excludeHidden exclude hidden groups.
    *
+   * @access public
+   * @static
    *
-   * @return array
-   *   array reference of all groups.
+   * @return array - array reference of all groups.
+   *
    */
   public static function &allGroup($groupType = NULL, $excludeHidden = TRUE) {
     $condition = CRM_Contact_BAO_Group::groupTypeCondition($groupType, $excludeHidden);
@@ -957,22 +933,27 @@ WHERE  id = %1";
    * called for the first time
    *
    *
+   * @access public
+   * @static
    *
-   * @param bool $styledLabels
+   * @return mixed - instance of CRM_Contact_BAO_GroupNesting
    *
-   * @return CRM_Contact_BAO_GroupNesting
    */
   public static function &groupIterator($styledLabels = FALSE) {
     if (!self::$groupIterator) {
-      // When used as an object, GroupNesting implements Iterator
-      // and iterates nested groups in a logical manner for us
+      /*
+        When used as an object, GroupNesting implements Iterator
+        and iterates nested groups in a logical manner for us
+      */
       self::$groupIterator = new CRM_Contact_BAO_GroupNesting($styledLabels);
     }
     return self::$groupIterator;
   }
 
   /**
-   * Get all permissioned groups from database.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
+   *
+   * Get all permissioned groups from database
    *
    * The static array group is returned, and if it's
    * called the first time, the <b>Group DAO</b> is used
@@ -980,33 +961,21 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
-   * @param string $groupType
-   *   Type of group(Access/Mailing).
-   * @param bool $excludeHidden
-   *   Exclude hidden groups.
+   * @param string $groupType     type of group(Access/Mailing)
+   * @param boolen $excludeHidden exclude hidden groups.
+
+   * @access public
+   * @static
    *
+   * @return array - array reference of all groups.
    *
-   * @return array
-   *   array reference of all groups.
    */
   public static function group($groupType = NULL, $excludeHidden = TRUE) {
     return CRM_Core_Permission::group($groupType, $excludeHidden);
   }
 
   /**
-   * Fetch groups in a nested format suitable for use in select form element.
-   * @param bool $checkPermissions
-   * @param string|null $groupType
-   * @param bool $excludeHidden
-   * @return array
-   */
-  public static function nestedGroup($checkPermissions = TRUE, $groupType = NULL, $excludeHidden = TRUE) {
-    $groups = $checkPermissions ? self::group($groupType, $excludeHidden) : self::allGroup($groupType, $excludeHidden);
-    return CRM_Contact_BAO_Group::getGroupsHierarchy($groups, NULL, '&nbsp;&nbsp;', TRUE);
-  }
-
-  /**
-   * Get all permissioned groups from database.
+   * Get all permissioned groups from database
    *
    * The static array group is returned, and if it's
    * called the first time, the <b>Group DAO</b> is used
@@ -1014,13 +983,11 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
+   * @access public
+   * @static
    *
-   * @param bool $onlyPublic
-   * @param null $groupType
-   * @param bool $excludeHidden
+   * @return array - array reference of all groups.
    *
-   * @return array
-   *   array reference of all groups.
    */
   public static function &staticGroup($onlyPublic = FALSE, $groupType = NULL, $excludeHidden = TRUE) {
     if (!self::$staticGroup) {
@@ -1052,14 +1019,13 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
-   * @param string $valueColumnName
-   *   Db column name/label.
-   * @param bool $reset
-   *   Reset relationship types if true.
+   * @param string $valueColumnName db column name/label.
+   * @param boolean $reset          reset relationship types if true
    *
+   * @access public
+   * @static
    *
-   * @return array
-   *   array reference of all relationship types.
+   * @return array - array reference of all relationship types.
    */
   public static function &relationshipType($valueColumnName = 'label', $reset = FALSE) {
     if (!CRM_Utils_Array::value($valueColumnName, self::$relationshipType) || $reset) {
@@ -1092,13 +1058,14 @@ WHERE  id = %1";
   }
 
   /**
-   * Get all the ISO 4217 currency codes
+   * get all the ISO 4217 currency codes
    *
    * so far, we use this for validation only, so there's no point of putting this into the database
    *
+   * @access public
    *
-   * @return array
-   *   array reference of all currency codes
+   * @return array - array reference of all currency codes
+   * @static
    */
   public static function &currencyCode() {
     if (!self::$currencyCode) {
@@ -1384,11 +1351,13 @@ WHERE  id = %1";
    *
    * Note: any database errors will be trapped by the DAO.
    *
+   * @access public
+   * @static
    *
-   * @param bool|int $id - Optional id to return
+   * @param int $id -  Optional id to return
    *
-   * @return array
-   *   array reference of all Counties
+   * @return array - array reference of all Counties
+   *
    */
   public static function &county($id = FALSE) {
     if (!self::$county) {
@@ -1409,21 +1378,19 @@ WHERE  id = %1";
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    * Get all active payment processors
    *
    * The static array paymentProcessor is returned
    *
+   * @access public
+   * @static
    *
-   * @param bool $all
-   *   Get payment processors - default is to get only active ones.
-   * @param bool $test
-   *   Get test payment processors.
+   * @param boolean $all  - get payment processors     - default is to get only active ones.
+   * @param boolean $test - get test payment processors
    *
-   * @param null $additionalCond
+   * @return array - array of all payment processors
    *
-   * @return array
-   *   array of all payment processors
    */
   public static function &paymentProcessor($all = FALSE, $test = FALSE, $additionalCond = NULL) {
     $condition = "is_test = ";
@@ -1446,22 +1413,20 @@ WHERE  id = %1";
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * The static array paymentProcessorType is returned
    *
+   * @access public
+   * @static
    *
-   * @param bool $all
-   *   Get payment processors - default is to get only active ones.
+   * @param boolean $all  - get payment processors     - default is to get only active ones.
    *
-   * @param int $id
-   * @param string $return
+   * @return array - array of all payment processor types
    *
-   * @return array
-   *   array of all payment processor types
    */
   public static function &paymentProcessorType($all = FALSE, $id = NULL, $return = 'title') {
-    $cacheKey = $id . '_' . $return;
+    $cacheKey = $id . '_' .$return;
     if (empty(self::$paymentProcessorType[$cacheKey])) {
       self::populate(self::$paymentProcessorType[$cacheKey], 'CRM_Financial_DAO_PaymentProcessorType', $all, $return, 'is_active', NULL, "is_default, $return", 'id');
     }
@@ -1472,13 +1437,12 @@ WHERE  id = %1";
   }
 
   /**
-   * Get all the World Regions from Database.
+   * Get all the World Regions from Database
    *
+   * @access public
    *
-   * @param bool $id
-   *
-   * @return array
-   *   array reference of all World Regions
+   * @return array - array reference of all World Regions
+   * @static
    */
   public static function &worldRegion($id = FALSE) {
     if (!self::$worldRegions) {
@@ -1498,17 +1462,16 @@ WHERE  id = %1";
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * Get all Activity Statuses.
    *
    * The static array activityStatus is returned
    *
+   * @access public
+   * @static
    *
-   * @param string $column
-   *
-   * @return array
-   *   array reference of all activity statuses
+   * @return array - array reference of all activity statuses
    */
   public static function &activityStatus($column = 'label') {
     if (NULL === self::$activityStatus) {
@@ -1524,36 +1487,30 @@ WHERE  id = %1";
   }
 
   /**
-   * @deprecated Please use the buildOptions() method in the appropriate BAO object.
+   * DEPRECATED. Please use the buildOptions() method in the appropriate BAO object.
    *
    * Get all Visibility levels.
    *
    * The static array visibility is returned
    *
+   * @access public
+   * @static
    *
-   * @param string $column
+   * @return array - array reference of all Visibility levels.
    *
-   * @return array
-   *   array reference of all Visibility levels.
    */
   public static function &visibility($column = 'label') {
     if (!isset(self::$visibility)) {
-      self::$visibility = array();
+      self::$visibility = array( );
     }
 
     if (!isset(self::$visibility[$column])) {
       self::$visibility[$column] = CRM_Core_OptionGroup::values('visibility', FALSE, FALSE, FALSE, NULL, $column);
-    }
+  }
 
     return self::$visibility[$column];
   }
 
-  /**
-   * @param int $countryID
-   * @param string $field
-   *
-   * @return array
-   */
   public static function &stateProvinceForCountry($countryID, $field = 'name') {
     static $_cache = NULL;
 
@@ -1603,11 +1560,6 @@ ORDER BY name";
     return $result;
   }
 
-  /**
-   * @param int $stateID
-   *
-   * @return array
-   */
   public static function &countyForState($stateID) {
     if (is_array($stateID)) {
       $states = implode(", ", $stateID);
@@ -1665,12 +1617,13 @@ ORDER BY name";
    * Given a state ID return the country ID, this allows
    * us to populate forms and values for downstream code
    *
-   * @param int $stateID
+   * @param $stateID int
    *
-   * @return int
-   *   the country id that the state belongs to
+   * @return int the country id that the state belongs to
+   * @static
+   * @public
    */
-  public static function countryIDForStateID($stateID) {
+  static function countryIDForStateID($stateID) {
     if (empty($stateID)) {
       return CRM_Core_DAO::$_nullObject;
     }
@@ -1690,14 +1643,13 @@ WHERE  id = %1
    *
    * The static array of greeting is returned
    *
+   * @access public
+   * @static
    *
-   * @param $filter
-   *   Get All Email Greetings - default is to get only active ones.
+   * @param $filter - get All Email Greetings - default is to get only active ones.
    *
-   * @param string $columnName
+   * @return array - array reference of all greetings.
    *
-   * @return array
-   *   array reference of all greetings.
    */
   public static function greeting($filter, $columnName = 'label') {
     $index = $filter['greeting_type'] . '_' . $columnName;
@@ -1739,19 +1691,18 @@ WHERE  id = %1
   }
 
   /**
-   * Construct array of default greeting values for contact type.
+   * Construct array of default greeting values for contact type
    *
+   * @access public
+   * @static
    *
-   * @return array
-   *   array reference of default greetings.
+   * @return array - array reference of default greetings.
+   *
    */
   public static function &greetingDefaults() {
     if (!self::$greetingDefaults) {
       $defaultGreetings = array();
-      $contactTypes = self::get('CRM_Contact_DAO_Contact', 'contact_type', array(
-          'keyColumn' => 'id',
-          'labelColumn' => 'name',
-        ));
+      $contactTypes = self::get('CRM_Contact_DAO_Contact', 'contact_type', array('keyColumn' => 'id', 'labelColumn' => 'name'));
 
       foreach ($contactTypes as $filter => $contactType) {
         $filterCondition = " AND (v.filter = 0 OR v.filter = $filter) AND v.is_default = 1 ";
@@ -1769,16 +1720,17 @@ WHERE  id = %1
   }
 
   /**
-   * Get all extensions.
+   * Get all extensions
    *
    * The static array extensions
    *
    * FIXME: This is called by civix but not by any core code. We
    * should provide an API call which civix can use instead.
    *
+   * @access public
+   * @static
    *
-   * @return array
-   *   array($fullyQualifiedName => $label) list of extensions
+   * @return array - array($fullyQualifiedName => $label) list of extensions
    */
   public static function &getExtensions() {
     if (!self::$extensions) {
@@ -1798,24 +1750,22 @@ WHERE  id = %1
   }
 
   /**
-   * Get all options values.
+   * Get all options values
    *
    * The static array option values is returned
    *
+   * @access public
+   * @static
    *
-   * @param bool $optionGroupName
-   *   Get All Option Group values- default is to get only active ones.
+   * @param boolean $optionGroupName - get All  Option Group values- default is to get only active ones.
    *
-   * @param int $id
-   * @param null $condition
+   * @return array - array reference of all Option Group Name
    *
-   * @return array
-   *   array reference of all Option Group Name
    */
-  public static function accountOptionValues($optionGroupName, $id = NULL, $condition = NULL) {
+  public static function accountOptionValues($optionGroupName, $id = null, $condition = null) {
     $cacheKey = $optionGroupName . '_' . $condition;
     if (empty(self::$accountOptionValues[$cacheKey])) {
-      self::$accountOptionValues[$cacheKey] = CRM_Core_OptionGroup::values($optionGroupName, FALSE, FALSE, FALSE, $condition);
+      self::$accountOptionValues[$cacheKey] = CRM_Core_OptionGroup::values($optionGroupName, false, false, false, $condition);
     }
     if ($id) {
       return CRM_Utils_Array::value($id, self::$accountOptionValues[$cacheKey]);
@@ -1827,45 +1777,14 @@ WHERE  id = %1
   /**
    * Fetch the list of active extensions of type 'module'
    *
-   * @param bool $fresh
-   *   Whether to forcibly reload extensions list from canonical store.
+   * @param $fresh bool whether to forcibly reload extensions list from canonical store
+   * @access public
+   * @static
    *
-   * @return array
-   *   array(array('prefix' => $, 'file' => $))
+   * @return array - array(array('prefix' => $, 'file' => $))
    */
   public static function getModuleExtensions($fresh = FALSE) {
     return CRM_Extension_System::singleton()->getMapper()->getActiveModuleFiles($fresh);
   }
-
-
-  /**
-   * Get all tax rates.
-   *
-   * The static array tax rates is returned
-   *
-   * @return array
-   *   array list of tax rates with the financial type
-   */
-  public static function getTaxRates() {
-    if (!self::$taxRates) {
-      self::$taxRates = array();
-      $sql = "
-        SELECT fa.tax_rate, efa.entity_id
-        FROM civicrm_entity_financial_account efa
-        INNER JOIN civicrm_financial_account fa ON fa.id = efa.financial_account_id
-        INNER JOIN civicrm_option_value cov ON cov.value = efa.account_relationship
-        INNER JOIN civicrm_option_group cog ON cog.id = cov.option_group_id
-        WHERE efa.entity_table = 'civicrm_financial_type'
-        AND cov.name = 'Sales Tax Account is'
-        AND cog.name = 'account_relationship'
-        AND fa.is_active = 1";
-      $dao = CRM_Core_DAO::executeQuery($sql);
-      while ($dao->fetch()) {
-        self::$taxRates[$dao->entity_id] = $dao->tax_rate;
-      }
-    }
-
-    return self::$taxRates;
-  }
-
 }
+

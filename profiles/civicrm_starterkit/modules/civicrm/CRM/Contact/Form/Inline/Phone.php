@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,7 +39,7 @@
 class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
 
   /**
-   * Phones of the contact that is been viewed
+   * phones of the contact that is been viewed
    */
   private $_phones = array();
 
@@ -49,7 +49,7 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
   private $_blockCount = 6;
 
   /**
-   * Call preprocess.
+   * call preprocess
    */
   public function preProcess() {
     parent::preProcess();
@@ -62,9 +62,10 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
   }
 
   /**
-   * Build the form object elements for phone object.
+   * build the form elements for phone object
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
@@ -74,9 +75,9 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
     if (count($this->_phones) > 1) {
       $actualBlockCount = $totalBlocks = count($this->_phones);
       if ($totalBlocks < $this->_blockCount) {
-        $additionalBlocks = $this->_blockCount - $totalBlocks;
-        $totalBlocks += $additionalBlocks;
-      }
+      $additionalBlocks = $this->_blockCount - $totalBlocks;
+      $totalBlocks += $additionalBlocks;
+    }
       else {
         $actualBlockCount++;
         $totalBlocks++;
@@ -96,28 +97,29 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
-   * @param array $errors
-   *   List of errors to be posted back to the form.
+   * @param array $fields     posted values of the form
+   * @param array $errors     list of errors to be posted back to the form
    *
-   * @return array
+   * @return $errors
+   * @static
+   * @access public
    */
-  public static function formRule($fields, $errors) {
+  static function formRule($fields, $errors) {
     $hasData = $hasPrimary = $errors = array();
-    if (!empty($fields['phone']) && is_array($fields['phone'])) {
-      $primaryID = NULL;
+    if (CRM_Utils_Array::value('phone', $fields) && is_array($fields['phone'])) {
+      $primaryID = null;
       foreach ($fields['phone'] as $instance => $blockValues) {
         $dataExists = CRM_Contact_Form_Contact::blockDataExists($blockValues);
 
         if ($dataExists) {
           $hasData[] = $instance;
-          if (!empty($blockValues['is_primary'])) {
+          if (CRM_Utils_Array::value('is_primary', $blockValues)) {
             $hasPrimary[] = $instance;
-            if (!$primaryID && !empty($blockValues['phone'])) {
-              $primaryID = $blockValues['phone'];
+            if (!$primaryID &&
+              CRM_Utils_Array::value('phone', $blockValues)) {
+                $primaryID = $blockValues['phone'];
             }
           }
         }
@@ -128,16 +130,17 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
       }
 
       if (count($hasPrimary) > 1) {
-        $errors["phone[" . array_pop($hasPrimary) . "][is_primary]"] = ts('Only one phone can be marked as primary.');
+        $errors["phone[".array_pop($hasPrimary)."][is_primary]"] = ts('Only one phone can be marked as primary.');
       }
     }
     return $errors;
   }
 
   /**
-   * Set defaults for the form.
+   * set defaults for the form
    *
    * @return array
+   * @access public
    */
   public function setDefaultValues() {
     $defaults = array();
@@ -155,9 +158,10 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
   }
 
   /**
-   * Process the form.
+   * process the form
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $params = $this->exportValues();
@@ -170,5 +174,4 @@ class CRM_Contact_Form_Inline_Phone extends CRM_Contact_Form_Inline {
     $this->log();
     $this->response();
   }
-
 }

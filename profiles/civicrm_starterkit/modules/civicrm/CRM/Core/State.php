@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * The basic state element. Each state element is linked to a form and
@@ -32,39 +32,39 @@
  * things like going back / stepping forward / process etc
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_State {
 
   /**
-   * State name.
+   * state name
    * @var string
    */
   protected $_name;
 
   /**
-   * This is a combination "OR" of the STATE_* constants defined below
+   * this is a combination "OR" of the STATE_* constants defined below
    * @var int
    */
   protected $_type;
 
   /**
-   * The state that precedes this state.
-   * @var CRM_Core_State
+   * the state that precedes this state
+   * @var object
    */
   protected $_back;
 
   /**
-   * The state that succeeds this state.
-   * @var CRM_Core_State
+   * the state that succeeds this state
+   * @var object
    */
   protected $_next;
 
   /**
-   * The state machine that this state is part of.
-   * @var CRM_Core_StateMachine
+   * The state machine that this state is part of
+   * @var object
    */
   protected $_stateMachine;
 
@@ -74,25 +74,21 @@ class CRM_Core_State {
    * bring in more complexity to the framework. For now, lets keep it simple
    * @var int
    */
-  const START = 1, FINISH = 2, SIMPLE = 4;
+  CONST START = 1, FINISH = 2, SIMPLE = 4;
 
   /**
-   * Constructor.
+   * constructor
    *
-   * @param string $name
-   *   Internal name of the state.
-   * @param int $type
-   *   State type.
-   * @param CRM_Core_State $back
-   *   State that precedes this state.
-   * @param CRM_Core_State $next
-   *   State that follows this state.
-   * @param CRM_Core_StateMachine $stateMachine
-   *   Statemachine that this states belongs to.
+   * @param string the internal name of the state
+   * @param int    the state type
+   * @param object the state that precedes this state
+   * @param object the state that follows  this state
+   * @param object the statemachine that this states belongs to
    *
-   * @return CRM_Core_State
+   * @return object
+   * @access public
    */
-  public function __construct($name, $type, $back, $next, &$stateMachine) {
+  function __construct($name, $type, $back, $next, &$stateMachine) {
     $this->_name = $name;
     $this->_type = $type;
     $this->_back = $back;
@@ -101,17 +97,19 @@ class CRM_Core_State {
     $this->_stateMachine = &$stateMachine;
   }
 
-  public function debugPrint() {
+  function debugPrint() {
     CRM_Core_Error::debug("{$this->_name}, {$this->_type}", "{$this->_back}, {$this->_next}");
   }
 
   /**
    * Given an CRM Form, jump to the previous page
    *
-   * @return mixed
-   *   does a jump to the back state
+   * @param object the CRM_Core_Form element under consideration
+   *
+   * @return mixed does a jump to the back state
+   * @access public
    */
-  public function handleBackState(&$page) {
+  function handleBackState(&$page) {
     if ($this->_type & self::START) {
       $page->handle('display');
     }
@@ -124,10 +122,12 @@ class CRM_Core_State {
   /**
    * Given an CRM Form, jump to the next page
    *
-   * @return mixed
-   *   does a jump to the nextstate
+   * @param object the CRM_Core_Form element under consideration
+   *
+   * @return mixed does a jump to the nextstate
+   * @access public
    */
-  public function handleNextState(&$page) {
+  function handleNextState(&$page) {
     if ($this->_type & self::FINISH) {
       $page->handle('process');
     }
@@ -142,8 +142,9 @@ class CRM_Core_State {
    * to display the navigation labels or potential path
    *
    * @return string
+   * @access public
    */
-  public function getNextState() {
+  function getNextState() {
     if ($this->_type & self::FINISH) {
       return NULL;
     }
@@ -157,9 +158,12 @@ class CRM_Core_State {
    * Mark this page as valid for the QFC framework. This is needed as
    * we build more advanced functionality into the StateMachine
    *
+   * @param object the QFC data container
+   *
    * @return void
+   * @access public
    */
-  public function validate(&$data) {
+  function validate(&$data) {
     $data['valid'][$this->_name] = TRUE;
   }
 
@@ -167,37 +171,45 @@ class CRM_Core_State {
    * Mark this page as invalid for the QFC framework. This is needed as
    * we build more advanced functionality into the StateMachine
    *
+   * @param object the QFC data container
+   *
    * @return void
+   * @access public
    */
-  public function invalidate(&$data) {
+  function invalidate(&$data) {
     $data['valid'][$this->_name] = NULL;
   }
 
   /**
-   * Getter for name.
+   * getter for name
    *
    * @return string
+   * @access public
    */
-  public function getName() {
+  function getName() {
     return $this->_name;
   }
 
   /**
-   * Setter for name.
+   * setter for name
+   *
+   * @param string
    *
    * @return void
+   * @access public
    */
-  public function setName($name) {
+  function setName($name) {
     $this->_name = $name;
   }
 
   /**
-   * Getter for type.
+   * getter for type
    *
    * @return int
+   * @access public
    */
-  public function getType() {
+  function getType() {
     return $this->_type;
   }
-
 }
+

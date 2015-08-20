@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,12 +40,13 @@
 class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+   function buildQuickForm() {
     // add select for preferences
 
     $options = array(ts('Add Selected Options'), ts('Remove selected options'));
@@ -61,31 +62,25 @@ class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
     $this->addDefaultButtons(ts('Set Privacy Options'));
   }
 
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Contact_Form_Task_AlterPreferences', 'formRule'));
   }
 
   /**
-   * Set the default form values.
+   * Set the default form values
    *
+   * @access protected
    *
-   * @return array
-   *   the default array reference
+   * @return array the default array reference
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
 
     $defaults['actionTypeOption'] = 0;
     return $defaults;
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   * @param $rule
-   *
-   * @return array
-   */
-  public static function formRule($form, $rule) {
+  static function formRule($form, $rule) {
     $errors = array();
     if (empty($form['pref']) && empty($form['contact_taglist'])) {
       $errors['_qf_default'] = ts("Please select at least one privacy option.");
@@ -94,10 +89,11 @@ class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     //get the submitted values in an array
@@ -111,11 +107,11 @@ class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
     if (!empty($params['pref'])) {
       $privacyValues = $params['pref'];
       $count = 0;
-      foreach ($this->_contactIds as $contact_id) {
+      foreach($this->_contactIds as $contact_id) {
         $contact = new CRM_Contact_BAO_Contact();
         $contact->id = $contact_id;
 
-        foreach ($privacyValues as $privacy_key => $privacy_value) {
+        foreach($privacyValues as $privacy_key => $privacy_value) {
           $contact->$privacy_key = $privacyValueNew;
         }
         $contact->save();
@@ -124,7 +120,7 @@ class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
       // Status message
       $privacyOptions = CRM_Core_SelectValues::privacy();
       $status = array();
-      foreach ($privacyValues as $privacy_key => $privacy_value) {
+      foreach($privacyValues as $privacy_key => $privacy_value) {
         $label = $privacyOptions[$privacy_key];
         $status[] = $privacyValueNew ? ts("Added '%1'", array(1 => $label)) : ts("Removed '%1'", array(1 => $label));
       }
@@ -141,5 +137,4 @@ class CRM_Contact_Form_Task_AlterPreferences extends CRM_Contact_Form_Task {
       CRM_Core_Session::setStatus($status, $title, 'success');
     }
   }
-
 }

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,35 +23,39 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_BAO_OptionGroup extends CRM_Core_DAO_OptionGroup {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * contact_id. We'll tweak this function to be more full featured over a period
+   * of time. This is the inverse function of create. It also stores all the retrieved
+   * values in the default array
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @return CRM_Core_BAO_OptionGroup
+   * @return object CRM_Core_BAO_OptionGroup object
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     $optionGroup = new CRM_Core_DAO_OptionGroup();
     $optionGroup->copyValues($params);
     if ($optionGroup->find(TRUE)) {
@@ -62,33 +66,31 @@ class CRM_Core_BAO_OptionGroup extends CRM_Core_DAO_OptionGroup {
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_Core_DAO_OptionGroup', $id, 'is_active', $is_active);
   }
 
   /**
-   * Add the Option Group.
+   * function to add the Option Group
    *
-   * @param array $params
-   *   Reference array contains the values submitted by the form.
-   * @param array $ids
-   *   Reference array contains the id.
+   * @param array $params reference array contains the values submitted by the form
+   * @param array $ids    reference array contains the id
    *
+   * @access public
+   * @static
    *
    * @return object
    */
-  public static function add(&$params, $ids = array()) {
-    if (empty($params['id'])) {
+  static function add(&$params, $ids = array()) {
+    if(empty($params['id'])){
       $params['id'] = CRM_Utils_Array::value('optionGroup', $ids);
     }
 
@@ -109,12 +111,16 @@ class CRM_Core_BAO_OptionGroup extends CRM_Core_DAO_OptionGroup {
   }
 
   /**
-   * Delete Option Group.
+   * Function to delete Option Group
    *
-   * @param int $optionGroupId
-   *   Id of the Option Group to be deleted.
+   * @param  int  $optionGroupId     Id of the Option Group to be deleted.
+   *
+   * @return void
+   *
+   * @access public
+   * @static
    */
-  public static function del($optionGroupId) {
+  static function del($optionGroupId) {
     // need to delete all option value field before deleting group
     $optionValue = new CRM_Core_DAO_OptionValue();
     $optionValue->option_group_id = $optionGroupId;
@@ -126,19 +132,20 @@ class CRM_Core_BAO_OptionGroup extends CRM_Core_DAO_OptionGroup {
   }
 
   /**
-   * Get title of the option group.
+   * Function to get title of the option group
    *
-   * @param int $optionGroupId
-   *   Id of the Option Group.
+   * @param  int  $optionGroupId     Id of the Option Group.
    *
-   * @return string
-   *   title
+   * @return String title
+   *
+   * @access public
+   * @static
    */
-  public static function getTitle($optionGroupId) {
+  static function getTitle($optionGroupId) {
     $optionGroup = new CRM_Core_DAO_OptionGroup();
     $optionGroup->id = $optionGroupId;
     $optionGroup->find(TRUE);
     return $optionGroup->name;
   }
-
 }
+

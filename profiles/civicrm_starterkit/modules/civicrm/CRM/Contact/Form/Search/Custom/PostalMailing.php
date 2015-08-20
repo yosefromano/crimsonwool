@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +23,21 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Form_Search_Custom_PostalMailing extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
-  protected $_aclFrom = NULL;
-  protected $_aclWhere = NULL;
-  /**
-   * @param $formValues
-   */
-  public function __construct(&$formValues) {
+  function __construct(&$formValues) {
     parent::__construct($formValues);
 
     $this->_columns = array(
-      ts('Contact ID') => 'contact_id',
+      ts('Contact Id') => 'contact_id',
       ts('Address') => 'address',
       ts('Contact Type') => 'contact_type',
       ts('Name') => 'sort_name',
@@ -50,12 +45,9 @@ class CRM_Contact_Form_Search_Custom_PostalMailing extends CRM_Contact_Form_Sear
     );
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   */
-  public function buildForm(&$form) {
-    $groups = array('' => ts('- select group -')) + CRM_Core_PseudoConstant::nestedGroup(FALSE);
-    $form->addElement('select', 'group_id', ts('Group'), $groups, array('class' => 'crm-select2 huge'));
+  function buildForm(&$form) {
+    $groups = array('' => ts('- select group -')) + CRM_Core_PseudoConstant::allGroup();
+    $form->addElement('select', 'group_id', ts('Group'), $groups);
 
     /**
      * if you are using the standard template, this array tells the template what elements
@@ -64,37 +56,14 @@ class CRM_Contact_Form_Search_Custom_PostalMailing extends CRM_Contact_Form_Sear
     $form->assign('elements', array('group_id'));
   }
 
-  /**
-   * @param int $offset
-   * @param int $rowcount
-   * @param null $sort
-   * @param bool $returnSQL
-   *
-   * @return string
-   */
-  public function contactIDs($offset = 0, $rowcount = 0, $sort = NULL, $returnSQL = FALSE) {
-    return $this->all($offset, $rowcount, $sort, FALSE, TRUE);
-  }
-
-  /**
-   * @param int $offset
-   * @param int $rowcount
-   * @param null $sort
-   * @param bool $includeContactIDs
-   * @param bool $justIDs
-   *
-   * @return string
-   */
-  public function all(
-    $offset = 0, $rowcount = 0, $sort = NULL,
+  function all($offset = 0, $rowcount = 0, $sort = NULL,
     $includeContactIDs = FALSE, $justIDs = FALSE
   ) {
     if ($justIDs) {
       $selectClause = "contact_a.id as contact_id";
-      $sort = 'contact_a.id';
     }
     else {
-      $selectClause = "
+    $selectClause = "
 DISTINCT contact_a.id  as contact_id  ,
 contact_a.contact_type  as contact_type,
 contact_a.sort_name     as sort_name,
@@ -109,31 +78,21 @@ state_province.name     as state_province
     );
   }
 
-  /**
-   * @return string
-   */
-  public function from() {
-    $this->buildACLClause('contact_a');
-    $from = "
+  function from() {
+    return "
 FROM      civicrm_group_contact as cgc,
           civicrm_contact       as contact_a
 LEFT JOIN civicrm_address address               ON (address.contact_id       = contact_a.id AND
                                                     address.is_primary       = 1 )
-LEFT JOIN civicrm_state_province state_province ON  state_province.id = address.state_province_id {$this->_aclFrom}
+LEFT JOIN civicrm_state_province state_province ON  state_province.id = address.state_province_id
 ";
-    return $from;
   }
 
-  /**
-   * @param bool $includeContactIDs
-   *
-   * @return string
-   */
-  public function where($includeContactIDs = FALSE) {
+  function where($includeContactIDs = FALSE) {
     $params = array();
 
-    $count = 1;
-    $clause = array();
+    $count   = 1;
+    $clause  = array();
     $groupID = CRM_Utils_Array::value('group_id',
       $this->_formValues
     );
@@ -148,10 +107,6 @@ LEFT JOIN civicrm_state_province state_province ON  state_province.id = address.
                                         cgc.contact_id )";
     $clause[] = "contact_a.contact_type IN ('Individual','Household')";
 
-    if ($this->_aclWhere) {
-      $clause[] = " {$this->_aclWhere} ";
-    }
-
     if (!empty($clause)) {
       $where = implode(' AND ', $clause);
     }
@@ -159,18 +114,8 @@ LEFT JOIN civicrm_state_province state_province ON  state_province.id = address.
     return $this->whereClause($where, $params);
   }
 
-  /**
-   * @return string
-   */
-  public function templateFile() {
+  function templateFile() {
     return 'CRM/Contact/Form/Search/Custom.tpl';
   }
-
-  /**
-   * @param string $tableAlias
-   */
-  public function buildACLClause($tableAlias = 'contact') {
-    list($this->_aclFrom, $this->_aclWhere) = CRM_Contact_BAO_Contact_Permission::cacheClause($tableAlias);
-  }
-
 }
+

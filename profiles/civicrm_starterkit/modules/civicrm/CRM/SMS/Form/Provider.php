@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +23,27 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id: $
+ *
  */
 
 /**
- * SMS Form.
+ *
  */
 class CRM_SMS_Form_Provider extends CRM_Core_Form {
   protected $_id = NULL;
 
-  public function preProcess() {
+  function preProcess() {
 
     $this->_id = $this->get('id');
 
-    $this->setPageTitle(ts('SMS Provider'));
+    CRM_Utils_System::setTitle(ts('Manage - SMS Providers'));
 
     if ($this->_id) {
       $refreshURL = CRM_Utils_System::url('civicrm/admin/sms/provider',
@@ -61,26 +62,42 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
+   *
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
 
-    $this->addButtons(array(
-        array(
-          'type' => 'next',
-          'name' => $this->_action & CRM_Core_Action::DELETE ? ts('Delete') : ts('Save'),
-          'isDefault' => TRUE,
-        ),
-        array(
-          'type' => 'cancel',
-          'name' => ts('Cancel'),
-        ),
-      )
-    );
-
     if ($this->_action & CRM_Core_Action::DELETE) {
+      $this->addButtons(array(
+          array(
+            'type' => 'next',
+            'name' => ts('Delete'),
+            'isDefault' => TRUE,
+          ),
+          array(
+            'type' => 'cancel',
+            'name' => ts('Cancel'),
+          ),
+        )
+      );
       return;
+    }
+    else {
+      $this->addButtons(array(
+          array(
+            'type' => 'next',
+            'name' => ts('Save'),
+            'isDefault' => TRUE,
+          ),
+          array(
+            'type' => 'cancel',
+            'name' => ts('Cancel'),
+          ),
+        )
+      );
     }
 
     $attributes = CRM_Core_DAO::getAttribute('CRM_SMS_DAO_Provider');
@@ -88,16 +105,13 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
     $providerNames = CRM_Core_OptionGroup::values('sms_provider_name', FALSE, FALSE, FALSE, NULL, 'label');
     $apiTypes = CRM_Core_OptionGroup::values('sms_api_type', FALSE, FALSE, FALSE, NULL, 'label');
 
-    $this->add('select', 'name', ts('Name'), array('' => '- select -') + $providerNames, TRUE);
+    $this->add('select', 'name', ts('Name'), array('' => '- select -') + $providerNames, TRUE, array('onchange' => "reload(true)"));
 
     $this->add('text', 'title', ts('Title'),
       $attributes['title'], TRUE
     );
 
-    $this->addRule('title', ts('This Title already exists in Database.'), 'objectExists', array(
-        'CRM_SMS_DAO_Provider',
-        $this->_id,
-      ));
+    $this->addRule('title', ts('This Title already exists in Database.'), 'objectExists', array('CRM_SMS_DAO_Provider', $this->_id));
 
     $this->add('text', 'username', ts('Username'),
       $attributes['username'], TRUE
@@ -120,12 +134,7 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
     $this->add('checkbox', 'is_default', ts('Is this a default provider?'));
   }
 
-  /**
-   * Set the default values of various form elements.
-   *
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
 
     $name = CRM_Utils_Request::retrieve('key', 'String', $this, FALSE, NULL);
@@ -143,9 +152,8 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
     $dao = new CRM_SMS_DAO_Provider();
     $dao->id = $this->_id;
 
-    if ($name) {
+    if ($name)
       $dao->name = $name;
-    }
 
     if (!$dao->find(TRUE)) {
       return $defaults;
@@ -157,7 +165,11 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
+   *
+   * @access public
+   *
+   * @return None
    */
   public function postProcess() {
 
@@ -180,5 +192,5 @@ class CRM_SMS_Form_Provider extends CRM_Core_Form {
       CRM_SMS_BAO_Provider::saveRecord($recData);
     }
   }
-
 }
+

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -45,10 +45,10 @@
 </div>
 {literal}
 <script type="text/javascript">
-    CRM.$(function($) {
-      if ($('#crm-recently-viewed').offset().left > 150) {
-        $('#crm-recently-viewed').removeClass('left').addClass('right');
-      }
+    cj( function( ) {
+      if (cj('#crm-recently-viewed').offset().left > 150) {
+        cj('#crm-recently-viewed').removeClass('left').addClass('right');
+          }
     });
 </script>
 {/literal}

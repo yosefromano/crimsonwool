@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,32 +38,29 @@
  */
 class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
 
-  public $useLivePageJS = TRUE;
-
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_SMS_BAO_Provider';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::UPDATE => array(
@@ -80,12 +77,14 @@ class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
         ),
         CRM_Core_Action::ENABLE => array(
           'name' => ts('Enable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_SMS_BAO_Provider' . '\',\'' . 'disable-enable' . '\' );"',
+          'ref' => 'enable-action',
           'title' => ts('Enable Provider'),
         ),
         CRM_Core_Action::DISABLE => array(
           'name' => ts('Disable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_SMS_BAO_Provider' . '\',\'' . 'enable-disable' . '\' );"',
+          'ref' => 'disable-action',
           'title' => ts('Disable Provider'),
         ),
       );
@@ -101,18 +100,17 @@ class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
    * Finally it calls the parent's run method.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // set title and breadcrumb
     CRM_Utils_System::setTitle(ts('Settings - SMS Provider'));
-    $breadCrumb = array(
-      array(
-        'title' => ts('SMS Provider'),
+    $breadCrumb = array(array('title' => ts('SMS Provider'),
         'url' => CRM_Utils_System::url('civicrm/admin/sms/provider',
           'reset=1'
         ),
-      ),
-    );
+      ));
     CRM_Utils_System::appendBreadCrumb($breadCrumb);
 
     $this->_id = CRM_Utils_Request::retrieve('id', 'String',
@@ -128,11 +126,11 @@ class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
   /**
    * Browse all Providers.
    *
-   * @param array $action
-   *
    * @return void
+   * @access public
+   * @static
    */
-  public function browse($action = NULL) {
+  function browse($action = NULL) {
     $providers = CRM_SMS_BAO_Provider::getProviders();
     $rows = array();
     foreach ($providers as $provider) {
@@ -149,12 +147,7 @@ class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
       $provider['api_type'] = $apiTypes[$provider['api_type']];
 
       $provider['action'] = CRM_Core_Action::formLink(self::links(), $action,
-        array('id' => $provider['id']),
-        ts('more'),
-        FALSE,
-        'sms.provider.row',
-        'SMSProvider',
-        $provider['id']
+        array('id' => $provider['id'])
       );
       $rows[] = $provider;
     }
@@ -162,35 +155,30 @@ class CRM_SMS_Page_Provider extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_SMS_Form_Provider';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'SMS Provider';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/sms/provider';
   }
-
 }
+

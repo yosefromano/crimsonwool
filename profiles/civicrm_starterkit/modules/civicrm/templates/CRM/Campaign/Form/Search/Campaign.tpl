@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,26 +28,26 @@
   <div class="messages status no-popup">
     <div class="icon inform-icon"></div>
     &nbsp;
-    {ts}None found.{/ts}
+    {ts}No campaigns found.{/ts}
   </div>
   <div class="action-link">
     <a href="{crmURL p='civicrm/campaign/add' q='reset=1' h=0 }" class="button"><span><div
-          class="icon ui-icon-circle-plus"></div>{ts}Add Campaign{/ts}</span></a>
+          class="icon add-icon"></div>{ts}Add Campaign{/ts}</span></a>
   </div>
 {elseif $buildSelector}
 
 {* load campaign selector *}
 
-  {include file="CRM/common/enableDisableApi.tpl"}
+  {include file="CRM/common/enableDisable.tpl"}
 
   {literal}
     <script type="text/javascript">
-      CRM.$(function($) {
+      cj(function () {
         loadCampaignList();
       });
     </script>
   {/literal}
-  <table class="campaigns">
+  <table id="campaigns">
     <thead>
     <tr class="columnheader">
       <th class="hiddenElement">{ts}Campaign ID{/ts}</th>
@@ -70,7 +70,7 @@
 {else}
   <div class="action-link">
     <a href="{crmURL p='civicrm/campaign/add' q='reset=1' h=0 }" class="button"><span><div
-          class="icon ui-icon-circle-plus"></div>{ts}Add Campaign{/ts}</span></a>
+          class="icon add-icon"></div>{ts}Add Campaign{/ts}</span></a>
   </div>
 {* build search form here *}
 
@@ -139,9 +139,24 @@
 
 {literal}
 <script type="text/javascript">
-(function($) {
 
-  window.searchCampaigns = function searchCampaigns(qfKey) {
+  cj(function () {
+    cj().crmAccordions();
+  });
+
+  {/literal}
+  {* load selector when force *}
+  {if $force and !$buildSelector}
+  {literal}
+  cj(function () {
+    searchCampaigns({/literal}'{$qfKey}'{literal});
+  });
+
+  {/literal}
+  {/if}
+  {literal}
+
+  function searchCampaigns(qfKey) {
     var dataUrl = {/literal}"{crmURL h=0 q='search=1&snippet=4&type=campaign'}"{literal};
 
     //lets carry qfKey to retain form session.
@@ -149,16 +164,16 @@
       dataUrl = dataUrl + '&qfKey=' + qfKey;
     }
 
-    $.get(dataUrl, null, function (campaignList) {
-      $('#campaignList').html(campaignList).trigger('crmLoad');
+    cj.get(dataUrl, null, function (campaignList) {
+      cj('#campaignList').html(campaignList);
 
       //collapse the search form.
       var searchFormName = '#search_form_' + {/literal}'{$searchFor}'{literal};
-      $(searchFormName + '.crm-accordion-wrapper:not(.collapsed)').crmAccordionToggle();
+      cj(searchFormName + '.crm-accordion-wrapper:not(.collapsed)').crmAccordionToggle();
     }, 'html');
-  };
+  }
 
-  window.loadCampaignList = function() {
+  function loadCampaignList() {
     var sourceUrl = {/literal}"{crmURL p='civicrm/ajax/rest' h=0 q='snippet=4&className=CRM_Campaign_Page_AJAX&fnName=campaignList' }"{literal};
 
     //build the search qill.
@@ -170,9 +185,9 @@
     noRecordFoundMsg += '<div class="qill">';
 
     var count = 0;
-    var searchQill = [];
+    var searchQill = new Array();
     for (param in searchParams) {
-      if (val = $('#' + param).val()) {
+      if (val = cj('#' + param).val()) {
         if (param == 'status_id') {
           val = campaignStatus[val];
         }
@@ -183,7 +198,8 @@
       }
     }
     noRecordFoundMsg += searchQill.join('<span class="font-italic"> ...AND... </span></div><div class="qill">');
-    $('table.campaigns', '#campaignList').dataTable({
+
+    cj('#campaigns').dataTable({
       "bFilter": false,
       "bAutoWidth": false,
       "bProcessing": false,
@@ -192,14 +208,14 @@
       "aoColumns": [
         {sClass: 'crm-campaign-id                   hiddenElement' },
         {sClass: 'crm-campaign-name                 hiddenElement' },
-        {sClass: 'crmf-title'                              },
-        {sClass: 'crmf-description'                        },
+        {sClass: 'crm-campaign-title'                              },
+        {sClass: 'crm-campaign-description'                        },
         {sClass: 'crm-campaign-start_date'                         },
         {sClass: 'crm-campaign-end_date'                           },
         {sClass: 'crm-campaign-campaign-type_id     hiddenElement' },
-        {sClass: 'crmf-campaign_type_id'                      },
+        {sClass: 'crm-campaign-campaign-type'                      },
         {sClass: 'crm-campaign-campaign-status_id   hiddenElement' },
-        {sClass: 'crmf-status_id'                    },
+        {sClass: 'crm-campaign-campaign-status'                    },
         {sClass: 'crm-campaign-campaign-is_active   hiddenElement' },
         {sClass: 'crm-campaign-campaign-isAactive'                 },
         {sClass: 'crm-campaign-action', bSortable: false}
@@ -213,24 +229,20 @@
       "oLanguage": {"sEmptyTable": noRecordFoundMsg,
         "sZeroRecords": noRecordFoundMsg },
       "fnDrawCallback": function () {
-        // FIXME: trigger crmLoad and crmEditable would happen automatically
-        $('.crm-editable').crmEditable();
+        cj().crmtooltip();
       },
       "fnRowCallback": function (nRow, aData, iDisplayIndex) {
         //insert the id for each row for enable/disable.
-        var rowId = 'campaign-' + aData[0];
-        $(nRow).attr('id', rowId).addClass('crm-entity');
+        var rowId = 'campaign_row_' + aData[0];
+        cj(nRow).attr('id', rowId);
         //handled disabled rows.
         var isActive = Boolean(Number(aData[10]));
         if (!isActive) {
-          $(nRow).addClass('disabled');
+          cj(nRow).addClass('disabled');
         }
 
-        // Crm-editable
-        $(nRow).children().eq(2).addClass('crm-editable');
-        $(nRow).children().eq(3).data('type', 'textarea').addClass('crm-editable');
-        $(nRow).children().eq(7).data('type', 'select').addClass('crm-editable');
-        $(nRow).children().eq(9).data({type: 'select', emptyOption: ''}).addClass('crm-editable');
+        //add id for yes/no column.
+        cj(nRow).children().eq(11).attr('id', rowId + '_status');
 
         return nRow;
       },
@@ -239,7 +251,7 @@
         var dataLength = aoData.length;
 
         var count = 1;
-        var searchCriteria = [];
+        var searchCriteria = new Array();
 
         //get the search criteria.
         var searchParams = {/literal}{$searchParams}{literal};
@@ -248,7 +260,7 @@
           if (param == 'campaign_title') {
             fldName = 'title';
           }
-          if (val = $('#' + param).val()) {
+          if (val = cj('#' + param).val()) {
             aoData[dataLength++] = {name: fldName, value: val};
           }
           searchCriteria[count++] = fldName;
@@ -260,7 +272,7 @@
         //lets transfer search criteria.
         aoData[dataLength++] = {name: 'searchCriteria', value: searchCriteria.join(',')};
 
-        $.ajax({
+        cj.ajax({
           "dataType": 'json',
           "type": "POST",
           "url": sSource,
@@ -269,19 +281,7 @@
         });
       }
     });
-  };
+  }
 
-  {/literal}
-  {* load selector when force *}
-  {if $force and !$buildSelector}
-  {literal}
-  $(function($) {
-    searchCampaigns({/literal}'{$qfKey}'{literal});
-  });
-
-  {/literal}
-  {/if}
-  {literal}
-})(CRM.$);
 </script>
 {/literal}

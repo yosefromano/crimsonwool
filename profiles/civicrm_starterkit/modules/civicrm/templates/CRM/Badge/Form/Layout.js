@@ -1,19 +1,24 @@
 // http://civicrm.org/licensing
-CRM.$(function($) {
+cj(function ($) {
   function openKCFinder(field) {
-    var field = $(this);
     window.KCFinder = {
       callBack: function(url) {
-        field.val(url).change();
-        // calculate the image default width, height
+        field.val(url);
+        // calculate the image default width, height 
         // and assign to respective fields
          var ajaxUrl = CRM.url('civicrm/ajax/rest', 'className=CRM_Badge_Page_AJAX&fnName=getImageProp&json=1&img=' + url);
-         $.getJSON(ajaxUrl).done(function ( response ) {
+         $.ajax({
+          url: ajaxUrl,
+          async: false,
+          global: false,
+          dataType: "json",
+          success: function ( response ) {
             var widthId = 'width_' + field.attr('id');
             var heightId = 'height_' + field.attr('id');
             $('#' + widthId).val(response.width.toFixed(0));
             $('#' + heightId).val(response.height.toFixed(0));
-        });
+          }
+        }); 
         window.KCFinder = null;
       }
     };
@@ -24,15 +29,15 @@ CRM.$(function($) {
     );
   }
 
-  $('input[id^="image_"]')
-    .click(openKCFinder)
-    .change(function() {
-      $(this).siblings('.clear-image').css({visibility: $(this).val() ? '' : 'hidden'});
-    })
-    .change();
+  $('input[id^="image_"]').click(function(){
+    openKCFinder($(this));
+  });
 
-  $('.clear-image').click(function() {
-    $(this).closest('tr').find('input[type=text]').val('').change();
+  $('.clear-image').click(function(){
+    var imgName = $(this).attr('imgname');
+    $('#' + imgName).val('');
+    $('#width_' + imgName).val('');
+    $('#height_' + imgName).val('');
     return false;
   });
 });

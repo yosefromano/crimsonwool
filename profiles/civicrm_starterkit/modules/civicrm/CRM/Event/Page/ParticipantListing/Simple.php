@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,7 +42,7 @@ class CRM_Event_Page_ParticipantListing_Simple extends CRM_Core_Page {
 
   protected $_pager;
 
-  public function preProcess() {
+  function preProcess() {
     $this->_id = CRM_Utils_Request::retrieve('id', 'Integer', $this, TRUE);
 
     // retrieve Event Title and include it in page title
@@ -56,10 +56,7 @@ class CRM_Event_Page_ParticipantListing_Simple extends CRM_Core_Page {
     $this->assign('displayRecent', FALSE);
   }
 
-  /**
-   * @return string
-   */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     $fromClause = "
@@ -107,12 +104,7 @@ LIMIT    $offset, $rowCount";
     return parent::run();
   }
 
-  /**
-   * @param $fromClause
-   * @param $whereClause
-   * @param array $whereParams
-   */
-  public function pager($fromClause, $whereClause, $whereParams) {
+  function pager($fromClause, $whereClause, $whereParams) {
 
     $params = array();
 
@@ -136,21 +128,16 @@ SELECT count( civicrm_contact.id )
     $this->assign_by_ref('pager', $this->_pager);
   }
 
-  /**
-   * @return string
-   */
-  public function orderBy() {
+  function orderBy() {
     static $headers = NULL;
     if (!$headers) {
       $headers = array();
-      $headers[1] = array(
-        'name' => ts('Name'),
+      $headers[1] = array('name' => ts('Name'),
         'sort' => 'civicrm_contact.sort_name',
         'direction' => CRM_Utils_Sort::ASCENDING,
       );
       if ($this->_participantListingType == 'Name and Email') {
-        $headers[2] = array(
-          'name' => ts('Email'),
+        $headers[2] = array('name' => ts('Email'),
           'sort' => 'civicrm_email.email',
           'direction' => CRM_Utils_Sort::DONTCARE,
         );
@@ -174,5 +161,5 @@ SELECT count( civicrm_contact.id )
 
     return $sort->orderBy();
   }
-
 }
+

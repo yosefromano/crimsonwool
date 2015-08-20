@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,10 +39,7 @@
 class CRM_ACL_BAO_EntityRole extends CRM_ACL_DAO_EntityRole {
   static $_entityTable = NULL;
 
-  /**
-   * @return array|null
-   */
-  public static function entityTable() {
+  static function entityTable() {
     if (!self::$_entityTable) {
       self::$_entityTable = array(
         'civicrm_contact' => ts('Contact'),
@@ -52,53 +49,43 @@ class CRM_ACL_BAO_EntityRole extends CRM_ACL_DAO_EntityRole {
     return self::$_entityTable;
   }
 
-  /**
-   * @param array $params
-   *
-   * @return CRM_ACL_DAO_EntityRole
-   */
-  public static function create(&$params) {
+  static function create(&$params) {
     $dao = new CRM_ACL_DAO_EntityRole();
     $dao->copyValues($params);
+
     $dao->save();
-    return $dao;
   }
 
-  /**
-   * @param array $params
-   * @param $defaults
-   */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     CRM_Core_DAO::commonRetrieve('CRM_ACL_DAO_EntityRole', $params, $defaults);
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_ACL_DAO_EntityRole', $id, 'is_active', $is_active);
   }
 
   /**
-   * Delete Entity Role records.
+   * Function to delete Entity Role records
    *
-   * @param int $entityRoleId
-   *   ID of the EntityRole record to be deleted.
+   * @param  int  $entityRoleId ID of the EntityRole record to be deleted.
    *
+   * @access public
+   * @static
    */
-  public static function del($entityRoleId) {
+  static function del($entityRoleId) {
     $entityDAO = new CRM_ACL_DAO_EntityRole();
     $entityDAO->id = $entityRoleId;
     $entityDAO->find(TRUE);
     $entityDAO->delete();
   }
-
 }
+

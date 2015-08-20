@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,37 +23,37 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Utils_Cache_Memcache {
-  const DEFAULT_HOST = 'localhost';
-  const DEFAULT_PORT = 11211;
+  const DEFAULT_HOST    = 'localhost';
+  const DEFAULT_PORT    = 11211;
   const DEFAULT_TIMEOUT = 3600;
-  const DEFAULT_PREFIX = '';
+  const DEFAULT_PREFIX  = '';
 
   /**
-   * The host name of the memcached server.
+   * The host name of the memcached server
    *
    * @var string
    */
   protected $_host = self::DEFAULT_HOST;
 
   /**
-   * The port on which to connect on.
+   * The port on which to connect on
    *
    * @var int
    */
   protected $_port = self::DEFAULT_PORT;
 
   /**
-   * The default timeout to use.
+   * The default timeout to use
    *
    * @var int
    */
@@ -71,21 +71,20 @@ class CRM_Utils_Cache_Memcache {
   protected $_prefix = self::DEFAULT_PREFIX;
 
   /**
-   * The actual memcache object.
+   * The actual memcache object
    *
    * @var resource
    */
   protected $_cache;
 
   /**
-   * Constructor.
+   * Constructor
    *
-   * @param array $config
-   *   An array of configuration params.
+   * @param array   $config  an array of configuration params
    *
-   * @return \CRM_Utils_Cache_Memcache
+   * @return void
    */
-  public function __construct($config) {
+  function __construct($config) {
     if (isset($config['host'])) {
       $this->_host = $config['host'];
     }
@@ -108,43 +107,24 @@ class CRM_Utils_Cache_Memcache {
     }
   }
 
-  /**
-   * @param $key
-   * @param $value
-   *
-   * @return bool
-   */
-  public function set($key, &$value) {
+  function set($key, &$value) {
     if (!$this->_cache->set($this->_prefix . $key, $value, FALSE, $this->_timeout)) {
       return FALSE;
     }
     return TRUE;
   }
 
-  /**
-   * @param $key
-   *
-   * @return mixed
-   */
-  public function &get($key) {
+  function &get($key) {
     $result = $this->_cache->get($this->_prefix . $key);
     return $result;
   }
 
-  /**
-   * @param $key
-   *
-   * @return mixed
-   */
-  public function delete($key) {
+  function delete($key) {
     return $this->_cache->delete($this->_prefix . $key);
   }
 
-  /**
-   * @return mixed
-   */
-  public function flush() {
+  function flush() {
     return $this->_cache->flush();
   }
-
 }
+

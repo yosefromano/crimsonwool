@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,16 +39,18 @@
 class CRM_Custom_Form_Option extends CRM_Core_Form {
 
   /**
-   * The custom field id saved to the session for an update
+   * the custom field id saved to the session for an update
    *
    * @var int
+   * @access protected
    */
   protected $_fid;
 
   /**
-   * The custom group id saved to the session for an update
+   * the custom group id saved to the session for an update
    *
    * @var int
+   * @access protected
    */
   protected $_gid;
 
@@ -61,13 +63,17 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
    * The Option id, used when editing the Option
    *
    * @var int
+   * @access protected
    */
   protected $_id;
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
+   *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     $this->_fid = CRM_Utils_Request::retrieve('fid', 'Positive', $this);
@@ -98,13 +104,15 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
   }
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
-   * @return array
-   *   array of default values
+   * @param null
+   *
+   * @return array   array of default values
+   * @access public
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = $fieldDefaults = array();
     if (isset($this->_id)) {
       $params = array('id' => $this->_id);
@@ -117,7 +125,7 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
         || $fieldDefaults['html_type'] == 'Multi-Select'
         || $fieldDefaults['html_type'] == 'AdvMulti-Select'
       ) {
-        if (!empty($fieldDefaults['default_value'])) {
+        if (CRM_Utils_Array::value('default_value', $fieldDefaults)) {
           $defaultCheckValues = explode(CRM_Core_DAO::VALUE_SEPARATOR,
             substr($fieldDefaults['default_value'], 1, -1)
           );
@@ -145,14 +153,15 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
+   *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     if ($this->_action == CRM_Core_Action::DELETE) {
-      $option = civicrm_api3('option_value', 'getsingle', array('id' => $this->_id));
-      $this->assign('label', $option['label']);
       $this->addButtons(array(
           array(
             'type' => 'next',
@@ -213,6 +222,7 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
         )
       );
 
+
       // if view mode pls freeze it with the done button.
       if ($this->_action & CRM_Core_Action::VIEW) {
         $this->freeze();
@@ -223,7 +233,7 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
         $this->addElement('button',
           'done',
           ts('Done'),
-          array('onclick' => "location.href='$url'", 'class' => 'crm-form-submit cancel', 'crm-icon' => 'close')
+          array('onclick' => "location.href='$url'", 'class' => 'form-submit')
         );
       }
     }
@@ -231,21 +241,18 @@ class CRM_Custom_Form_Option extends CRM_Core_Form {
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
+   * @param array $fields posted values of the form
    *
-   * @param $files
-   * @param CRM_Core_Form $form
-   *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields, $files, $form) {
-    $optionLabel = $fields['label'];
-    $optionValue = $fields['value'];
-    $fieldId = $form->_fid;
+  static function formRule($fields, $files, $form) {
+    $optionLabel   = $fields['label'];
+    $optionValue   = $fields['value'];
+    $fieldId       = $form->_fid;
     $optionGroupId = $form->_optionGroupID;
 
     $temp = array();
@@ -330,7 +337,7 @@ SELECT data_type
         case 'Float':
           //     case 'Money':
           if (!CRM_Utils_Rule::numeric($fields["value"])) {
-            $errors['value'] = ts('Please enter a valid number.');
+            $errors['value'] = ts('Please enter a valid number value.');
           }
           break;
 
@@ -384,20 +391,22 @@ SELECT count(*)
   }
 
   /**
-   * Process the form.
+   * Process the form
+   *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     // store the submitted values in an array
     $params = $this->controller->exportValues('Option');
 
     if ($this->_action == CRM_Core_Action::DELETE) {
-      $option = civicrm_api3('option_value', 'getsingle', array('id' => $this->_id));
       $fieldValues = array('option_group_id' => $this->_optionGroupID);
-      CRM_Utils_Weight::delWeight('CRM_Core_DAO_OptionValue', $this->_id, $fieldValues);
+      $wt = CRM_Utils_Weight::delWeight('CRM_Core_DAO_OptionValue', $this->_id, $fieldValues);
       CRM_Core_BAO_CustomOption::del($this->_id);
-      CRM_Core_Session::setStatus(ts('Option "%1" has been deleted.', array(1 => $option['label'])), ts('Deleted'), 'success');
+      CRM_Core_Session::setStatus(ts('Your multiple choice option has been deleted'), ts('Deleted'), 'success');
       return;
     }
 
@@ -417,8 +426,8 @@ SELECT count(*)
     }
 
     $fieldValues = array('option_group_id' => $this->_optionGroupID);
-    $customOption->weight
-      = CRM_Utils_Weight::updateOtherWeights(
+    $customOption->weight =
+      CRM_Utils_Weight::updateOtherWeights(
         'CRM_Core_DAO_OptionValue',
         $oldWeight,
         $params['weight'],
@@ -440,7 +449,7 @@ SELECT count(*)
         CRM_Core_DAO::VALUE_SEPARATOR,
         substr($customField->default_value, 1, -1)
       );
-      if (!empty($params['default_value'])) {
+      if (CRM_Utils_Array::value('default_value', $params)) {
         if (!in_array($customOption->value, $defVal)) {
           if (empty($defVal[0])) {
             $defVal = array($customOption->value);
@@ -448,8 +457,8 @@ SELECT count(*)
           else {
             $defVal[] = $customOption->value;
           }
-          $customField->default_value
-            = CRM_Core_DAO::VALUE_SEPARATOR .
+          $customField->default_value =
+            CRM_Core_DAO::VALUE_SEPARATOR .
             implode(CRM_Core_DAO::VALUE_SEPARATOR, $defVal) .
             CRM_Core_DAO::VALUE_SEPARATOR;
           $customField->save();
@@ -463,8 +472,8 @@ SELECT count(*)
           }
         }
 
-        $customField->default_value
-          = CRM_Core_DAO::VALUE_SEPARATOR .
+        $customField->default_value =
+          CRM_Core_DAO::VALUE_SEPARATOR .
           implode(CRM_Core_DAO::VALUE_SEPARATOR, $tempVal) .
           CRM_Core_DAO::VALUE_SEPARATOR;
         $customField->save();
@@ -485,7 +494,7 @@ SELECT count(*)
           break;
       }
 
-      if (!empty($params['default_value'])) {
+      if (CRM_Utils_Array::value('default_value', $params)) {
         $customField->default_value = $customOption->value;
         $customField->save();
       }
@@ -512,5 +521,5 @@ SELECT count(*)
       );
     }
   }
-
 }
+

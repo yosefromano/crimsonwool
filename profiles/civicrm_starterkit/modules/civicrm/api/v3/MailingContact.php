@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,38 +26,46 @@
  */
 
 /**
- * This api exposes CiviCRM contact and mailing.
+ * File for the CiviCRM APIv3 contact and mailing functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_MailingContact
+ *
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id$
+ *
  */
 
 /**
- * Get all the mailings and details that a contact was involved with.
+ * Get all the mailings and details that a contact was involved with
  *
- * @param array $params
- *   Input parameters - see _spec for details (returned by getfields)
+ * @param array    $params input parameters
+ *                    - key: contact_id, value: int - required
+ *                    - key: type, value: Delivered | Bounced - optional, defaults to Delivered
+ *                    - Future extensions will include: Opened, Clicked, Forwarded
  *
- * @return array
- *   API result
+ * @return array API result
+ * @static void
+ * @access public
+ * @example CRM/Mailing/BAO/Mailing.php
+ *
  */
 function civicrm_api3_mailing_contact_get($params) {
   return civicrm_api3_create_success(_civicrm_api3_mailing_contact_getresults($params, FALSE));
 }
-
 /**
- * This is a wrapper for the functions that return the results from the 'quasi-entity' mailing contact.
- *
+ * This is a wrapper for the functions that return the results from the 'quasi-entity'
+ * mailing contact
  * @param array $params
- * @param bool $count
- *
+ * @param Boolean $count
  * @throws Exception
  */
-function _civicrm_api3_mailing_contact_getresults($params, $count) {
-  if (empty($params['type'])) {
-    //ie. because the api is an anomaly & passing in id is not valid
+function _civicrm_api3_mailing_contact_getresults($params, $count){
+  if(empty($params['type'])){
+    //ie. because the api is an anomoly & passing in id is not valid
     throw new Exception('This api call does not accept api as a parameter');
   }
-  $options  = _civicrm_api3_get_options_from_params($params, TRUE, 'contribution', 'get');
+  $options  = _civicrm_api3_get_options_from_params($params, TRUE,'contribution','get');
   $fnName = '_civicrm_api3_mailing_contact_get_' . strtolower($params['type']);
   return $fnName(
       $params['contact_id'],
@@ -67,46 +75,25 @@ function _civicrm_api3_mailing_contact_getresults($params, $count) {
       $count
   );
 }
-
 /**
- * Adjust Metadata for Get action.
+ * Adjust Metadata for Get action
  *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_mailing_contact_get_spec(&$params) {
-  $params['contact_id'] = array(
-    'api.required' => 1,
-    'title' => 'Contact ID',
-    'type' => CRM_Utils_Type::T_INT,
-  );
-
+  $params['contact_id']['api.required'] = 1;
   $params['type'] = array(
     'api.default' => 'Delivered',
-    'title' => 'Type', // doesn't really explain the field - but not sure I understand it to explain it better
     'type' => CRM_Utils_Type::T_STRING,
     'options' => array(
       'Delivered' => 'Delivered',
       'Bounced' => 'Bounced',
-    ),
+    )
   );
 }
 
-/**
- * Helper function for mailing contact queries.
- *
- * @param int $contactID
- * @param $offset
- * @param $limit
- * @param $selectFields
- * @param $fromClause
- * @param $whereClause
- * @param $sort
- * @param $getCount
- *
- * @return array
- */
 function _civicrm_api3_mailing_contact_query(
+  $type,
   $contactID,
   $offset,
   $limit,
@@ -132,9 +119,14 @@ GROUP BY   m.id
 ";
 
     $qParams = array(
-      1 => array($contactID, 'Integer'),
+      1 => array($contactID, 'Integer')
     );
     $dao = CRM_Core_DAO::executeQuery($sql, $qParams);
+
+    $params = array(
+      'type'   => $type,
+      'contact_id' => $contactID
+    );
 
     $results = $dao->N;
   }
@@ -187,7 +179,7 @@ LIMIT %2, %3
     $qParams = array(
       1 => array($contactID, 'Integer'),
       2 => array($offset, 'Integer'),
-      3 => array($limit, 'Integer'),
+      3 => array($limit, 'Integer')
     );
     $dao = CRM_Core_DAO::executeQuery($sql, $qParams);
 
@@ -202,17 +194,6 @@ LIMIT %2, %3
   return $results;
 }
 
-/**
- * Get delivered mailing contacts.
- *
- * @param int $contactID
- * @param $offset
- * @param $limit
- * @param $sort
- * @param $getCount
- *
- * @return array
- */
 function _civicrm_api3_mailing_contact_get_delivered(
   $contactID,
   $offset,
@@ -232,6 +213,7 @@ AND        meb.id IS NULL
 ";
 
   return _civicrm_api3_mailing_contact_query(
+    'Delivered',
     $contactID,
     $offset,
     $limit,
@@ -243,17 +225,6 @@ AND        meb.id IS NULL
   );
 }
 
-/**
- * Get bounced mailing contact records.
- *
- * @param int $contactID
- * @param $offset
- * @param $limit
- * @param $sort
- * @param $getCount
- *
- * @return array
- */
 function _civicrm_api3_mailing_contact_get_bounced(
   $contactID,
   $offset,
@@ -266,6 +237,7 @@ INNER JOIN civicrm_mailing_event_bounce meb ON meb.event_queue_id = meq.id
 ";
 
   return _civicrm_api3_mailing_contact_query(
+    'Bounced',
     $contactID,
     $offset,
     $limit,
@@ -278,13 +250,18 @@ INNER JOIN civicrm_mailing_event_bounce meb ON meb.event_queue_id = meq.id
 }
 
 /**
- * Get count of all the mailings that a contact was involved with.
+ * Get count of all the mailings that a contact was involved with
  *
- * @param array $params
- *   Input parameters per getfields
+ * @param array    $params input parameters
+ *                    - key: contact_id, value: int - required
+ *                    - key: type, value: Delivered | Bounced - optional, defaults to Delivered
+ *                    - Future extensions will include: Opened, Clicked, Forwarded
  *
- * @return array
- *   API result
+ * @return array API result
+ * @static void
+ * @access public
+ * @example CRM/Mailing/BAO/Mailing.php
+ *
  */
 function civicrm_api3_mailing_contact_getcount($params) {
   return _civicrm_api3_mailing_contact_getresults($params, TRUE);

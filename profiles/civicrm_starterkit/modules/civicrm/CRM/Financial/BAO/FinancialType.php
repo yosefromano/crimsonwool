@@ -1,9 +1,10 @@
 <?php
+
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.6                                                |
+  | CiviCRM version 4.4                                                |
   +--------------------------------------------------------------------+
-  | Copyright CiviCRM LLC (c) 2004-2015                                |
+  | Copyright CiviCRM LLC (c) 2004-2013                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -23,90 +24,91 @@
   | GNU Affero General Public License or the licensing of CiviCRM,     |
   | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
   +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
+
 class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
 
   /**
-   * Static holder for the default LT.
+   * static holder for the default LT
    */
-  static $_defaultContributionType = NULL;
+  static $_defaultContributionType = null;
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
-    parent::__construct();
+  function __construct( ) {
+    parent::__construct( );
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * contact_id. We'll tweak this function to be more full featured over a period
+   * of time. This is the inverse function of create. It also stores all the retrieved
+   * values in the default array
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @return CRM_Contribute_BAO_ContributionType
+   * @return object CRM_Contribute_BAO_ContributionType object
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
-    $financialType = new CRM_Financial_DAO_FinancialType();
-    $financialType->copyValues($params);
-    if ($financialType->find(TRUE)) {
-      CRM_Core_DAO::storeValues($financialType, $defaults);
+  static function retrieve( &$params, &$defaults ) {
+    $financialType = new CRM_Financial_DAO_FinancialType( );
+    $financialType->copyValues( $params );
+    if ($financialType->find(true)) {
+      CRM_Core_DAO::storeValues( $financialType, $defaults );
       return $financialType;
     }
-    return NULL;
+    return null;
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
-    return CRM_Core_DAO::setFieldValue('CRM_Financial_DAO_FinancialType', $id, 'is_active', $is_active);
+  static function setIsActive( $id, $is_active ) {
+    return CRM_Core_DAO::setFieldValue( 'CRM_Financial_DAO_FinancialType', $id, 'is_active', $is_active );
   }
 
   /**
-   * Add the financial types.
+   * function to add the financial types
    *
-   * @param array $params
-   *   Reference array contains the values submitted by the form.
-   * @param array $ids
-   *   Reference array contains the id.
+   * @param array $params reference array contains the values submitted by the form
+   * @param array $ids    reference array contains the id
    *
+   * @access public
+   * @static
    * @return object
    */
-  public static function add(&$params, &$ids = array()) {
-    if (empty($params['id'])) {
-      $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
-      $params['is_deductible'] = CRM_Utils_Array::value('is_deductible', $params, FALSE);
-      $params['is_reserved'] = CRM_Utils_Array::value('is_reserved', $params, FALSE);
-    }
+  static function add(&$params, &$ids) {
+    $params['is_active'] = CRM_Utils_Array::value('is_active', $params, false);
+    $params['is_deductible'] = CRM_Utils_Array::value('is_deductible', $params, false);
+    $params['is_reserved'] = CRM_Utils_Array::value('is_reserved', $params, false);
 
     // action is taken depending upon the mode
     $financialType = new CRM_Financial_DAO_FinancialType();
     $financialType->copyValues($params);
-    if (!empty($ids['financialType'])) {
+    if (CRM_Utils_Array::value('financialType', $ids)) {
       $financialType->id = CRM_Utils_Array::value('financialType', $ids);
     }
     $financialType->save();
     // CRM-12470
-    if (empty($ids['financialType']) && empty($params['id'])) {
+    if (!CRM_Utils_Array::value('financialType', $ids)) {
       $titles = CRM_Financial_BAO_FinancialTypeAccount::createDefaultFinancialAccounts($financialType);
       $financialType->titles = $titles;
     }
@@ -114,16 +116,15 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
   }
 
   /**
-   * Delete financial Types.
+   * Function to delete financial Types
    *
-   * @param int $financialTypeId
-   *
-   * @return array|bool
+   * @param int $contributionTypeId
+   * @static
    */
-  public static function del($financialTypeId) {
-    $financialType = new CRM_Financial_DAO_FinancialType();
+  static function del($financialTypeId) {
+    $financialType = new CRM_Financial_DAO_FinancialType( );
     $financialType->id = $financialTypeId;
-    $financialType->find(TRUE);
+    $financialType->find(true);
     // tables to ingore checks for financial_type_id
     $ignoreTables = array('CRM_Financial_DAO_EntityFinancialAccount');
 
@@ -136,7 +137,7 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
       foreach ($occurrences as $occurence) {
         $className = get_class($occurence);
         if (!in_array($className, $ignoreTables)) {
-          $tables[] = $className;
+        $tables[] = $className;
         }
       }
       if (!empty($tables)) {
@@ -152,7 +153,7 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
     //delete from financial Type table
     $financialType->delete();
 
-    $entityFinancialType = new CRM_Financial_DAO_EntityFinancialAccount();
+    $entityFinancialType = new CRM_Financial_DAO_EntityFinancialAccount( );
     $entityFinancialType->entity_id = $financialTypeId;
     $entityFinancialType->entity_table = 'civicrm_financial_type';
     $entityFinancialType->delete();
@@ -160,13 +161,13 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
   }
 
   /**
-   * fetch financial type having relationship as Income Account is.
+   * to fetch financial type having relationship as Income Account is
    *
    *
-   * @return array
-   *   all financial type with income account is relationship
+   * @return array  all financial type with income account is relationship
+   * @static
    */
-  public static function getIncomeFinancialType() {
+  static function getIncomeFinancialType() {
     // Financial Type
     $financialType = CRM_Contribute_PseudoConstant::financialType();
     $revenueFinancialType = array();
@@ -174,9 +175,9 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
     CRM_Core_PseudoConstant::populate(
       $revenueFinancialType,
       'CRM_Financial_DAO_EntityFinancialAccount',
-      $all = TRUE,
+      $all = True,
       $retrieve = 'entity_id',
-      $filter = NULL,
+      $filter = null,
       "account_relationship = $relationTypeId AND entity_table = 'civicrm_financial_type' "
     );
 
@@ -187,5 +188,5 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
     }
     return $financialType;
   }
-
 }
+

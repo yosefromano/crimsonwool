@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,21 +40,22 @@
 class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
 
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Delete a saved search.
+   * delete a saved search.
    *
-   * @param int $id
-   *   Id of saved search.
+   * @param int $id - id of saved search
    *
    * @return void
+   *
    */
-  public function delete($id) {
+  function delete($id) {
     // first delete the group associated with this saved search
     $group = new CRM_Contact_DAO_Group();
     $group->saved_search_id = $id;
@@ -66,15 +67,16 @@ class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
     $savedSearch->id = $id;
     $savedSearch->is_active = 0;
     $savedSearch->save();
+    return;
   }
 
   /**
    * Browse all saved searches.
    *
-   * @return mixed
-   *   content of the parents run method
+   * @return content of the parents run method
+   *
    */
-  public function browse() {
+  function browse() {
     $rows = array();
 
     $savedSearch = new CRM_Contact_DAO_SavedSearch();
@@ -95,23 +97,14 @@ class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
           $row['name'] = $group->title;
           $row['description'] = $group->description;
 
-          $row['id'] = $savedSearch->id;
-          $formValues = unserialize($savedSearch->form_values);
-          $query = new CRM_Contact_BAO_Query($formValues);
+          $row['id']           = $savedSearch->id;
+          $formValues          = unserialize($savedSearch->form_values);
+          $query               = new CRM_Contact_BAO_Query($formValues);
           $row['query_detail'] = $query->qill();
 
-          $action = array_sum(array_keys(self::links()));
-          $action = $action & CRM_Core_Action::mask($permissions);
-          $row['action'] = CRM_Core_Action::formLink(
-            self::links(),
-            $action,
-            array('id' => $row['id']),
-            ts('more'),
-            FALSE,
-            'savedSearch.manage.action',
-            'SavedSearch',
-            $row['id']
-          );
+          $action        = array_sum(array_keys(self::links()));
+          $action        = $action & CRM_Core_Action::mask($permissions);
+          $row['action'] = CRM_Core_Action::formLink(self::links(), $action, array('id' => $row['id']));
 
           $rows[] = $row;
         }
@@ -123,11 +116,11 @@ class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
   }
 
   /**
-   * Run this page (figure out the action needed and perform it).
+   * run this page (figure out the action needed and perform it).
    *
    * @return void
    */
-  public function run() {
+  function run() {
     $action = CRM_Utils_Request::retrieve('action', 'String',
       $this, FALSE, 'browse'
     );
@@ -144,12 +137,12 @@ class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
+   * @static
    */
-  public static function &links() {
+  static function &links() {
 
     if (!(self::$_links)) {
 
@@ -172,5 +165,5 @@ class CRM_Contact_Page_SavedSearch extends CRM_Core_Page {
     }
     return self::$_links;
   }
-
 }
+

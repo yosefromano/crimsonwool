@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,26 +27,38 @@
  */
 
 /**
- * This api exposes CiviCRM participant payments.
+ * File for the CiviCRM APIv3 participant functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_Participant
+ *
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Participant.php 30486 2010-11-02 16:12:09Z shot $
+ *
  */
 
 /**
- * Create a Event Participant Payment.
+ * Files required for this package
+ */
+
+/**
+ * Create a Event Participant Payment
  *
  * This API is used for creating a Participant Payment of Event.
- * Required parameters: participant_id, contribution_id.
+ * Required parameters : participant_id, contribution_id.
  *
- * @param array $params
- *   An associative array of name/value property values of civicrm_participant_payment.
+ * @param   array  $params     an associative array of name/value property values of civicrm_participant_payment
+ * @example ParticipantPaymentCreate.php
+ * {@example ParticipantPaymentCreate.php 0}
  *
- * @return array
+ * @return array of newly created payment property values.
+ * {@getfields ParticipantPayment_create}
+ * @access public
  */
 function civicrm_api3_participant_payment_create($params) {
 
   $ids = array();
-  if (!empty($params['id'])) {
+  if (CRM_Utils_Array::value('id', $params)) {
     $ids['id'] = $params['id'];
   }
   $participantPayment = CRM_Event_BAO_ParticipantPayment::create($params, $ids);
@@ -57,12 +70,10 @@ function civicrm_api3_participant_payment_create($params) {
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_participant_payment_create_spec(&$params) {
   $params['participant_id']['api.required'] = 1;
@@ -70,12 +81,16 @@ function _civicrm_api3_participant_payment_create_spec(&$params) {
 }
 
 /**
- * Deletes an existing Participant Payment.
+ * Deletes an existing Participant Payment
  *
- * @param array $params
+ * This API is used for deleting a Participant Payment
  *
- * @return array
- *   API result
+ * @param  Int  $participantPaymentID   Id of the Participant Payment to be deleted
+ *
+ * @return array API result
+ * @example ParticipantPaymentDelete.php
+ * {@getfields ParticipantPayment_delete}
+ * @access public
  */
 function civicrm_api3_participant_payment_delete($params) {
   $participant = new CRM_Event_BAO_ParticipantPayment();
@@ -83,14 +98,17 @@ function civicrm_api3_participant_payment_delete($params) {
 }
 
 /**
- * Retrieve one or more participant payment records.
+ * Retrieve one / all contribution(s) / participant(s) linked to a
+ * contrbution.
  *
- * @param array $params
- *   Input parameters.
+ * @param  array   $params  input parameters
  *
- * @return array
- *   array of properties, if error an array with an error id and error message
+ * @return array  array of properties, if error an array with an error id and error message
+ *  @example ParticipantPaymentGet
+ * {@getfields ParticipantPayment_get}
+ * @access public
  */
 function civicrm_api3_participant_payment_get($params) {
   return _civicrm_api3_basic_get('CRM_Event_DAO_ParticipantPayment', $params);
 }
+

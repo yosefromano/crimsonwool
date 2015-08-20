@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,8 +45,10 @@ class CRM_Contact_Page_Inline_Actions extends CRM_Core_Page {
    * This method is called after the page is created.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     $contactId = CRM_Utils_Request::retrieve('cid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE, NULL, $_REQUEST);
 
     $this->assign('contactId', $contactId);
@@ -67,5 +69,5 @@ class CRM_Contact_Page_Inline_Actions extends CRM_Core_Page {
     // finally call parent
     parent::run();
   }
-
 }
+

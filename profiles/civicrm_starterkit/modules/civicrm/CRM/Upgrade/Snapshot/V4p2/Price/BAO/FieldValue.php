@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,16 +40,15 @@
 class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue {
 
   /**
-   * Insert/update a new entry in the database.
+   * insert/update a new entry in the database.
    *
-   * @param array $params
-   *   (reference), array $ids.
+   * @param array $params (reference), array $ids
    *
-   * @param $ids
-   *
-   * @return CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue
+   * @return object CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue object
+   * @access public
+   * @static
    */
-  public static function &add(&$params, $ids) {
+  static function &add(&$params, $ids) {
 
     $fieldValueBAO = new CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue();
     $fieldValueBAO->copyValues($params);
@@ -57,7 +56,7 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
     if ($id = CRM_Utils_Array::value('id', $ids)) {
       $fieldValueBAO->id = $id;
     }
-    if (!empty($params['is_default'])) {
+    if (CRM_Utils_Array::value('is_default', $params)) {
       $query = 'UPDATE civicrm_price_field_value SET is_default = 0 WHERE  price_field_id = %1';
       $p = array(1 => array($params['price_field_id'], 'Integer'));
       CRM_Core_DAO::executeQuery($query, $p);
@@ -70,23 +69,20 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
   /**
    * Creates a new entry in the database.
    *
-   * @param array $params
-   *   (reference), array $ids.
+   * @param array $params (reference), array $ids
    *
-   * @param $ids
-   *
-   * @return CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue
+   * @return object CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue object
+   * @access public
+   * @static
    */
-  public static function create(&$params, $ids) {
+  static function create(&$params, $ids) {
 
     if (!is_array($params) || empty($params)) {
-      return NULL;
+      return;
     }
 
     if ($id = CRM_Utils_Array::value('id', $ids)) {
-      if (isset($params['name'])) {
-        unset($params['name']);
-      }
+      if (isset($params['name']))unset($params['name']);
 
       $oldWeight = NULL;
       if ($id) {
@@ -97,10 +93,10 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
       $params['weight'] = CRM_Utils_Weight::updateOtherWeights('CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue', $oldWeight, $params['weight'], $fieldValues);
     }
     else {
-      if (empty($params['name'])) {
+      if (!CRM_Utils_Array::value('name', $params)) {
         $params['name'] = CRM_Utils_String::munge(CRM_Utils_Array::value('label', $params), '_', 64);
       }
-      if (empty($params['weight'])) {
+      if (!CRM_Utils_Array::value('weight', $params)) {
         $params['weight'] = 1;
       }
     }
@@ -110,36 +106,34 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
   }
 
   /**
-   * Retrieve DB object based on input parameters.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects.
    *
-   * It also stores all the retrieved values in the default array.
+   * @param array $params   (reference ) an assoc array
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @param array $params
-   *   (reference ) an assoc array.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
-   *
-   * @return CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue
+   * @return object CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue object
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     return CRM_Core_DAO::commonRetrieve('CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue', $params, $defaults);
   }
 
   /**
-   * Retrive the all values for given field id.
+   * Retrive the all values for given field id
    *
-   * @param int $fieldId
-   *   Price_field_id.
-   * @param array $values
-   *   (reference ) to hold the values.
-   * @param string $orderBy
-   *   For order by, default weight.
-   * @param bool|int $isActive is_active, default false
+   * @param int $fieldId price_field_id
+   * @param array $values (reference ) to hold the values
+   * @param string $orderBy for order by, default weight
+   * @param int $isActive is_active, default false
    *
-   * @return array
+   * @return array $values
    *
+   * @access public
+   * @static
    */
-  public static function getValues($fieldId, &$values, $orderBy = 'weight', $isActive = FALSE) {
+  static function getValues($fieldId, &$values, $orderBy = 'weight', $isActive = FALSE) {
     $fieldValueDAO = new CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue();
     $fieldValueDAO->price_field_id = $fieldId;
     $fieldValueDAO->orderBy($orderBy, 'label');
@@ -158,11 +152,12 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
   /**
    * Get the price field option label.
    *
-   * @param int $id
-   *   Id of field option.
+   * @param int $id id of field option.
    *
-   * @return string
-   *   name
+   * @return string name
+   *
+   * @access public
+   * @static
    *
    */
   public static function getOptionLabel($id) {
@@ -170,31 +165,31 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id         Id of the database record
+   * @param boolean  $is_active  Value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return   Object            DAO object on sucess, null otherwise
    *
+   * @access public
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_Upgrade_Snapshot_V4p2_Price_DAO_FieldValue', $id, 'is_active', $is_active);
   }
 
   /**
-   * Delete all values of the given field id.
+   * delete all values of the given field id
    *
-   * @param int $fieldId
-   *   Price field id.
+   * @param  int    $fieldId    Price field id
    *
-   * @return bool
+   * @return boolean
    *
+   * @access public
+   * @static
    */
-  public static function deleteValues($fieldId) {
+  static function deleteValues($fieldId) {
     if (!$fieldId) {
       return FALSE;
     }
@@ -207,13 +202,14 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
   /**
    * Delete the value.
    *
-   * @param int $id
-   *   Id.
+   * @param   int   $id  Id
    *
-   * @return bool
+   * @return  boolean
    *
+   * @access public
+   * @static
    */
-  public static function del($id) {
+  static function del($id) {
     if (!$id) {
       return FALSE;
     }
@@ -222,5 +218,5 @@ class CRM_Upgrade_Snapshot_V4p2_Price_BAO_FieldValue extends CRM_Upgrade_Snapsho
     $fieldValueDAO->id = $id;
     return $fieldValueDAO->delete();
   }
-
 }
+

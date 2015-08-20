@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,30 +23,25 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Mailing_BAO_Recipients extends CRM_Mailing_DAO_Recipients {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
-  /**
-   * @param int $mailingID
-   *
-   * @return null|string
-   */
-  public static function mailingSize($mailingID) {
+  static function mailingSize($mailingID) {
     $sql = "
 SELECT count(*) as count
 FROM   civicrm_mailing_recipients
@@ -56,15 +51,7 @@ WHERE  mailing_id = %1
     return CRM_Core_DAO::singleValueQuery($sql, $params);
   }
 
-  /**
-   * @param int $mailingID
-   * @param null $offset
-   * @param null $limit
-   *
-   * @return Object
-   */
-  public static function mailingQuery(
-    $mailingID,
+  static function mailingQuery($mailingID,
     $offset = NULL, $limit = NULL
   ) {
     $limitString = NULL;
@@ -85,58 +72,5 @@ WHERE  mailing_id = %1
 
     return CRM_Core_DAO::executeQuery($sql, $params);
   }
-
-  /**
-   * Moves a number of randomly-chosen recipients of one Mailing to another Mailing.
-   *
-   * @param int $sourceMailingId
-   *   Source mailing ID
-   * @param int $newMailingID
-   *   Destination mailing ID
-   * @param int $totalLimit
-   *   Number of recipients to move
-   */
-  public static function updateRandomRecipients($sourceMailingId, $newMailingID, $totalLimit = NULL) {
-    $limitString = NULL;
-    if ($totalLimit) {
-      $limitString = "LIMIT 0, $totalLimit";
-    }
-    CRM_Core_DAO::executeQuery("DROP TEMPORARY TABLE IF EXISTS  srcMailing_$sourceMailingId");
-    $sql = "
-CREATE TEMPORARY TABLE srcMailing_$sourceMailingId
-            (mailing_recipient_id int, id int PRIMARY KEY AUTO_INCREMENT, INDEX(mailing_recipient_id))
-            ENGINE=HEAP";
-    CRM_Core_DAO::executeQuery($sql);
-    $sql = "
-INSERT INTO srcMailing_$sourceMailingId (mailing_recipient_id)
-SELECT mr.id
-FROM   civicrm_mailing_recipients mr
-WHERE  mr.mailing_id = $sourceMailingId
-ORDER BY RAND()
-$limitString
-    ";
-    CRM_Core_DAO::executeQuery($sql);
-    $sql = "
-UPDATE civicrm_mailing_recipients mr
-INNER JOIN srcMailing_$sourceMailingId temp_mr ON temp_mr.mailing_recipient_id = mr.id
-SET mr.mailing_id = $newMailingID
-     ";
-    CRM_Core_DAO::executeQuery($sql);
-  }
-
-  /**
-   * Redistribute recipients from $sourceMailingId to a series of other mailings.
-   *
-   * @param int $sourceMailingId
-   * @param array $to
-   *   (int $targetMailingId => int $count).
-   */
-  public static function reassign($sourceMailingId, $to) {
-    foreach ($to as $targetMailingId => $count) {
-      if ($count > 0) {
-        CRM_Mailing_BAO_Recipients::updateRandomRecipients($sourceMailingId, $targetMailingId, $count);
-      }
-    }
-  }
-
 }
+

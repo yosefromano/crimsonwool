@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +24,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,12 +41,7 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
 
   protected $_phoneField = FALSE;
 
-  protected $_customGroupExtends = array(
-    'Contact',
-    'Individual',
-    'Household',
-    'Organization',
-  );
+  protected $_customGroupExtends = array('Contact', 'Individual', 'Household', 'Organization');
 
   protected $_charts = array(
     '' => 'Tabular',
@@ -53,11 +49,7 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     'pieChart' => 'Pie Chart',
   );
 
-  /**
-   */
-  /**
-   */
-  public function __construct() {
+  function __construct() {
     $this->_columns = array();
 
     $this->_columns['civicrm_contact'] = array(
@@ -67,7 +59,8 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
           'title' => ts('Contact ID'),
           'required' => TRUE,
         ),
-        'sort_name' => array(
+        'sort_name' =>
+        array(
           'title' => ts('Contact Name'),
           'required' => TRUE,
         ),
@@ -85,12 +78,10 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
           'no_display' => TRUE,
         ),
       ),
-      'order_bys' => array(
-        'sort_name' => array(
-          'title' => ts('Contact Name'),
-          'default' => TRUE,
-          'default_order' => 'ASC',
-        ),
+      'order_bys' =>
+      array(
+        'sort_name' =>
+        array('title' => ts('Contact Name'), 'default' => TRUE, 'default_order' => 'ASC'),
       ),
       'grouping' => 'contact-fields',
     );
@@ -119,8 +110,10 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
           'operator' => 'like',
         ),
       ),
-      'order_bys' => array(
-        'mailing_name' => array(
+      'order_bys' =>
+      array(
+        'mailing_name' =>
+        array(
           'name' => 'name',
           'title' => ts('Mailing'),
         ),
@@ -153,30 +146,45 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
           'title' => ts('Click through URL'),
         ),
       ),
-      'order_bys' => array(
-        'url' => array('title' => ts('Click through URL')),
+      'order_bys' =>
+      array(
+        'url' =>
+        array('title' => ts('Click through URL')),
       ),
       'grouping' => 'mailing-fields',
     );
 
-    $this->_groupFilter = TRUE;
+    $this->_columns['civicrm_group'] = array(
+      'dao' => 'CRM_Contact_DAO_Group',
+      'alias' => 'cgroup',
+      'filters' => array(
+        'gid' => array(
+          'name' => 'group_id',
+          'title' => ts('Group'),
+          'operatorType' => CRM_Report_Form::OP_MULTISELECT,
+          'group' => TRUE,
+          'options' => CRM_Core_PseudoConstant::group(),
+        ),
+      ),
+    );
+
     $this->_tagFilter = TRUE;
     parent::__construct();
   }
 
-  public function preProcess() {
+  function preProcess() {
     $this->assign('chartSupported', TRUE);
     parent::preProcess();
   }
 
-  public function select() {
+  function select() {
     $select = array();
     $this->_columnHeaders = array();
     foreach ($this->_columns as $tableName => $table) {
       if (array_key_exists('fields', $table)) {
         foreach ($table['fields'] as $fieldName => $field) {
-          if (!empty($field['required']) ||
-            !empty($this->_params['fields'][$fieldName])
+          if (CRM_Utils_Array::value('required', $field) ||
+            CRM_Utils_Array::value($fieldName, $this->_params['fields'])
           ) {
             if ($tableName == 'civicrm_email') {
               $this->_emailField = TRUE;
@@ -194,7 +202,7 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
       }
     }
 
-    if (!empty($this->_params['charts'])) {
+    if (CRM_Utils_Array::value('charts', $this->_params)) {
       $select[] = "COUNT(civicrm_mailing_event_trackable_url_open.id) as civicrm_mailing_click_count";
       $this->_columnHeaders["civicrm_mailing_click_count"]['title'] = ts('Click Count');
     }
@@ -202,19 +210,12 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     $this->_select = "SELECT " . implode(', ', $select) . " ";
   }
 
-  /**
-   * @param $fields
-   * @param $files
-   * @param $self
-   *
-   * @return array
-   */
-  public static function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = $grouping = array();
     return $errors;
   }
 
-  public function from() {
+  function from() {
     $this->_from = "
         FROM civicrm_contact {$this->_aliases['civicrm_contact']} {$this->_aclFrom}";
 
@@ -241,15 +242,15 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     }
   }
 
-  public function where() {
+  function where() {
     parent::where();
     $this->_where .= " AND {$this->_aliases['civicrm_mailing']}.sms_provider_id IS NULL";
   }
 
-  public function groupBy() {
+  function groupBy() {
 
     $this->_groupBy = '';
-    if (!empty($this->_params['charts'])) {
+    if (CRM_Utils_Array::value('charts', $this->_params)) {
       $this->_groupBy = " GROUP BY {$this->_aliases['civicrm_mailing']}.id";
     }
     else {
@@ -257,7 +258,7 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     }
   }
 
-  public function postProcess() {
+  function postProcess() {
 
     $this->beginPostProcess();
 
@@ -274,16 +275,12 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     $this->endPostProcess($rows);
   }
 
-  /**
-   * @param $rows
-   */
-  public function buildChart(&$rows) {
+  function buildChart(&$rows) {
     if (empty($rows)) {
       return;
     }
 
-    $chartInfo = array(
-      'legend' => ts('Mail Clickthrough Report'),
+    $chartInfo = array('legend' => ts('Mail Clickthrough Report'),
       'xname' => ts('Mailing'),
       'yname' => ts('Clicks'),
       'xLabelAngle' => 20,
@@ -298,16 +295,8 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
     $this->assign('chartType', $this->_params['charts']);
   }
 
-  /**
-   * Alter display of rows.
-   *
-   * Iterate through the rows retrieved via SQL and make changes for display purposes,
-   * such as rendering contacts as links.
-   *
-   * @param array $rows
-   *   Rows generated by SQL, with an array for each row.
-   */
-  public function alterDisplay(&$rows) {
+  function alterDisplay(&$rows) {
+    // custom code to alter rows
     $entryFound = FALSE;
     foreach ($rows as $rowNum => $row) {
       // make count columns point to detail report
@@ -331,5 +320,5 @@ class CRM_Report_Form_Mailing_Clicks extends CRM_Report_Form {
       }
     }
   }
-
 }
+

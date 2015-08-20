@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,26 +39,26 @@
 class CRM_Custom_Form_DeleteGroup extends CRM_Core_Form {
 
   /**
-   * The group id.
+   * the group id
    *
    * @var int
    */
   protected $_id;
 
   /**
-   * The title of the group being deleted.
+   * The title of the group being deleted
    *
    * @var string
    */
   protected $_title;
 
   /**
-   * Set up variables to build the form.
+   * set up variables to build the form
    *
    * @return void
    * @acess protected
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_id = $this->get('id');
 
     $defaults = array();
@@ -82,9 +82,10 @@ class CRM_Custom_Form_DeleteGroup extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
 
@@ -103,9 +104,10 @@ class CRM_Custom_Form_DeleteGroup extends CRM_Core_Form {
   }
 
   /**
-   * Process the form when submitted.
+   * Process the form when submitted
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $group = new CRM_Core_DAO_CustomGroup();
@@ -116,5 +118,5 @@ class CRM_Custom_Form_DeleteGroup extends CRM_Core_Form {
     CRM_Core_BAO_CustomGroup::deleteGroup($group);
     CRM_Core_Session::setStatus(ts("The Group '%1' has been deleted.", array(1 => $group->title)), '', 'success');
   }
-
 }
+

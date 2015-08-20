@@ -1,9 +1,10 @@
 <?php
 /*
+/*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +24,27 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 
 /**
- * This api exposes CiviCRM Price Sets.
- *
- * PriceSets contain PriceFields (which have their own api).
- * Use chaining to create a PriceSet and associated PriceFields in one api call.
+ * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_PriceSet
+ * @copyright CiviCRM LLC (c) 20042012
  */
 
 /**
- * Create or update a PriceSet.
+ * Create or update a price_set
  *
- * @param array $params
- *   name/value pairs to insert in new 'PriceSet'
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'price_set'
+ * @example PriceSetCreate.php Std Create example
  *
- * @return array
- *   api result array
+ * @return array api result array
+ * {@getfields price_set_create}
+ * @access public
  */
 function civicrm_api3_price_set_create($params) {
   $result = _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
@@ -63,31 +65,28 @@ function civicrm_api3_price_set_create($params) {
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_price_set_create_spec(&$params) {
-  $params['title']['api.required'] = TRUE;
 }
 
 /**
- * Returns array of price_sets matching a set of one or more group properties.
+ * Returns array of price_sets  matching a set of one or more group properties
  *
- * @param array $params
- *   Array of one or more valid property_name=>value pairs. If $params is set.
- *   as null, all price_sets will be returned (default limit is 25)
+ * @param array $params Array of one or more valid property_name=>value pairs. If $params is set
+ *  as null, all price_sets will be returned (default limit is 25)
  *
- * @return array
- *   Array of matching price_sets
+ * @return array  Array of matching price_sets
+ * {@getfields price_set_get}
+ * @access public
  */
 function civicrm_api3_price_set_get($params) {
   // hack to make getcount work. - not sure the best approach here
   // as creating an alternate getcount function also feels a bit hacky
-  if (isset($params['options'])  && isset($params['options']['is_count'])) {
+  if(isset($params['options'])  && isset($params['options']['is_count'])) {
     return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
   }
   $result = _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE);
@@ -99,15 +98,17 @@ function civicrm_api3_price_set_get($params) {
 }
 
 /**
- * Delete an existing PriceSet.
+ * delete an existing price_set
  *
- * This method is used to delete any existing PriceSet given its id.
+ * This method is used to delete any existing price_set. id of the group
+ * to be deleted is required field in $params array
  *
- * @param array $params
- *   Array containing id of the group to be deleted.
+ * @param array $params array containing id of the group
+ *  to be deleted
  *
- * @return array
- *   API result array
+ * @return array  returns flag true if successfull, error message otherwise
+ * {@getfields price_set_delete}
+ * @access public
  */
 function civicrm_api3_price_set_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);

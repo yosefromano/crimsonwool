@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,7 +29,7 @@
         {if $qill}{ts}No matches found for:{/ts}
             {include file="CRM/common/displaySearchCriteria.tpl"}
         {else}
-            {ts}None found.{/ts}
+            {ts}No matching pledge results found.{/ts}
         {/if}
         {ts}Suggestions:{/ts}
         <ul>

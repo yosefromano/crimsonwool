@@ -3,7 +3,7 @@
  *}
 <script type="text/template" id="designer_template">
   <div class="crm-designer-toolbar full-height">
-    <div class="crm-designer-buttonset-region ui-dialog-buttonset">
+    <div class="crm-designer-buttonset-region">
     </div>
     <hr />
     <div class="crm-designer-palette-region full-height">
@@ -25,21 +25,12 @@
 <script type="text/template" id="palette_template">
   <div class="crm-designer-palette">
     <div class="crm-designer-palette-search">
-      <div class="crm-filter-objects">
-        <span>{ts}Contact Type{/ts}:
-          <select class="crm-form-select crm-contact-types">
-          <option value="IndividualModel">{ts}Individual{/ts}</option>
-          <option value="OrganizationModel">{ts}Organization{/ts}</option>
-          <option value="HouseholdModel">{ts}Household{/ts}</option>
-          </select>
-        </span>
-      </div>
-      <hr>
-      <input type="text" class="crm-form-text" placeholder="{ts}Search Fields{/ts}" />
-      <a class="crm-designer-palette-clear-search crm-hover-button" href="#" style="visibility:hidden" title="{ts}Clear search{/ts}"><span class="icon ui-icon-close"></span></a>
+      <input type="text" placeholder="{ts}Search Fields{/ts}" />
+      <a class="crm-designer-palette-clear-search" href="#" title="{ts}Clear search{/ts}"><img src="{$config->resourceBase}i/close.png" class="action-icon" alt="X" /></a>
       <div class="crm-designer-palette-controls">
         <a href="#" class="crm-designer-palette-toggle" rel="open_all">{ts}Open All{/ts}</a>&nbsp; |&nbsp;
-        <a href="#" class="crm-designer-palette-toggle" rel="close_all">{ts}Close All{/ts}</a>
+        <a href="#" class="crm-designer-palette-toggle" rel="close_all">{ts}Close All{/ts}</a>&nbsp; |&nbsp;
+        <a href="#" class="crm-designer-palette-refresh">{ts}Refresh{/ts}</a>
       </div>
     </div>
 
@@ -114,12 +105,9 @@
 <script type="text/template" id="profile_selector_template">
     <div>
         <span class="crm-profile-selector-select"></span>
-        <button type="button" class="crm-profile-selector-preview" title="{ts}Preview{/ts}"><div class="icon ui-icon-zoomin">{ts}Preview{/ts}</div></button>
-        {if $perm}
-          <button class="crm-profile-selector-edit">{ts}Edit{/ts}</button>
-          <button class="crm-profile-selector-copy">{ts}Copy{/ts}</button>
-          <button class="crm-profile-selector-create">{ts}Create{/ts}</button>
-        {/if}
+        <button class="crm-profile-selector-edit">Edit</button>
+        <button class="crm-profile-selector-copy">Copy</button>
+        <button class="crm-profile-selector-create">Create</button>
     </div>
     <form>
     <div class="crm-profile-selector-preview-pane">
@@ -130,6 +118,10 @@
 
 <script type="text/template" id="profile_selector_empty_preview_template">
 {ts}(Preview Area){/ts}
+</script>
+
+<script type="text/template" id="profile_selector_option_template">
+<%= title %>
 </script>
 
 <script type="text/template" id="profile_selector_option_template">

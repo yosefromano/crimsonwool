@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,14 +40,14 @@
 class CRM_Mailing_StateMachine_Send extends CRM_Core_StateMachine {
 
   /**
-   * Class constructor.
+   * class constructor
    *
-   * @param CRM_Mailing_Controller $controller
-   * @param \const|int $action
+   * @param object  CRM_Mailing_Controller
+   * @param int     $action
    *
-   * @return \CRM_Mailing_StateMachine_Send CRM_Mailing_StateMachine
+   * @return object CRM_Mailing_StateMachine
    */
-  public function __construct($controller, $action = CRM_Core_Action::NONE) {
+  function __construct($controller, $action = CRM_Core_Action::NONE) {
     parent::__construct($controller, $action);
 
     $this->_pages = array(
@@ -58,11 +58,11 @@ class CRM_Mailing_StateMachine_Send extends CRM_Core_StateMachine {
     );
 
     if (CRM_Mailing_Info::workflowEnabled()) {
-      if (CRM_Core_Permission::check('schedule mailings') || CRM_Core_Permission::check('access CiviMail')) {
+      if (CRM_Core_Permission::check('schedule mailings')) {
         $this->_pages['CRM_Mailing_Form_Schedule'] = NULL;
       }
 
-      if (CRM_Core_Permission::check('approve mailings') || CRM_Core_Permission::check('access CiviMail')) {
+      if (CRM_Core_Permission::check('approve mailings')) {
         $this->_pages['CRM_Mailing_Form_Approve'] = NULL;
       }
     }
@@ -72,5 +72,5 @@ class CRM_Mailing_StateMachine_Send extends CRM_Core_StateMachine {
 
     $this->addSequentialPages($this->_pages, $action);
   }
-
 }
+

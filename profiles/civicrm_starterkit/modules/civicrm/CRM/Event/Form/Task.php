@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,49 +40,46 @@
 class CRM_Event_Form_Task extends CRM_Core_Form {
 
   /**
-   * The task being performed.
+   * the task being performed
    *
    * @var int
    */
   protected $_task;
 
   /**
-   * The additional clause that we restrict the search with.
+   * The additional clause that we restrict the search with
    *
    * @var string
    */
   protected $_componentClause = NULL;
 
   /**
-   * The array that holds all the component ids.
+   * The array that holds all the component ids
    *
    * @var array
    */
   protected $_componentIds;
 
   /**
-   * The array that holds all the participant ids.
+   * The array that holds all the participant ids
    *
    * @var array
    */
   protected $_participantIds;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @param
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     self::preProcessCommon($this);
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   * @param bool $useTable
-   */
-  public static function preProcessCommon(&$form, $useTable = FALSE) {
+  static function preProcessCommon(&$form, $useTable = FALSE) {
     $form->_participantIds = array();
 
     $values = $form->controller->exportValues($form->get('searchFormName'));
@@ -139,8 +136,8 @@ class CRM_Event_Form_Task extends CRM_Core_Form {
     }
     else {
       $session->replaceUserContext(CRM_Utils_System::url("civicrm/contact/search/$searchFormName",
-        $urlParams
-      ));
+          $urlParams
+        ));
     }
   }
 
@@ -155,18 +152,16 @@ class CRM_Event_Form_Task extends CRM_Core_Form {
   }
 
   /**
-   * Simple shell that derived classes can call to add buttons to.
+   * simple shell that derived classes can call to add buttons to
    * the form with a customized title for the main Submit
    *
-   * @param string $title
-   *   Title of the main button.
-   * @param string $nextType
-   * @param string $backType
-   * @param bool $submitOnce
+   * @param string $title title of the main button
+   * @param string $type  button type for the form after processing
    *
    * @return void
+   * @access public
    */
-  public function addDefaultButtons($title, $nextType = 'next', $backType = 'back', $submitOnce = FALSE) {
+  function addDefaultButtons($title, $nextType = 'next', $backType = 'back', $submitOnce = FALSE) {
     $this->addButtons(array(
         array(
           'type' => $nextType,
@@ -180,5 +175,5 @@ class CRM_Event_Form_Task extends CRM_Core_Form {
       )
     );
   }
-
 }
+

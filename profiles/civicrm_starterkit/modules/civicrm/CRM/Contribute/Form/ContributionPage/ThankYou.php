@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,40 +39,32 @@
 class CRM_Contribute_Form_ContributionPage_ThankYou extends CRM_Contribute_Form_ContributionPage {
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
    * @return void
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $title = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionPage', $this->_id, 'title');
-    CRM_Utils_System::setTitle(ts('Thank-you and Receipting') . " ($title)");
+    CRM_Utils_System::setTitle(ts('Thank-you and Receipting (%1)', array(1 => $title)));
     return parent::setDefaultValues();
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     $this->registerRule('emailList', 'callback', 'emailList', 'CRM_Utils_Rule');
 
     // thank you title and text (html allowed in text)
     $this->add('text', 'thankyou_title', ts('Thank-you Page Title'), CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'thankyou_title'), TRUE);
-
-    $attributes = CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'thankyou_text');
-    $attributes['click_wysiwyg'] = TRUE;
-    $this->addWysiwyg('thankyou_text', ts('Thank-you Message'), $attributes);
-    // FIXME: This hack forces height of editor to 175px. Need to modify QF classes for editors to allow passing
-    // explicit height and width.
-    $footerAttribs = array(
-      'rows' => 2,
-      'cols' => 40,
-      'click_wysiwyg' => TRUE,
-    );
-    $this->addWysiwyg('thankyou_footer', ts('Thank-you Footer'), $footerAttribs);
+    $this->addWysiwyg('thankyou_text', ts('Thank-you Message'), CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'thankyou_text'));
+    $this->addWysiwyg('thankyou_footer', ts('Thank-you Page Footer'), CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'thankyou_footer'));
 
     $this->addElement('checkbox', 'is_email_receipt', ts('Email Receipt to Contributor?'), NULL, array('onclick' => "showReceipt()"));
     $this->add('text', 'receipt_from_name', ts('Receipt From Name'), CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_ContributionPage', 'receipt_from_name'));
@@ -90,23 +82,21 @@ class CRM_Contribute_Form_ContributionPage_ThankYou extends CRM_Contribute_Form_
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param array $options
-   *   Additional user data.
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $options) {
+  static function formRule($fields, $files, $options) {
     $errors = array();
 
     // if is_email_receipt is set, the receipt message must be non-empty
-    if (!empty($fields['is_email_receipt'])) {
+    if (CRM_Utils_Array::value('is_email_receipt', $fields)) {
       //added for CRM-1348
       $email = trim(CRM_Utils_Array::value('receipt_from_email', $fields));
       if (empty($email) || !CRM_Utils_Rule::email($email)) {
@@ -117,9 +107,10 @@ class CRM_Contribute_Form_ContributionPage_ThankYou extends CRM_Contribute_Form_
   }
 
   /**
-   * Process the form.
+   * Process the form
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     // get the submitted form values.
@@ -143,9 +134,10 @@ class CRM_Contribute_Form_ContributionPage_ThankYou extends CRM_Contribute_Form_
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Thanks and Receipt');
   }
-
 }
+

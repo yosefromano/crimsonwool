@@ -250,10 +250,8 @@
     </CustomField>
     <CustomField>
       <label>Staff Responsible</label>
-      <name>staff_responsible</name>
-      <data_type>ContactReference</data_type>
-      <html_type>Autocomplete-Select</html_type>
-      <filter>action=lookup&amp;group=2</filter>
+      <data_type>String</data_type>
+      <html_type>Select</html_type>
       <is_required>0</is_required>
       <is_searchable>1</is_searchable>
       <is_search_range>0</is_search_range>
@@ -265,6 +263,7 @@
       <note_columns>60</note_columns>
       <note_rows>4</note_rows>
       <column_name>staff_responsible</column_name>
+      <option_group_name>staff_responsible_values</option_group_name>
       <custom_group_name>Constituent_Info_Individuals</custom_group_name>
     </CustomField>
     <CustomField>
@@ -731,10 +730,8 @@
     </CustomField>
     <CustomField>
       <label>Event Contact Person</label>
-      <name>event_contact_person</name>
-      <data_type>ContactReference</data_type>
-      <html_type>Autocomplete-Select</html_type>
-      <filter>action=lookup&amp;group=2</filter>
+      <data_type>String</data_type>
+      <html_type>Select</html_type>
       <is_required>0</is_required>
       <is_searchable>1</is_searchable>
       <is_search_range>0</is_search_range>
@@ -746,6 +743,7 @@
       <note_columns>60</note_columns>
       <note_rows>4</note_rows>
       <column_name>event_contact_person</column_name>
+      <option_group_name>staff_responsible_values</option_group_name>
       <custom_group_name>Event_Details</custom_group_name>
     </CustomField>
     <CustomField>
@@ -1069,6 +1067,11 @@
     <OptionGroup>
       <name>constituent_type_ind_values</name>
       <title>Constituent Type Values</title>
+      <is_active>1</is_active>
+    </OptionGroup>
+    <OptionGroup>
+      <name>staff_responsible_values</name>
+      <title>Staff Responsible Values</title>
       <is_active>1</is_active>
     </OptionGroup>
     <OptionGroup>
@@ -1412,6 +1415,16 @@
         <is_reserved>0</is_reserved>
         <is_active>1</is_active>
     <option_group_name>constituent_type_ind_values</option_group_name>
+    </OptionValue>
+    <OptionValue>
+      <label>Add Staff Name Here</label>
+      <value>add_staff_name_here</value>
+      <is_default>0</is_default>
+      <weight>2</weight>
+      <is_optgroup>0</is_optgroup>
+      <is_reserved>0</is_reserved>
+      <is_active>1</is_active>
+      <option_group_name>staff_responsible_values</option_group_name>
     </OptionValue>
     <OptionValue>
       <label>Meeting</label>

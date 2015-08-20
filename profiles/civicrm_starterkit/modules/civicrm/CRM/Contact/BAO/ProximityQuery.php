@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,20 +44,22 @@ class CRM_Contact_BAO_ProximityQuery {
    * All function arguments and return values measure distances in metres
    * and angles in degrees.  The ellipsoid model is from the WGS-84 datum.
    * Ka-Ping Yee, 2003-08-11
+
    * earth_radius_semimajor = 6378137.0;
    * earth_flattening = 1/298.257223563;
    * earth_radius_semiminor = $earth_radius_semimajor * (1 - $earth_flattening);
    * earth_eccentricity_sq = 2*$earth_flattening - pow($earth_flattening, 2);
+
    * This library is an implementation of UCB CS graduate student, Ka-Ping Yee (http://www.zesty.ca).
    * This version has been taken from Drupal's location module: http://drupal.org/project/location
-   */
+   **/
 
   static protected $_earthFlattening;
   static protected $_earthRadiusSemiMinor;
   static protected $_earthRadiusSemiMajor;
   static protected $_earthEccentricitySQ;
 
-  public static function initialize() {
+  static function initialize() {
     static $_initialized = FALSE;
 
     if (!$_initialized) {
@@ -70,20 +72,19 @@ class CRM_Contact_BAO_ProximityQuery {
     }
   }
 
-  /*
+  /**
    * Latitudes in all of U. S.: from -7.2 (American Samoa) to 70.5 (Alaska).
    * Latitudes in continental U. S.: from 24.6 (Florida) to 49.0 (Washington).
    * Average latitude of all U. S. zipcodes: 37.9.
    */
 
-  /**
-   * Estimate the Earth's radius at a given latitude.
-   * Default to an approximate average radius for the United States.
-   *
-   * @param float $latitude
-   * @return float
-   */
-  public static function earthRadius($latitude) {
+  /*
+    /**
+     * Estimate the Earth's radius at a given latitude.
+     * Default to an approximate average radius for the United States.
+     */
+
+  static function earthRadius($latitude) {
     $lat = deg2rad($latitude);
 
     $x = cos($lat) / self::$_earthRadiusSemiMajor;
@@ -94,21 +95,15 @@ class CRM_Contact_BAO_ProximityQuery {
   /**
    * Convert longitude and latitude to earth-centered earth-fixed coordinates.
    * X axis is 0 long, 0 lat; Y axis is 90 deg E; Z axis is north pole.
-   *
-   * @param float $longitude
-   * @param float $latitude
-   * @param float $height
-   *
-   * @return array
    */
-  public static function earthXYZ($longitude, $latitude, $height = 0) {
+  static function earthXYZ($longitude, $latitude, $height = 0) {
     $long = deg2rad($longitude);
     $lat = deg2rad($latitude);
 
     $cosLong = cos($long);
-    $cosLat = cos($lat);
+    $cosLat  = cos($lat);
     $sinLong = sin($long);
-    $sinLat = sin($lat);
+    $sinLat  = sin($lat);
 
     $radius = self::$_earthRadiusSemiMajor / sqrt(1 - self::$_earthEccentricitySQ * $sinLat * $sinLat);
 
@@ -121,34 +116,25 @@ class CRM_Contact_BAO_ProximityQuery {
 
   /**
    * Convert a given angle to earth-surface distance.
-   *
-   * @param float $angle
-   * @param float $latitude
-   * @return float
    */
-  public static function earthArcLength($angle, $latitude) {
+  static function earthArcLength($angle, $latitude) {
     return deg2rad($angle) * self::earthRadius($latitude);
   }
 
   /**
    * Estimate the min and max longitudes within $distance of a given location.
-   *
-   * @param float $longitude
-   * @param float $latitude
-   * @param float $distance
-   * @return array
    */
-  public static function earthLongitudeRange($longitude, $latitude, $distance) {
-    $long = deg2rad($longitude);
-    $lat = deg2rad($latitude);
+  static function earthLongitudeRange($longitude, $latitude, $distance) {
+    $long   = deg2rad($longitude);
+    $lat    = deg2rad($latitude);
     $radius = self::earthRadius($latitude);
 
-    $angle = $distance / $radius;
-    $diff = asin(sin($angle) / cos($lat));
+    $angle   = $distance / $radius;
+    $diff    = asin(sin($angle) / cos($lat));
     $minLong = $long - $diff;
     $maxLong = $long + $diff;
 
-    if ($minLong < -pi()) {
+    if ($minLong < - pi()) {
       $minLong = $minLong + pi() * 2;
     }
 
@@ -156,32 +142,26 @@ class CRM_Contact_BAO_ProximityQuery {
       $maxLong = $maxLong - pi() * 2;
     }
 
-    return array(
-      rad2deg($minLong),
+    return array(rad2deg($minLong),
       rad2deg($maxLong),
     );
   }
 
   /**
    * Estimate the min and max latitudes within $distance of a given location.
-   *
-   * @param float $longitude
-   * @param float $latitude
-   * @param float $distance
-   * @return array
    */
-  public static function earthLatitudeRange($longitude, $latitude, $distance) {
-    $long = deg2rad($longitude);
-    $lat = deg2rad($latitude);
+  static function earthLatitudeRange($longitude, $latitude, $distance) {
+    $long   = deg2rad($longitude);
+    $lat    = deg2rad($latitude);
     $radius = self::earthRadius($latitude);
 
-    $angle = $distance / $radius;
-    $minLat = $lat - $angle;
-    $maxLat = $lat + $angle;
+    $angle      = $distance / $radius;
+    $minLat     = $lat - $angle;
+    $maxLat     = $lat + $angle;
     $rightangle = pi() / 2.0;
 
     // wrapped around the south pole
-    if ($minLat < -$rightangle) {
+    if ($minLat < - $rightangle) {
       $overshoot = -$minLat - $rightangle;
       $minLat = -$rightangle + $overshoot;
       if ($minLat > $maxLat) {
@@ -200,28 +180,28 @@ class CRM_Contact_BAO_ProximityQuery {
       $maxLat = $rightangle;
     }
 
-    return array(
-      rad2deg($minLat),
+    return array(rad2deg($minLat),
       rad2deg($maxLat),
     );
   }
 
-  /**
-   * @param float $latitude
-   * @param float $longitude
-   * @param float $distance
-   * @param string $tablePrefix
-   *
-   * @return string
-   */
-  public static function where($latitude, $longitude, $distance, $tablePrefix = 'civicrm_address') {
+  static function where($latitude, $longitude, $distance, $tablePrefix = 'civicrm_address') {
     self::initialize();
 
     $params = array();
     $clause = array();
 
-    list($minLongitude, $maxLongitude) = self::earthLongitudeRange($longitude, $latitude, $distance);
-    list($minLatitude, $maxLatitude) = self::earthLatitudeRange($longitude, $latitude, $distance);
+    list($minLongitude, $maxLongitude) =
+      self::earthLongitudeRange($longitude,
+        $latitude,
+        $distance
+      );
+    list($minLatitude, $maxLatitude) =
+      self::earthLatitudeRange(
+        $longitude,
+        $latitude,
+        $distance
+      );
 
     // DONT consider NAN values (which is returned by rad2deg php function)
     // for checking BETWEEN geo_code's criteria as it throws obvious 'NAN' field not found DB: Error
@@ -253,14 +233,7 @@ ACOS(
     return $where;
   }
 
-  /**
-   * @param $query
-   * @param array $values
-   *
-   * @throws Exception
-   * @return void
-   */
-  public static function process(&$query, &$values) {
+  static function process(&$query, &$values) {
     list($name, $op, $distance, $grouping, $wildcard) = $values;
 
     // also get values array for all address related info
@@ -290,7 +263,7 @@ ACOS(
     }
 
     if (empty($proximityAddress)) {
-      return NULL;
+      return;
     }
 
     if (isset($proximityAddress['state_province_id'])) {
@@ -314,6 +287,7 @@ ACOS(
       $qill[] = $proximityAddress['country'];
     }
 
+
     if (
       isset($proximityAddress['distance_unit']) &&
       $proximityAddress['distance_unit'] == 'miles'
@@ -329,7 +303,7 @@ ACOS(
     $qill = ts('Proximity search to a distance of %1 from %2',
       array(
         1 => $qillUnits,
-        2 => implode(', ', $qill),
+        2 => implode(', ', $qill)
       )
     );
 
@@ -340,7 +314,7 @@ ACOS(
 
     $query->_tables['civicrm_address'] = $query->_whereTables['civicrm_address'] = 1;
 
-    require_once str_replace('_', DIRECTORY_SEPARATOR, $fnName) . '.php';
+    require_once (str_replace('_', DIRECTORY_SEPARATOR, $fnName) . '.php');
     $fnName::format($proximityAddress);
     if (
       !is_numeric(CRM_Utils_Array::value('geo_code_1', $proximityAddress)) ||
@@ -350,7 +324,7 @@ ACOS(
       $qill .= ': ' . ts('We could not geocode the destination address.');
       $query->_qill[$grouping][] = $qill;
       $query->_where[$grouping][] = ' (0) ';
-      return NULL;
+      return;
     }
 
     $query->_qill[$grouping][] = $qill;
@@ -360,16 +334,10 @@ ACOS(
       $distance
     );
 
-    return NULL;
+    return;
   }
 
-  /**
-   * @param array $input
-   * retun void
-   *
-   * @return null
-   */
-  public static function fixInputParams(&$input) {
+  static function fixInputParams(&$input) {
     foreach ($input as $param) {
       if (CRM_Utils_Array::value('0', $param) == 'prox_distance') {
         // add prox_ prefix to these
@@ -390,9 +358,9 @@ ACOS(
             }
           }
         }
-        return NULL;
+        return;
       }
     }
   }
-
 }
+

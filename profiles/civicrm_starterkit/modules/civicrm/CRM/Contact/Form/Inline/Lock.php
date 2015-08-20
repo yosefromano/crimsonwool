@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,15 +40,16 @@
 class CRM_Contact_Form_Inline_Lock {
 
   /**
-   * This function provides the HTML form elements.
+   * This function provides the HTML form elements
    *
-   * @param CRM_Core_Form $form
-   *   Form object.
-   * @param int $contactID
+   * @param object $form form object
+   * @param int $inlineEditMode ( 1 for contact summary
+   * top bar form and 2 for display name edit )
    *
+   * @access public
    * @return void
    */
-  public static function buildQuickForm(&$form, $contactID) {
+  static function buildQuickForm(&$form, $contactID) {
     // We provide a value for oplock_ts to client, but JS uses it carefully
     // -- i.e.  when loading the first inline form, JS copies oplock_ts to a
     // global value, and that global value is used for future form submissions.
@@ -65,16 +66,15 @@ class CRM_Contact_Form_Inline_Lock {
   /**
    * Ensure that oplock_ts hasn't changed in the underlying DB
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param int $contactID
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $contactID = NULL) {
+  static function formRule($fields, $files, $contactID = NULL) {
     $errors = array();
 
     $timestamps = CRM_Contact_BAO_Contact::getTimestamps($contactID);
@@ -91,14 +91,10 @@ class CRM_Contact_Form_Inline_Lock {
   /**
    * Return any post-save data
    *
-   * @param int $contactID
-   *
-   * @return array
-   *   extra options to return in JSON
+   * @return array extra options to return in JSON
    */
-  public static function getResponse($contactID) {
+  static function getResponse($contactID) {
     $timestamps = CRM_Contact_BAO_Contact::getTimestamps($contactID);
     return array('oplock_ts' => $timestamps['modified_date']);
   }
-
 }

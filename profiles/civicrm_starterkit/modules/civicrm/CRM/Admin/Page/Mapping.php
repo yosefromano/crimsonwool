@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,32 +38,29 @@
  */
 class CRM_Admin_Page_Mapping extends CRM_Core_Page_Basic {
 
-  public $useLivePageJS = TRUE;
-
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO.
+   * Get BAO
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Core_BAO_Mapping';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       // helper variable for nicer formatting
       $deleteExtra = ts('Are you sure you want to delete this mapping?') . ' ' . ts('This operation cannot be undone.');
@@ -86,65 +83,58 @@ class CRM_Admin_Page_Mapping extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Admin_Form_Mapping';
   }
 
   /**
-   * Get form name for edit form.
+   * Get form name for edit form
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'Mapping';
   }
 
   /**
-   * Get form name for delete form.
+   * Get form name for delete form
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function deleteName() {
+  function deleteName() {
     return 'Mapping';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/mapping';
   }
 
   /**
-   * Get name of delete form.
+   * Get name of delete form
    *
-   * @return string
-   *   Classname of delete form.
+   * @return string Classname of delete form.
    */
-  public function deleteForm() {
+  function deleteForm() {
     return 'CRM_Admin_Form_Mapping';
   }
 
   /**
-   * Run the basic page.
+   * Run the basic page
    *
    * @return void
    */
-  public function run() {
+  function run() {
     $sort = 'mapping_type asc';
     return parent::run($sort);
   }
-
 }
+

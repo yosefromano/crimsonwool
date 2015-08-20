@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -50,7 +50,7 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
 
   protected $_params = NULL;
 
-  public function preProcess() {
+  function preProcess() {
     $this->_contactID = CRM_Utils_Request::retrieve('cid', 'Positive',
       $this, FALSE
     );
@@ -97,10 +97,7 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
     $session->pushUserContext(CRM_Utils_System::url('civicrm/admin', 'reset=1'));
   }
 
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
 
     foreach ($this->_varNames as $groupName => $settings) {
@@ -112,10 +109,7 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
     return $defaults;
   }
 
-  /**
-   * @param $defaults
-   */
-  public function cbsDefaultValues(&$defaults) {
+  function cbsDefaultValues(&$defaults) {
 
     foreach ($this->_varNames as $groupName => $groupValues) {
       foreach ($groupValues as $settingName => $fieldValue) {
@@ -139,12 +133,14 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
+
 
     if (!empty($this->_varNames)) {
       foreach ($this->_varNames as $groupName => $groupValues) {
@@ -192,21 +188,6 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
                 array('&nbsp;&nbsp;', '&nbsp;&nbsp;', '<br/>')
               );
               break;
-
-            case 'select':
-              $this->addElement('select',
-                $fieldName,
-                $fieldValue['title'],
-                $fieldValue['option_values']
-              );
-              break;
-
-            case 'wysiwyg':
-              $this->addWysiwyg($fieldName, $fieldValue['title'], $fieldValue['attributes']);
-              break;
-
-            case 'entity_reference':
-              $this->addEntityRef($fieldName, $fieldValue['title'], CRM_Utils_Array::value('options', $fieldValue, array()));
           }
         }
 
@@ -234,10 +215,11 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     $config = CRM_Core_Config::singleton();
@@ -249,24 +231,26 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
 
     $this->postProcessCommon();
   }
+  //end of function
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcessCommon() {
     foreach ($this->_varNames as $groupName => $groupValues) {
       foreach ($groupValues as $settingName => $fieldValue) {
         switch ($fieldValue['html_type']) {
           case 'checkboxes':
-            if (!empty($this->_params[$settingName]) &&
+            if (CRM_Utils_Array::value($settingName, $this->_params) &&
               is_array($this->_params[$settingName])
             ) {
               $this->_config->$settingName = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR,
-                  array_keys($this->_params[$settingName])
-                ) . CRM_Core_DAO::VALUE_SEPARATOR;
+                array_keys($this->_params[$settingName])
+              ) . CRM_Core_DAO::VALUE_SEPARATOR;
             }
             else {
               $this->_config->$settingName = NULL;
@@ -274,13 +258,12 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
             break;
 
           case 'checkbox':
-            $this->_config->$settingName = !empty($this->_params[$settingName]) ? 1 : 0;
+            $this->_config->$settingName = CRM_Utils_Array::value($settingName, $this->_params) ? 1 : 0;
             break;
 
           case 'text':
           case 'select':
           case 'radio':
-          case 'entity_reference':
             $this->_config->$settingName = CRM_Utils_Array::value($settingName, $this->_params);
             break;
 
@@ -305,10 +288,9 @@ class CRM_Admin_Form_Preferences extends CRM_Core_Form {
         );
       }
     }
-    // Update any settings stored in dynamic js
-    CRM_Core_Resources::singleton()->resetCacheCode();
 
     CRM_Core_Session::setStatus(ts('Your changes have been saved.'), ts('Saved'), 'success');
   }
 
 }
+

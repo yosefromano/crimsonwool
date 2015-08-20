@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,22 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *  Class to print labels in Avery or custom formats
  * functionality and smarts to the base PDF_Label.
  *
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  *
  *
  */
 
 require_once 'tcpdf/tcpdf.php';
-
-/**
- * Class CRM_Utils_PDF_Label
- */
 class CRM_Utils_PDF_Label extends TCPDF {
 
   // make these properties public due to
@@ -91,14 +87,15 @@ class CRM_Utils_PDF_Label extends TCPDF {
   public $countY = 0;
 
   /**
-   * Constructor.
+   * Constructor
    *
-   * @param $format
-   *   Either the name of a Label Format in the Option Value table.
+   * @param $format   Either the name of a Label Format in the Option Value table
    *                  or an array of Label Format values.
-   * @param string|\Unit $unit Unit of measure for the PDF document
+   * @param $unit     Unit of measure for the PDF document
+   *
+   * @access public
    */
-  public function __construct($format, $unit = 'mm') {
+  function __construct($format, $unit = 'mm') {
     if (is_array($format)) {
       // Custom format
       $tFormat = $format;
@@ -119,22 +116,12 @@ class CRM_Utils_PDF_Label extends TCPDF {
     $this->setPrintFooter(FALSE);
   }
 
-  /**
-   * @param $objectinstance
-   * @param string $methodname
-   */
-  public function SetGenerator($objectinstance, $methodname = 'generateLabel') {
+  function SetGenerator($objectinstance, $methodname = 'generateLabel') {
     $this->generatorMethod = $methodname;
     $this->generatorObject = $objectinstance;
   }
 
-  /**
-   * @param string $name
-   * @param bool $convert
-   *
-   * @return float|int|mixed
-   */
-  public function getFormatValue($name, $convert = FALSE) {
+  function getFormatValue($name, $convert = FALSE) {
     if (isset($this->format[$name])) {
       $value = $this->format[$name];
       $metric = $this->format['metric'];
@@ -149,13 +136,10 @@ class CRM_Utils_PDF_Label extends TCPDF {
     return $value;
   }
 
-  /**
-   * initialize label format settings.
-   *
-   * @param $format
-   * @param $unit
+  /*
+   * Function to initialize label format settings
    */
-  public function LabelSetFormat(&$format, $unit) {
+  function LabelSetFormat(&$format, $unit) {
     $this->defaults = CRM_Core_BAO_LabelFormat::getDefaultValues();
     $this->format = &$format;
     $this->formatName = $this->getFormatValue('name');
@@ -181,12 +165,10 @@ class CRM_Utils_PDF_Label extends TCPDF {
     $this->paper_dimensions = array($w, $h);
   }
 
-  /**
-   * Generate the pdf of one label (can be modified using SetGenerator)
-   *
-   * @param string $text
+  /*
+   * function to Generate the pdf of one label (can be modified using SetGenerator)
    */
-  public function generateLabel($text) {
+  function generateLabel($text) {
     $args = array(
       'w' => $this->width,
       'h' => 0,
@@ -227,12 +209,10 @@ class CRM_Utils_PDF_Label extends TCPDF {
     }
   }
 
-  /**
-   * Print a label.
-   *
-   * @param $texte
+  /*
+   * function to Print a label
    */
-  public function AddPdfLabel($texte) {
+  function AddPdfLabel($texte) {
     if ($this->countX == $this->xNumber) {
       // Page full, we start a new one
       $this->AddPage();
@@ -258,7 +238,7 @@ class CRM_Utils_PDF_Label extends TCPDF {
     }
   }
 
-  public function getFontNames() {
+  function getFontNames() {
     // Define labels for TCPDF core fonts
     $fontLabel = array(
       'courier' => ts('Courier'),
@@ -266,6 +246,7 @@ class CRM_Utils_PDF_Label extends TCPDF {
       'times' => ts('Times New Roman'),
       'dejavusans' => ts('Deja Vu Sans (UTF-8)'),
     );
+
 
     // Check to see if we have any additional fonts to add. You can specify more fonts in
     // civicrm.settings.php via: $config['CiviCRM Preferences']['additional_fonts']
@@ -284,5 +265,5 @@ class CRM_Utils_PDF_Label extends TCPDF {
 
     return $list;
   }
-
 }
+

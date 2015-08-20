@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -52,14 +52,41 @@
         <tr>
             <td class="label-left">{$form.msg_subject.label}</td>
             <td>
-              {$form.msg_subject.html|crmAddClass:huge}
-              <input class="crm-token-selector big" data-field="msg_subject" />
-              {help id="id-token-subject" tplFile=$tplFile isAdmin=$isAdmin file="CRM/Contact/Form/Task/Email.hlp"}
+                  {$form.msg_subject.html|crmAddClass:huge}
+                <a href="#" onClick="return showToken('Subject', 3);">{$form.token3.label}</a>
+                {help id="id-token-text" file="CRM/Contact/Form/Task/Email.hlp"}
+                  <div id='tokenSubject' style="display:none">
+                     <input  style="border:1px solid #999999;" type="text" id="filter3" size="20" name="filter3" onkeyup="filter(this, 3)"/><br />
+                     <span class="description">{ts}Begin typing to filter list of tokens{/ts}</span><br/>
+                     {$form.token3.html}
+                  </div>
              <br /><span class="description">{ts}Subject for email message.{/ts} {ts 1=$tokenDocsRepeated}Tokens may be included (%1).{/ts}</span>
             </td>
         </tr>
         <tr>
   </table>
+
+      <div class="crm-accordion-wrapper crm-plaint_text_email-accordion ">
+        <div class="crm-accordion-header">
+                {ts}Plain-Text Format{/ts}
+        </div><!-- /.crm-accordion-header -->
+            <div class="crm-accordion-body">
+                <span class="helpIcon" id="helptext">
+                  <a href="#" onClick="return showToken('Text', 1);">{$form.token1.label}</a>
+                  {help id="id-token-text" file="CRM/Contact/Form/Task/Email.hlp"}
+                  <div id='tokenText' style="display:none">
+                    <input  style="border:1px solid #999999;" type="text" id="filter1" size="20" name="filter1" onkeyup="filter(this, 1)"/><br />
+                    <span class="description">{ts}Begin typing to filter list of tokens{/ts}</span><br/>
+                      {$form.token1.html}
+                  </div>
+                </span>
+              <div class="clear"></div>
+                <div class='text'>
+                    {$form.msg_text.html|crmAddClass:huge}
+                    <div class="description">{ts}Text formatted message.{/ts} {ts 1=$tokenDocsRepeated}Tokens may be included (%1).{/ts}</div>
+                </div>
+            </div><!-- /.crm-accordion-body -->
+      </div><!-- /.crm-accordion-wrapper -->
 
       <div class="crm-accordion-wrapper crm-html_email-accordion ">
         <div class="crm-accordion-header">
@@ -67,33 +94,21 @@
             {help id="id-message-text" file="CRM/Contact/Form/Task/Email.hlp"}
         </div><!-- /.crm-accordion-header -->
          <div class="crm-accordion-body">
-           <div class="helpIcon" id="helphtml">
-             <input class="crm-token-selector big" data-field="html_message" />
-             {help id="id-token-html" tplFile=$tplFile isAdmin=$isAdmin editor=$editor file="CRM/Contact/Form/Task/Email.hlp"}
-           </div>
+                <span class="helpIcon" id="helphtml">
+                  <a href="#" onClick="return showToken('Html', 2);">{$form.token2.label}</a>
+                  {help id="id-token-html" file="CRM/Contact/Form/Task/Email.hlp"}
+                  <div id='tokenHtml' style="display:none">
+                    <input style="border:1px solid #999999;" type="text" id="filter2" size="20" name="filter2" onkeyup="filter(this, 2)"/><br />
+                    <span class="description">{ts}Begin typing to filter list of tokens{/ts}</span><br/>
+                      {$form.token2.html}
+                  </div>
+                </span>
                 <div class="clear"></div>
-                <div class='html resizable-textarea'>
+                <div class='html'>
                     {$form.msg_html.html}
-                    <div class="description">{ts}An HTML formatted version of this message will be sent to contacts whose Email Format preference is 'HTML' or 'Both'.{/ts} {ts 1=$tokenDocsRepeated}Tokens may be included (%1).{/ts}</div>
+                    <div class="description">{ts}You may optionally create an HTML formatted version of this message. It will be sent to contacts whose Email Format preference is 'HTML' or 'Both'.{/ts} {ts 1=$tokenDocsRepeated}Tokens may be included (%1).{/ts}</div>
                 </div>
         </div><!-- /.crm-accordion-body -->
-      </div><!-- /.crm-accordion-wrapper -->
-
-      <div class="crm-accordion-wrapper crm-plaint_text_email-accordion ">
-        <div class="crm-accordion-header">
-                {ts}Plain-Text Format{/ts}
-        </div><!-- /.crm-accordion-header -->
-            <div class="crm-accordion-body">
-              <div class="helpIcon" id="helptext">
-                <input class="crm-token-selector big" data-field="msg_text" />
-                {help id="id-token-text" tplFile=$tplFile file="CRM/Contact/Form/Task/Email.hlp"}
-              </div>
-              <div class="clear"></div>
-                <div class='text'>
-                    {$form.msg_text.html|crmAddClass:huge}
-                    <div class="description">{ts}Text formatted message.{/ts} {ts 1=$tokenDocsRepeated}Tokens may be included (%1).{/ts}</div>
-                </div>
-            </div><!-- /.crm-accordion-body -->
       </div><!-- /.crm-accordion-wrapper -->
 
       <div class="crm-accordion-wrapper crm-html_email-accordion ">
@@ -124,3 +139,10 @@
 </div>
 </div> <!-- end of crm-form-block -->
 {include file="CRM/Mailing/Form/InsertTokens.tpl"}
+{literal}
+<script type="text/javascript">
+cj(function() {
+   cj().crmAccordions();
+});
+</script>
+{/literal}

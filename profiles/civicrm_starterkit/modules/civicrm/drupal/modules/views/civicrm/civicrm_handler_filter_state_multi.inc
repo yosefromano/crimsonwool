@@ -1,7 +1,7 @@
 <?php
 /*
    +--------------------------------------------------------------------+
-   | CiviCRM version 4.6                                                |
+   | CiviCRM version 4.4                                                |
    +--------------------------------------------------------------------+
    | This file is a part of CiviCRM.                                    |
    |                                                                    |
@@ -81,7 +81,7 @@ class civicrm_handler_filter_state_multi extends views_handler_filter_in_operato
     } // end foreach
 
     // country filter exists, remove options, add js
-    if (!empty($country_field)) {
+    if ($country_field) {
       $this->value_options = $loaded_list;
 
       $fid=md5($country_field);

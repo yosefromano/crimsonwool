@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,13 +23,14 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
+{if $context EQ 'Search'}
     {include file="CRM/common/pager.tpl" location="top"}
+{/if}
 
-<p class="description">
-  {ts}Click arrow to view pledge payments.{/ts}
-</p>
+{capture assign=iconURL}<img src="{$config->resourceBase}i/TreePlus.gif" alt="{ts}open section{/ts}"/>{/capture}
+{ts 1=$iconURL}Click %1 to view pledge payments.{/ts}
 {strip}
-<table class="selector row-highlight">
+<table class="selector">
     <thead class="sticky">
         {if ! $single and $context eq 'Search' }
             <th scope="col" title="Select Rows">{$form.toggleSelect.html}</th>
@@ -60,16 +61,16 @@
                 {if ! $single }
                     &nbsp;{$row.contact_type}<br/>
                 {/if}
-                <span id="{$row.pledge_id}_show" title="{ts}Show payments{/ts}">
+                <span id="{$row.pledge_id}_show">
                     <a href="#" onclick="cj('#paymentDetails{$row.pledge_id},#minus{$row.pledge_id}_hide,#{$row.pledge_id}_hide').show();
                         buildPaymentDetails('{$row.pledge_id}','{$row.contact_id}');
                         cj('#{$row.pledge_id}_show').hide();
-                        return false;"><img src="{$config->resourceBase}i/TreePlus.gif" class="action-icon" alt="&gt;"/></a>
+                        return false;"><img src="{$config->resourceBase}i/TreePlus.gif" class="action-icon" alt="{ts}open section{/ts}"/></a>
                 </span>
-                <span id="minus{$row.pledge_id}_hide" title="{ts}Hide payments{/ts}">
+                <span id="minus{$row.pledge_id}_hide">
                     <a href="#" onclick="cj('#paymentDetails{$row.pledge_id},#{$row.pledge_id}_hide,#minus{$row.pledge_id}_hide').hide();
                             cj('#{$row.pledge_id}_show').show();
-                            return false;"><img src="{$config->resourceBase}i/TreeMinus.gif" class="action-icon" alt="^"/></a>
+                            return false;"><img src="{$config->resourceBase}i/TreeMinus.gif" class="action-icon" alt="{ts}open section{/ts}"/></a>
                 </span>
             </td>
             {if ! $single }
@@ -105,19 +106,37 @@
 </table>
 {/strip}
 
+{if $context EQ 'Search'}
+    <script type="text/javascript">
+    {* this function is called to change the color of selected row(s) *}
+    var fname = "{$form.formName}";
+    on_load_init_checkboxes(fname);
+ </script>
+{/if}
+
+{if $context EQ 'Search'}
     {include file="CRM/common/pager.tpl" location="bottom"}
+{/if}
 
 {* Build pledge payment details*}
 {literal}
 <script type="text/javascript">
-  (function($) {
-    // FIXME global function
-    window.buildPaymentDetails = function(pledgeId, contactId) {
-      var dataUrl = {/literal}"{crmURL p='civicrm/pledge/payment' h=0 q="action=browse&snippet=4&context=`$context`&pledgeId="}"{literal} + pledgeId + '&cid=' + contactId;
-      $('#paymentDetails' + pledgeId).load(dataUrl, function() {
-        $(this).trigger('crmLoad');
-      });
-    };
-  })(CRM.$);
+
+    function buildPaymentDetails( pledgeId, contactId )
+    {
+        var dataUrl = {/literal}"{crmURL p='civicrm/pledge/payment' h=0 q="action=browse&snippet=4&context=`$context`&pledgeId="}"{literal} + pledgeId + '&cid=' + contactId;
+
+        cj.ajax({
+                url     : dataUrl,
+                dataType: "html",
+                timeout : 5000, //Time in milliseconds
+                success : function( data ){
+                            cj( '#paymentDetails' + pledgeId ).html( data );
+                          },
+                error   : function( XMLHttpRequest, textStatus, errorThrown ) {
+                            console.error( 'Error: '+ textStatus );
+                          }
+             });
+    }
 </script>
 {/literal}

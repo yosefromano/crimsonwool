@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,42 +39,44 @@
 class CRM_Contribute_Form_Task_PickProfile extends CRM_Contribute_Form_Task {
 
   /**
-   * The title of the group
+   * the title of the group
    *
    * @var string
    */
   protected $_title;
 
   /**
-   * Maximum contributions that should be allowed to update
+   * maximum contributions that should be allowed to update
+   *
    */
   protected $_maxContributions = 100;
 
   /**
-   * Variable to store redirect path
+   * variable to store redirect path
+   *
    */
   protected $_userContext;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
-    // initialize the task and row fields
+  function preProcess() {
+    /*
+     * initialize the task and row fields
+     */
     parent::preProcess();
     $session = CRM_Core_Session::singleton();
     $this->_userContext = $session->readUserContext();
 
-    CRM_Utils_System::setTitle(ts('Batch Update Contributions Via Profile'));
+    CRM_Utils_System::setTitle(ts('Batch Update Contributions via Profile'));
 
     $validate = FALSE;
     //validations
     if (count($this->_contributionIds) > $this->_maxContributions) {
-      CRM_Core_Session::setStatus(ts("The maximum number of contributions you can select for Batch Update is %1. You have selected %2. Please select fewer contributions from your search results and try again.", array(
-            1 => $this->_maxContributions,
-            2 => count($this->_contributionIds),
-          )), ts('Batch Update Error'), 'error');
+      CRM_Core_Session::setStatus(ts("The maximum number of contributions you can select for Batch Update is %1. You have selected %2. Please select fewer contributions from your search results and try again.", array(1 => $this->_maxContributions, 2 => count($this->_contributionIds))), ts('Batch Update Error'), 'error');
       $validate = TRUE;
     }
 
@@ -85,57 +87,59 @@ class CRM_Contribute_Form_Task_PickProfile extends CRM_Contribute_Form_Task {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
 
     $types = array('Contribution');
     $profiles = CRM_Core_BAO_UFGroup::getProfiles($types, TRUE);
 
     if (empty($profiles)) {
-      CRM_Core_Session::setStatus(ts("You will need to create a Profile containing the %1 fields you want to edit before you can use Batch Update via Profile. Navigate to Administer CiviCRM > Customize Data and Screens > CiviCRM Profile to configure a Profile. Consult the online Administrator documentation for more information.", array(1 => $types[0])), ts('Profile Required'), 'error');
+      CRM_Core_Session::setStatus(ts("You will need to create a Profile containing the %1 fields you want to edit before you can use Batch Update via Profile. Navigate to Administer CiviCRM >> CiviCRM Profile to configure a Profile. Consult the online Administrator documentation for more information.", array(1 => $types[0])), 'Profile Required', 'error');
       CRM_Utils_System::redirect($this->_userContext);
     }
 
     $ufGroupElement = $this->add('select', 'uf_group_id', ts('Select Profile'),
       array(
-        '' => ts('- select profile -'),
-      ) + $profiles, TRUE
+        '' => ts('- select profile -')) + $profiles, TRUE
     );
-    $this->addDefaultButtons(ts('Continue'));
+    $this->addDefaultButtons(ts('Continue >>'));
   }
 
   /**
-   * Add local and global form rules.
+   * Add local and global form rules
    *
+   * @access protected
    *
    * @return void
    */
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Contribute_Form_Task_PickProfile', 'formRule'));
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields) {
+  static function formRule($fields) {
     return TRUE;
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     $params = $this->exportValues();
@@ -145,5 +149,6 @@ class CRM_Contribute_Form_Task_PickProfile extends CRM_Contribute_Form_Task {
     // also reset the batch page so it gets new values from the db
     $this->controller->resetPage('Batch');
   }
-
+  //end of function
 }
+

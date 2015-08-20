@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,10 +38,7 @@ class CRM_Group_Form_Search extends CRM_Core_Form {
     parent::preProcess();
   }
 
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     $defaults['group_status[1]'] = 1;
     return $defaults;
@@ -80,18 +77,18 @@ class CRM_Group_Form_Search extends CRM_Core_Form {
     );
 
     $this->addButtons(array(
-      array(
-        'type' => 'refresh',
-        'name' => ts('Search'),
-        'isDefault' => TRUE,
-      ),
-    ));
+        array(
+          'type' => 'refresh',
+          'name' => ts('Search'),
+          'isDefault' => TRUE,
+        ),
+      ));
 
     parent::buildQuickForm();
     $this->assign('suppressForm', TRUE);
   }
 
-  public function postProcess() {
+  function postProcess() {
     $params = $this->controller->exportValues($this->_name);
     $parent = $this->controller->getParent();
     if (!empty($params)) {
@@ -108,5 +105,5 @@ class CRM_Group_Form_Search extends CRM_Core_Form {
       }
     }
   }
-
 }
+

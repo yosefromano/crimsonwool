@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,31 +26,33 @@
  */
 
 /**
- * This api exposes CiviCRM recurring contributions.
+ * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_ContributionRecur
+ * @copyright CiviCRM LLC (c) 2004-2013
  */
 
 /**
- * Create or update a ContributionRecur.
+ * Create or update a contribution_recur
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'contribution_recur'
+ * @example ContributionRecurCreate.php Std Create example
  *
- * @return array
- *   api result array
+ * @return array api result array
+ * {@getfields contribution_recur_create}
+ * @access public
  */
 function civicrm_api3_contribution_recur_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_contribution_recur_create_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
@@ -60,43 +62,35 @@ function _civicrm_api3_contribution_recur_create_spec(&$params) {
 }
 
 /**
- * Returns array of contribution_recurs matching a set of one or more group properties.
+ * Returns array of contribution_recurs  matching a set of one or more group properties
  *
- * @param array $params
- *   Array of properties. If empty, all records will be returned.
+ * @param array $params  (referance) Array of one or more valid
+ *                       property_name=>value pairs. If $params is set
+ *                       as null, all contribution_recurs will be returned
  *
- * @return array
- *   API result Array of matching contribution_recurs
+ * @return array  (referance) Array of matching contribution_recurs
+ * {@getfields contribution_recur_get}
+ * @access public
  */
 function civicrm_api3_contribution_recur_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Cancel a recurring contribution of existing ContributionRecur given its id.
+ * delete an existing contribution_recur
  *
- * @param array $params
- *   Array containing id of the recurring contribution.
+ * This method is used to delete any existing contribution_recur. id of the group
+ * to be deleted is required field in $params array
  *
- * @return bool
- *   returns true is successfully cancelled
- */
-function civicrm_api3_contribution_recur_cancel($params) {
-  civicrm_api3_verify_one_mandatory($params, NULL, array('id'));
-  return CRM_Contribute_BAO_ContributionRecur::cancelRecurContribution($params['id'], CRM_Core_DAO::$_nullObject) ? civicrm_api3_create_success() : civicrm_api3_create_error(ts('Error while cancelling recurring contribution'));
-}
-
-/**
- * Delete an existing ContributionRecur.
+ * @param array $params  (reference) array containing id of the group
+ *                       to be deleted
  *
- * This method is used to delete an existing ContributionRecur given its id.
- *
- * @param array $params
- *   [id]
- *
- * @return array
- *   API result array
+ * @return array  (referance) returns flag true if successfull, error
+ *                message otherwise
+ * {@getfields contribution_recur_delete}
+ * @access public
  */
 function civicrm_api3_contribution_recur_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
+

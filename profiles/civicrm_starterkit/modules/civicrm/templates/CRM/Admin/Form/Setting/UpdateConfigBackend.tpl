@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -30,12 +30,7 @@
     <p>
     {ts}CiviCRM will attempt to detect the new values that should be used. These are provided below as the default values for the <strong>New Base Directory</strong> and <strong>New Base URL</strong> fields.{/ts}</p>
 </div>
-        <div>
-          <span class="crm-button crm-icon-button">
-            <span class="crm-button-icon ui-icon-trash"> </span>
-            {$form._qf_UpdateConfigBackend_next_cleanup.html}
-          </span>
-        </div>
+        <div>{$form._qf_UpdateConfigBackend_next_cleanup.html}</div>
         <table>
             <tr class="crm-config-backend-form-block-oldBaseDir">
                 <td class="label">{ts}Old Base Directory{/ts}</td>

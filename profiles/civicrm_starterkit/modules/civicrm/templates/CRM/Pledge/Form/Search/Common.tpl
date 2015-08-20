@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -77,8 +77,11 @@
 </tr>
 <tr>
   <td>
-  <br />
-  {$form.pledge_test.label} {help id="is-test" file="CRM/Contact/Form/Search/Advanced"} &nbsp; {$form.pledge_test.html}
+  {$form.pledge_in_honor_of.label}
+    <br />{$form.pledge_in_honor_of.html}
+  </td>
+  <td>
+  {$form.pledge_test.label} {help id="is-test" file="CRM/Contact/Form/Search/Advanced"} &nbsp; {$form.pledge_test.html} <span class="crm-clear-link">(<a href="#" onclick="unselectRadio('pledge_test','{$form.formName}'); return false;">{ts}clear{/ts}</a>)</span>
   </td>
 </tr>
 <tr>

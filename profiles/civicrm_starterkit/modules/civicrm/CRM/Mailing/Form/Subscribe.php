@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,19 +24,19 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Mailing_Form_Subscribe extends CRM_Core_Form {
   protected $_groupID = NULL;
 
-  public function preProcess() {
+  function preProcess() {
     parent::preProcess();
     $this->_groupID = CRM_Utils_Request::retrieve('gid', 'Integer', $this,
       FALSE, NULL, 'REQUEST'
@@ -46,6 +47,7 @@ class CRM_Mailing_Form_Subscribe extends CRM_Core_Form {
     if (!$this->controller->getDestination()) {
       $this->controller->setDestination(NULL, TRUE);
     }
+
 
     if ($this->_groupID) {
       $groupTypeCondition = CRM_Contact_BAO_Group::groupTypeCondition('Mailing');
@@ -76,9 +78,10 @@ SELECT   title, description
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     // add the email address
@@ -90,7 +93,7 @@ SELECT   title, description
       ),
       TRUE
     );
-    $this->addRule('email', ts("Please enter a valid email address."), 'email');
+    $this->addRule('email', ts("Please enter a valid email address (e.g. 'yourname@example.com')."), 'email');
 
     if (!$this->_groupID) {
       // create a selector box of all public groups
@@ -107,11 +110,11 @@ ORDER BY title";
       $dao = CRM_Core_DAO::executeQuery($query, CRM_Core_DAO::$_nullArray);
       $rows = array();
       while ($dao->fetch()) {
-        $row = array();
-        $row['id'] = $dao->id;
-        $row['title'] = $dao->title;
+        $row                = array();
+        $row['id']          = $dao->id;
+        $row['title']       = $dao->title;
         $row['description'] = $dao->description;
-        $row['checkbox'] = CRM_Core_Form::CB_PREFIX . $row['id'];
+        $row['checkbox']    = CRM_Core_Form::CB_PREFIX . $row['id'];
         $this->addElement('checkbox',
           $row['checkbox'],
           NULL, NULL
@@ -130,13 +133,12 @@ ORDER BY title";
     // if recaptcha is not configured, then dont add it
     // CRM-11316 Only enable ReCAPTCHA for anonymous visitors
     $config = CRM_Core_Config::singleton();
-    $session = CRM_Core_Session::singleton();
+    $session   = CRM_Core_Session::singleton();
     $contactID = $session->get('userID');
-
+    
     if (empty($config->recaptchaPublicKey) ||
       empty($config->recaptchaPrivateKey) ||
-      $contactID
-    ) {
+      $contactID) {
       $addCaptcha = FALSE;
     }
     else {
@@ -171,12 +173,7 @@ ORDER BY title";
     );
   }
 
-  /**
-   * @param $fields
-   *
-   * @return array|bool
-   */
-  public static function formRule($fields) {
+  static function formRule($fields) {
     foreach ($fields as $name => $dontCare) {
       if (substr($name, 0, CRM_Core_Form::CB_PREFIX_LEN) == CRM_Core_Form::CB_PREFIX) {
         return TRUE;
@@ -187,7 +184,9 @@ ORDER BY title";
 
   /**
    *
-   * @return void
+   * @access public
+   *
+   * @return None
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
@@ -206,5 +205,5 @@ ORDER BY title";
 
     CRM_Mailing_Event_BAO_Subscribe::commonSubscribe($groups, $params);
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,13 +23,13 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,9 +44,10 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
   protected $_cc = NULL;
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     $this->_participantId = CRM_Utils_Request::retrieve('participantId', 'Positive', $this);
@@ -90,9 +91,10 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $params = array('id' => $this->_eventId);
@@ -106,12 +108,13 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
 
     $statusMsg = NULL;
     if (array_key_exists($this->_participantStatusId,
-      CRM_Event_PseudoConstant::participantStatus(NULL, "class = 'Pending'")
-    )) {
+        CRM_Event_PseudoConstant::participantStatus(NULL, "class = 'Pending'")
+      )) {
+
 
       //need to confirm that though participant confirming
       //registration - but is there enough space to confirm.
-      $emptySeats = CRM_Event_BAO_Participant::pendingToConfirmSpaces($this->_eventId);
+      $emptySeats   = CRM_Event_BAO_Participant::pendingToConfirmSpaces($this->_eventId);
       $additonalIds = CRM_Event_BAO_Participant::getAdditionalParticipantIds($this->_participantId);
       $requireSpace = 1 + count($additonalIds);
       if ($emptySeats !== NULL && ($requireSpace > $emptySeats)) {
@@ -120,38 +123,32 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
       else {
         if ($this->_cc == 'fail') {
           $statusMsg = '<div class="bold">' . ts('Your Credit Card transaction was not successful. No money has yet been charged to your card.') . '</div><div><br />' . ts('Click the "Confirm Registration" button to complete your registration in %1, or click "Cancel Registration" if you are no longer interested in attending this event.', array(
-              1 => $values['title'],
-            )) . '</div>';
+            1 => $values['title'])) . '</div>';
         }
         else {
           $statusMsg = '<div class="bold">' . ts('Confirm your registration for %1.', array(
-              1 => $values['title'],
-            )) . '</div><div><br />' . ts('Click the "Confirm Registration" button to begin, or click "Cancel Registration" if you are no longer interested in attending this event.') . '</div>';
+            1 => $values['title'])) . '</div><div><br />' . ts('Click the "Confirm Registration" button to begin, or click "Cancel Registration" if you are no longer interested in attending this event.') . '</div>';
         }
         $buttons = array_merge($buttons, array(
-          array(
-            'type' => 'next',
-            'name' => ts('Confirm Registration'),
-            'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-            'isDefault' => TRUE,
-          ),
-        ));
+          array('type' => 'next',
+              'name' => ts('Confirm Registration'),
+              'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+              'isDefault' => TRUE,
+            )));
       }
     }
 
     // status class other than Negative should be able to cancel registration.
     if (array_key_exists($this->_participantStatusId,
-      CRM_Event_PseudoConstant::participantStatus(NULL, "class != 'Negative'")
-    )) {
+        CRM_Event_PseudoConstant::participantStatus(NULL, "class != 'Negative'")
+      )) {
       $cancelConfirm = ts('Are you sure you want to cancel your registration for this event?');
       $buttons = array_merge($buttons, array(
-        array(
-          'type' => 'submit',
-          'name' => ts('Cancel Registration'),
-          'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-          'js' => array('onclick' => 'return confirm(\'' . $cancelConfirm . '\');'),
-        ),
-      ));
+        array('type' => 'submit',
+            'name' => ts('Cancel Registration'),
+            'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+            'js' => array('onclick' => 'return confirm(\'' . $cancelConfirm . '\');'),
+          )));
       if (!$statusMsg) {
         $statusMsg = ts('You can cancel your registration for %1 by clicking "Cancel Registration".', array(1 => $values['title']));
       }
@@ -167,14 +164,15 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     //get the button.
-    $buttonName = $this->controller->getButtonName();
+    $buttonName    = $this->controller->getButtonName();
     $participantId = $this->_participantId;
 
     if ($buttonName == '_qf_ParticipantConfirm_next') {
@@ -203,10 +201,10 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
         $statusMessage = ts("%1 Event registration(s) have been cancelled.", array(1 => count($participantIds)));
       }
       else {
-        $statusMessage = ts("Your Event Registration has been cancelled.");
+        $statusMessage = ts("Your event registration has been cancelled.");
       }
 
-      if (!empty($results['mailedParticipants'])) {
+      if (CRM_Utils_Array::value('mailedParticipants', $results)) {
         foreach ($results['mailedParticipants'] as $key => $displayName) {
           $statusMessage .= "<br />" . ts("Email has been sent to : %1", array(1 => $displayName));
         }
@@ -222,5 +220,5 @@ class CRM_Event_Form_Registration_ParticipantConfirm extends CRM_Event_Form_Regi
       );
     }
   }
-
 }
+

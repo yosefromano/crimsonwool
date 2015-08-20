@@ -11,16 +11,13 @@
  * Note: This will perform like a dog, but who cares -- at most, we deal with O(100) iterations
  * as part of a background task.
  *
- * @param array $params
- *   , Array with keys:
- *   - activity_id: int, required
- *   - target_var: string, optional; name of a variable which will store the first/only target contact; default "target"
- *   - assignee_var: string, optional; name of a variable which will store the first/only assignee contact; default "assignee"
- *   - return: string, optional; comma-separated list of fields to return for each contact
+ * @param $params, array with keys:
+ *  - activity_id: int, required
+ *  - target_var: string, optional; name of a variable which will store the first/only target contact; default "target"
+ *  - assignee_var: string, optional; name of a variable which will store the first/only assignee contact; default "assignee"
+ *  - return: string, optional; comma-separated list of fields to return for each contact
  *
- * @param CRM_Core_Smarty $smarty
- *
- * @return string
+ * @return empty
  */
 function smarty_function_simpleActivityContacts($params, &$smarty) {
   if (empty($params['activity_id'])) {
@@ -39,11 +36,11 @@ function smarty_function_simpleActivityContacts($params, &$smarty) {
   require_once 'api/api.php';
   require_once 'api/v3/utils.php';
   $activity = civicrm_api('activity', 'getsingle', array(
-    'version' => 3,
-    'id' => $params['activity_id'],
-    'return.target_contact_id' => 1,
-    'return.assignee_contact_id' => 1,
-  ));
+      'version' => 3,
+      'id' => $params['activity_id'],
+      'return.target_contact_id' => 1,
+      'return.assignee_contact_id' => 1,
+    ));
 
   $baseContactParams = array('version' => 3);
   foreach (explode(',', $params['return']) as $field) {
@@ -51,9 +48,7 @@ function smarty_function_simpleActivityContacts($params, &$smarty) {
   }
 
   foreach (array(
-             'target',
-             'assignee',
-           ) as $role) {
+    'target', 'assignee') as $role) {
     $contact = array();
     if (!empty($activity[$role . '_contact_id'])) {
       $contact_id = array_shift($activity[$role . '_contact_id']);
@@ -66,3 +61,4 @@ function smarty_function_simpleActivityContacts($params, &$smarty) {
 
   return '';
 }
+

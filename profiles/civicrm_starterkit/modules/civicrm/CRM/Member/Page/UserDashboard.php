@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,14 +39,16 @@
 class CRM_Member_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoard {
 
   /**
-   * List memberships for the UF user.
+   * Function to list memberships for the UF user
    *
+   * return null
+   * @access public
    */
-  public function listMemberships() {
-    $membership = array();
-    $dao = new CRM_Member_DAO_Membership();
+  function listMemberships() {
+    $membership      = array();
+    $dao             = new CRM_Member_DAO_Membership();
     $dao->contact_id = $this->_contactId;
-    $dao->is_test = 0;
+    $dao->is_test    = 0;
     $dao->find();
 
     while ($dao->fetch()) {
@@ -56,12 +58,10 @@ class CRM_Member_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoard 
       //get the membership status and type values.
       $statusANDType = CRM_Member_BAO_Membership::getStatusANDTypeValues($dao->id);
       foreach (array(
-                 'status',
-                 'membership_type',
-               ) as $fld) {
+        'status', 'membership_type') as $fld) {
         $membership[$dao->id][$fld] = CRM_Utils_Array::value($fld, $statusANDType[$dao->id]);
       }
-      if (!empty($statusANDType[$dao->id]['is_current_member'])) {
+      if (CRM_Utils_Array::value('is_current_member', $statusANDType[$dao->id])) {
         $membership[$dao->id]['active'] = TRUE;
       }
 
@@ -72,14 +72,7 @@ class CRM_Member_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoard 
           'default_renewal_contribution_page'
         );
         if ($defaultRenewPageId) {
-          //CRM-14831 - check if membership type is present in contrib page
-          $memBlock = CRM_Member_BAO_Membership::getMembershipBlock($defaultRenewPageId);
-          if (!empty($memBlock['membership_types'])) {
-            $memTypes = explode(',', $memBlock['membership_types']);
-            if (in_array($dao->membership_type_id, $memTypes)) {
-              $membership[$dao->id]['renewPageId'] = $defaultRenewPageId;
-            }
-          }
+          $membership[$dao->id]['renewPageId'] = $defaultRenewPageId;
         }
       }
     }
@@ -92,13 +85,15 @@ class CRM_Member_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoard 
   }
 
   /**
-   * the main function that is called when the page
+   * This function is the main function that is called when the page
    * loads, it decides the which action has to be taken for the page.
    *
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     parent::preProcess();
     $this->listMemberships();
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * Define the reload action. Reload the page but do not do any validation.
@@ -32,35 +32,34 @@
  * module integration.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_QuickForm_Action_Reload extends CRM_Core_QuickForm_Action {
 
   /**
-   * Class constructor.
+   * class constructor
    *
-   * @param object $stateMachine
-   *   Reference to state machine object.
+   * @param object $stateMachine reference to state machine object
    *
-   * @return \CRM_Core_QuickForm_Action_Reload
+   * @return object
+   * @access public
    */
-  public function __construct(&$stateMachine) {
+  function __construct(&$stateMachine) {
     parent::__construct($stateMachine);
   }
 
   /**
    * Processes the request.
    *
-   * @param CRM_Core_Form $page
-   *   CRM_Core_Form the current form-page.
-   * @param string $actionName
-   *   Current action name, as one Action object can serve multiple actions.
+   * @param  object    $page       CRM_Core_Form the current form-page
+   * @param  string    $actionName Current action name, as one Action object can serve multiple actions
    *
    * @return void
+   * @access public
    */
-  public function perform(&$page, $actionName) {
+  function perform(&$page, $actionName) {
     // save the form values and validation status to the session
     $page->isFormBuilt() or $page->buildForm();
 
@@ -70,5 +69,5 @@ class CRM_Core_QuickForm_Action_Reload extends CRM_Core_QuickForm_Action {
 
     return $page->handle('display');
   }
-
 }
+

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -83,18 +83,18 @@
        <td class="left"><h5 class='editPayment'></h5>
 {literal}
 <script type="text/javascript">
-CRM.$(function($) {
-  $(document).on('blur', '.distribute', function() {
+cj(document).ready(function(){
+  cj('.distribute').live('blur', function() {
    var totalAmount = 0;
-   $('.distribute').each(function (){
-   if($(this).val( ).length > 0){
-    totalAmount     = parseFloat( totalAmount ) + parseFloat( $(this).val( ) );
+   cj('.distribute').each(function (){
+   if(cj(this).val( ).length > 0){
+    totalAmount     = parseFloat( totalAmount ) + parseFloat( cj(this).val( ) );
     }
    });
 
-    $('.editPayment').text('$ '+totalAmount);
+    cj('.editPayment').text('$ '+totalAmount);
       var unlocateAmount = '{/literal}{$total}{literal}';
-      $('.unlocateAmount').text('$ '+(unlocateAmount - totalAmount));
+      cj('.unlocateAmount').text('$ '+(unlocateAmount - totalAmount));
    });
 });
 </script>

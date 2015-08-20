@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,38 +39,44 @@
 class CRM_Custom_Form_Group extends CRM_Core_Form {
 
   /**
-   * The set id saved to the session for an update.
+   * the set id saved to the session for an update
    *
    * @var int
+   * @access protected
    */
   protected $_id;
 
   /**
-   *  set is empty or not.
+   *  set is empty or not
    *
    * @var bool
+   * @access protected
    */
   protected $_isGroupEmpty = TRUE;
 
   /**
-   * Array of existing subtypes set for a custom set.
+   * array of existing subtypes set for a custom set
    *
    * @var array
+   * @access protected
    */
   protected $_subtypes = array();
 
   /**
-   * Array of default params.
+   * array of default params
    *
    * @var array
+   * @access protected
    */
   protected $_defaults = array();
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     // current set id
@@ -104,35 +110,32 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param $self
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = array();
 
     //validate group title as well as name.
-    $title = $fields['title'];
-    $name = CRM_Utils_String::munge($title, '_', 64);
-    $query = 'select count(*) from civicrm_custom_group where ( name like %1 OR title like %2 ) and id != %3';
-    $grpCnt = CRM_Core_DAO::singleValueQuery($query, array(
-      1 => array($name, 'String'),
-      2 => array($title, 'String'),
-      3 => array((int) $self->_id, 'Integer'),
-    ));
+    $title  = $fields['title'];
+    $name   = CRM_Utils_String::munge($title, '_', 64);
+    $query  = 'select count(*) from civicrm_custom_group where ( name like %1 OR title like %2 ) and id != %3';
+    $grpCnt = CRM_Core_DAO::singleValueQuery($query, array(1 => array($name, 'String'),
+        2 => array($title, 'String'),
+        3 => array((int)$self->_id, 'Integer'),
+      ));
     if ($grpCnt) {
       $errors['title'] = ts('Custom group \'%1\' already exists in Database.', array(1 => $title));
     }
 
-    if (!empty($fields['extends'][1])) {
+    if (CRM_Utils_Array::value(1, $fields['extends'])) {
       if (in_array('', $fields['extends'][1]) && count($fields['extends'][1]) > 1) {
         $errors['extends'] = ts("Cannot combine other option with 'Any'.");
       }
@@ -148,12 +151,8 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       $self->assign('showStyle', TRUE);
     }
 
-    if (!empty($fields['is_multiple'])) {
-      $self->assign('showMultiple', TRUE);
-    }
-
-    if (empty($fields['is_multiple']) && $fields['style'] == 'Tab with table') {
-      $errors['style'] = ts("Display Style 'Tab with table' is only supported for multiple-record custom field sets.");
+    if (CRM_Utils_Array::value('is_multiple', $fields)) {
+        $self->assign('showMultiple', TRUE);
     }
 
     //checks the given custom set doesnot start with digit
@@ -162,7 +161,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       // gives the ascii value
       $asciiValue = ord($title{0});
       if ($asciiValue >= 48 && $asciiValue <= 57) {
-        $errors['title'] = ts("Name cannot not start with a digit");
+        $errors['title'] = ts("Set's Name should not start with digit");
       }
     }
 
@@ -170,22 +169,26 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
   }
 
   /**
-   * add the rules (mainly global rules) for form.
+   * This function is used to add the rules (mainly global rules) for form.
    * All local rules are added near the element
    *
+   * @param null
    *
    * @return void
+   * @access public
    * @see valid_date
    */
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Custom_Form_Group', 'formRule'), $this);
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     $this->applyFilter('__ALL__', 'trim');
@@ -199,18 +202,18 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     $contactTypes = array('Contact', 'Individual', 'Household', 'Organization');
     $this->assign('contactTypes', json_encode($contactTypes));
 
-    $sel1 = array("" => ts("- select -")) + CRM_Core_SelectValues::customGroupExtends();
-    $sel2 = array();
+    $sel1         = array("" => "- select -") + CRM_Core_SelectValues::customGroupExtends();
+    $sel2         = array();
     $activityType = CRM_Core_PseudoConstant::activityType(FALSE, TRUE, FALSE, 'label', TRUE);
 
-    $eventType = CRM_Core_OptionGroup::values('event_type');
-    $grantType = CRM_Core_OptionGroup::values('grant_type');
-    $campaignTypes = CRM_Campaign_PseudoConstant::campaignType();
-    $membershipType = CRM_Member_BAO_MembershipType::getMembershipTypes(FALSE);
+    $eventType       = CRM_Core_OptionGroup::values('event_type');
+    $grantType       = CRM_Core_OptionGroup::values('grant_type');
+    $campaignTypes   = CRM_Campaign_PseudoConstant::campaignType();
+    $membershipType  = CRM_Member_BAO_MembershipType::getMembershipTypes(FALSE);
     $participantRole = CRM_Core_OptionGroup::values('participant_role');
-    $relTypeInd = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Individual');
-    $relTypeOrg = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Organization');
-    $relTypeHou = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Household');
+    $relTypeInd      = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Individual');
+    $relTypeOrg      = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Organization');
+    $relTypeHou      = CRM_Contact_BAO_Relationship::getContactRelationshipType(NULL, 'null', NULL, 'Household');
 
     ksort($sel1);
     asort($activityType);
@@ -254,13 +257,11 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
         if ($main == 'Relationship') {
           $relName = self::getFormattedList($sel2[$main]);
           $sel2[$main] = array(
-            '' => ts("- Any -"),
-          ) + $relName;
+            '' => ts("- Any -")) + $relName;
         }
         else {
           $sel2[$main] = array(
-            '' => ts("- Any -"),
-          ) + $sel2[$main];
+            '' => ts("- Any -")) + $sel2[$main];
         }
       }
     }
@@ -273,8 +274,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
         $contactSubTypes[$key] = $key;
       }
       $sel2['Contact'] = array(
-        "" => ("- Any -"),
-      ) + $contactSubTypes;
+        "" => "-- Any --") + $contactSubTypes;
     }
     else {
       if (!isset($this->_id)) {
@@ -292,7 +292,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       ts('Used For'),
       array(
         'name' => 'extends[0]',
-        'style' => 'vertical-align: top;',
+        'style' => 'vertical-align: top;'
       ),
       TRUE
     );
@@ -387,11 +387,11 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       ),
     );
     if (!$this->_isGroupEmpty && !empty($this->_subtypes)) {
-      $buttons[0]['class'] = 'crm-warnDataLoss';
+      $buttons[0]['js'] = array('onclick' => "return warnDataLoss()");
     }
     $this->addButtons($buttons);
 
-    // TODO: Is this condition ever true? Can this code be removed?
+    // views are implemented as frozen form
     if ($this->_action & CRM_Core_Action::VIEW) {
       $this->freeze();
       $this->addElement('button', 'done', ts('Done'), array('onclick' => "location.href='civicrm/admin/custom/group?reset=1&action=browse'"));
@@ -399,14 +399,15 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
   }
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @param null
    *
-   * @return array
-   *   array of default values
+   * @return array   array of default values
+   * @access public
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = &$this->_defaults;
     $this->assign('showMaxMultiple', TRUE);
     if ($this->_action == CRM_Core_Action::ADD) {
@@ -416,12 +417,8 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       $defaults['is_active'] = $defaults['collapse_display'] = 1;
       $defaults['style'] = 'Inline';
     }
-    elseif (empty($defaults['max_multiple']) && !$this->_isGroupEmpty) {
+    elseif (!CRM_Utils_Array::value('max_multiple', $defaults) && !$this->_isGroupEmpty) {
       $this->assign('showMaxMultiple', FALSE);
-    }
-
-    if (($this->_action & CRM_Core_Action::UPDATE) && !empty($defaults['is_multiple'])) {
-      $defaults['collapse_display'] = 0;
     }
 
     if (isset($defaults['extends'])) {
@@ -437,6 +434,9 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
         $defaults['extends'][1] = array(0 => '');
       }
 
+
+      $subName = CRM_Utils_Array::value('extends_entity_column_id', $defaults);
+
       if ($extends == 'Relationship' && !empty($this->_subtypes)) {
         $relationshipDefaults = array();
         foreach ($defaults['extends'][1] as $donCare => $rel_type_id) {
@@ -451,10 +451,12 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
   }
 
   /**
-   * Process the form.
+   * Process the form
    *
+   * @param null
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     // get the submitted form values.
@@ -487,12 +489,10 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
       CRM_Core_Session::setStatus(ts('Your custom field set \'%1 \' has been saved.', array(1 => $group->title)), ts('Saved'), 'success');
     }
     else {
-      // Jump directly to adding a field if popups are disabled
-      $action = CRM_Core_Resources::singleton()->ajaxPopupsEnabled ? '' : '/add';
-      $url = CRM_Utils_System::url("civicrm/admin/custom/group/field$action", 'reset=1&new=1&gid=' . $group->id . '&action=' . ($action ? 'add' : 'browse'));
+      $url = CRM_Utils_System::url('civicrm/admin/custom/group/field/add', 'reset=1&action=add&gid=' . $group->id);
       CRM_Core_Session::setStatus(ts("Your custom field set '%1' has been added. You can add custom fields now.",
-        array(1 => $group->title)
-      ), ts('Saved'), 'success');
+          array(1 => $group->title)
+        ), ts('Saved'), 'success');
       $session = CRM_Core_Session::singleton();
       $session->replaceUserContext($url);
     }
@@ -503,7 +503,7 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
     if (is_array($db_prefix) && $config->userSystem->is_drupal && module_exists('views')) {
       // get table_name for each custom group
       $tables = array();
-      $sql = "SELECT table_name FROM civicrm_custom_group WHERE is_active = 1";
+      $sql    = "SELECT table_name FROM civicrm_custom_group WHERE is_active = 1";
       $result = CRM_Core_DAO::executeQuery($sql);
       while ($result->fetch()) {
         $tables[$result->table_name] = $result->table_name;
@@ -514,43 +514,34 @@ class CRM_Custom_Form_Group extends CRM_Core_Form {
 
       if (!empty($missingTableNames)) {
         CRM_Core_Session::setStatus(ts("To ensure that all of your custom data groups are available to Views, you may need to add the following key(s) to the db_prefix array in your settings.php file: '%1'.",
-          array(1 => implode(', ', $missingTableNames))
-        ), ts('Note'), 'info');
+            array(1 => implode(', ', $missingTableNames))
+          ), ts('Note'), 'info');
       }
     }
   }
 
-  /**
-   * Return a formatted list of relationship name.
-   *
-   * @param array $list
-   *   Array of relationship name.
-   *
-   * @return array
-   *   Array of relationship name.
+  /*
+   * Function to return a formatted list of relationship name.
+   * @param $list array array of relationship name.
+   * @static
+   * return array array of relationship name.
    */
-  public static function getFormattedList(&$list) {
+  static function getFormattedList(&$list) {
     $relName = array();
 
-    foreach ($list as $listItemKey => $itemValue) {
-      // Extract the relationship ID.
-      $key = substr($listItemKey, 0, strpos($listItemKey, '_'));
+    foreach ($list as $k => $v) {
+      $key = substr($k, 0, strpos($k, '_'));
       if (isset($list["{$key}_b_a"])) {
-        $relName["$key"] = $list["{$key}_a_b"];
-        // Are the two labels different?
         if ($list["{$key}_a_b"] != $list["{$key}_b_a"]) {
           $relName["$key"] = $list["{$key}_a_b"] . ' / ' . $list["{$key}_b_a"];
         }
         unset($list["{$key}_b_a"]);
-        unset($list["{$key}_a_b"]);
       }
       else {
-        // If no '_b_a' label exists save the '_a_b' one and unset it from the list
         $relName["{$key}"] = $list["{$key}_a_b"];
-        unset($list["{$key}_a_b"]);
       }
     }
     return $relName;
   }
-
 }
+

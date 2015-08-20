@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -24,12 +24,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,32 +39,29 @@
  */
 class CRM_Admin_Page_LabelFormats extends CRM_Core_Page_Basic {
 
-  public $useLivePageJS = TRUE;
-
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Core_BAO_LabelFormat';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       // helper variable for nicer formatting
       self::$_links = array(
@@ -93,65 +90,54 @@ class CRM_Admin_Page_LabelFormats extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Admin_Form_LabelFormats';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'Mailing Label Formats';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/labelFormats';
   }
 
   /**
    * Browse all Label Format settings.
    *
-   * @param null $action
-   *
    * @return void
+   * @access public
+   * @static
    */
-  public function browse($action = NULL) {
+  function browse($action = NULL) {
     // Get list of configured Label Formats
-    $labelFormatList = CRM_Core_BAO_LabelFormat::getList();
-    $nameFormatList = CRM_Core_BAO_LabelFormat::getList(FALSE, 'name_badge');
+    $labelFormatList= CRM_Core_BAO_LabelFormat::getList();
+    $nameFormatList= CRM_Core_BAO_LabelFormat::getList(false, 'name_badge');
 
     // Add action links to each of the Label Formats
     foreach ($labelFormatList as & $format) {
       $action = array_sum(array_keys($this->links()));
-      if (!empty($format['is_reserved'])) {
+      if (CRM_Utils_Array::value('is_reserved', $format)) {
         $action -= CRM_Core_Action::DELETE;
       }
 
       $format['groupName'] = ts('Mailing Label');
       $format['action'] = CRM_Core_Action::formLink(self::links(), $action,
-        array('id' => $format['id'], 'group' => 'label_format'),
-        ts('more'),
-        FALSE,
-        'labelFormat.manage.action',
-        'LabelFormat',
-        $format['id']
-      );
+        array('id' => $format['id'], 'group' => 'label_format'));
     }
 
     // Add action links to each of the Label Formats
@@ -167,5 +153,5 @@ class CRM_Admin_Page_LabelFormats extends CRM_Core_Page_Basic {
 
     $this->assign('rows', $labelFormatList);
   }
-
 }
+

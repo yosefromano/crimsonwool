@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,12 +39,13 @@
 class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
 
   /**
-   * Takes an associative array and creates a uf join object.
+   * takes an associative array and creates a uf join object
    *
-   * @param array $params
-   *   (reference) an assoc array of name/value pairs.
+   * @param array $params (reference) an assoc array of name/value pairs
    *
-   * @return CRM_Core_DAO_UFJoin
+   * @return object CRM_Core_DAO_UFJoin object
+   * @access public
+   * @static
    */
   public static function &create($params) {
     // see if a record exists with the same weight
@@ -65,13 +66,10 @@ class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
     return $dao;
   }
 
-  /**
-   * @param array $params
-   */
   public static function deleteAll(&$params) {
-    $module = CRM_Utils_Array::value('module', $params);
+    $module      = CRM_Utils_Array::value('module', $params);
     $entityTable = CRM_Utils_Array::value('entity_table', $params);
-    $entityID = CRM_Utils_Array::value('entity_id', $params);
+    $entityID    = CRM_Utils_Array::value('entity_id', $params);
 
     if (empty($entityTable) ||
       empty($entityID) ||
@@ -80,10 +78,10 @@ class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
       return;
     }
 
-    $dao = new CRM_Core_DAO_UFJoin();
-    $dao->module = $module;
+    $dao               = new CRM_Core_DAO_UFJoin();
+    $dao->module       = $module;
     $dao->entity_table = $entityTable;
-    $dao->entity_id = $entityID;
+    $dao->entity_id    = $entityID;
     $dao->delete();
   }
 
@@ -91,14 +89,14 @@ class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
    * Given an assoc list of params, find if there is a record
    * for this set of params
    *
-   * @param array $params
-   *   (reference) an assoc array of name/value pairs.
+   * @param array $params (reference) an assoc array of name/value pairs
    *
-   * @return int
-   *   or null
+   * @return int or null
+   * @access public
+   * @static
    */
   public static function findJoinEntryId(&$params) {
-    if (!empty($params['id'])) {
+    if (CRM_Utils_Array::value('id', $params)) {
       return $params['id'];
     }
 
@@ -128,30 +126,25 @@ class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
    * Given an assoc list of params, find if there is a record
    * for this set of params and return the group id
    *
-   * @param array $params
-   *   (reference) an assoc array of name/value pairs.
+   * @param array $params (reference) an assoc array of name/value pairs
    *
-   * @return int
-   *   or null
+   * @return int or null
+   * @access public
+   * @static
    */
   public static function findUFGroupId(&$params) {
 
     $dao = new CRM_Core_DAO_UFJoin();
 
     $dao->entity_table = CRM_Utils_Array::value('entity_table', $params);
-    $dao->entity_id = CRM_Utils_Array::value('entity_id', $params);
-    $dao->weight = CRM_Utils_Array::value('weight', $params);
+    $dao->entity_id    = CRM_Utils_Array::value('entity_id', $params);
+    $dao->weight       = CRM_Utils_Array::value('weight', $params);
     if ($dao->find(TRUE)) {
       return $dao->uf_group_id;
     }
     return NULL;
   }
 
-  /**
-   * @param array $params
-   *
-   * @return array
-   */
   public static function getUFGroupIds(&$params) {
 
     $dao = new CRM_Core_DAO_UFJoin();
@@ -179,5 +172,5 @@ class CRM_Core_BAO_UFJoin extends CRM_Core_DAO_UFJoin {
     }
     return array($first, $second, $firstActive, $secondActive);
   }
-
 }
+

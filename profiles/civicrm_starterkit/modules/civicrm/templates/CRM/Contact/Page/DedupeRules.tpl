@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -42,7 +42,7 @@
       <div id="browseValues_{$contactType}">
         <div>
         {strip}
-          <table id="options_{$contactType}" class="display mergecontact">
+          <table id="options_{$contactType}" class="display">
             <thead>
             <tr>
               <th>{ts 1=$contactType}%1 Rules{/ts}</th>
@@ -61,7 +61,7 @@
         {/strip}
        </div>
        <div style="float:right">
-            {crmButton q="action=add&contact_type=$contactType&reset=1" icon="circle-plus"}{ts 1=$contactType}Add Rule for %1s{/ts}{/crmButton}
+            <a href="{crmURL q="action=add&contact_type=$contactType&reset=1"}" class="button"><span><div class="icon add-icon"></div>{ts 1=$contactType}Add Rule for %1s{/ts}</span></a>
         </div>
       </div>
     {/foreach}

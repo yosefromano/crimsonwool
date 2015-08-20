@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -47,10 +47,10 @@
 
 {literal}
 <script type="text/javascript">
-   CRM.$(function($) {
+   cj( function( ) {
      buildChart( );
 
-     $("input[id$='submit_print'],input[id$='submit_pdf']").bind('click', function(e){
+     cj("input[id$='submit_print'],input[id$='submit_pdf']").bind('click', function(e){
        // image creator php file path and append image name
        var url = CRM.url('civicrm/report/chart', 'name=' + '{/literal}{$chartId}{literal}' + '.png');
 

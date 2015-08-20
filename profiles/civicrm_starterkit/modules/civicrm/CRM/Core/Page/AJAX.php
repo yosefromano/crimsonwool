@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,10 +39,12 @@
 class CRM_Core_Page_AJAX {
 
   /**
-   * Call generic ajax forms.
+   * function to call generic ajax forms
    *
+   * @static
+   * @access public
    */
-  public static function run() {
+  static function run() {
     $className = CRM_Utils_Type::escape($_REQUEST['class_name'], 'String');
     $type = '';
     if (!empty($_REQUEST['type'])) {
@@ -73,7 +75,7 @@ class CRM_Core_Page_AJAX {
         // FIXME: This is done to maintain current wire protocol, but it might be
         // simpler to just require different 'types' for pages and forms
         if (preg_match('/^CRM_[a-zA-Z0-9]+_Page_Inline_/', $className)) {
-          $page = new $className();
+          $page = new $className;
           $page->run();
         }
         else {
@@ -81,7 +83,6 @@ class CRM_Core_Page_AJAX {
           $wrapper->run($className);
         }
         break;
-
       default:
         CRM_Core_Error::debug_log_message('Unsupported inline request type: ' . var_export($type, TRUE));
     }
@@ -89,22 +90,24 @@ class CRM_Core_Page_AJAX {
   }
 
   /**
-   * Change is_quick_config priceSet to complex.
+   * function to change is_quick_config priceSet to complex
    *
+   * @static
+   * @access public
    */
-  public static function setIsQuickConfig() {
+  static function setIsQuickConfig() {
     $id = $context = NULL;
-    if (!empty($_REQUEST['id'])) {
+    if (CRM_Utils_Array::value('id', $_REQUEST)) {
       $id = CRM_Utils_Type::escape($_REQUEST['id'], 'Integer');
     }
 
-    if (!empty($_REQUEST['context'])) {
+    if (CRM_Utils_Array::value('context', $_REQUEST)) {
       $context = CRM_Utils_Type::escape($_REQUEST['context'], 'String');
     }
     // return false if $id is null and
     // $context is not civicrm_event or civicrm_contribution_page
     if (!$id || !in_array($context, array('civicrm_event', 'civicrm_contribution_page'))) {
-      return FALSE;
+      return false;
     }
     $priceSetId = CRM_Price_BAO_PriceSet::getFor($context, $id, NULL);
     if ($priceSetId) {
@@ -121,24 +124,21 @@ class CRM_Core_Page_AJAX {
       }
     }
     if (!$result) {
-      $priceSetId = NULL;
+      $priceSetId = null;
     }
-    CRM_Utils_JSON::output($priceSetId);
+    echo json_encode($priceSetId);
+
+    CRM_Utils_System::civiExit();
   }
 
   /**
    * Determine whether the request is for a valid class/method name.
    *
-   * @param string $type
-   *   'method'|'class'|''.
-   * @param string $className
-   *   'Class_Name'.
-   * @param string $fnName
-   *   Method name.
-   *
-   * @return bool
+   * @param string $type 'method'|'class'|''
+   * @param string $className 'Class_Name'
+   * @param string $fnName method name
    */
-  public static function checkAuthz($type, $className, $fnName = NULL) {
+  static function checkAuthz($type, $className, $fnName = null) {
     switch ($type) {
       case 'method':
         if (!preg_match('/^CRM_[a-zA-Z0-9]+_Page_AJAX$/', $className)) {
@@ -158,60 +158,9 @@ class CRM_Core_Page_AJAX {
           return FALSE;
         }
         return class_exists($className);
-
       default:
         return FALSE;
     }
   }
-
-  /**
-   * Outputs the CiviCRM standard json-formatted page/form response
-   * @param array|string $response
-   */
-  public static function returnJsonResponse($response) {
-    // Allow lazy callers to not wrap content in an array
-    if (is_string($response)) {
-      $response = array('content' => $response);
-    }
-    // Add session variables to response
-    $session = CRM_Core_Session::singleton();
-    $response += array(
-      'status' => 'success',
-      'userContext' => htmlspecialchars_decode($session->readUserContext()),
-      'title' => CRM_Utils_System::$title,
-    );
-    // crmMessages will be automatically handled by our ajax preprocessor
-    // @see js/Common.js
-    if ($session->getStatus(FALSE)) {
-      $response['crmMessages'] = $session->getStatus(TRUE);
-    }
-    $output = json_encode($response);
-
-    // CRM-11831 @see http://www.malsup.com/jquery/form/#file-upload
-    if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] == 'XMLHttpRequest') {
-      header('Content-Type: application/json');
-    }
-    else {
-      $output = "<textarea>$output</textarea>";
-    }
-    echo $output;
-    CRM_Utils_System::civiExit();
-  }
-
-  /**
-   * Set headers appropriate for a js file.
-   *
-   * @param int|NULL $ttl
-   *   Time-to-live (seconds).
-   */
-  public static function setJsHeaders($ttl = NULL) {
-    if ($ttl === NULL) {
-      // Encourage browsers to cache for a long time - 1 year
-      $ttl = 60 * 60 * 24 * 364;
-    }
-    header('Expires: ' . gmdate('D, d M Y H:i:s \G\M\T', time() + $ttl));
-    header('Content-Type:	application/javascript');
-    header("Cache-Control: max-age=$ttl, public");
-  }
-
 }
+

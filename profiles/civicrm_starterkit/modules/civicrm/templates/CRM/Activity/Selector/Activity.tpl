@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -34,7 +34,7 @@
   {include file="CRM/common/pager.tpl" location="top"}
 
   {strip}
-    <table class="selector row-highlight">
+    <table class="selector">
       <tr class="columnheader">
       {foreach from=$columnHeaders item=header}
         <th scope="col">

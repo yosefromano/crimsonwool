@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,53 +27,51 @@
  */
 
 /**
- * This api exposes CiviCRM contact types and sub-types.
- *
- * CiviCRM comes with 3 primary contact types - Individual, Organization & Household.
- * Changing these is not advised, but sub_types can be created with this api.
- * Pass 'parent_id' param to specify which base type a new sub_type extends.
+ * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_Survey
+ * @copyright CiviCRM LLC (c) 2004-2013
  */
 
+require_once 'api/v3/utils.php';
+
 /**
- * Create/update ContactType.
+ * create/update contact_type
  *
- * This API is used to create new ContactType or update any of the existing
- * In case of updating existing ContactType, id of that particular ContactType must
+ * This API is used to create new contact_type or update any of the existing
+ * In case of updating existing contact_type, id of that particular contact_type must
  * be in $params array.
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  (referance) Associative array of property
+ *                       name/value pairs to insert in new 'contact_type'
  *
- * @return array
- *   ContactType array
+ * @return array   contact_type array
+ *
+ * @access public
  */
 function civicrm_api3_contact_type_create($params) {
   civicrm_api3_verify_mandatory($params, _civicrm_api3_get_DAO(__FUNCTION__), array('name', 'parent_id'));
-
-  if (empty($params['id'])) {
-    if (!array_key_exists('label', $params)) {
-      $params['label'] = $params['name'];
-    }
-    if (!array_key_exists('is_active', $params)) {
-      $params['is_active'] = TRUE;
-    }
-    $params['name'] = CRM_Utils_String::munge($params['name']);
+  if (!array_key_exists('label', $params)) {
+    $params['label'] = $params['name'];
+  }
+  if (!array_key_exists('is_active', $params)) {
+    $params['is_active'] = TRUE;
   }
 
+  $params['name'] = CRM_Utils_String::munge($params['name']);
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Returns array of contact_types matching a set of one or more properties.
+ * Returns array of contact_types  matching a set of one or more group properties
  *
- * @param array $params
- *   One or more valid property_name=>value pairs.
- *   If $params is set as null, all contact_types will be returned
+ * @param array $params  (referance) Array of one or more valid
+ *                       property_name=>value pairs. If $params is set
+ *                       as null, all contact_types will be returned
  *
- * @return array
- *   Array of matching contact_types
+ * @return array  (referance) Array of matching contact_types
+ * @access public
  */
 function civicrm_api3_contact_type_get($params) {
   civicrm_api3_verify_mandatory($params);
@@ -80,16 +79,20 @@ function civicrm_api3_contact_type_get($params) {
 }
 
 /**
- * Delete an existing ContactType.
+ * delete an existing contact_type
  *
- * This method is used to delete any existing ContactType given its id.
+ * This method is used to delete any existing contact_type. id of the group
+ * to be deleted is required field in $params array
  *
- * @param array $params
- *   [id]
+ * @param array $params  (reference) array containing id of the group
+ *                       to be deleted
  *
- * @return array
- *   API Result Array
+ * @return array  (referance) returns flag true if successfull, error
+ *                message otherwise
+ *
+ * @access public
  */
 function civicrm_api3_contact_type_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
+

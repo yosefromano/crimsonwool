@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,11 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
-
-/**
- * Class CRM_Core_Report_Excel
- */
+*/
 class CRM_Core_Report_Excel {
 
   /**
@@ -38,30 +34,26 @@ class CRM_Core_Report_Excel {
    * Outputs a result set with a given header
    * in the string buffer result
    *
-   * @param string $header
-   *   (reference ) column headers.
-   * @param string $rows
-   *   (reference ) result set rows.
-   * @param null $titleHeader
-   * @param bool $print
-   *   Should the output be printed.
-   * @param bool $outputHeader
+   * @param   string   $header (reference ) column headers
+   * @param   string   $rows   (reference ) result set rows
+   * @param   boolean  $print should the output be printed
    *
-   * @return mixed
-   *   empty if output is printed, else output
+   * @return  mixed    empty if output is printed, else output
    *
+   * @access  public
+   * @static
    */
-  public static function makeCSVTable(&$header, &$rows, $titleHeader = NULL, $print = TRUE, $outputHeader = TRUE) {
+  static function makeCSVTable(&$header, &$rows, $titleHeader = NULL, $print = TRUE, $outputHeader = TRUE) {
     if ($titleHeader) {
       echo $titleHeader;
     }
 
     $result = '';
 
-    $config = CRM_Core_Config::singleton();
-    $seperator = $config->fieldSeparator;
-    $enclosed = '"';
-    $escaped = $enclosed;
+    $config        = CRM_Core_Config::singleton();
+    $seperator     = $config->fieldSeparator;
+    $enclosed      = '"';
+    $escaped       = $enclosed;
     $add_character = "\015\012";
 
     $schema_insert = '';
@@ -152,14 +144,7 @@ class CRM_Core_Report_Excel {
     }
   }
 
-  /**
-   * @param string $fileName
-   * @param $header
-   * @param $rows
-   * @param null $titleHeader
-   * @param bool $outputHeader
-   */
-  public function writeHTMLFile($fileName, &$header, &$rows, $titleHeader = NULL, $outputHeader = TRUE) {
+  function writeHTMLFile($fileName, &$header, &$rows, $titleHeader = NULL, $outputHeader = TRUE) {
     if ($outputHeader) {
       CRM_Utils_System::download(CRM_Utils_String::munge($fileName),
         'application/vnd.ms-excel',
@@ -189,24 +174,20 @@ class CRM_Core_Report_Excel {
   }
 
   /**
-   * Write a CSV file to the browser output.
+   * Write a CSV file to the browser output
    *
-   * @param string $fileName
-   *   The name of the file that will be downloaded (this is sent to the browser).
-   * @param array $header
-   *   An array of the headers.
-   * @param array $rows
-   *   An array of arrays of the table contents.
-   * @param string $titleHeader
-   *   If set this will be the title in the CSV.
-   * @param bool $outputHeader
-   *   Should we output the header row.
-   * @param bool $saveFile
-   *   -.
+   * @param string  $fileName - the name of the file that will be downloaded (this is sent to the browser)
+   * @param array   $header   - an array of the headers
+   * @param array   $rows     - an array of arrays of the table contents
+   * @param string  $titleHeader - if set this will be the title in the CSV
+   * @param boolean $outputHeader - should we output the header row
+   * @param boolean $saveFile -
    *
    * @return void
+   * @public
+   * @static
    */
-  public static function writeCSVFile($fileName, &$header, &$rows, $titleHeader = NULL, $outputHeader = TRUE, $saveFile = NULL) {
+  static function writeCSVFile($fileName, &$header, &$rows, $titleHeader = NULL, $outputHeader = TRUE, $saveFile = NULL) {
     if ($outputHeader && !$saveFile) {
       CRM_Utils_System::download(CRM_Utils_String::munge($fileName),
         'text/x-csv',
@@ -221,8 +202,9 @@ class CRM_Core_Report_Excel {
       if ($saveFile) {
         $print = FALSE;
       }
-      return self::makeCSVTable($header, $rows, $titleHeader, $print, $outputHeader);
+      return self::makeCSVTable( $header, $rows, $titleHeader, $print, $outputHeader );
     }
   }
 
 }
+

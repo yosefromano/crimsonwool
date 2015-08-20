@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,81 +23,73 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_BAO_Contact_Optimizer {
-  /**
-   * @param $newValues
-   * @param $oldValues
-   */
-  public static function edit(&$newValues, &$oldValues) {
+  static function edit( &$newValues, &$oldValues ) {
     // still need to do more work on this
     // CRM-10192
     return;
 
-    self::website($newValues, $oldValues);
+    self::website( $newValues, $oldValues );
   }
 
-  /**
-   * @param $newValues
-   * @param $oldValues
-   */
-  public static function website(&$newValues, &$oldValues) {
-    $oldWebsiteValues = CRM_Utils_Array::value('website', $oldValues);
-    $newWebsiteValues = CRM_Utils_Array::value('website', $newValues);
+  static function website( &$newValues, &$oldValues ) {
+    $oldWebsiteValues = CRM_Utils_Array::value( 'website', $oldValues );
+    $newWebsiteValues = CRM_Utils_Array::value( 'website', $newValues );
 
-    if ($oldWebsiteValues == NULL || $newWebsiteValues == NULL) {
+    if ( $oldWebsiteValues == null || $newWebsiteValues == null ) {
       return;
     }
 
     // check if we had a value in the old
-    $oldEmpty = $newEmpty = TRUE;
-    $old = $new = array();
+    $oldEmpty = $newEmpty = true;
+    $old = $new = array( );
 
-    foreach ($oldWebsiteValues as $idx => $value) {
-      if (!empty($value['url'])) {
-        $oldEmpty = FALSE;
-        $old[] = array('website_type_id' => $value['website_type_id'], 'url' => $value['url']);
+    foreach ( $oldWebsiteValues as $idx => $value ) {
+      if ( ! empty( $value['url'] ) ) {
+        $oldEmpty = false;
+        $old[] = array( 'website_type_id' => $value['website_type_id'], 'url' => $value['url'] );
       }
     }
 
-    foreach ($newWebsiteValues as $idx => $value) {
-      if (!empty($value['url'])) {
-        $newEmpty = FALSE;
-        $new[] = array('website_type_id' => $value['website_type_id'], 'url' => $value['url']);
+    foreach ( $newWebsiteValues as $idx => $value ) {
+      if ( ! empty( $value['url'] ) ) {
+        $newEmpty = false;
+        $new[] = array( 'website_type_id' => $value['website_type_id'], 'url' => $value['url'] );
       }
     }
 
     // if both old and new are empty, we can delete new and avoid a write
-    if ($oldEmpty && $newEmpty) {
-      unset($newValues['website']);
+    if ( $oldEmpty && $newEmpty ) {
+      unset( $newValues['website'] );
     }
 
     // if different number of non-empty entries, return
-    if (count($new) != count($old)) {
+    if ( count( $new ) != count( $old ) ) {
       return;
     }
 
     // same number of entries, check if they are exactly the same
-    foreach ($old as $oldID => $oldValues) {
-      $found = FALSE;
-      foreach ($new as $newID => $newValues) {
+    foreach ( $old as $oldID => $oldValues ) {
+      $found = false;
+      foreach ( $new as $newID => $newValues ) {
         if (
           $old['website_type_id'] == $new['website_type_id'] &&
           $old['url'] == $new['url']
         ) {
-          $found = TRUE;
-          unset($new[$newID]);
+          $found = true;
+          unset( $new[$newID] );
           break;
         }
-        if (!$found) {
+        if ( ! $found ) {
           return;
         }
       }
@@ -105,78 +97,74 @@ class CRM_Contact_BAO_Contact_Optimizer {
 
     // if we've come here, this means old and new are the same
     // we can skip saving new and return
-    unset($newValues['website']);
+    unset( $newValues['website'] );
   }
 
-  /**
-   * @param $newValues
-   * @param $oldValues
-   */
-  public static function email(&$newValues, &$oldValues) {
-    $oldEmailValues = CRM_Utils_Array::value('email', $oldValues);
-    $newEmailValues = CRM_Utils_Array::value('email', $newValues);
+  static function email( &$newValues, &$oldValues ) {
+    $oldEmailValues = CRM_Utils_Array::value( 'email', $oldValues );
+    $newEmailValues = CRM_Utils_Array::value( 'email', $newValues );
 
-    if ($oldEmailValues == NULL || $newEmailValues == NULL) {
+    if ( $oldEmailValues == null || $newEmailValues == null ) {
       return;
     }
 
     // check if we had a value in the old
-    $oldEmpty = $newEmpty = TRUE;
-    $old = $new = array();
+    $oldEmpty = $newEmpty = true;
+    $old = $new = array( );
 
-    foreach ($oldEmailValues as $idx => $value) {
-      if (!empty($value['email'])) {
-        $oldEmpty = FALSE;
+    foreach ( $oldEmailValues as $idx => $value ) {
+      if ( ! empty( $value['email'] ) ) {
+        $oldEmpty = false;
         $old[] = array(
-          'email' => $value['email'],
+          'email'            => $value['email'],
           'location_type_id' => $value['location_type_id'],
-          'on_hold' => $value['on_hold'] ? 1 : 0,
-          'is_primary' => $value['is_primary'] ? 1 : 0,
-          'is_bulkmail' => $value['is_bulkmail'] ? 1 : 0,
-          'signature_text' => $value['signature_text'] ? $value['signature_text'] : '',
-          'signature_html' => $value['signature_html'] ? $value['signature_html'] : '',
+          'on_hold'          => $value['on_hold']     ? 1 : 0,
+          'is_primary'       => $value['is_primary']  ? 1 : 0,
+          'is_bulkmail'      => $value['is_bulkmail'] ? 1 : 0,
+          'signature_text'   => $value['signature_text'] ? $value['signature_text'] : '',
+          'signature_html'   => $value['signature_html'] ? $value['signature_html'] : '',
         );
       }
     }
 
-    foreach ($newEmailValues as $idx => $value) {
-      if (!empty($value['email'])) {
-        $newEmpty = FALSE;
+    foreach ( $newEmailValues as $idx => $value ) {
+      if ( ! empty( $value['email'] ) ) {
+        $newEmpty = false;
         $new[] = array(
-          'email' => $value['email'],
+          'email'            => $value['email'],
           'location_type_id' => $value['location_type_id'],
-          'on_hold' => $value['on_hold'] ? 1 : 0,
-          'is_primary' => $value['is_primary'] ? 1 : 0,
-          'is_bulkmail' => $value['is_bulkmail'] ? 1 : 0,
-          'signature_text' => $value['signature_text'] ? $value['signature_text'] : '',
-          'signature_html' => $value['signature_html'] ? $value['signature_html'] : '',
+          'on_hold'          => $value['on_hold']     ? 1 : 0,
+          'is_primary'       => $value['is_primary']  ? 1 : 0,
+          'is_bulkmail'      => $value['is_bulkmail'] ? 1 : 0,
+          'signature_text'   => $value['signature_text'] ? $value['signature_text'] : '',
+          'signature_html'   => $value['signature_html'] ? $value['signature_html'] : '',
         );
       }
     }
 
     // if both old and new are empty, we can delete new and avoid a write
-    if ($oldEmpty && $newEmpty) {
-      unset($newValues['email']);
+    if ( $oldEmpty && $newEmpty ) {
+      unset( $newValues['email'] );
     }
 
     // if different number of non-empty entries, return
-    if (count($new) != count($old)) {
+    if ( count( $new ) != count( $old ) ) {
       return;
     }
 
     // same number of entries, check if they are exactly the same
-    foreach ($old as $oldID => $oldValues) {
-      $found = FALSE;
-      foreach ($new as $newID => $newValues) {
+    foreach ( $old as $oldID => $oldValues ) {
+      $found = false;
+      foreach ( $new as $newID => $newValues ) {
         if (
           $old['email_type_id'] == $new['email_type_id'] &&
           $old['url'] == $new['url']
         ) {
-          $found = TRUE;
-          unset($new[$newID]);
+          $found = true;
+          unset( $new[$newID] );
           break;
         }
-        if (!$found) {
+        if ( ! $found ) {
           return;
         }
       }
@@ -184,7 +172,7 @@ class CRM_Contact_BAO_Contact_Optimizer {
 
     // if we've come here, this means old and new are the same
     // we can skip saving new and return
-    unset($newValues['email']);
+    unset( $newValues['email'] );
   }
-
 }
+

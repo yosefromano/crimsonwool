@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,21 +23,21 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Mailing_BAO_TrackableURL extends CRM_Mailing_DAO_TrackableURL {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
@@ -45,15 +45,12 @@ class CRM_Mailing_BAO_TrackableURL extends CRM_Mailing_DAO_TrackableURL {
    * Given a url, mailing id and queue event id, find or construct a
    * trackable url and redirect url.
    *
-   * @param string $url
-   *   The target url to track.
-   * @param int $mailing_id
-   *   The id of the mailing.
-   * @param int $queue_id
-   *   The queue event id (contact clicking through).
+   * @param string $url       The target url to track
+   * @param int $mailing_id   The id of the mailing
+   * @param int $queue_id     The queue event id (contact clicking through)
    *
-   * @return string
-   *   The redirect/tracking url
+   * @return string $redirect The redirect/tracking url
+   * @static
    */
   public static function getTrackerURL($url, $mailing_id, $queue_id) {
 
@@ -85,9 +82,7 @@ class CRM_Mailing_BAO_TrackableURL extends CRM_Mailing_DAO_TrackableURL {
 
       $tracker->url = $url;
       $tracker->mailing_id = $mailing_id;
-      if (strlen($tracker->url) > 254) {
-        return $url;
-      }
+
       if (!$tracker->find(TRUE)) {
         $tracker->save();
       }
@@ -107,40 +102,16 @@ class CRM_Mailing_BAO_TrackableURL extends CRM_Mailing_DAO_TrackableURL {
     return $returnUrl;
   }
 
-  /**
-   * @param $url
-   * @param $mailing_id
-   *
-   * @return int
-   *   Url id of the given url and mail
-   */
-  public static function getTrackerURLId($url, $mailing_id) {
-    $tracker = new CRM_Mailing_BAO_TrackableURL();
-    $tracker->url = $url;
-    $tracker->mailing_id = $mailing_id;
-    if ($tracker->find(TRUE)) {
-      return $tracker->id;
-    }
-
-    return NULL;
-  }
-
-  /**
-   * @param $msg
-   * @param int $mailing_id
-   * @param int $queue_id
-   * @param bool $onlyHrefs
-   */
   public static function scan_and_replace(&$msg, $mailing_id, $queue_id, $onlyHrefs = FALSE) {
     if (!$mailing_id) {
       return;
     }
 
-    $protos = '(https?|ftp)';
+    $protos  = '(https?|ftp)';
     $letters = '\w';
-    $gunk = '/#~:.?+=&%@!\-';
-    $punc = '.:?\-';
-    $any = "{$letters}{$gunk}{$punc}";
+    $gunk    = '/#~:.?+=&%@!\-';
+    $punc    = '.:?\-';
+    $any     = "{$letters}{$gunk}{$punc}";
     if ($onlyHrefs) {
       $pattern = "{\\b(href=([\"'])?($protos:[$any]+?(?=[$punc]*[^$any]|$))([\"'])?)}im";
     }
@@ -153,5 +124,5 @@ class CRM_Mailing_BAO_TrackableURL extends CRM_Mailing_DAO_TrackableURL {
 
     $msg = preg_replace($pattern, $replacement, $msg);
   }
-
 }
+

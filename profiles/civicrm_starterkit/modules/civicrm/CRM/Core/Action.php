@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * The core concept of the system is an action performed on an object. Typically this will be a "data model" object
@@ -31,7 +31,7 @@
  * and similar across all objects (thus providing both reuse and standards)
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,9 +41,11 @@ class CRM_Core_Action {
    * Different possible actions are defined here. Keep in sync with the
    * constant from CRM_Core_Form for various modes.
    *
-   * @var integer const
+   * @var const
+   *
+   * @access public
    */
-  const
+  CONST
     NONE = 0,
     ADD = 1,
     UPDATE = 2,
@@ -63,18 +65,21 @@ class CRM_Core_Action {
     RENEW = 32768,
     DETACH = 65536,
     REVERT = 131072,
-    CLOSE = 262144,
-    REOPEN = 524288,
-    MAX_ACTION = 1048575;
+    CLOSE        =  262144,
+    REOPEN       =  524288,
+    MAX_ACTION   = 1048575;
 
   //make sure MAX_ACTION = 2^n - 1 ( n = total number of actions )
 
   /**
-   * Map the action names to the relevant constant. We perform
+   * map the action names to the relevant constant. We perform
    * bit manipulation operations so we can perform multiple
    * actions on the same object if needed
    *
-   * @var array $_names type of variable name to action constant
+   * @var array  _names  tupe of variable name to action constant
+   *
+   * @access private
+   * @static
    *
    */
   static $_names = array(
@@ -93,27 +98,30 @@ class CRM_Core_Action {
     'renew' => self::RENEW,
     'detach' => self::DETACH,
     'revert' => self::REVERT,
-    'close' => self::CLOSE,
-    'reopen' => self::REOPEN,
+                           'close'         => self::CLOSE,
+                           'reopen'        => self::REOPEN,
   );
 
   /**
-   * The flipped version of the names array, initialized when used
+   * the flipped version of the names array, initialized when used
    *
    * @var array
+   * @static
    */
   static $_description;
 
   /**
-   * Called by the request object to translate a string into a mask.
    *
-   * @param string $str
-   *   The action to be resolved.
+   * called by the request object to translate a string into a mask
    *
-   * @return int
-   *   the action mask corresponding to the input string
+   * @param string $action the action to be resolved
+   *
+   * @return int the action mask corresponding to the input string
+   * @access public
+   * @static
+   *
    */
-  public static function resolve($str) {
+  static function resolve($str) {
     $action = 0;
     if ($str) {
       $items = explode('|', $str);
@@ -126,13 +134,14 @@ class CRM_Core_Action {
    * Given a string or an array of strings, determine the bitmask
    * for this set of actions
    *
-   * @param mixed $item
-   *   Either a single string or an array of strings.
+   * @param mixed either a single string or an array of strings
    *
-   * @return int
-   *   the action mask corresponding to the input args
+   * @return int the action mask corresponding to the input args
+   * @access public
+   * @static
+   *
    */
-  public static function map($item) {
+  static function map($item) {
     $mask = 0;
 
     if (is_array($item)) {
@@ -147,15 +156,16 @@ class CRM_Core_Action {
   }
 
   /**
-   * Given a string determine the bitmask for this specific string.
+   * Given a string determine the bitmask for this specific string
    *
-   * @param string $item
-   *   The input action to process.
+   * @param string the input action to process
    *
-   * @return int
-   *   the action mask corresponding to the input string
+   * @return int the action mask corresponding to the input string
+   * @access public
+   * @static
+   *
    */
-  public static function mapItem($item) {
+  static function mapItem($item) {
     $mask = CRM_Utils_Array::value(trim($item), self::$_names);
     return $mask ? $mask : 0;
   }
@@ -164,13 +174,14 @@ class CRM_Core_Action {
    *
    * Given an action mask, find the corresponding description
    *
-   * @param int $mask
-   *   The action mask.
+   * @param int the action mask
    *
-   * @return string
-   *   the corresponding action description
+   * @return string the corresponding action description
+   * @access public
+   * @static
+   *
    */
-  public static function description($mask) {
+  static function description($mask) {
     if (!isset($_description)) {
       self::$_description = array_flip(self::$_names);
     }
@@ -179,29 +190,20 @@ class CRM_Core_Action {
   }
 
   /**
-   * Given a set of links and a mask, return the html action string for
+   * given a set of links and a mask, return the html action string for
    * the links associated with the mask
    *
-   * @param array $links
-   *   The set of link items.
-   * @param int $mask
-   *   The mask to be used. a null mask means all items.
-   * @param array $values
-   *   The array of values for parameter substitution in the link items.
-   * @param string $extraULName
-   *   Enclosed extra links in this UL.
-   * @param bool $enclosedAllInSingleUL
-   *   Force to enclosed all links in single UL.
+   * @param array $links  the set of link items
+   * @param int   $mask   the mask to be used. a null mask means all items
+   * @param array $values the array of values for parameter substitution in the link items
+   * @param string  $extraULName            enclosed extra links in this UL.
+   * @param boolean $enclosedAllInSingleUL  force to enclosed all links in single UL.
    *
-   * @param null $op
-   * @param null $objectName
-   * @param int $objectId
-   *
-   * @return string
-   *   the html string
+   * @return string       the html string
+   * @access public
+   * @static
    */
-  public static function formLink(
-    $links,
+  static function formLink($links,
     $mask,
     $values,
     $extraULName = 'more',
@@ -215,68 +217,81 @@ class CRM_Core_Action {
       return NULL;
     }
 
-    // make links indexed sequentially instead of by bitmask
-    // otherwise it's next to impossible to reliably add new ones
-    $seqLinks = array();
-    foreach ($links as $bit => $link) {
-      $link['bit'] = $bit;
-      $seqLinks[] = $link;
-    }
 
     if ($op && $objectName && $objectId) {
-      CRM_Utils_Hook::links($op, $objectName, $objectId, $seqLinks, $mask, $values);
+      CRM_Utils_Hook::links($op, $objectName, $objectId, $links, $mask);
     }
 
     $url = array();
 
-    foreach ($seqLinks as $i => $link) {
-      if (!$mask || !array_key_exists('bit', $link) || ($mask & $link['bit'])) {
+    $firstLink = TRUE;
+    foreach ($links as $m => $link) {
+      if (!$mask || ($mask & $m)) {
         $extra = isset($link['extra']) ? self::replace($link['extra'], $values) : NULL;
 
         $frontend = (isset($link['fe'])) ? TRUE : FALSE;
 
-        if (isset($link['qs']) && !CRM_Utils_System::isNull($link['qs'])) {
+        $urlPath = NULL;
+        if (CRM_Utils_Array::value('qs', $link) &&
+          !CRM_Utils_System::isNull($link['qs'])
+        ) {
           $urlPath = CRM_Utils_System::url(self::replace($link['url'], $values),
             self::replace($link['qs'], $values), TRUE, NULL, TRUE, $frontend
           );
         }
         else {
-          $urlPath = CRM_Utils_Array::value('url', $link, '#');
+          $urlPath = CRM_Utils_Array::value('url', $link);
         }
 
-        $classes = 'action-item crm-hover-button';
+        $classes = 'action-item';
+        if ($firstLink) {
+          $firstLink = FALSE;
+          $classes .= " action-item-first";
+        }
         if (isset($link['ref'])) {
           $classes .= ' ' . strtolower($link['ref']);
         }
 
         //get the user specified classes in.
         if (isset($link['class'])) {
-          $className = is_array($link['class']) ? implode(' ', $link['class']) : $link['class'];
+          $className = $link['class'];
+          if (is_array($className)) {
+            $className = implode(' ', $className);
+          }
           $classes .= ' ' . strtolower($className);
         }
 
-        if ($urlPath !== '#' && $frontend) {
-          $extra .= ' target="_blank"';
+        $linkClasses = 'class = "' . $classes . '"';
+
+        if ($urlPath) {
+          if ($frontend) {
+            $extra .= "target=_blank";
+          }
+          $url[] = sprintf('<a href="%s" %s title="%s"' . $extra . '>%s</a>',
+            $urlPath,
+            $linkClasses,
+            CRM_Utils_Array::value('title', $link),
+            $link['name']
+          );
         }
-        // Hack to make delete dialogs smaller
-        if (strpos($urlPath, '/delete') || strpos($urlPath, 'action=delete')) {
-          $classes .= " small-popup";
+        else {
+          $url[] = sprintf('<a title="%s"  %s ' . $extra . '>%s</a>',
+            CRM_Utils_Array::value('title', $link),
+            $linkClasses,
+            $link['name']
+          );
         }
-        $url[] = sprintf('<a href="%s" class="%s" %s' . $extra . '>%s</a>',
-          $urlPath,
-          $classes,
-          !empty($link['title']) ? "title='{$link['title']}' " : '',
-          $link['name']
-        );
       }
     }
 
+
+    $result = '';
     $mainLinks = $url;
     if ($enclosedAllInSingleUL) {
       $allLinks = '';
       CRM_Utils_String::append($allLinks, '</li><li>', $mainLinks);
       $allLinks = "{$extraULName}<ul class='panel'><li>{$allLinks}</li></ul>";
-      $result = "<span class='btn-slide crm-hover-button'>{$allLinks}</span>";
+      $result = "<span class='btn-slide'>{$allLinks}</span>";
     }
     else {
       $extra = '';
@@ -289,7 +304,7 @@ class CRM_Core_Action {
       $resultLinks = '';
       CRM_Utils_String::append($resultLinks, '', $mainLinks);
       if ($extra) {
-        $result = "<span>{$resultLinks}</span><span class='btn-slide crm-hover-button'>{$extra}</span>";
+        $result = "<span>{$resultLinks}</span><span class='btn-slide'>{$extra}</span>";
       }
       else {
         $result = "<span>{$resultLinks}</span>";
@@ -300,18 +315,17 @@ class CRM_Core_Action {
   }
 
   /**
-   * Given a string and an array of values, substitute the real values
+   * given a string and an array of values, substitute the real values
    * in the placeholder in the str in the CiviCRM format
    *
-   * @param string $str
-   *   The string to be replaced.
-   * @param array $values
-   *   The array of values for parameter substitution in the str.
+   * @param string $str    the string to be replaced
+   * @param array  $values the array of values for parameter substitution in the str
    *
-   * @return string
-   *   the substituted string
+   * @return string        the substituted string
+   * @access public
+   * @static
    */
-  public static function &replace(&$str, &$values) {
+  static function &replace(&$str, &$values) {
     foreach ($values as $n => $v) {
       $str = str_replace("%%$n%%", $v, $str);
     }
@@ -319,12 +333,15 @@ class CRM_Core_Action {
   }
 
   /**
-   * Get the mask for a permission (view, edit or null)
+   * get the mask for a permission (view, edit or null)
    *
-   * @return int
-   *   the mask for the above permission
+   * @param string the permission
+   *
+   * @return int   the mask for the above permission
+   * @static
+   * @access public
    */
-  public static function mask($permissions) {
+  static function mask($permissions) {
     $mask = NULL;
     if (!is_array($permissions) || CRM_Utils_System::isNull($permissions)) {
       return $mask;
@@ -344,5 +361,5 @@ class CRM_Core_Action {
 
     return $mask;
   }
-
 }
+

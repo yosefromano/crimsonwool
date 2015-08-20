@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -38,7 +38,7 @@
 
     {counter start=0 skip=1 print=false}
     {foreach from=$rows item=row}
-    <tr class="crm-entity {$row.class}" data-entity="activity" data-id="{$row.id}">
+    <tr class="{$row.class}">
       <td class="crm-case-display_date">{$row.display_date}</td>
       <td class="crm-case-subject">{$row.subject}</td>
       <td class="crm-case-type">{$row.type}</td>

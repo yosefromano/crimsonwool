@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,29 +44,32 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
    * The option group name
    *
    * @var string
+   * @static
    */
   protected $_gName;
 
   /**
-   * Id
+   * id
    *
    * @var int
    */
   protected $_id;
 
   /**
-   * Action
+   * action
    *
    * @var int
    */
   protected $_action;
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
+   *
+   * @param null
    *
    * @return void
-   */
-  public function preProcess() {
+   * @access public
+   */ function preProcess() {
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this);
 
     if ($this->_action & (CRM_Core_Action::UPDATE | CRM_Core_Action::DELETE)) {
@@ -77,8 +80,8 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
     $this->assign('id', $this->_id);
 
     $this->_BAOName = 'CRM_Core_BAO_OptionValue';
-    $this->_gName = 'activity_type';
-    $this->_gid = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', $this->_gName, 'id', 'name');
+    $this->_gName   = 'activity_type';
+    $this->_gid     = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionGroup', $this->_gName, 'id', 'name');
 
     $session = CRM_Core_Session::singleton();
     $url = CRM_Utils_System::url('civicrm/admin/campaign/surveyType', 'reset=1');
@@ -87,19 +90,21 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
     if ($this->_id && in_array($this->_gName, CRM_Core_OptionGroup::$_domainIDGroups)) {
       $domainID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_OptionValue', $this->_id, 'domain_id', 'id');
       if (CRM_Core_Config::domainID() != $domainID) {
-        CRM_Core_Error::fatal(ts('You do not have permission to access this page.'));
+        CRM_Core_Error::fatal(ts('You do not have permission to access this page'));
       }
     }
   }
 
   /**
-   * Set default values for the form.
+   * This function sets the default values for the form.
    * the default values are retrieved from the database.
    *
-   * @return array
-   *   array of default values
+   * @param null
+   *
+   * @return array    array of default values
+   * @access public
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = parent::setDefaultValues();
 
     if (!isset($defaults['weight']) || !$defaults['weight']) {
@@ -111,9 +116,10 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
@@ -129,6 +135,7 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
       CRM_Core_DAO::getAttribute('CRM_Core_DAO_OptionValue', 'description')
     );
 
+
     $this->add('checkbox', 'is_active', ts('Enabled?'));
 
     if ($this->_action == CRM_Core_Action::UPDATE &&
@@ -136,16 +143,17 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
     ) {
       $this->freeze(array('label', 'is_active'));
     }
-    $this->add('text', 'weight', ts('Order'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_OptionValue', 'weight'), TRUE);
+    $this->add('text', 'weight', ts('Weight'), CRM_Core_DAO::getAttribute('CRM_Core_DAO_OptionValue', 'weight'), TRUE);
 
     $this->assign('id', $this->_id);
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
 
@@ -173,5 +181,5 @@ class CRM_Campaign_Form_SurveyType extends CRM_Admin_Form {
       CRM_Core_Session::setStatus(ts('The Survey type \'%1\' has been saved.', array(1 => $optionValue->label)), ts('Saved'), 'success');
     }
   }
-
 }
+

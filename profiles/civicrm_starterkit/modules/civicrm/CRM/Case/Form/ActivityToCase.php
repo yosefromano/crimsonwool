@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,11 +40,12 @@
 class CRM_Case_Form_ActivityToCase extends CRM_Core_Form {
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form.
    *
-   * @return void
+   * @return None
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_activityId = CRM_Utils_Request::retrieve('activityId', 'Positive', CRM_Core_DAO::$_nullObject);
     if (!$this->_activityId) {
       CRM_Core_Error::fatal('required activity id is missing.');
@@ -56,47 +57,44 @@ class CRM_Case_Form_ActivityToCase extends CRM_Core_Form {
   }
 
   /**
-   * Set default values for the form. For edit/view mode
+   * This function sets the default values for the form. For edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
-   * @return array
+   * @return None
    */
-  public function setDefaultValues() {
-    $defaults = array();
+  function setDefaultValues() {
+    $targetContactValues = $defaults = array();
     $params = array('id' => $this->_activityId);
 
     CRM_Activity_BAO_Activity::retrieve($params, $defaults);
-    $defaults['file_on_case_activity_subject'] = $defaults['subject'];
-    $defaults['file_on_case_target_contact_id'] = $defaults['target_contact'];
-
-    // If this contact has an open case, supply it as a default
-    $cid = CRM_Utils_Request::retrieve('cid', 'Integer');
-    if ($cid) {
-      $cases = CRM_Case_BAO_Case::getUnclosedCases(array('contact_id' => $cid), $this->_currentCaseId);
-      foreach ($cases as $id => $details) {
-        $defaults['file_on_case_unclosed_case_id'] = $id;
-        $value = array(
-          'label' => $details['sort_name'] . ' - ' . $details['case_type'],
-          'extra' => array('contact_id' => $cid),
-        );
-        $this->updateElementAttr('file_on_case_unclosed_case_id', array('data-value' => json_encode($value)));
-        break;
-      }
+    $defaults['case_activity_subject'] = $defaults['subject'];
+    if (!CRM_Utils_Array::crmIsEmptyArray($defaults['target_contact'])) {
+      $targetContactValues = array_combine(array_unique($defaults['target_contact']),
+        explode(';', trim($defaults['target_contact_value']))
+      );
     }
+    $this->assign('targetContactValues', empty($targetContactValues) ? FALSE : $targetContactValues);
 
     return $defaults;
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
-    $this->add('text', 'file_on_case_unclosed_case_id', ts('Select Case'), array('class' => 'huge'), TRUE);
-    $this->addEntityRef('file_on_case_target_contact_id', ts('With Contact(s)'), array('multiple' => TRUE));
-    $this->add('text', 'file_on_case_activity_subject', ts('Subject'), array('size' => 50));
-  }
+    // tokeninput url
+    $tokenUrl = CRM_Utils_System::url("civicrm/ajax/checkemail", "noemail=1", FALSE, NULL, FALSE);
+    $this->assign('tokenUrl', $tokenUrl);
 
+    $this->add('text', 'unclosed_cases', ts('Select Case'));
+    $this->add('hidden', 'unclosed_case_id', '', array('id' => 'open_case_id'));
+    $this->add('text', 'target_contact_id', ts('With Contact(s)'));
+    $this->add('text', 'case_activity_subject', ts('Subject'), array('size' => 50));
+  }
 }
+

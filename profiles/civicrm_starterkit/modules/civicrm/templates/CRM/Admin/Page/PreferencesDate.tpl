@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -24,8 +24,7 @@
  +--------------------------------------------------------------------+
 *}
 <div id="help">
-  {capture assign=crmURL}{crmURL p='civicrm/admin/setting/date' q='action=reset=1'}{/capture}
-    {ts 1=$crmURL}Changing the parameters here affects the input and display for specific fields types. Setting the default date format for the entire site is a Localisation setting. See <a href="%1">Administer > Localization > Date Formats</a>{/ts}
+    {ts}Changing the parameters here globally changes the date parameters for fields in that type across CiviCRM.{/ts}
 </div>
 
 {if $action eq 1 or $action eq 2 or $action eq 8}

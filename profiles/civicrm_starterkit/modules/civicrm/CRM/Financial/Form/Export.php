@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,39 +44,41 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
    * The financial batch id, used when editing the field
    *
    * @var int
+   * @access protected
    */
   protected $_id;
 
   /**
-   * Financial batch ids.
+   * Financial batch ids
    */
   protected $_batchIds = array();
 
   /**
-   * Export status id.
+   * Export status id
    */
   protected $_exportStatusId;
 
   /**
-   * Export format.
+   * Export format
    */
   protected $_exportFormat;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
     // this mean it's a batch action
-    if (!$this->_id) {
+    if (!$this->_id ) {
       if (!empty($_GET['batch_id'])) {
         //validate batch ids
         $batchIds = explode(',', $_GET['batch_id']);
-        foreach ($batchIds as $batchId) {
-          CRM_Utils_Type::validate($batchId, 'Positive');
+        foreach($batchIds as $batchId) {
+          CRM_Utils_Type::validate($batchId,'Positive');
         }
 
         $this->_batchIds = $_GET['batch_id'];
@@ -99,9 +101,9 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
     //check if batch status is valid, do not allow exported batches to export again
     $batchStatus = CRM_Batch_BAO_Batch::getBatchStatuses($this->_batchIds);
 
-    foreach ($batchStatus as $batchStatusId) {
+    foreach( $batchStatus as $batchStatusId ) {
       if ($batchStatusId == $this->_exportStatusId) {
-        CRM_Core_Error::fatal(ts('You cannot exported the batches which were exported earlier.'));
+       CRM_Core_Error::fatal(ts('You cannot exported the batches which were exported earlier.'));
       }
     }
 
@@ -111,11 +113,12 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     // this mean it's a batch action
     if (!empty($this->_batchIds)) {
       $batchNames = CRM_Batch_BAO_Batch::getBatchNames($this->_batchIds);
@@ -150,11 +153,12 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
-   * @return void
+   * @access public
+   * @return None
    */
-  public function postProcess() {
+  public function postProcess( ) {
     if (!$this->_exportFormat) {
       $params = $this->exportValues();
       $this->_exportFormat = $params['export_format'];
@@ -163,7 +167,7 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
     if ($this->_id) {
       $batchIds = array($this->_id);
     }
-    elseif (!empty($this->_batchIds)) {
+    else if (!empty($this->_batchIds)) {
       $batchIds = explode(',', $this->_batchIds);
     }
     // Recalculate totals
@@ -176,7 +180,7 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
     $batchParams['status_id'] = $this->_exportStatusId;
 
     $ids = array();
-    foreach ($batchIds as $batchId) {
+    foreach($batchIds as $batchId) {
       $batchParams['id'] = $ids['batchID'] = $batchId;
       // Update totals
       $batchParams = array_merge($batchParams, $totals[$batchId]);
@@ -185,5 +189,4 @@ class CRM_Financial_Form_Export extends CRM_Core_Form {
 
     CRM_Batch_BAO_Batch::exportFinancialBatch($batchIds, $this->_exportFormat);
   }
-
 }

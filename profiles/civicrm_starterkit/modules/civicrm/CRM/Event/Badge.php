@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -21,18 +21,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /*
- * Copyright (C) 2010 Tech To The People
- * Licensed to CiviCRM under the Academic Free License version 3.0.
- *
- */
+* Copyright (C) 2010 Tech To The People
+* Licensed to CiviCRM under the Academic Free License version 3.0.
+*
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,27 +43,16 @@
  *
  */
 class CRM_Event_Badge {
-  /**
-   */
-  public function __construct() {
-    $this->style = array(
-      'width' => 0.1,
-      'cap' => 'round',
-      'join' => 'round',
-      'dash' => '2,2',
-      'color' => array(0, 0, 200),
-    );
-    $this->format = '5160';
+  function __construct() {
+    $this->style        = array('width' => 0.1, 'cap' => 'round', 'join' => 'round', 'dash' => '2,2', 'color' => array(0, 0, 200));
+    $this->format       = '5160';
     $this->imgExtension = 'png';
-    $this->imgRes = 300;
-    $this->event = NULL;
+    $this->imgRes       = 300;
+    $this->event        = NULL;
     $this->setDebug(FALSE);
   }
 
-  /**
-   * @param bool $debug
-   */
-  public function setDebug($debug = TRUE) {
+  function setDebug($debug = TRUE) {
     if (!$debug) {
       $this->debug = FALSE;
       $this->border = 0;
@@ -75,28 +64,24 @@ class CRM_Event_Badge {
   }
 
   /**
-   * Create the labels (pdf)
+   * function to create the labels (pdf)
    * It assumes the participants are from the same event
    *
-   * @param array $participants
+   * @param   array    $participants
    *
-   * @return;
+   * @return  null
+   * @access  public
    */
   public function run(&$participants) {
     // fetch the 1st participant, and take her event to retrieve its attributes
     $participant = reset($participants);
-    $eventID = $participant['event_id'];
+    $eventID     = $participant['event_id'];
     $this->event = self::retrieveEvent($eventID);
     //call function to create labels
     self::createLabels($participants);
     CRM_Utils_System::civiExit(1);
   }
 
-  /**
-   * @param int $eventID
-   *
-   * @return CRM_Event_BAO_Event|null
-   */
   protected function retrieveEvent($eventID) {
     $bao = new CRM_Event_BAO_Event();
     if ($bao->get('id', $eventID)) {
@@ -105,13 +90,7 @@ class CRM_Event_Badge {
     return NULL;
   }
 
-  /**
-   * @param int $eventID
-   * @param bool $img
-   *
-   * @return string
-   */
-  public function getImageFileName($eventID, $img = FALSE) {
+  function getImageFileName($eventID, $img = FALSE) {
     global $civicrm_root;
     $path = "CRM/Event/Badge";
     if ($img == FALSE) {
@@ -124,16 +103,15 @@ class CRM_Event_Badge {
     // CRM-13235 - leverage the Smarty path to get all templates directories
     $template = CRM_Core_Smarty::singleton();
     if (isset($template->template_dir) && $template->template_dir) {
-      $dirs = is_array($template->template_dir) ? $template->template_dir : array($template->template_dir);
+      $dirs = is_array( $template->template_dir ) ? $template->template_dir : array($template->template_dir);
       foreach ($dirs as $dir) {
-        foreach (array("$dir/$path/$eventID/$img", "$dir/$path/$img") as $imgFile) {
+        foreach (array( "$dir/$path/$eventID/$img", "$dir/$path/$img") as $imgFile) {
           if (file_exists($imgFile)) {
             return $imgFile;
           }
         }
       }
-    }
-    else {
+    } else {
       $imgFile = 'No template directories defined anywhere??';
     }
 
@@ -141,22 +119,11 @@ class CRM_Event_Badge {
     return $imgFile;
   }
 
-  /**
-   * @param bool $img
-   */
-  public function printBackground($img = FALSE) {
+  function printBackground($img = FALSE) {
     $x = $this->pdf->GetAbsX();
     $y = $this->pdf->GetY();
     if ($this->debug) {
-      $this->pdf->Rect($x, $y, $this->pdf->width, $this->pdf->height, 'D', array(
-          'all' => array(
-            'width' => 1,
-            'cap' => 'round',
-            'join' => 'round',
-            'dash' => '2,10',
-            'color' => array(255, 0, 0),
-          ),
-        ));
+      $this->pdf->Rect($x, $y, $this->pdf->width, $this->pdf->height, 'D', array('all' => array('width' => 1, 'cap' => 'round', 'join' => 'round', 'dash' => '2,10', 'color' => array(255, 0, 0))));
     }
     $img = $this->getImageFileName($this->event->id, $img);
     if ($img) {
@@ -171,8 +138,8 @@ class CRM_Event_Badge {
   }
 
   /**
-   * This is supposed to be overrided.
-   */
+   * this is supposed to be overrided
+   **/
   public function generateLabel($participant) {
     $txt = "{$this->event['title']}
 {$participant['display_name']}
@@ -181,17 +148,18 @@ class CRM_Event_Badge {
     $this->pdf->MultiCell($this->pdf->width, $this->pdf->lineHeight, $txt);
   }
 
-  public function pdfExtraFormat() {
-  }
+  function pdfExtraFormat() {}
 
   /**
-   * Create labels (pdf)
+   * function to create labels (pdf)
    *
-   * @param array $participants
+   * @param   array    $contactRows   assciated array of contact data
+   * @param   string   $format   format in which labels needs to be printed
    *
-   * @return;
+   * @return  null
+   * @access  public
    */
-  public function createLabels(&$participants) {
+  function createLabels(&$participants) {
 
     $this->pdf = new CRM_Utils_PDF_Label($this->format, 'mm');
     $this->pdfExtraFormat();
@@ -208,5 +176,5 @@ class CRM_Event_Badge {
     }
     $this->pdf->Output($this->event->title . '.pdf', 'D');
   }
-
 }
+

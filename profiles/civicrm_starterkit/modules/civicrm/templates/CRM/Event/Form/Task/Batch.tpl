@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -92,10 +92,10 @@
 /**
  * Function to update participant status
  */
-CRM.$(function($) {
-   $('#status_change').change( function() {
-      if ( $(this).val() ) {
-        $('.crm-copy-fields [name^="field["][name*="[participant_status]"]').val( $(this).val() );
+cj( function(){
+   cj('#status_change').change( function() {
+      if ( cj(this).val() ) {
+        cj('.crm-copy-fields [name^="field["][name*="[participant_status]"]').val( cj(this).val() );
       }
    });
 

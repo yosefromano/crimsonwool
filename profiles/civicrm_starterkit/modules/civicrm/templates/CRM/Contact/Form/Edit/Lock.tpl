@@ -1,33 +1,33 @@
 {literal}
 <script type="text/javascript">
-CRM.$(function($) {
-  if ($('#update_modified_date').length == 0) {
+cj(function() {
+  if (cj('#update_modified_date').length == 0) {
     return;
   }
-  $('<br>')
-    .appendTo($('#update_modified_date'));
-  $('<button>')
+  cj('<br>')
+    .appendTo(cj('#update_modified_date'));
+  cj('<button>')
     .text("{/literal}{ts}Save Anyway{/ts}{literal}")
     .click(function() {
-      $('input[name="modified_date"]').val(
-              $('#update_modified_date').attr('data:latest_modified_date')
+      cj('input[name="modified_date"]').val(
+              cj('#update_modified_date').attr('data:latest_modified_date')
       );
-      $('.crm-form-block .crm-form-submit.default').first().click();
+      cj('.crm-form-block .form-submit.default').first().click();
       return false;
     })
-    .appendTo($('#update_modified_date'))
+    .appendTo(cj('#update_modified_date'))
     ;
-  $('<button>')
+  cj('<button>')
     .text("{/literal}{ts}Reload Page{/ts}{literal}")
     .click(function() {
-      window.location.href = CRM.url('civicrm/contact/add', {
+      window.location = CRM.url('civicrm/contact/add', {
         reset: 1,
         action: 'update',
         cid: {/literal}{$contactId}{literal}
       });
       return false;
     })
-    .appendTo($('#update_modified_date'))
+    .appendTo(cj('#update_modified_date'))
     ;
 });
 </script>

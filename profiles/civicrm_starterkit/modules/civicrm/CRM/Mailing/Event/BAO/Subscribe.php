@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,28 +23,24 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 
 require_once 'Mail/mime.php';
-
-/**
- * Class CRM_Mailing_Event_BAO_Subscribe
- */
 class CRM_Mailing_Event_BAO_Subscribe extends CRM_Mailing_Event_DAO_Subscribe {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
@@ -52,18 +48,15 @@ class CRM_Mailing_Event_BAO_Subscribe extends CRM_Mailing_Event_DAO_Subscribe {
    * Register a subscription event.  Create a new contact if one does not
    * already exist.
    *
-   * @param int $group_id
-   *   The group id to subscribe to.
-   * @param string $email
-   *   The email address of the (new) contact.
-   * @param int $contactId
-   *   Currently used during event registration/contribution.
-   *   Specifically to avoid linking group to wrong duplicate contact
-   *   during event registration.
-   * @param string $context
+   * @param int $group_id         The group id to subscribe to
+   * @param string $email         The email address of the (new) contact
+   * @params int $contactId       Currently used during event registration/contribution.
+   *                              Specifically to avoid linking group to wrong duplicate contact
+   *                              during event registration.
    *
-   * @return int|null
-   *   $se_id      The id of the subscription event, null on failure
+   * @return int|null $se_id      The id of the subscription event, null on failure
+   * @access public
+   * @static
    */
   public static function &subscribe($group_id, $email, $contactId = NULL, $context = NULL) {
     // CRM-1797 - allow subscription only to public groups
@@ -137,6 +130,7 @@ LEFT JOIN civicrm_email      ON contact_a.id = civicrm_email.contact_id
       return $success;
     }
 
+
     /* Get the primary email id from the contact to use as a hash input */
 
     $dao = new CRM_Core_DAO();
@@ -146,8 +140,7 @@ SELECT     civicrm_email.id as email_id
   FROM     civicrm_email
      WHERE civicrm_email.email = %1
        AND civicrm_email.contact_id = %2";
-    $params = array(
-      1 => array($email, 'String'),
+    $params = array(1 => array($email, 'String'),
       2 => array($contact_id, 'Integer'),
     );
     $dao = CRM_Core_DAO::executeQuery($query, $params);
@@ -176,17 +169,15 @@ SELECT     civicrm_email.id as email_id
   }
 
   /**
-   * Verify the hash of a subscription event.
+   * Verify the hash of a subscription event
    *
-   * @param int $contact_id
-   *   ID of the contact.
-   * @param int $subscribe_id
-   *   ID of the subscription event.
-   * @param string $hash
-   *   Hash to verify.
+   * @param int $contact_id       ID of the contact
+   * @param int $subscribe_id     ID of the subscription event
+   * @param string $hash          Hash to verify
    *
-   * @return object|null
-   *   The subscribe event object, or null on failure
+   * @return object|null          The subscribe event object, or null on failure
+   * @access public
+   * @static
    */
   public static function &verify($contact_id, $subscribe_id, $hash) {
     $success = NULL;
@@ -203,10 +194,10 @@ SELECT     civicrm_email.id as email_id
   /**
    * Ask a contact for subscription confirmation (opt-in)
    *
-   * @param string $email
-   *   The email address.
+   * @param string $email         The email address
    *
    * @return void
+   * @access public
    */
   public function send_confirm_request($email) {
     $config = CRM_Core_Config::singleton();
@@ -220,13 +211,13 @@ SELECT     civicrm_email.id as email_id
     $emailDomain = CRM_Core_BAO_MailSettings::defaultDomain();
 
     $confirm = implode($config->verpSeparator,
-        array(
-          $localpart . 'c',
-          $this->contact_id,
-          $this->id,
-          $this->hash,
-        )
-      ) . "@$emailDomain";
+      array(
+        $localpart . 'c',
+        $this->contact_id,
+        $this->id,
+        $this->hash,
+      )
+    ) . "@$emailDomain";
 
     $group = new CRM_Contact_BAO_Group();
     $group->id = $this->group_id;
@@ -294,35 +285,33 @@ SELECT     civicrm_email.id as email_id
     $mailer = $config->getMailer();
 
     if (is_object($mailer)) {
-      $errorScope = CRM_Core_TemporaryErrorScope::ignoreException();
+      CRM_Core_Error::ignoreException();
       $mailer->send($email, $h, $b);
-      unset($errorScope);
+      CRM_Core_Error::setCallback();
     }
   }
 
   /**
-   * Get the domain object given a subscribe event.
+   * Get the domain object given a subscribe event
    *
-   * @param int $subscribe_id
-   *   ID of the subscribe event.
+   * @param int $subscribe_id     ID of the subscribe event
    *
-   * @return object
-   *   $domain       The domain owning the event
+   * @return object $domain       The domain owning the event
+   * @access public
+   * @static
    */
   public static function &getDomain($subscribe_id) {
     return CRM_Core_BAO_Domain::getDomain();
   }
 
   /**
-   * Get the group details to which given email belongs.
+   * Get the group details to which given email belongs
    *
-   * @param string $email
-   *   Email of the contact.
-   * @param int $contactID
-   *   ContactID if we want an exact match.
+   * @param string $email     email of the contact
+   * @param int    $contactID contactID if we want an exact match
    *
-   * @return array
-   *   array of group ids
+   * @return array $groups    array of group ids
+   * @access public
    */
   public static function getContactGroups($email, $contactID = NULL) {
     if ($contactID) {
@@ -365,19 +354,18 @@ SELECT     civicrm_email.id as email_id
   }
 
   /**
-   * Send subscribe mail.
+   * Function to send subscribe mail
    *
-   * @param array $groups
-   *   The list of group ids for subscribe.
-   * @param array $params
-   *   The list of email.
-   * @param int $contactId
-   *   Currently used during event registration/contribution.
-   *   Specifically to avoid linking group to wrong duplicate contact
-   *   during event registration.
-   * @param string $context
+   * @params  array  $groups the list of group ids for subscribe
+   * @params  array  $params the list of email
+   * @params  int    $contactId  Currently used during event registration/contribution.
+   *                             Specifically to avoid linking group to wrong duplicate contact
+   *                             during event registration.
+   * @public
    *
    * @return void
+   * @static
+   * @access public
    */
   public static function commonSubscribe(&$groups, &$params, $contactId = NULL, $context = NULL) {
     $contactGroups = CRM_Mailing_Event_BAO_Subscribe::getContactGroups($params['email'], $contactId);
@@ -389,10 +377,7 @@ SELECT     civicrm_email.id as email_id
         $group[$groupID]['title'] = $contactGroups[$groupID]['title'];
 
         $group[$groupID]['status'] = $contactGroups[$groupID]['status'];
-        $status = ts('You are already subscribed in %1, your subscription is %2.', array(
-            1 => $group[$groupID]['title'],
-            2 => ts($group[$groupID]['status']),
-          ));
+        $status = ts('You are already subscribed in %1, your subscription is %2.', array(1 => $group[$groupID]['title'], 2 => $group[$groupID]['status']));
         CRM_Utils_System::setUFMessage($status);
         continue;
       }
@@ -404,7 +389,8 @@ SELECT     civicrm_email.id as email_id
         $success = TRUE;
         $groupAdded[] = $title;
 
-        // Ask the contact for confirmation
+        /* Ask the contact for confirmation */
+
         $se->send_confirm_request($params['email']);
       }
       else {
@@ -421,5 +407,6 @@ SELECT     civicrm_email.id as email_id
       CRM_Utils_System::setUFMessage(ts('We had a problem processing your subscription request for %1. You have tried to subscribe to a private group and/or we encountered a database error. Please contact the site administrator.', array(1 => $groupTitle)));
     }
   }
-
+  //end of function
 }
+

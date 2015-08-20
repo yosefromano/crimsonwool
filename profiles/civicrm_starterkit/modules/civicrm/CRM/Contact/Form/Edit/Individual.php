@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,58 +44,42 @@ class CRM_Contact_Form_Edit_Individual {
    * This function provides the HTML form elements that are specific
    * to the Individual Contact Type
    *
-   * @param CRM_Core_Form $form
-   *   Form object.
-   * @param int $inlineEditMode
-   *   ( 1 for contact summary.
+   * @param object $form form object
+   * @param int $inlineEditMode ( 1 for contact summary
    * top bar form and 2 for display name edit )
    *
+   * @access public
    * @return void
    */
   public static function buildQuickForm(&$form, $inlineEditMode = NULL) {
     $form->applyFilter('__ALL__', 'trim');
 
-    if (!$inlineEditMode || $inlineEditMode == 1) {
-      $nameFields = CRM_Core_BAO_Setting::valueOptions(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-        'contact_edit_options', TRUE, NULL,
-        FALSE, 'name', TRUE, 'AND v.filter = 2'
-      );
-
+    if ( !$inlineEditMode || $inlineEditMode == 1 ) {
       //prefix
       $prefix = CRM_Core_PseudoConstant::get('CRM_Contact_DAO_Contact', 'prefix_id');
-      if (isset($nameFields['Prefix']) && !empty($prefix)) {
-        $form->addSelect('prefix_id', array('class' => 'eight', 'placeholder' => ' ', 'label' => ts('Prefix')));
+      if (!empty($prefix)) {
+        $form->addElement('select', 'prefix_id', ts('Prefix'), array('' => '') + $prefix);
       }
 
       $attributes = CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Contact');
 
-      if (isset($nameFields['Formal Title'])) {
-        $form->addElement('text', 'formal_title', ts('Title'), $attributes['formal_title']);
-      }
-
       // first_name
-      if (isset($nameFields['First Name'])) {
-        $form->addElement('text', 'first_name', ts('First Name'), $attributes['first_name']);
-      }
+      $form->addElement('text', 'first_name', ts('First Name'), $attributes['first_name']);
 
       //middle_name
-      if (isset($nameFields['Middle Name'])) {
-        $form->addElement('text', 'middle_name', ts('Middle Name'), $attributes['middle_name']);
-      }
+      $form->addElement('text', 'middle_name', ts('Middle Name'), $attributes['middle_name']);
 
       // last_name
-      if (isset($nameFields['Last Name'])) {
-        $form->addElement('text', 'last_name', ts('Last Name'), $attributes['last_name']);
-      }
+      $form->addElement('text', 'last_name', ts('Last Name'), $attributes['last_name']);
 
       // suffix
       $suffix = CRM_Core_PseudoConstant::get('CRM_Contact_DAO_Contact', 'suffix_id');
-      if (isset($nameFields['Suffix']) && $suffix) {
-        $form->addSelect('suffix_id', array('class' => 'eight', 'placeholder' => ' ', 'label' => ts('Suffix')));
+      if ($suffix) {
+        $form->addElement('select', 'suffix_id', ts('Suffix'), array('' => '') + $suffix);
       }
     }
 
-    if (!$inlineEditMode || $inlineEditMode == 2) {
+    if ( !$inlineEditMode || $inlineEditMode == 2 ) {
       // nick_name
       $form->addElement('text', 'nick_name', ts('Nickname'),
         CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Contact', 'nick_name')
@@ -107,29 +91,28 @@ class CRM_Contact_Form_Edit_Individual {
       $form->addElement('text', 'job_title', ts('Job Title'), $attributes['job_title'], 'size="30"');
 
       //Current Employer Element
-      $props = array(
-        'api' => array('params' => array('contact_type' => 'Organization')),
-        'create' => TRUE,
-      );
-      $form->addEntityRef('employer_id', ts('Current Employer'), $props);
-      $attributes['source']['class'] = 'big';
+      $employerDataURL = CRM_Utils_System::url('civicrm/ajax/rest', 'className=CRM_Contact_Page_AJAX&fnName=getContactList&json=1&context=contact&org=1&employee_id=' . $form->_contactId, FALSE, NULL, FALSE);
+      $form->assign('employerDataURL', $employerDataURL);
+
+      $form->addElement('text', 'current_employer', ts('Current Employer'), '');
+      $form->addElement('hidden', 'current_employer_id', '', array('id' => 'current_employer_id'));
       $form->addElement('text', 'contact_source', ts('Source'), CRM_Utils_Array::value('source', $attributes));
     }
 
-    if (!$inlineEditMode) {
+    if ( !$inlineEditMode ) {
       $checkSimilar = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
         'contact_ajax_check_similar',
         NULL,
         TRUE
       );
 
-      if ($checkSimilar == NULL) {
+      if ( $checkSimilar == null ) {
         $checkSimilar = 0;
       }
       $form->assign('checkSimilar', $checkSimilar);
 
       //External Identifier Element
-      $form->add('text', 'external_identifier', ts('External ID'),
+      $form->add('text', 'external_identifier', ts('External Id'),
         CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Contact', 'external_identifier'), FALSE
       );
 
@@ -144,23 +127,24 @@ class CRM_Contact_Form_Edit_Individual {
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param int $contactID
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool
-   *   TRUE if no errors, else array of errors.
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $contactID = NULL) {
+  static function formRule($fields, $files, $contactID = NULL) {
     $errors = array();
     $primaryID = CRM_Contact_Form_Contact::formRule($fields, $errors, $contactID);
 
     // make sure that firstName and lastName or a primary OpenID is set
-    if (!$primaryID && (empty($fields['first_name']) || empty($fields['last_name']))) {
+    if (!$primaryID && (!CRM_Utils_Array::value('first_name', $fields) ||
+        !CRM_Utils_Array::value('last_name', $fields)
+      )) {
       $errors['_qf_default'] = ts('First Name and Last Name OR an email OR an OpenID in the Primary Location should be set.');
     }
 
@@ -169,5 +153,5 @@ class CRM_Contact_Form_Edit_Individual {
 
     return empty($errors) ? TRUE : $errors;
   }
-
 }
+

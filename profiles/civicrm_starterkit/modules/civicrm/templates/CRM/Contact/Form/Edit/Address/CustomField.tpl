@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -54,6 +54,9 @@
                                 {/if}
                             {/if}
                         {/foreach}
+                        {if $element.html_type eq 'Radio'}
+                            <td><span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('{$element_name}', '{$form.formName}'); return false;" >{ts}clear{/ts}</a>)</span></td>
+                        {/if}
                     </tr>
                 </table>
             </td>
@@ -75,7 +78,10 @@
                     {include file="CRM/common/jcalendar.tpl" blockId=$blockId blockSection='address' elementName=$element_name}
                 {/if}
 
-                {if $element.data_type eq 'File'}
+                {if $element.html_type eq 'Radio'}
+                    <span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('address[{$blockId}][{$element_name}]', '{$form.formName}'); return false;" >{ts}clear{/ts}</a>)</span>
+
+                {elseif $element.data_type eq 'File'}
                     {if $element.element_value.data}
                         <span class="html-adjust"><br />
                             &nbsp;{ts}Attached File{/ts}: &nbsp;
@@ -96,6 +102,8 @@
         {assign var="element_name" value="address[$blockId][$element_name]" }
                     {if $element.data_type eq 'ContactReference'}
                       {include file="CRM/Custom/Form/ContactReference.tpl"}
+                    {else}
+                      {include file="CRM/Custom/Form/AutoComplete.tpl"}
                     {/if}
                 {/if}
             </td>

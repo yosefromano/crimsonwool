@@ -1,8 +1,4 @@
 <?php
-
-/**
- * Class CRM_Event_Cart_Form_Cart
- */
 class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
   public $cart;
 
@@ -33,7 +29,7 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     }
   }
 
-  public function loadCart() {
+  function loadCart() {
     if ($this->event_cart_id == NULL) {
       $this->cart = CRM_Event_Cart_BAO_Cart::find_or_create_for_current_session();
     }
@@ -44,15 +40,15 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     $this->stub_out_and_inherit();
   }
 
-  public function stub_out_and_inherit() {
+  function stub_out_and_inherit() {
     $transaction = new CRM_Core_Transaction();
 
     foreach ($this->cart->get_main_events_in_carts() as $event_in_cart) {
       if (empty($event_in_cart->participants)) {
         $participant_params = array(
-          'cart_id' => $this->cart->id,
-          'event_id' => $event_in_cart->event_id,
-          'contact_id' => self::find_or_create_contact($this->getContactID()),
+            'cart_id' => $this->cart->id,
+            'event_id' => $event_in_cart->event_id,
+            'contact_id' => self::find_or_create_contact($this->getContactID()),
         );
         $participant = CRM_Event_Cart_BAO_MerParticipant::create($participant_params);
         $participant->save();
@@ -63,7 +59,7 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     $transaction->commit();
   }
 
-  public function checkWaitingList() {
+  function checkWaitingList() {
     foreach ($this->cart->events_in_carts as $event_in_cart) {
       $empty_seats = $this->checkEventCapacity($event_in_cart->event_id);
       if ($empty_seats === NULL) {
@@ -76,12 +72,7 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     }
   }
 
-  /**
-   * @param int $event_id
-   *
-   * @return bool|int|null|string
-   */
-  public function checkEventCapacity($event_id) {
+  function checkEventCapacity($event_id) {
     $empty_seats = CRM_Event_BAO_Participant::eventFull($event_id, TRUE);
     if (is_numeric($empty_seats)) {
       return $empty_seats;
@@ -94,18 +85,12 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     }
   }
 
-  /**
-   * @return bool
-   */
-  public static function is_administrator() {
+  static function is_administrator() {
     global $user;
     return CRM_Core_Permission::check('administer CiviCRM');
   }
 
-  /**
-   * @return mixed
-   */
-  public function getContactID() {
+  function getContactID() {
     //XXX when do we query 'cid' ?
     $tempID = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
 
@@ -124,30 +109,18 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     return $session->get('userID');
   }
 
-  /**
-   * @param $fields
-   *
-   * @return mixed|null
-   */
-  public static function find_contact($fields) {
+  static function find_contact($fields) {
     $dedupe_params = CRM_Dedupe_Finder::formatParams($fields, 'Individual');
     $dedupe_params['check_permission'] = FALSE;
     $ids = CRM_Dedupe_Finder::dupesByParams($dedupe_params, 'Individual');
     if (is_array($ids)) {
       return array_pop($ids);
     }
-    else {
-      return NULL;
-    }
+    else return NULL;
   }
 
-  /**
-   * @param int $registeringContactID
-   * @param array $fields
-   *
-   * @return int|mixed|null
-   */
-  public static function find_or_create_contact($registeringContactID = NULL, $fields = array()) {
+  static function find_or_create_contact($registeringContactID = NULL, $fields = array(
+    )) {
     $contact_id = self::find_contact($fields);
 
     if ($contact_id) {
@@ -167,14 +140,9 @@ class CRM_Event_Cart_Form_Cart extends CRM_Core_Form {
     return $contact_id;
   }
 
-  /**
-   * @param string $page_name
-   *
-   * @return mixed
-   */
-  public function getValuesForPage($page_name) {
+  function getValuesForPage($page_name) {
     $container = $this->controller->container();
     return $container['values'][$page_name];
   }
-
 }
+

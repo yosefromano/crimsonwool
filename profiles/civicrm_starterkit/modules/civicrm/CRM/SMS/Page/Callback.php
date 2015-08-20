@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +23,26 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
-class CRM_SMS_Page_Callback {
 
-  public function run() {
+class CRM_SMS_Page_Callback
+{
+
+  function run(){
     $provider = CRM_SMS_Provider::singleton($_REQUEST);
 
-    if (array_key_exists('status', $_REQUEST)) {
+    if (array_key_exists('status',$_REQUEST)){
       $provider->callback();
-    }
-    else {
+    } else {
       $provider->inbound();
     }
   }
-
 }

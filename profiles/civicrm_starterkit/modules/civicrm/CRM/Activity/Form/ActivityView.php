@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,15 +40,16 @@
 class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     //get the activity values
     $activityId = CRM_Utils_Request::retrieve('id', 'Positive', $this);
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
-    $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
+    $context    = CRM_Utils_Request::retrieve('context', 'String', $this);
+    $cid        = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
 
     //check for required permissions, CRM-6264
     if ($activityId &&
@@ -59,11 +60,7 @@ class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
 
     $session = CRM_Core_Session::singleton();
     if (!in_array($context, array(
-      'home',
-      'dashlet',
-      'dashletFullscreen',
-    ))
-    ) {
+      'home', 'dashlet', 'dashletFullscreen'))) {
       $url = CRM_Utils_System::url('civicrm/contact/view', "reset=1&cid={$cid}&selectedChild=activity");
     }
     else {
@@ -81,7 +78,7 @@ class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
     $this->assign('activityTypeName', $activityTypeName);
     $this->assign('activityTypeDescription', $activityTypeDescription);
 
-    if (!empty($defaults['mailingId'])) {
+    if (CRM_Utils_Array::value('mailingId', $defaults)) {
       $this->_mailing_id = CRM_Utils_Array::value('source_record_id', $defaults);
       $mailingReport = CRM_Mailing_BAO_Mailing::report($this->_mailing_id, TRUE);
       CRM_Mailing_BAO_Mailing::getMailingContent($mailingReport, $this);
@@ -89,10 +86,10 @@ class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
 
       $full_open_report = CRM_Mailing_Event_BAO_Opened::getRows(
         $this->_mailing_id, NULL, FALSE, NULL, NULL, NULL, $cid);
-      $this->assign('openreport', $full_open_report);
+      $this->assign('openreport',$full_open_report);
 
-      $click_thru_report = CRM_Mailing_Event_BAO_TrackableURLOpen::getRows($this->_mailing_id, NULL, FALSE, NULL, NULL, NULL, NULL, $cid);
-      $this->assign('clickreport', $click_thru_report);
+      $click_thru_report = CRM_Mailing_Event_BAO_TrackableURLOpen::getRows( $this->_mailing_id, NULL, FALSE, NULL, NULL, NULL, NULL, $cid);
+      $this->assign('clickreport',$click_thru_report);
     }
 
     foreach ($defaults as $key => $value) {
@@ -116,14 +113,15 @@ class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $this->addButtons(array(
         array(
-          'type' => 'cancel',
+          'type' => 'next',
           'name' => ts('Done'),
           'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
           'isDefault' => TRUE,
@@ -131,5 +129,5 @@ class CRM_Activity_Form_ActivityView extends CRM_Core_Form {
       )
     );
   }
-
 }
+

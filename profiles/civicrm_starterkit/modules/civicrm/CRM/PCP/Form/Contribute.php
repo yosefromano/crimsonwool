@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,9 +40,10 @@
 class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
 
   /**
-   * The type of pcp component.
+   * the type of pcp component.
    *
    * @var int
+   * @protected
    */
   public $_component = 'contribute';
 
@@ -51,13 +52,17 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
   }
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function setDefaultValues() {
+    //   $title = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionPage', $this->_id, 'title' );
+    //    CRM_Utils_System::setTitle(ts('Personal Campaign Page Settings (%1)', array(1 => $title)));
+
     $defaults = array();
 
     if (isset($this->_id)) {
@@ -68,13 +73,12 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
       $this->assign('pageId', $this->_id);
     }
 
-    if (empty($defaults['id'])) {
+    if (!CRM_Utils_Array::value('id', $defaults)) {
       $defaults['target_entity_type'] = 'contribute';
       $defaults['is_approval_needed'] = 1;
       $defaults['is_tellfriend_enabled'] = 1;
       $defaults['tellfriend_limit'] = 5;
       $defaults['link_text'] = ts('Create your own fundraising page');
-      $defaults['owner_notify_id'] = CRM_Core_OptionGroup::getDefaultValue('pcp_owner_notify');
 
       if ($ccReceipt = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionPage', $this->_id, 'cc_receipt')) {
         $defaults['notify_email'] = $ccReceipt;
@@ -84,12 +88,12 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
-    $this->_last = TRUE;
     CRM_PCP_BAO_PCP::buildPCPForm($this);
 
     $this->addElement('checkbox', 'pcp_active', ts('Enable Personal Campaign Pages? (for this contribution page)'), NULL, array('onclick' => "return showHideByValue('pcp_active',true,'pcpFields','table-row','radio',false);"));
@@ -99,27 +103,24 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
   }
 
   /**
-   * Validation.
+   * Function for validation
    *
-   * @param array $params
-   *   (ref.) an assoc array of name/value pairs.
+   * @param array $params (ref.) an assoc array of name/value pairs
    *
-   * @param $files
-   * @param $self
-   *
-   * @return bool|array
-   *   mixed true or array of errors
+   * @return mixed true or array of errors
+   * @access public
+   * @static
    */
   public static function formRule($params, $files, $self) {
     $errors = array();
-    if (!empty($params['is_active'])) {
+    if (CRM_Utils_Array::value('is_active', $params)) {
 
-      if (!empty($params['is_tellfriend_enabled']) &&
+      if (CRM_Utils_Array::value('is_tellfriend_enabled', $params) &&
         (CRM_Utils_Array::value('tellfriend_limit', $params) <= 0)
       ) {
         $errors['tellfriend_limit'] = ts('if Tell Friend is enabled, Maximum recipients limit should be greater than zero.');
       }
-      if (empty($params['supporter_profile_id'])) {
+      if (!CRM_Utils_Array::value('supporter_profile_id', $params)) {
         $errors['supporter_profile_id'] = ts('Supporter profile is a required field.');
       }
       else {
@@ -141,10 +142,11 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     // get the submitted form values.
@@ -158,9 +160,9 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
     $params['target_entity_type'] = CRM_Utils_Array::value('target_entity_type', $params, 'contribute');
     $params['target_entity_id'] = $this->_id;
 
-    $dao = new CRM_PCP_DAO_PCPBlock();
+    $dao               = new CRM_PCP_DAO_PCPBlock();
     $dao->entity_table = $params['entity_table'];
-    $dao->entity_id = $this->_id;
+    $dao->entity_id    = $this->_id;
     $dao->find(TRUE);
     $params['id'] = $dao->id;
     $params['is_active'] = CRM_Utils_Array::value('pcp_active', $params, FALSE);
@@ -176,9 +178,10 @@ class CRM_PCP_Form_Contribute extends CRM_Contribute_Form_ContributionPage {
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Enable Personal Campaign Pages');
   }
-
 }
+

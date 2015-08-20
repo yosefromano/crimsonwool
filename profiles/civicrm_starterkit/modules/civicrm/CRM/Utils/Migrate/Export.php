@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -52,9 +52,7 @@ class CRM_Utils_Migrate_Export {
    */
   protected $_xml;
 
-  /**
-   */
-  public function __construct() {
+  function __construct() {
     $this->_xml = array(
       'customGroup' => array(
         'data' => array(),
@@ -74,7 +72,7 @@ class CRM_Utils_Migrate_Export {
         'mappedFields' => array(
           array('optionGroup', 'option_group_id', 'option_group_name'),
           array('customGroup', 'custom_group_id', 'custom_group_name'),
-        ),
+        )
       ),
       'optionGroup' => array(
         'data' => array(),
@@ -126,7 +124,7 @@ class CRM_Utils_Migrate_Export {
         'required' => FALSE,
         'idNameMap' => array(),
         'mappedFields' => array(
-          array('profileGroup', 'uf_group_id', 'profile_group_name'),
+          array('profileGroup', 'uf_group_id', 'profile_group_name')
         ),
       ),
       'profileJoin' => array(
@@ -136,7 +134,7 @@ class CRM_Utils_Migrate_Export {
         'required' => FALSE,
         'idNameMap' => array(),
         'mappedFields' => array(
-          array('profileGroup', 'uf_group_id', 'profile_group_name'),
+          array('profileGroup', 'uf_group_id', 'profile_group_name')
         ),
       ),
       'mappingGroup' => array(
@@ -148,7 +146,7 @@ class CRM_Utils_Migrate_Export {
         'idNameMap' => array(),
         'mappedFields' => array(
           array('optionValue', 'mapping_type_id', 'mapping_type_name', 'mapping_type'),
-        ),
+        )
       ),
       'mappingField' => array(
         'data' => array(),
@@ -170,7 +168,7 @@ class CRM_Utils_Migrate_Export {
    *
    * @return void
    */
-  public function build() {
+  function build() {
     // fetch the option group / values for
     // activity type and event_type
 
@@ -266,11 +264,10 @@ class CRM_Utils_Migrate_Export {
   }
 
   /**
-   * @param array $customGroupIds
-   *   List of custom groups to export.
+   * @param array $customGroupIds list of custom groups to export
    * @return void
    */
-  public function buildCustomGroups($customGroupIds) {
+  function buildCustomGroups($customGroupIds) {
     $customGroupIdsSql = implode(',', array_filter($customGroupIds, 'is_numeric'));
     if (empty($customGroupIdsSql)) {
       return;
@@ -320,11 +317,10 @@ class CRM_Utils_Migrate_Export {
   }
 
   /**
-   * @param array $ufGroupIds
-   *   List of custom groups to export.
+   * @param array $ufGroupIds list of custom groups to export
    * @return void
    */
-  public function buildUFGroups($ufGroupIds) {
+  function buildUFGroups($ufGroupIds) {
     $ufGroupIdsSql = implode(',', array_filter($ufGroupIds, 'is_numeric'));
     if (empty($ufGroupIdsSql)) {
       return;
@@ -360,10 +356,9 @@ class CRM_Utils_Migrate_Export {
   /**
    * Render the in-memory representation as XML
    *
-   * @return string
-   *   XML
+   * @return string XML
    */
-  public function toXML() {
+  function toXML() {
     $buffer = '<?xml version="1.0" encoding="iso-8859-1" ?>';
     $buffer .= "\n\n<CustomData>\n";
     foreach (array_keys($this->_xml) as $key) {
@@ -387,22 +382,17 @@ class CRM_Utils_Migrate_Export {
    *
    * @return array
    */
-  public function toArray() {
+  function toArray() {
     $result = array();
     foreach (array_keys($this->_xml) as $key) {
       if (!empty($this->_xml[$key]['data'])) {
-        $result[$this->_xml[$key]['name']] = array_values($this->_xml[$key]['data']);
+        $result[ $this->_xml[$key]['name'] ] = array_values($this->_xml[$key]['data']);
       }
     }
     return $result;
   }
 
-  /**
-   * @param string $groupName
-   * @param string $daoName
-   * @param null $sql
-   */
-  public function fetch($groupName, $daoName, $sql = NULL) {
+  function fetch($groupName, $daoName, $sql = NULL) {
     $idNameFields = isset($this->_xml[$groupName]['idNameFields']) ? $this->_xml[$groupName]['idNameFields'] : NULL;
     $mappedFields = isset($this->_xml[$groupName]['mappedFields']) ? $this->_xml[$groupName]['mappedFields'] : NULL;
 
@@ -431,12 +421,9 @@ class CRM_Utils_Migrate_Export {
   /**
    * Compute any fields of the entity defined by the $mappedFields specification
    *
-   * @param array $mappedFields
-   *   Each item is an array(0 => MappedEntityname, 1 => InputFieldName (id-field), 2 => OutputFieldName (name-field), 3 => OptionalPrefix).
-   * @param CRM_Core_DAO $dao
-   *   The entity for which we want to prepare mapped fields.
-   * @return array
-   *   new fields
+   * @param array $mappedFields each item is an array(0 => MappedEntityname, 1 => InputFieldName (id-field), 2 => OutputFieldName (name-field), 3 => OptionalPrefix)
+   * @param CRM_Core_DAO $dao the entity for which we want to prepare mapped fields
+   * @return array new fields
    */
   public function computeMappedFields($mappedFields, $dao) {
     $keyValues = array();
@@ -457,15 +444,12 @@ class CRM_Utils_Migrate_Export {
   }
 
   /**
-   * @param string $objectName
-   *   Business-entity/xml-tag name.
    * @param CRM_Core_DAO $object
-   * @param $mappedFields
-   *
+   * @param string $objectName business-entity/xml-tag name
    * @return array
    */
-  public function exportDAO($objectName, $object, $mappedFields) {
-    $dbFields = &$object->fields();
+  function exportDAO($objectName, $object, $mappedFields) {
+    $dbFields = & $object->fields();
 
     // Filter the list of keys and values so that we only export interesting stuff
     $keyValues = array();
@@ -477,15 +461,7 @@ class CRM_Utils_Migrate_Export {
       if (isset($object->$name) && $object->$name !== NULL) {
         // hack for extends_entity_column_value
         if ($name == 'extends_entity_column_value') {
-          if (in_array($object->extends, array(
-              'Event',
-              'Activity',
-              'Relationship',
-              'Individual',
-              'Organization',
-              'Household',
-              'Case',
-            ))) {
+          if (in_array($object->extends, array('Event', 'Activity', 'Relationship', 'Individual', 'Organization', 'Household', 'Case'))) {
             if ($object->extends == 'Event') {
               $key = 'event_type';
             }
@@ -495,7 +471,7 @@ class CRM_Utils_Migrate_Export {
             elseif ($object->extends == 'Relationship') {
               $key = 'relationship_type';
             }
-            elseif ($object->extends == 'Case') {
+            elseif($object->extends == 'Case') {
               $key = 'case_type';
             }
             $types = explode(CRM_Core_DAO::VALUE_SEPARATOR, substr($object->$name, 1, -1));
@@ -549,9 +525,8 @@ class CRM_Utils_Migrate_Export {
   /**
    * @param string $tagName
    * @param array $keyValues
-   * @throws Exception
-   * @return string
-   *   XML
+   * @param string $additional XML
+   * @return string XML
    */
   public function renderKeyValueXML($tagName, $keyValues) {
     $xml = "    <$tagName>";
@@ -563,21 +538,16 @@ class CRM_Utils_Migrate_Export {
   }
 
   /**
-   * @param string $name
-   *   Tag name.
-   * @param string $value
-   *   Text.
+   * @param string $name tag name
+   * @param string $value text
    * @param string $prefix
-   *
-   * @throws Exception
-   * @return string
-   *   XML
+   * @return string XML
    */
-  public function renderTextTag($name, $value, $prefix = '') {
+  function renderTextTag($name, $value, $prefix = '') {
     if (!preg_match('/^[a-zA-Z0-9\_]+$/', $name)) {
       throw new Exception("Malformed tag name: $name");
     }
     return $prefix . "<$name>" . htmlentities($value) . "</$name>";
   }
-
 }
+

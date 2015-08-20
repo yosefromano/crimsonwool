@@ -1,16 +1,8 @@
 <?php
-
-/**
- * Class CRM_Event_Cart_Controller_Checkout
- */
 class CRM_Event_Cart_Controller_Checkout extends CRM_Core_Controller {
-  /**
-   * @param null $title
-   * @param bool|int $action
-   * @param bool $modal
-   */
-  public function __construct($title = NULL, $action = CRM_Core_Action::NONE, $modal = TRUE) {
+  function __construct($title = NULL, $action = CRM_Core_Action::NONE, $modal = TRUE) {
     parent::__construct($title, $modal);
+
 
     $this->_stateMachine = new CRM_Event_Cart_StateMachine_Checkout($this, $action);
     $this->addPages($this->_stateMachine, $action);
@@ -26,5 +18,5 @@ class CRM_Event_Cart_Controller_Checkout extends CRM_Core_Controller {
       $this->addActions();
     }
   }
-
 }
+

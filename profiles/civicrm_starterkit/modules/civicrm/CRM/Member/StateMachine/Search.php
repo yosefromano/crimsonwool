@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,31 +23,28 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Member_StateMachine_Search extends CRM_Core_StateMachine {
 
   /**
-   * The task that the wizard is currently processing.
+   * The task that the wizard is currently processing
    *
    * @var string
+   * @protected
    */
   protected $_task;
 
   /**
-   * Class constructor.
-   *
-   * @param object $controller
-   * @param \const|int $action
-   */
-  public function __construct($controller, $action = CRM_Core_Action::NONE) {
+   * class constructor
+   */ function __construct($controller, $action = CRM_Core_Action::NONE) {
     parent::__construct($controller, $action);
 
     $this->_pages = array();
@@ -75,17 +72,20 @@ class CRM_Member_StateMachine_Search extends CRM_Core_StateMachine {
    * to avoid using  conditional state machine, much more efficient
    * and simpler
    *
-   * @param CRM_Core_Controller $controller
-   *   The controller object.
+   * @param CRM_Core_Controller $controller the controller object
    *
-   * @param string $formName
-   *
-   * @return string
-   *   the name of the form that will handle the task
+   * @return string the name of the form that will handle the task
+   * @access protected
    */
-  public function taskName($controller, $formName = 'Search') {
+  function taskName($controller, $formName = 'Search') {
     // total hack, check POST vars and then session to determine stuff
-    $value = CRM_Utils_Array::value('task', $_POST);
+    // fix value if print button is pressed
+    if (CRM_Utils_Array::value('_qf_' . $formName . '_next_print', $_POST)) {
+      $value = CRM_Member_Task::PRINT_MEMBERS;
+    }
+    else {
+      $value = CRM_Utils_Array::value('task', $_POST);
+    }
     if (!isset($value)) {
       $value = $this->_controller->get('task');
     }
@@ -94,20 +94,22 @@ class CRM_Member_StateMachine_Search extends CRM_Core_StateMachine {
   }
 
   /**
-   * Return the form name of the task.
+   * return the form name of the task
    *
    * @return string
+   * @access public
    */
-  public function getTaskFormName() {
+  function getTaskFormName() {
     return CRM_Utils_String::getClassName($this->_task);
   }
 
   /**
    * Since this is a state machine for search and we want to come back to the same state
    * we dont want to issue a reset of the state session when we are done processing a task
+   *
    */
-  public function shouldReset() {
+  function shouldReset() {
     return FALSE;
   }
-
 }
+

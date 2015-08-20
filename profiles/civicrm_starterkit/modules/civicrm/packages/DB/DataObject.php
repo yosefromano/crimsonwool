@@ -434,8 +434,8 @@ class DB_DataObject extends DB_DataObject_Overload
         } else {
             /* theoretically MDB2! */
             if (isset($this->_query['limit_start']) && strlen($this->_query['limit_start'] . $this->_query['limit_count'])) {
-              $DB->setLimit($this->_query['limit_count'],$this->_query['limit_start']);
-          }
+	            $DB->setLimit($this->_query['limit_count'],$this->_query['limit_start']);
+	        }
         }
 
         $this->_query($sql);
@@ -995,7 +995,7 @@ class DB_DataObject extends DB_DataObject_Overload
 
 
 
-            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && $this->$k !== 'Null' && !($v & DB_DATAOBJECT_NOTNULL)) {
+            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && !($v & DB_DATAOBJECT_NOTNULL)) {
                 $rightq .= " NULL ";
                 continue;
             }
@@ -1025,11 +1025,6 @@ class DB_DataObject extends DB_DataObject_Overload
                 $rightq .= $this->_quote((string) $this->$k ) . ' ';
                 continue;
             }
-
-           if ($v & DB_DATAOBJECT_BLOB) {
-              $rightq .= $this->_quote( $this->$k ) . ' ';
-              continue;
-           }
 
 
             if (is_numeric($this->$k)) {
@@ -1262,7 +1257,7 @@ class DB_DataObject extends DB_DataObject_Overload
             ***/
 
             // special values ... at least null is handled...
-            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && $this->$k !== 'Null' && !($v & DB_DATAOBJECT_NOTNULL)) {
+            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && !($v & DB_DATAOBJECT_NOTNULL)) {
                 $settings .= "$kSql = NULL ";
                 continue;
             }
@@ -1306,10 +1301,6 @@ class DB_DataObject extends DB_DataObject_Overload
                 continue;
             }
 
-            if ($v & DB_DATAOBJECT_BLOB) {
-              $settings .= "$kSql = " . $this->_quote($this->$k ) . ' ';
-              continue;
-            }
 
             if (is_numeric($this->$k)) {
                 $settings .= "$kSql = {$this->$k} ";
@@ -1319,6 +1310,7 @@ class DB_DataObject extends DB_DataObject_Overload
             // - V2 may store additional data about float/int
             $settings .= "$kSql = " . intval($this->$k) . ' ';
         }
+
 
         if (!empty($_DB_DATAOBJECT['CONFIG']['debug'])) {
             $this->debug("got keys as ".serialize($keys),3);
@@ -2598,7 +2590,7 @@ class DB_DataObject extends DB_DataObject_Overload
             }
             ***/
 
-            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && $this->$k !== 'Null' && !($v & DB_DATAOBJECT_NOTNULL)) {
+            if (!isset($options['disable_null_strings']) && is_string($this->$k) && (strtolower($this->$k) === 'null') && !($v & DB_DATAOBJECT_NOTNULL)) {
                 $this->whereAdd(" $kSql  IS NULL");
                 continue;
             }
@@ -3425,7 +3417,7 @@ class DB_DataObject extends DB_DataObject_Overload
                         $this->raiseError($value->getMessage() ,DB_DATAOBJECT_ERROR_INVALIDARG);
                         return false;
                     }
-                    if (!isset($options['disable_null_strings']) && strtolower($value) === 'null' && $value !== 'Null' ) {
+                    if (!isset($options['disable_null_strings']) && strtolower($value) === 'null') {
                         $obj->whereAdd("{$joinAs}.{$kSql} IS NULL");
                         continue;
                     } else {
@@ -3514,18 +3506,18 @@ class DB_DataObject extends DB_DataObject_Overload
                 $jadd = "\n {$joinType} JOIN {$objTable} {$fullJoinAs}";
                 //$this->_join .= "\n {$joinType} JOIN {$objTable} {$fullJoinAs}";
                 if (is_array($ofield)) {
-                  $key_count = count($ofield);
+                	$key_count = count($ofield);
                     for($i = 0; $i < $key_count; $i++) {
-                      if ($i == 0) {
-                        $jadd .= " ON ({$joinAs}.{$ofield[$i]}={$table}.{$tfield[$i]}) ";
-                      }
-                      else {
-                        $jadd .= " AND {$joinAs}.{$ofield[$i]}={$table}.{$tfield[$i]} ";
-                      }
+                    	if ($i == 0) {
+                    		$jadd .= " ON ({$joinAs}.{$ofield[$i]}={$table}.{$tfield[$i]}) ";
+                    	}
+                    	else {
+                    		$jadd .= " AND {$joinAs}.{$ofield[$i]}={$table}.{$tfield[$i]} ";
+                    	}
                     }
                     $jadd .= ' ' . $appendJoin . ' ';
                 } else {
-                  $jadd .= " ON ({$joinAs}.{$ofield}={$table}.{$tfield}) {$appendJoin} ";
+	                $jadd .= " ON ({$joinAs}.{$ofield}={$table}.{$tfield}) {$appendJoin} ";
                 }
                 // jadd avaliable for debugging join build.
                 //echo $jadd ."\n";
@@ -3733,7 +3725,7 @@ class DB_DataObject extends DB_DataObject_Overload
             }
 
 
-            if (!isset($options['disable_null_strings']) && is_string($this->$key) && (strtolower($this->$key) == 'null') && $this->$key !== 'Null') {
+            if (!isset($options['disable_null_strings']) && is_string($this->$key) && (strtolower($this->$key) == 'null')) {
                 if ($val & DB_DATAOBJECT_NOTNULL) {
                     $this->debug("'null' field used for '$key', but it is defined as NOT NULL", 'VALIDATION', 4);
                     $ret[$key] = false;
@@ -3948,13 +3940,13 @@ class DB_DataObject extends DB_DataObject_Overload
         //echo "FROM VALUE $col, {$cols[$col]}, $value\n";
         switch (true) {
             // set to null and column is can be null...
-            case (!isset($options['disable_null_strings']) && (strtolower($value) == 'null') && $value !== 'Null' && (!($cols[$col] & DB_DATAOBJECT_NOTNULL))):
+            case (!isset($options['disable_null_strings']) && (strtolower($value) == 'null') && (!($cols[$col] & DB_DATAOBJECT_NOTNULL))):
             case (is_object($value) && is_a($value,'DB_DataObject_Cast')):
                 $this->$col = $value;
                 return true;
 
             // fail on setting null on a not null field..
-            case (!isset($options['disable_null_strings']) && (strtolower($value) == 'null') && $value !== 'Null' && ($cols[$col] & DB_DATAOBJECT_NOTNULL)):
+            case (!isset($options['disable_null_strings']) && (strtolower($value) == 'null') && ($cols[$col] & DB_DATAOBJECT_NOTNULL)):
                 return false;
 
             case (($cols[$col] & DB_DATAOBJECT_DATE) &&  ($cols[$col] & DB_DATAOBJECT_TIME)):
@@ -4158,7 +4150,7 @@ class DB_DataObject extends DB_DataObject_Overload
      * @access  public
      * @return  none
      */
-    public static function debugLevel($v = null)
+    function debugLevel($v = null)
     {
         global $_DB_DATAOBJECT;
         if (empty($_DB_DATAOBJECT['CONFIG'])) {
@@ -4238,7 +4230,7 @@ class DB_DataObject extends DB_DataObject_Overload
      * @access   public
      * @return   object an error object
      */
-    public static function _loadConfig()
+    function _loadConfig()
     {
         global $_DB_DATAOBJECT;
 

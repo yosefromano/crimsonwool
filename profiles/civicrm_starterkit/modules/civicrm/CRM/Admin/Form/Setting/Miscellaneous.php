@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,32 +43,17 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     'max_attachments' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'contact_undelete' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'versionAlert' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-    'securityUpdateAlert' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'versionCheck' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-    'versionCheckIgnoreDate' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-    'empoweredBy' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'maxFileSize' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'doNotAttachPDFReceipt' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
     'secondDegRelPermissions' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-    'checksumTimeout' => CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
   );
 
-  public $_uploadMaxSize;
-
   /**
-   * Basic setup.
-   */
-  public function preProcess() {
-    $config = CRM_Core_Config::singleton();
-    $this->_uploadMaxSize = (int) ini_get('upload_max_filesize');
-    // check for post max size
-    CRM_Core_Config_Defaults::formatUnitSize(ini_get('post_max_size'), TRUE);
-  }
-
-  /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     CRM_Utils_System::setTitle(ts('Misc (Undelete, PDFs, Limits, Logging, Captcha, etc.)'));
@@ -77,9 +62,10 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     $validTriggerPermission = CRM_Core_DAO::checkTriggerViewPermission(FALSE);
 
     // FIXME: for now, disable logging for multilingual sites OR if triggers are not permittted
-    $domain = new CRM_Core_DAO_Domain();
+    $domain = new CRM_Core_DAO_Domain;
     $domain->find(TRUE);
-    $attribs = $domain->locales || !$validTriggerPermission ? array('disabled' => 'disabled') : array();
+    $attribs = $domain->locales || !$validTriggerPermission ?
+      array('disabled' => 'disabled') : NULL;
 
     $this->assign('validTriggerPermission', $validTriggerPermission);
     $this->addYesNo('logging', ts('Logging'), NULL, NULL, $attribs);
@@ -103,38 +89,35 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
       'text', 'dashboardCacheTimeout', ts('Dashboard cache timeout'),
       array('size' => 3, 'maxlength' => 5)
     );
-
+    $this->addElement(
+      'text', 'checksumTimeout', ts('CheckSum Lifespan'),
+      array('size' => 2, 'maxlength' => 8)
+    );
     $this->addElement(
       'text', 'recaptchaOptions', ts('Recaptcha Options'),
       array('size' => 64, 'maxlength' => 64)
     );
 
+    $this->addRule('checksumTimeout', ts('Value should be a positive number'), 'positiveInteger');
+
     $this->addFormRule(array('CRM_Admin_Form_Setting_Miscellaneous', 'formRule'), $this);
 
     parent::buildQuickForm();
-    $this->addRule('checksumTimeout', ts('Value should be a positive number'), 'positiveInteger');
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param array $options
-   *   Additional user data.
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $options) {
+  static function formRule($fields, $files, $options) {
     $errors = array();
-
-    // validate max file size
-    if ($fields['maxFileSize'] > $options->_uploadMaxSize) {
-      $errors['maxFileSize'] = ts("Maximum file size cannot exceed Upload max size ('upload_max_filesize') as defined in PHP.ini.");
-    }
 
     if (!empty($fields['wkhtmltopdfPath'])) {
       // check and ensure that thi leads to the wkhtmltopdf binary
@@ -153,6 +136,18 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     return $errors;
   }
 
+  function setDefaultValues() {
+    parent::setDefaultValues();
+
+    $this->_defaults['checksumTimeout'] =
+      CRM_Core_BAO_Setting::getItem(
+        CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
+        'checksum_timeout',
+        NULL,
+        7
+      );
+    return $this->_defaults;
+  }
 
   public function postProcess() {
     // store the submitted values in an array
@@ -165,7 +160,7 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
     parent::postProcess();
 
     if ($config->logging != $values['logging']) {
-      $logging = new CRM_Logging_Schema();
+      $logging = new CRM_Logging_Schema;
       if ($values['logging']) {
         $logging->enableLogging();
       }
@@ -174,5 +169,5 @@ class CRM_Admin_Form_Setting_Miscellaneous extends CRM_Admin_Form_Setting {
       }
     }
   }
-
 }
+

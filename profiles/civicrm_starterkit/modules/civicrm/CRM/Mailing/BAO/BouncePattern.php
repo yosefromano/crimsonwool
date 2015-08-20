@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,16 +40,18 @@ class CRM_Mailing_BAO_BouncePattern extends CRM_Mailing_DAO_BouncePattern {
   static $_patterns = NULL;
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
   /**
-   * Build the static pattern array.
+   * Build the static pattern array
    *
    * @return void
+   * @access public
+   * @static
    */
   public static function buildPatterns() {
     self::$_patterns = array();
@@ -73,11 +75,11 @@ class CRM_Mailing_BAO_BouncePattern extends CRM_Mailing_DAO_BouncePattern {
   /**
    * Try to match the string to a bounce type.
    *
-   * @param string $message
-   *   The message to be matched.
+   * @param string $message       The message to be matched
    *
-   * @return array
-   *   Tuple (bounce_type, bounce_reason)
+   * @return array                Tuple (bounce_type, bounce_reason)
+   * @access public
+   * @static
    */
   public static function &match(&$message) {
     // clean up $message and replace all white space by a single space, CRM-4767
@@ -104,5 +106,5 @@ class CRM_Mailing_BAO_BouncePattern extends CRM_Mailing_DAO_BouncePattern {
 
     return $bounce;
   }
-
 }
+

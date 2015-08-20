@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,15 +38,14 @@
  */
 class CRM_Core_Permission_Joomla extends CRM_Core_Permission_Base {
   /**
-   * Given a permission string, check for access requirements
+   * given a permission string, check for access requirements
    *
-   * @param string $str
-   *   The permission to check.
+   * @param string $str the permission to check
    *
-   * @return bool
-   *   true if yes, else false
+   * @return boolean true if yes, else false
+   * @access public
    */
-  public function check($str) {
+  function check($str) {
     $config = CRM_Core_Config::singleton();
 
     $translated = $this->translateJoomlaPermission($str);
@@ -71,28 +70,23 @@ class CRM_Core_Permission_Joomla extends CRM_Core_Permission_Base {
   }
 
   /**
-   * @param $perm
-   *
-   * @internal param string $name e.g. "administer CiviCRM", "cms:access user record", "Drupal:administer content", "Joomla:example.action:com_some_asset"
+   * @param string $name e.g. "administer CiviCRM", "cms:access user record", "Drupal:administer content", "Joomla:example.action:com_some_asset"
    * @return ALWAYS_DENY_PERMISSION|ALWAYS_ALLOW_PERMISSION|array(0 => $joomlaAction, 1 => $joomlaAsset)
    */
-  public function translateJoomlaPermission($perm) {
+  function translateJoomlaPermission($perm) {
     if ($perm === CRM_Core_Permission::ALWAYS_DENY_PERMISSION || $perm === CRM_Core_Permission::ALWAYS_ALLOW_PERMISSION) {
       return $perm;
     }
 
     list ($civiPrefix, $name) = CRM_Utils_String::parsePrefix(':', $perm, NULL);
-    switch ($civiPrefix) {
+    switch($civiPrefix) {
       case 'Joomla':
         return explode(':', $name);
-
       case 'cms':
         // FIXME: This needn't be DENY, but we don't currently have any translations.
         return CRM_Core_Permission::ALWAYS_DENY_PERMISSION;
-
       case NULL:
         return array('civicrm.' . CRM_Utils_String::munge(strtolower($name)), 'com_civicrm');
-
       default:
         return CRM_Core_Permission::ALWAYS_DENY_PERMISSION;
     }
@@ -101,14 +95,14 @@ class CRM_Core_Permission_Joomla extends CRM_Core_Permission_Base {
   /**
    * Given a roles array, check for access requirements
    *
-   * @param array $array
-   *   The roles to check.
+   * @param array $array the roles to check
    *
-   * @return bool
-   *   true if yes, else false
+   * @return boolean true if yes, else false
+   * @static
+   * @access public
    */
-  public function checkGroupRole($array) {
+  function checkGroupRole($array) {
     return FALSE;
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,29 +39,28 @@
 class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
 
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_PCP_BAO_PCP';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       // helper variable for nicer formatting
       $deleteExtra = ts('Are you sure you want to delete this Campaign Page ?');
@@ -92,14 +91,12 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
           'extra' => 'onclick = "return confirm(\'' . $deleteExtra . '\');"',
           'title' => ts('Delete Personal Campaign Page'),
         ),
-        CRM_Core_Action::ENABLE => array(
-          'name' => ts('Enable'),
+        CRM_Core_Action::ENABLE => array('name' => ts('Enable'),
           'url' => 'civicrm/admin/pcp',
           'qs' => 'action=enable&id=%%id%%',
           'title' => ts('Enable'),
         ),
-        CRM_Core_Action::DISABLE => array(
-          'name' => ts('Disable'),
+        CRM_Core_Action::DISABLE => array('name' => ts('Disable'),
           'url' => 'civicrm/admin/pcp',
           'qs' => 'action=disable&id=%%id%%',
           'title' => ts('Disable'),
@@ -119,8 +116,9 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
    * @param
    *
    * @return void
+   * @access public
    */
-  public function run() {
+  function run() {
     // get the requested action
     $action = CRM_Utils_Request::retrieve('action', 'String',
       $this, FALSE,
@@ -163,11 +161,11 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
    * Browse all custom data groups.
    *
    *
-   * @param null $action
-   *
    * @return void
+   * @access public
+   * @static
    */
-  public function browse($action = NULL) {
+  function browse($action = NULL) {
     $this->_sortByCharacter = CRM_Utils_Request::retrieve('sortByCharacter',
       'String',
       $this
@@ -178,32 +176,33 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
       $this->_sortByCharacter = '';
     }
 
+
     $status = CRM_PCP_BAO_PCP::buildOptions('status_id', 'create');
 
     $pcpSummary = $params = array();
     $whereClause = NULL;
 
     if (!empty($_POST) || !empty($_GET['page_type'])) {
-      if (!empty($_POST['status_id'])) {
+      if (CRM_Utils_Array::value('status_id', $_POST)) {
         $whereClause = ' AND cp.status_id = %1';
         $params['1'] = array($_POST['status_id'], 'Integer');
       }
 
-      if (!empty($_POST['page_type'])) {
+      if (CRM_Utils_Array::value('page_type', $_POST)) {
         $whereClause .= ' AND cp.page_type = %2';
         $params['2'] = array($_POST['page_type'], 'String');
       }
-      elseif (!empty($_GET['page_type'])) {
+      elseif (CRM_Utils_Array::value('page_type', $_GET)) {
         $whereClause .= ' AND cp.page_type = %2';
         $params['2'] = array($_GET['page_type'], 'String');
       }
 
-      if (!empty($_POST['page_id'])) {
+      if (CRM_Utils_Array::value('page_id', $_POST)) {
         $whereClause .= ' AND cp.page_id = %4 AND cp.page_type = "contribute"';
         $params['4'] = array($_POST['page_id'], 'Integer');
       }
 
-      if (!empty($_POST['event_id'])) {
+      if (CRM_Utils_Array::value('event_id', $_POST)) {
         $whereClause .= ' AND cp.page_id = %5 AND cp.page_type = "event"';
         $params['5'] = array($_POST['event_id'], 'Integer');
       }
@@ -321,7 +320,7 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
         'page_url' => $pageUrl,
         'page_type' => $page_type,
         'action' => CRM_Core_Action::formLink(self::links(), $action,
-          array('id' => $pcp->id), ts('more'), FALSE, 'contributionpage.pcp.list', 'PCP', $pcp->id
+          array('id' => $pcp->id)
         ),
         'title' => $pcp->title,
         'class' => $class,
@@ -342,7 +341,7 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
     }
   }
 
-  public function search() {
+  function search() {
 
     if ($this->_action & CRM_Core_Action::DELETE) {
       return;
@@ -356,43 +355,34 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_PCP_Form_PCP';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return ts('Personal Campaign Page');
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/pcp';
   }
 
-  /**
-   * @TODO this function changed, debug this at runtime
-   * @param $whereClause
-   * @param array $whereParams
-   */
-  public function pagerAtoZ($whereClause, $whereParams) {
+  //@TODO this function changed, debug this at runtime
+  function pagerAtoZ($whereClause, $whereParams) {
     $where = '';
     if ($whereClause) {
       if (strpos($whereClause, ' AND') == 0) {
@@ -413,5 +403,5 @@ class CRM_PCP_Page_PCP extends CRM_Core_Page_Basic {
     $aToZBar = CRM_Utils_PagerAToZ::getAToZBar($dao, $this->_sortByCharacter, TRUE);
     $this->assign('aToZ', $aToZBar);
   }
-
 }
+

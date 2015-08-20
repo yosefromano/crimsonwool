@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,55 +38,37 @@
  */
 class CRM_Campaign_Form_Survey_TabHeader {
 
-  /**
-   * @param CRM_Core_Form $form
-   *
-   * @return array
-   */
-  public static function build(&$form) {
+  static function build(&$form) {
     $tabs = $form->get('tabHeader');
-    if (!$tabs || empty($_GET['reset'])) {
+    if (!$tabs || !CRM_Utils_Array::value('reset', $_GET)) {
       $tabs = self::process($form);
       $form->set('tabHeader', $tabs);
     }
     $form->assign_by_ref('tabHeader', $tabs);
-    CRM_Core_Resources::singleton()
-      ->addScriptFile('civicrm', 'templates/CRM/common/TabHeader.js', 1, 'html-header')
-      ->addSetting(array(
-        'tabSettings' => array(
-          'active' => self::getCurrentTab($tabs),
-        ),
-      ));
+    $selectedTab = self::getCurrentTab($tabs);
+    $form->assign_by_ref('selectedTab', $selectedTab);
     return $tabs;
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   *
-   * @return array
-   */
-  public static function process(&$form) {
+  static function process(&$form) {
     if ($form->getVar('_surveyId') <= 0) {
       return NULL;
     }
 
     $tabs = array(
-      'main' => array(
-        'title' => ts('Main Information'),
+      'main' => array('title' => ts('Main Information'),
         'link' => NULL,
         'valid' => FALSE,
         'active' => FALSE,
         'current' => FALSE,
       ),
-      'questions' => array(
-        'title' => ts('Questions'),
+      'questions' => array('title' => ts('Questions'),
         'link' => NULL,
         'valid' => FALSE,
         'active' => FALSE,
         'current' => FALSE,
       ),
-      'results' => array(
-        'title' => ts('Results'),
+      'results' => array('title' => ts('Results'),
         'link' => NULL,
         'valid' => FALSE,
         'active' => FALSE,
@@ -94,10 +76,10 @@ class CRM_Campaign_Form_Survey_TabHeader {
       ),
     );
 
-    $surveyID = $form->getVar('_surveyId');
-    $class = $form->getVar('_name');
-    $class = CRM_Utils_String::getClassName($class);
-    $class = strtolower($class);
+    $surveyID  = $form->getVar('_surveyId');
+    $class     = $form->getVar('_name');
+    $class     = CRM_Utils_String::getClassName($class);
+    $class     = strtolower($class);
 
     if (array_key_exists($class, $tabs)) {
       $tabs[$class]['current'] = TRUE;
@@ -108,7 +90,7 @@ class CRM_Campaign_Form_Survey_TabHeader {
     }
 
     if ($surveyID) {
-      $reset = !empty($_GET['reset']) ? 'reset=1&' : '';
+      $reset = CRM_Utils_Array::value('reset', $_GET) ? 'reset=1&' : '';
 
       foreach ($tabs as $key => $value) {
         if (!isset($tabs[$key]['qfKey'])) {
@@ -116,7 +98,7 @@ class CRM_Campaign_Form_Survey_TabHeader {
         }
 
         $tabs[$key]['link'] = CRM_Utils_System::url("civicrm/survey/configure/{$key}",
-          "{$reset}action=update&id={$surveyID}{$tabs[$key]['qfKey']}"
+          "{$reset}action=update&snippet=5&id={$surveyID}{$tabs[$key]['qfKey']}"
         );
         $tabs[$key]['active'] = $tabs[$key]['valid'] = TRUE;
       }
@@ -124,20 +106,12 @@ class CRM_Campaign_Form_Survey_TabHeader {
     return $tabs;
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   */
-  public static function reset(&$form) {
+  static function reset(&$form) {
     $tabs = self::process($form);
     $form->set('tabHeader', $tabs);
   }
 
-  /**
-   * @param $tabs
-   *
-   * @return int|string
-   */
-  public static function getCurrentTab($tabs) {
+  static function getCurrentTab($tabs) {
     static $current = FALSE;
 
     if ($current) {
@@ -157,20 +131,14 @@ class CRM_Campaign_Form_Survey_TabHeader {
     return $current;
   }
 
-  /**
-   * @param $form
-   *
-   * @return int|string
-   */
-  public static function getNextTab(&$form) {
+  static function getNextTab(&$form) {
     static $next = FALSE;
-    if ($next) {
+    if ($next)
       return $next;
-    }
 
     $tabs = $form->get('tabHeader');
     if (is_array($tabs)) {
-      $current = FALSE;
+      $current = false;
       foreach ($tabs as $subPage => $pageVal) {
         if ($current) {
           $next = $subPage;
@@ -185,5 +153,4 @@ class CRM_Campaign_Form_Survey_TabHeader {
     $next = $next ? $next : 'main';
     return $next;
   }
-
 }

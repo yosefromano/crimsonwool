@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,14 +40,15 @@
 class CRM_Grant_Form_GrantView extends CRM_Core_Form {
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     $this->_contactID = CRM_Utils_Request::retrieve('cid', 'Positive', $this);
-    $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
+    $this->_id        = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+    $context          = CRM_Utils_Request::retrieve('context', 'String', $this);
     $this->assign('context', $context);
 
     $values = array();
@@ -58,15 +59,9 @@ class CRM_Grant_Form_GrantView extends CRM_Core_Form {
     $this->assign('grantType', $grantType[$values['grant_type_id']]);
     $this->assign('grantStatus', $grantStatus[$values['status_id']]);
     $grantTokens = array(
-      'amount_total',
-      'amount_requested',
-      'amount_granted',
-      'rationale',
-      'grant_report_received',
-      'application_received_date',
-      'decision_date',
-      'money_transfer_date',
-      'grant_due_date',
+      'amount_total', 'amount_requested', 'amount_granted',
+      'rationale', 'grant_report_received', 'application_received_date',
+      'decision_date', 'money_transfer_date', 'grant_due_date',
     );
 
     foreach ($grantTokens as $token) {
@@ -85,6 +80,7 @@ class CRM_Grant_Form_GrantView extends CRM_Core_Form {
     if (isset($this->_noteId)) {
       $this->assign('note', CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Note', $this->_noteId, 'note'));
     }
+
 
     // add Grant to Recent Items
     $url = CRM_Utils_System::url('civicrm/contact/view/grant',
@@ -121,14 +117,13 @@ class CRM_Grant_Form_GrantView extends CRM_Core_Form {
     CRM_Core_BAO_CustomGroup::buildCustomDataView($this, $groupTree);
 
     $this->assign('id', $this->_id);
-
-    $this->setPageTitle(ts('Grant'));
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $this->addButtons(array(
@@ -141,5 +136,5 @@ class CRM_Grant_Form_GrantView extends CRM_Core_Form {
       )
     );
   }
-
 }
+

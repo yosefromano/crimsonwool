@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,29 +39,28 @@
 class CRM_Badge_Page_Layout extends CRM_Core_Page_Basic {
 
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_Badge_BAO_Layout';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::UPDATE => array(
@@ -72,12 +71,14 @@ class CRM_Badge_Page_Layout extends CRM_Core_Page_Basic {
         ),
         CRM_Core_Action::DISABLE => array(
           'name' => ts('Disable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Core_DAO_PrintLabel' . '\',\'' . 'enable-disable' . '\' );"',
+          'ref' => 'disable-action',
           'title' => ts('Disable Badge Layout'),
         ),
         CRM_Core_Action::ENABLE => array(
           'name' => ts('Enable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Core_DAO_PrintLabel' . '\',\'' . 'disable-enable' . '\' );"',
+          'ref' => 'enable-action',
           'title' => ts('Enable Badge Layout'),
         ),
         CRM_Core_Action::DELETE => array(
@@ -92,35 +93,30 @@ class CRM_Badge_Page_Layout extends CRM_Core_Page_Basic {
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_Badge_Form_Layout';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'Badge Layout';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/admin/badgelayout';
   }
-
 }
+

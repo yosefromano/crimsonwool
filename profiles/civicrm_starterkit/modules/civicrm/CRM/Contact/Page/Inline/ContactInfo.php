@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,19 +45,22 @@ class CRM_Contact_Page_Inline_ContactInfo extends CRM_Core_Page {
    * This method is called after the page is created.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // get the emails for this contact
     $contactId = CRM_Utils_Request::retrieve('cid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE, NULL, $_REQUEST);
 
     $params = array('id' => $contactId);
 
     $defaults = array();
-    CRM_Contact_BAO_Contact::getValues($params, $defaults);
+    CRM_Contact_BAO_Contact::getValues( $params, $defaults );
 
     //get the current employer name
     if (CRM_Utils_Array::value('contact_type', $defaults) == 'Individual') {
-      if (!empty($defaults['employer_id']) && !empty($defaults['organization_name'])) {
+      if (CRM_Utils_Array::value('employer_id', $defaults) &&
+        CRM_Utils_Array::value('organization_name', $defaults)) {
         $defaults['current_employer'] = $defaults['organization_name'];
         $defaults['current_employer_id'] = $defaults['employer_id'];
       }
@@ -72,5 +75,5 @@ class CRM_Contact_Page_Inline_ContactInfo extends CRM_Core_Page {
     // finally call parent
     parent::run();
   }
-
 }
+

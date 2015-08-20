@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -36,15 +36,12 @@ class CRM_Financial_Form_Search extends CRM_Core_Form {
 
   public $_batchStatus;
 
-  public function preProcess() {
+  function preProcess() {
     $this->_batchStatus = CRM_Utils_Request::retrieve('batchStatus', 'Positive', CRM_Core_DAO::$_nullObject, FALSE, NULL);
     $this->assign('batchStatus', $this->_batchStatus);
   }
 
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     $status = CRM_Utils_Request::retrieve('status', 'Positive', CRM_Core_DAO::$_nullObject, FALSE, 1);
     $defaults['batch_update'] = $status;
@@ -55,32 +52,30 @@ class CRM_Financial_Form_Search extends CRM_Core_Form {
   }
 
   public function buildQuickForm() {
-    CRM_Core_Resources::singleton()
-      ->addScriptFile('civicrm', 'packages/jquery/plugins/jquery.redirect.min.js', 0, 'html-header');
     $attributes = CRM_Core_DAO::getAttribute('CRM_Batch_DAO_Batch');
     $attributes['total']['class'] = $attributes['item_count']['class'] = 'number';
     $this->add('text', 'title', ts('Batch Name'), $attributes['title']);
-
+    
     $batchStatus = CRM_Core_PseudoConstant::get('CRM_Batch_DAO_Batch', 'status_id', array('labelColumn' => 'name'));
     $this->add(
       'select',
       'status_id',
       ts('Batch Status'),
       array(
-        '' => ts('- any -'),
+        '' => ts('- any -' ),
         array_search('Open', $batchStatus) => ts('Open'),
         array_search('Closed', $batchStatus) => ts('Closed'),
         array_search('Exported', $batchStatus) => ts('Exported'),
       ),
-      FALSE
+      false
     );
 
     $this->add(
       'select',
       'payment_instrument_id',
       ts('Payment Instrument'),
-      array('' => ts('- any -')) + CRM_Contribute_PseudoConstant::paymentInstrument(),
-      FALSE
+      array('' => ts('- any -' )) + CRM_Contribute_PseudoConstant::paymentInstrument(),
+      false
     );
 
     $this->add('text', 'total', ts('Total Amount'), $attributes['total']);
@@ -99,12 +94,12 @@ class CRM_Financial_Form_Search extends CRM_Core_Form {
 
     $this->add('select',
       'batch_update',
-      ts('Task'),
+      ts('Task' ),
       array('' => ts('- actions -')) + $batchAction);
 
-    $this->add('submit', 'submit', ts('Go'),
+    $this->add('submit','submit', ts('Go'),
       array(
-        'class' => 'crm-form-submit',
+        'class' => 'form-submit',
         'id' => 'Go',
       ));
 
@@ -114,23 +109,23 @@ class CRM_Financial_Form_Search extends CRM_Core_Form {
           'type' => 'refresh',
           'name' => ts('Search'),
           'isDefault' => TRUE,
-        ),
+        )
       )
     );
     parent::buildQuickForm();
   }
 
-  public function postProcess() {
+  function postProcess() {
     $batchIds = array();
     foreach ($_POST as $key => $value) {
-      if (substr($key, 0, 6) == "check_") {
-        $batch = explode("_", $key);
+      if (substr($key,0,6) == "check_") {
+        $batch = explode("_",$key);
         $batchIds[] = $batch[1];
       }
     }
-    if (!empty($_POST['batch_update'])) {
+    if (CRM_Utils_Array::value('batch_update', $_POST)) {
       CRM_Batch_BAO_Batch::closeReOpen($batchIds, $_POST['batch_update']);
     }
   }
-
 }
+

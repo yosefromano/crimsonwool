@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,54 +24,59 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
- * This api exposes CiviCRM website records.
+ * File for the CiviCRM APIv3 website functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_Website
+ *
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Website.php 2011-03-16 ErikHommel $
  */
 
 /**
- * Add an Website for a contact.
+ *  Add an Website for a contact
  *
- * @param array $params
+ * Allowed @params array keys are:
+ * {@getfields website_create}
+ * @example WebsiteCreate.php
+ * {@example WebsiteCreate.php}
  *
- * @return array
- *   API result array.
+ * @return array of newly created website property values.
+ * @access public
  * @todo convert to using basic create - BAO function non-std
  */
 function civicrm_api3_website_create($params) {
   //DO NOT USE THIS FUNCTION AS THE BASIS FOR A NEW API http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
 
   $websiteBAO = CRM_Core_BAO_Website::add($params);
-  $values = array();
-  _civicrm_api3_object_to_array($websiteBAO, $values[$websiteBAO->id]);
-  return civicrm_api3_create_success($values, $params, 'Website', 'get');
+    $values = array();
+    _civicrm_api3_object_to_array($websiteBAO, $values[$websiteBAO->id]);
+    return civicrm_api3_create_success($values, $params, 'website', 'get');
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_website_create_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
 /**
- * Deletes an existing Website.
+ * Deletes an existing Website
  *
+ * @param  array  $params
+ * {@getfields website_delete}
+ * @example WebsiteDelete.php Std Delete Example
+ *
+ * @return array API result Array
+ * @access public
  * @todo convert to using Basic delete - BAO function non standard
- *
- * @param array $params
- *
- * @return array
- *   API result
- * @throws \API_Exception
  */
 function civicrm_api3_website_delete($params) {
   //DO NOT USE THIS FUNCTION AS THE BASIS FOR A NEW API http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
@@ -81,22 +87,28 @@ function civicrm_api3_website_delete($params) {
   if ($websiteDAO->find()) {
     while ($websiteDAO->fetch()) {
       $websiteDAO->delete();
-      return civicrm_api3_create_success(1, $params, 'Website', 'delete');
+      return civicrm_api3_create_success(1, $params, 'website', 'delete');
     }
   }
   else {
-    throw new API_Exception('Could not delete Website with id ' . $websiteID);
+    return civicrm_api3_create_error('Could not delete website with id ' . $websiteID);
   }
 }
 
 /**
- * Retrieve one or more websites.
+ * Retrieve one or more websites
  *
- * @param array $params
+ * @param  mixed[]  (reference ) input parameters
+ * {@getfields website_get}
+ * {@example WebsiteGet.php 0}
+ * @example WebsiteGet.php
+ * @param  array $params  an associative array of name/value pairs.
  *
- * @return array
- *   details of found websites
+ * @return  array details of found websites
+ *
+ * @access public
  */
 function civicrm_api3_website_get($params) {
-  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRUE, 'Website');
+  return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, TRUE, 'website');
 }
+

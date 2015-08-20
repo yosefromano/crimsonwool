@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -24,8 +24,13 @@
  +--------------------------------------------------------------------+
 *}
 {* this template is used for adding/editing relationship types  *}
+<h3>{if $action eq 1}{ts}New Relationship Type{/ts}{elseif $action eq 2}{ts}Edit Relationship Type{/ts}{elseif $action eq 8}{ts}Delete Relationship Type{/ts}{else}{ts}View Relationship Type{/ts}{/if}</h3>
 <div class="crm-block crm-form-block crm-relationship-type-form-block">
-      <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
+    {if $action neq 4} {* action is not view *}
+        <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="top"}</div>
+    {else}
+        <div class="crm-submit-buttons">{$form.done.html}</div>
+    {/if}
   {if $action eq 8}
       <div class="messages status no-popup">
           <div class="icon inform-icon"></div>
@@ -63,5 +68,9 @@
             </tr>
         </table>
     {/if}
-    <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
+  {if $action neq 4} {* action is not view *}
+            <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
+        {else}
+            <div class="crm-submit-buttons">{$form.done.html}</div>
+        {/if}
 </div>

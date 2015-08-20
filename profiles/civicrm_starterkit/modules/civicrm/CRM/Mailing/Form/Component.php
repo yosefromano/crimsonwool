@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -47,21 +47,22 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
   protected $_id;
 
   /**
-   * The name of the BAO object for this form.
+   * The name of the BAO object for this form
    *
    * @var string
    */
   protected $_BAOName;
 
-  public function preProcess() {
+  function preProcess() {
     $this->_id = $this->get('id');
     $this->_BAOName = $this->get('BAOName');
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $this->applyFilter('__ALL__', 'trim');
@@ -69,10 +70,7 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
     $this->add('text', 'name', ts('Name'),
       CRM_Core_DAO::getAttribute('CRM_Mailing_DAO_Component', 'name'), TRUE
     );
-    $this->addRule('name', ts('Name already exists in Database.'), 'objectExists', array(
-        'CRM_Mailing_DAO_Component',
-        $this->_id,
-      ));
+    $this->addRule('name', ts('Name already exists in Database.'), 'objectExists', array('CRM_Mailing_DAO_Component', $this->_id));
 
     $this->add('select', 'component_type', ts('Component Type'), CRM_Core_SelectValues::mailingComponents());
 
@@ -88,8 +86,8 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
       CRM_Core_DAO::getAttribute('CRM_Mailing_DAO_Component', 'body_html')
     );
 
-    $this->addYesNo('is_default', ts('Default?'));
-    $this->addYesNo('is_active', ts('Enabled?'));
+    $this->add('checkbox', 'is_default', ts('Default?'));
+    $this->add('checkbox', 'is_active', ts('Enabled?'));
 
     $this->addFormRule(array('CRM_Mailing_Form_Component', 'dataRule'));
 
@@ -108,12 +106,13 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
   }
 
   /**
-   * Set default values for the form.
+   * This function sets the default values for the form.
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     $params = array();
 
@@ -122,48 +121,42 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
       $baoName = $this->_BAOName;
       $baoName::retrieve($params, $defaults);
     }
-    else {
-      $defaults['is_active'] = 1;
-    }
+    $defaults['is_active'] = 1;
 
     return $defaults;
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     // store the submitted values in an array
     $params = $this->controller->exportValues($this->_name);
 
+    $ids = array();
+
     if ($this->_action & CRM_Core_Action::UPDATE) {
-      $params['id'] = $this->_id;
+      $ids['id'] = $this->_id;
     }
 
-    $component = CRM_Mailing_BAO_Component::add($params);
-    CRM_Core_Session::setStatus(ts('The mailing component \'%1\' has been saved.', array(
-        1 => $component->name,
-      )
-    ), ts('Saved'), 'success');
-
+    CRM_Mailing_BAO_Component::add($params, $ids);
   }
+  //end of function
 
   /**
-   * Validation.
+   * Function for validation
    *
-   * @param array $params
-   *   (ref.) an assoc array of name/value pairs.
+   * @param array $params (ref.) an assoc array of name/value pairs
    *
-   * @param $files
-   * @param $options
-   *
-   * @return bool|array
-   *   mixed true or array of errors
+   * @return mixed true or array of errors
+   * @access public
+   * @static
    */
-  public static function dataRule($params, $files, $options) {
+  static function dataRule($params, $files, $options) {
     if ($params['component_type'] == 'Header' || $params['component_type'] == 'Footer') {
       $InvalidTokens = array();
     }
@@ -172,28 +165,23 @@ class CRM_Mailing_Form_Component extends CRM_Core_Form {
     }
     $errors = array();
     foreach (array(
-               'text',
-               'html',
-             ) as $type) {
+      'text', 'html') as $type) {
       $dataErrors = array();
       foreach ($InvalidTokens as $token => $desc) {
         if ($params['body_' . $type]) {
           if (preg_match('/' . preg_quote('{' . $token . '}') . '/', $params['body_' . $type])) {
             $dataErrors[] = '<li>' . ts('This message is having a invalid token - %1: %2', array(
-                1 => $token,
-                2 => $desc,
-              )) . '</li>';
+              1 => $token, 2 => $desc)) . '</li>';
           }
         }
       }
       if (!empty($dataErrors)) {
         $errors['body_' . $type] = ts('The following errors were detected in %1 message:', array(
-            1 => $type,
-          )) . '<ul>' . implode('', $dataErrors) . '</ul><br /><a href="' . CRM_Utils_System::docURL2('Tokens', TRUE, NULL, NULL, NULL, "wiki") . '">' . ts('More information on tokens...') . '</a>';
+          1 => $type)) . '<ul>' . implode('', $dataErrors) . '</ul><br /><a href="' . CRM_Utils_System::docURL2('Tokens', TRUE, NULL, NULL, NULL, "wiki") . '">' . ts('More information on tokens...') . '</a>';
       }
     }
 
     return empty($errors) ? TRUE : $errors;
   }
-
 }
+

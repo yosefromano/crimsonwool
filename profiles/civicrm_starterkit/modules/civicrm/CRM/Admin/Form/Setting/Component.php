@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,9 +40,10 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
   protected $_components;
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     CRM_Utils_System::setTitle(ts('Settings - Enable Components'));
@@ -65,19 +66,17 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param array $options
-   *   Additional user data.
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $options) {
+  static function formRule($fields, $files, $options) {
     $errors = array();
 
     if (array_key_exists('enableComponents', $fields) && is_array($fields['enableComponents'])) {
@@ -96,9 +95,6 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
     return $errors;
   }
 
-  /**
-   * @return array
-   */
   private function _getComponentSelectValues() {
     $ret = array();
     $this->_components = CRM_Core_Component::getComponents();
@@ -112,33 +108,24 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
 
+    CRM_Case_Info::onToggleComponents($this->_defaults['enableComponents'], $params['enableComponents'], NULL);
     parent::commonProcess($params);
 
     // reset navigation when components are enabled / disabled
     CRM_Core_BAO_Navigation::resetNavigation();
   }
 
-  /**
-   * @param $dsn
-   * @param string $fileName
-   * @param bool $lineMode
-   */
   public static function loadCaseSampleData($dsn, $fileName, $lineMode = FALSE) {
+    global $crmPath;
+
     $db = &DB::connect($dsn);
     if (PEAR::isError($db)) {
       die("Cannot open $dsn: " . $db->getMessage());
     }
 
-    $domain = new CRM_Core_DAO_Domain();
-    $domain->find(TRUE);
-    $multiLingual = (bool) $domain->locales;
-    $smarty = CRM_Core_Smarty::singleton();
-    $smarty->assign('multilingual', $multiLingual);
-    $smarty->assign('locales', explode(CRM_Core_DAO::VALUE_SEPARATOR, $domain->locales));
-
     if (!$lineMode) {
+      $string = file_get_contents($fileName);
 
-      $string = $smarty->fetch($fileName);
       // change \r\n to fix windows issues
       $string = str_replace("\r\n", "\n", $string);
 
@@ -174,5 +161,5 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
       }
     }
   }
-
 }
+

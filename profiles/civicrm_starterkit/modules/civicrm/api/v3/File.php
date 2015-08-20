@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,24 +27,28 @@
  */
 
 /**
- * This api is a simple wrapper of the CiviCRM file DAO.
  *
- * Creating and updating files is a complex process and this api is usually insufficient.
- * Use the "Attachment" api instead for more robust file handling.
+ * Definition of the Tag of the CRM API.
+ * More detailed documentation can be found
+ * {@link http://objectledge.org/confluence/display/CRM/CRM+v1.0+Public+APIs
+ * here}
  *
- * @fixme no unit tests
  * @package CiviCRM_APIv3
+ * @subpackage API_File
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * $Id: $
+ *
  */
 
 /**
- * Create a file record.
- * @note This is only one of several steps needed to create a file in CiviCRM.
- * Use the "Attachment" api to better handle all steps.
+ * Create a file
  *
- * @param array $params
- *   Array per getfields metadata.
+ * This API is used for creating a file
  *
- * @return array
+ * @param   array  $params  an associative array of name/value property values of civicrm_file
+ *
+ * @return array of newly created file property values.
+ * @access public
  */
 function civicrm_api3_file_create($params) {
 
@@ -54,15 +59,7 @@ function civicrm_api3_file_create($params) {
   }
 
   $fileDAO = new CRM_Core_DAO_File();
-  $properties = array(
-    'id',
-    'file_type_id',
-    'mime_type',
-    'uri',
-    'document',
-    'description',
-    'upload_date',
-  );
+  $properties = array('id', 'file_type_id', 'mime_type', 'uri', 'document', 'description', 'upload_date');
 
   foreach ($properties as $name) {
     if (array_key_exists($name, $params)) {
@@ -75,17 +72,19 @@ function civicrm_api3_file_create($params) {
   $file = array();
   _civicrm_api3_object_to_array($fileDAO, $file);
 
-  return civicrm_api3_create_success($file, $params, 'File', 'create', $fileDAO);
+  return civicrm_api3_create_success($file, $params, 'file', 'create', $fileDAO);
 }
 
 /**
- * Get a File.
+ * Get a file.
  *
- * @param array $params
- *   Array per getfields metadata.
+ * This api is used for finding an existing file.
+ * Required parameters : id OR file_type_id of a file
  *
- * @return array
- *   Array of all found file object property values.
+ * @param  array $params  an associative array of name/value property values of civicrm_file
+ *
+ * @return  Array of all found file object property values.
+ * @access public
  */
 function civicrm_api3_file_get($params) {
   civicrm_api3_verify_one_mandatory($params);
@@ -93,14 +92,17 @@ function civicrm_api3_file_get($params) {
 }
 
 /**
- * Update an existing File.
+ * Update an existing file
  *
- * @param array $params
- *   Array per getfields metadata.
+ * This api is used for updating an existing file.
+ * Required parrmeters : id of a file
  *
- * @return array
+ * @param  Array   $params  an associative array of name/value property values of civicrm_file
+ *
+ * @return array of updated file object property values
+ * @access public
  */
-function civicrm_api3_file_update($params) {
+function &civicrm_api3_file_update($params) {
 
   if (!isset($params['id'])) {
     return civicrm_api3_create_error('Required parameter missing');
@@ -121,13 +123,16 @@ function civicrm_api3_file_update($params) {
 }
 
 /**
- * Delete an existing File.
+ * Deletes an existing file
  *
- * @param array $params
- *   Array per getfields metadata.
+ * This API is used for deleting a file
+ * Required parameters : id of a file
  *
- * @return array
- *   API result array
+ * @param  Int  $fileId  Id of the file to be deleted
+ *
+ * @return null if successfull, object of CRM_Core_Error otherwise
+ * @access public
+
  */
 function civicrm_api3_file_delete($params) {
 

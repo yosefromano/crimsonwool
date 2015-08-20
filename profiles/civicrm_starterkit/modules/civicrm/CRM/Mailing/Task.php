@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,16 +40,18 @@
  */
 class CRM_Mailing_Task {
   /**
-   * The task array
+   * the task array
    *
    * @var array
+   * @static
    */
   static $_tasks = NULL;
 
   /**
-   * The optional task array
+   * the optional task array
    *
    * @var array
+   * @static
    */
   static $_optionalTasks = NULL;
 
@@ -57,14 +59,14 @@ class CRM_Mailing_Task {
    * These tasks are the core set of tasks that the user can perform
    * on a contact / group of contacts
    *
-   * @return array
-   *   the set of tasks for a group of contacts
+   * @return array the set of tasks for a group of contacts
+   * @static
+   * @access public
    */
-  public static function &tasks() {
+  static function &tasks() {
     if (!(self::$_tasks)) {
       self::$_tasks = array(
-        1 => array(
-          'title' => ts('Print Mailing Recipients'),
+        1 => array('title' => ts('Print Mailing Recipients'),
           'class' => 'CRM_Mailing_Form_Task_Print',
           'result' => FALSE,
         ),
@@ -81,37 +83,39 @@ class CRM_Mailing_Task {
    * These tasks are the core set of task titles
    * on mailing recipients
    *
-   * @return array
-   *   the set of task titles
+   * @return array the set of task titles
+   * @static
+   * @access public
    */
-  public static function &taskTitles() {
+  static function &taskTitles() {
     return array();
   }
 
   /**
-   * Show tasks selectively based on the permission level
+   * show tasks selectively based on the permission level
    * of the user
    *
    * @param int $permission
    *
-   * @return array
-   *   set of tasks that are valid for the user
+   * @return array set of tasks that are valid for the user
+   * @access public
    */
-  public static function &permissionedTaskTitles($permission) {
+  static function &permissionedTaskTitles($permission) {
     $task = array();
     return $task;
   }
 
   /**
-   * These tasks are the core set of tasks that the user can perform.
+   * These tasks are the core set of tasks that the user can perform
    * on mailing recipients
    *
    * @param int $value
    *
-   * @return array
-   *   the set of tasks for a group of mailing recipients
+   * @return array the set of tasks for a group of mailing recipients
+   * @static
+   * @access public
    */
-  public static function getTask($value) {
+  static function getTask($value) {
     self::tasks();
     if (!$value || !CRM_Utils_Array::value($value, self::$_tasks)) {
       // make the print task by default
@@ -122,5 +126,4 @@ class CRM_Mailing_Task {
       self::$_tasks[$value]['result'],
     );
   }
-
 }

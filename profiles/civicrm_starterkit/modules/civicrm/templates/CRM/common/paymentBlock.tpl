@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -27,14 +27,12 @@
 <script type="text/javascript">
 
 function buildPaymentBlock( type ) {
-  {/literal}{if !$isBillingAddressRequiredForPayLater}{literal}
-  if (type == 0) {
-    if (cj("#billing-payment-block").length) {
-      cj("#billing-payment-block").html('');
+    if ( type == 0 ) {
+     if (cj("#billing-payment-block").length) {
+           cj("#billing-payment-block").html('');
+   }
+        return;
     }
-    return;
-  }
-  {/literal}{/if}{literal}
 
   var dataUrl = {/literal}"{crmURL p=$urlPath h=0 q='snippet=4&type='}"{literal} + type;
 
@@ -57,14 +55,14 @@ function buildPaymentBlock( type ) {
                         async: false
                         }).responseText;
 
-  cj('#billing-payment-block').html(response).trigger('crmLoad').trigger('crmFormLoad');
+  cj('#billing-payment-block').html(response).trigger('crmFormLoad');
 }
 
-CRM.$(function($) {
-    $('.crm-group.payment_options-group').show();
+cj( function() {
+    cj('.crm-group.payment_options-group').show();
 
-    $('input[name="payment_processor"]').change( function() {
-        buildPaymentBlock( $(this).val() );
+    cj('input[name="payment_processor"]').change( function() {
+        buildPaymentBlock( cj(this).val() );
     });
 });
 

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,14 +39,15 @@
 class CRM_Activity_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoard {
 
   /**
-   * List participations for the UF user.
+   * Function to list participations for the UF user
    *
-   * @return bool
+   * return null
+   * @access public
    */
-  public function listActivities() {
+  function listActivities() {
 
-    $controller
-      = new CRM_Core_Controller_Simple(
+    $controller =
+      new CRM_Core_Controller_Simple(
         'CRM_Activity_Form_Search', ts('Activities'),
         NULL,
         FALSE, FALSE, TRUE, FALSE
@@ -55,25 +56,25 @@ class CRM_Activity_Page_UserDashboard extends CRM_Contact_Page_View_UserDashBoar
     $controller->reset();
     $controller->set('context', 'user');
     $controller->set('cid', $this->_contactId);
-    // Limit to status "Scheduled" and "Available"
-    $controller->set('status', array('IN' => array(1, 7)));
+    $controller->set('status', array(1 => 'on', 7 => 'on'));
     $controller->set('activity_role', 2);
     $controller->set('force', 1);
     $controller->process();
     $controller->run();
 
-    return FALSE;
+    return;
   }
 
   /**
-   * the main function that is called when the page
+   * This function is the main function that is called when the page
    * loads, it decides the which action has to be taken for the page.
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     parent::preProcess();
     $this->listActivities();
   }
-
 }
+

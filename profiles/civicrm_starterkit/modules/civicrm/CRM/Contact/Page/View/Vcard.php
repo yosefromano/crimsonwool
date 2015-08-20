@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -48,12 +48,12 @@ class CRM_Contact_Page_View_Vcard extends CRM_Contact_Page_View {
    *
    * @return void
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
-    $params = array();
+    $params   = array();
     $defaults = array();
-    $ids = array();
+    $ids      = array();
 
     $params['id'] = $params['contact_id'] = $this->_contactId;
     $contact = CRM_Contact_BAO_Contact::retrieve($params, $defaults, $ids);
@@ -84,46 +84,46 @@ class CRM_Contact_Page_View_Vcard extends CRM_Contact_Page_View {
     $vcard->setFormattedName($defaults['display_name']);
     $vcard->setSortString($defaults['sort_name']);
 
-    if (!empty($defaults['nick_name'])) {
+    if (CRM_Utils_Array::value('nick_name', $defaults)) {
       $vcard->addNickname($defaults['nick_name']);
     }
 
-    if (!empty($defaults['job_title'])) {
+    if (CRM_Utils_Array::value('job_title', $defaults)) {
       $vcard->setTitle($defaults['job_title']);
     }
 
-    if (!empty($defaults['birth_date_display'])) {
+    if (CRM_Utils_Array::value('birth_date_display', $defaults)) {
       $vcard->setBirthday(CRM_Utils_Array::value('birth_date_display', $defaults));
     }
 
-    if (!empty($defaults['home_URL'])) {
+    if (CRM_Utils_Array::value('home_URL', $defaults)) {
       $vcard->setURL($defaults['home_URL']);
     }
 
     // TODO: $vcard->setGeo($lat, $lon);
-    if (!empty($defaults['address'])) {
+    if (CRM_Utils_Array::value('address', $defaults)) {
       $stateProvices = CRM_Core_PseudoConstant::stateProvince();
       $countries = CRM_Core_PseudoConstant::country();
       foreach ($defaults['address'] as $location) {
         // we don't keep PO boxes in separate fields
         $pob = '';
         $extend = CRM_Utils_Array::value('supplemental_address_1', $location);
-        if (!empty($location['supplemental_address_2'])) {
+        if (CRM_Utils_Array::value('supplemental_address_2', $location)) {
           $extend .= ', ' . $location['supplemental_address_2'];
         }
-        $street = CRM_Utils_Array::value('street_address', $location);
+        $street   = CRM_Utils_Array::value('street_address', $location);
         $locality = CRM_Utils_Array::value('city', $location);
-        $region = NULL;
-        if (!empty($location['state_province_id'])) {
+        $region   = NULL;
+        if (CRM_Utils_Array::value('state_province_id', $location)) {
           $region = $stateProvices[CRM_Utils_Array::value('state_province_id', $location)];
         }
         $country = NULL;
-        if (!empty($location['country_id'])) {
+        if (CRM_Utils_Array::value('country_id', $location)) {
           $country = $countries[CRM_Utils_Array::value('country_id', $location)];
         }
 
         $postcode = CRM_Utils_Array::value('postal_code', $location);
-        if (!empty($location['postal_code_suffix'])) {
+        if (CRM_Utils_Array::value('postal_code_suffix', $location)) {
           $postcode .= '-' . $location['postal_code_suffix'];
         }
 
@@ -132,12 +132,12 @@ class CRM_Contact_Page_View_Vcard extends CRM_Contact_Page_View {
         if ($vcardName) {
           $vcard->addParam('TYPE', $vcardName);
         }
-        if (!empty($location['is_primary'])) {
+        if (CRM_Utils_Array::value('is_primary', $location)) {
           $vcard->addParam('TYPE', 'PREF');
         }
       }
     }
-    if (!empty($defaults['phone'])) {
+    if (CRM_Utils_Array::value('phone', $defaults)) {
       foreach ($defaults['phone'] as $phone) {
         $vcard->addTelephone($phone['phone']);
         $vcardName = $vcardNames[$phone['location_type_id']];
@@ -150,7 +150,7 @@ class CRM_Contact_Page_View_Vcard extends CRM_Contact_Page_View {
       }
     }
 
-    if (!empty($defaults['email'])) {
+    if (CRM_Utils_Array::value('email', $defaults)) {
       foreach ($defaults['email'] as $email) {
         $vcard->addEmail($email['email']);
         $vcardName = $vcardNames[$email['location_type_id']];
@@ -168,5 +168,5 @@ class CRM_Contact_Page_View_Vcard extends CRM_Contact_Page_View {
     $vcard->send($filename . '.vcf', 'attachment', 'utf-8');
     CRM_Utils_System::civiExit();
   }
-
 }
+

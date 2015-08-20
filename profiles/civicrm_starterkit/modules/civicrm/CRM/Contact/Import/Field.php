@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,126 +23,109 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
-
-/**
- * Class CRM_Contact_Import_Field
- */
+*/
 class CRM_Contact_Import_Field {
 
   /**#@+
+   * @access protected
    * @var string
    */
 
   /**
-   * Name of the field
+   * name of the field
    */
   public $_name;
 
   /**
-   * Title of the field to be used in display
+   * title of the field to be used in display
    */
   public $_title;
 
   /**
-   * Type of field
+   * type of field
    * @var enum
    */
   public $_type;
 
   /**
-   * Is this field required
+   * is this field required
    * @var boolean
    */
   public $_required;
 
   /**
-   * Data to be carried for use by a derived class
+   * data to be carried for use by a derived class
    * @var object
    */
   public $_payload;
 
   /**
-   * Regexp to match the CSV header of this column/field
+   * regexp to match the CSV header of this column/field
    * @var string
    */
   public $_columnPattern;
 
   /**
-   * Regexp to match the pattern of data from various column/fields
+   * regexp to match the pattern of data from various column/fields
    * @var string
    */
   public $_dataPattern;
 
   /**
-   * Regexp to match the pattern of header from various column/fields
+   * regexp to match the pattern of header from various column/fields
    * @var string
    */
   public $_headerPattern;
 
   /**
-   * Location type
+   * location type
    * @var int
    */
   public $_hasLocationType;
 
   /**
-   * Does this field have a phone type
+   * does this field have a phone type
    * @var string
    */
   public $_phoneType;
 
   /**
-   * Value of this field
+   * value of this field
    * @var object
    */
   public $_value;
 
   /**
-   * Does this field have a relationship info
+   * does this field have a relationship info
    * @var string
    */
   public $_related;
 
   /**
-   * Does this field have a relationship Contact Type
+   * does this field have a relationship Contact Type
    * @var string
    */
   public $_relatedContactType;
 
   /**
-   * Does this field have a relationship Contact Details
+   * does this field have a relationship Contact Details
    * @var string
    */
   public $_relatedContactDetails;
 
   /**
-   * Does this field have a related Contact info of Location Type
+   * does this field have a related Contact info of Location Type
    * @var int
    */
   public $_relatedContactLocType;
 
   /**
-   * Does this field have a related Contact info of Phone Type
+   * does this field have a related Contact info of Phone Type
    * @var string
    */
   public $_relatedContactPhoneType;
 
-  /**
-   * @param string $name
-   * @param $title
-   * @param int $type
-   * @param string $columnPattern
-   * @param string $dataPattern
-   * @param null $hasLocationType
-   * @param null $phoneType
-   * @param null $related
-   * @param null $relatedContactType
-   * @param null $relatedContactDetails
-   * @param null $relatedContactLocType
-   * @param null $relatedContactPhoneType
-   */
-  public function __construct($name, $title, $type = CRM_Utils_Type::T_INT, $columnPattern = '//', $dataPattern = '//', $hasLocationType = NULL, $phoneType = NULL, $related = NULL, $relatedContactType = NULL, $relatedContactDetails = NULL, $relatedContactLocType = NULL, $relatedContactPhoneType = NULL) {
+  function __construct($name, $title, $type = CRM_Utils_Type::T_INT, $columnPattern = '//', $dataPattern = '//', $hasLocationType = NULL, $phoneType = NULL, $related = NULL, $relatedContactType = NULL, $relatedContactDetails = NULL, $relatedContactLocType = NULL, $relatedContactPhoneType = NULL) {
     $this->_name = $name;
     $this->_title = $title;
     $this->_type = $type;
@@ -159,22 +142,19 @@ class CRM_Contact_Import_Field {
     $this->_value = NULL;
   }
 
-  public function resetValue() {
+  function resetValue() {
     $this->_value = NULL;
   }
 
   /**
-   * The value is in string format. convert the value to the type of this field
+   * the value is in string format. convert the value to the type of this field
    * and set the field value with the appropriate type
    */
-  public function setValue($value) {
+  function setValue($value) {
     $this->_value = $value;
   }
 
-  /**
-   * @return bool
-   */
-  public function validate() {
+  function validate() {
     //  echo $this->_value."===========<br>";
     $message = '';
 
@@ -191,5 +171,5 @@ class CRM_Contact_Import_Field {
       return CRM_Utils_Rule::email($this->_value);
     }
   }
-
 }
+

@@ -1,15 +1,16 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
  | CiviCRM is free software; you can copy, modify, and distribute it  |
  | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+ | Version 3, 19 November 2007.                                       |
  |                                                                    |
  | CiviCRM is distributed in the hope that it will be useful, but     |
  | WITHOUT ANY WARRANTY; without even the implied warranty of         |
@@ -17,35 +18,26 @@
  | See the GNU Affero General Public License for more details.        |
  |                                                                    |
  | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
+ | License along with this program; if not, contact CiviCRM LLC       |
  | at info[AT]civicrm[DOT]org. If you have questions about the        |
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Upgrade_Incremental_php_ThreeThree {
-  /**
-   * @param $errors
-   *
-   * @return bool
-   */
-  public function verifyPreDBstate(&$errors) {
+  function verifyPreDBstate(&$errors) {
     return TRUE;
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_alpha1($rev) {
+  function upgrade_3_3_alpha1($rev) {
     $config = CRM_Core_Config::singleton();
     if ($config->userSystem->is_drupal) {
       // CRM-6426 - make civicrm profiles permissioned on drupal my account
@@ -67,8 +59,7 @@ class CRM_Upgrade_Incremental_php_ThreeThree {
     while ($customField->fetch()) {
       $name = CRM_Utils_String::munge($customField->label, '_', 64);
       $fldCnt = CRM_Core_DAO::singleValueQuery($customFldCntQuery,
-        array(
-          1 => array($name, 'String'),
+        array(1 => array($name, 'String'),
           2 => array($customField->id, 'Integer'),
         ), TRUE, FALSE
       );
@@ -80,8 +71,7 @@ Update `civicrm_custom_field`
 SET `name` = %1
 WHERE id = %2
 ";
-      $customFieldParams = array(
-        1 => array($name, 'String'),
+      $customFieldParams = array(1 => array($name, 'String'),
         2 => array($customField->id, 'Integer'),
       );
       CRM_Core_DAO::executeQuery($customFieldQuery, $customFieldParams, TRUE, NULL, FALSE, FALSE);
@@ -96,8 +86,7 @@ WHERE id = %2
     while ($customGroup->fetch()) {
       $name = CRM_Utils_String::munge($customGroup->title, '_', 64);
       $grpCnt = CRM_Core_DAO::singleValueQuery($customGrpCntQuery,
-        array(
-          1 => array($name, 'String'),
+        array(1 => array($name, 'String'),
           2 => array($customGroup->id, 'Integer'),
         )
       );
@@ -116,8 +105,7 @@ WHERE id = %2
     while ($ufGroup->fetch()) {
       $name = CRM_Utils_String::munge($ufGroup->title, '_', 64);
       $ufGrpCnt = CRM_Core_DAO::singleValueQuery($ufGrpCntQuery,
-        array(
-          1 => array($name, 'String'),
+        array(1 => array($name, 'String'),
           2 => array($ufGroup->id, 'Integer'),
         )
       );
@@ -138,10 +126,7 @@ WHERE id = %2
     // CRM_Core_BAO_ConfigSetting::add( $parambs );
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_beta1($rev) {
+  function upgrade_3_3_beta1($rev) {
     $upgrade = new CRM_Upgrade_Form();
     $upgrade->processSQL($rev);
 
@@ -151,6 +136,7 @@ WHERE id = %2
     // update line items.
     $updateLineItem1 = "ALTER TABLE civicrm_line_item ADD COLUMN price_field_value_id int(10) unsigned default NULL;";
     CRM_Core_DAO::executeQuery($updateLineItem1);
+
 
     $priceFieldDAO = new CRM_Price_DAO_PriceField();
     $priceFieldDAO->find();
@@ -220,8 +206,7 @@ WHERE id = %2
         // update civicrm_line_item for price_field_value_id.
         // Used query to avoid line by line update.
         if ($labelFound || $priceFound) {
-          $lineItemParams = array(
-            1 => array($fieldValueDAO->id, 'Integer'),
+          $lineItemParams = array(1 => array($fieldValueDAO->id, 'Integer'),
             2 => array($opValueDAO->label, 'String'),
           );
           $updateLineItems = "UPDATE civicrm_line_item SET price_field_value_id = %1 WHERE label = %2";
@@ -255,20 +240,15 @@ WHERE id = %2
     }
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_beta3($rev) {
+  function upgrade_3_3_beta3($rev) {
     // get the duplicate Ids of line item entries
     $dupeLineItemIds = array();
-    $fields = array('entity_table', 'entity_id', 'price_field_id', 'price_field_value_id');
-    $mainLineItem = new CRM_Price_BAO_LineItem();
+    $fields          = array('entity_table', 'entity_id', 'price_field_id', 'price_field_value_id');
+    $mainLineItem    = new CRM_Price_BAO_LineItem();
     $mainLineItem->find(TRUE);
     while ($mainLineItem->fetch()) {
       $dupeLineItem = new CRM_Price_BAO_LineItem();
-      foreach ($fields as $fld) {
-        $dupeLineItem->$fld = $mainLineItem->$fld;
-      }
+      foreach ($fields as $fld) $dupeLineItem->$fld = $mainLineItem->$fld;
       $dupeLineItem->find(TRUE);
       $dupeLineItem->addWhere("id != $mainLineItem->id");
       while ($dupeLineItem->fetch()) {
@@ -288,17 +268,15 @@ WHERE id = %2
     $upgrade->processSQL($rev);
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_0($rev) {
+  function upgrade_3_3_0($rev) {
     $upgrade = new CRM_Upgrade_Form();
     $upgrade->processSQL($rev);
 
     //CRM-7123 -lets activate needful languages.
     $config = CRM_Core_Config::singleton();
     $locales = array();
-    if (is_dir($config->gettextResourceDir) && $dir = opendir($config->gettextResourceDir)) {
+    if (is_dir($config->gettextResourceDir)) {
+      $dir = opendir($config->gettextResourceDir);
       while ($filename = readdir($dir)) {
         if (preg_match('/^[a-z][a-z]_[A-Z][A-Z]$/', $filename)) {
           $locales[$filename] = $filename;
@@ -327,10 +305,7 @@ INNER JOIN  civicrm_option_group grp ON ( grp.id = val.option_group_id )
     }
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_2($rev) {
+  function upgrade_3_3_2($rev) {
     $dropMailingIndex = FALSE;
     $indexes = CRM_Core_DAO::executeQuery('SHOW INDEXES FROM civicrm_mailing_job');
     while ($indexes->fetch()) {
@@ -362,15 +337,8 @@ INNER JOIN  civicrm_option_group grp ON ( grp.id = val.option_group_id )
     if (CRM_Mailing_Info::workflowEnabled()) {
       $config = CRM_Core_Config::singleton();
       if (is_callable(array(
-        $config->userSystem,
-        'replacePermission',
-      ))) {
-        $config->userSystem->replacePermission('access CiviMail', array(
-            'access CiviMail',
-            'create mailings',
-            'approve mailings',
-            'schedule mailings',
-          ));
+        $config->userSystem, 'replacePermission'))) {
+        $config->userSystem->replacePermission('access CiviMail', array('access CiviMail', 'create mailings', 'approve mailings', 'schedule mailings'));
       }
     }
 
@@ -379,10 +347,7 @@ INNER JOIN  civicrm_option_group grp ON ( grp.id = val.option_group_id )
     $upgrade->processSQL($rev);
   }
 
-  /**
-   * @param $rev
-   */
-  public function upgrade_3_3_7($rev) {
+  function upgrade_3_3_7($rev) {
     $dao = new CRM_Contact_DAO_Contact();
     $dbName = $dao->_database;
 
@@ -417,5 +382,5 @@ INNER JOIN  civicrm_option_group grp ON ( grp.id = val.option_group_id )
     $upgrade->assign('alterContactDashboard', $alterContactDashboard);
     $upgrade->processSQL($rev);
   }
-
 }
+

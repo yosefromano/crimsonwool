@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,58 +27,68 @@
  */
 
 /**
- * This api exposes CiviCRM mail settings.
+ * File for the CiviCRM APIv3 group functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_mail_settings
+ * @copyright CiviCRM LLC (c) 2004-2013
  */
 
 /**
- * Create or update a MailSettings.
+ * Create or update a mail_settings
  *
- * @param array $params
- *   name/value pairs to insert in new 'MailSettings'
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'mail_settings'
+ * @example mail_settingsCreate.php Std Create example
  *
- * @return array
- *   API result array.
+ * @return array api result array
+ * {@getfields mail_settings_create}
+ * @access public
  */
 function civicrm_api3_mail_settings_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_mail_settings_create_spec(&$params) {
+
 }
 
 /**
- * Returns array of MailSettings matching a set of one or more properties.
+ * Returns array of mail_settingss  matching a set of one or more group properties
  *
- * @param array $params
- *   Array of one or more property_name=>value pairs.
- *   If $params is set as null, all MailSettings will be returned.
+ * @param array $params  (referance) Array of one or more valid
+ *                       property_name=>value pairs. If $params is set
+ *                       as null, all mail_settingss will be returned
  *
- * @return array
- *   API result array.
+ * @return array  (referance) Array of matching mail_settingss
+ * {@getfields mail_settings_get}
+ * @access public
  */
 function civicrm_api3_mail_settings_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Delete an existing MailSettings.
+ * delete an existing mail_settings
  *
- * @param array $params
- *   [id]
+ * This method is used to delete any existing mail_settings. id of the group
+ * to be deleted is required field in $params array
  *
- * @return array
- *   API result array.
+ * @param array $params  (reference) array containing id of the group
+ *                       to be deleted
+ *
+ * @return array  returns flag true if successfull, error
+ *                message otherwise
+ * {@getfields mail_settings_delete}
+ * @access public
  */
 function civicrm_api3_mail_settings_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
+

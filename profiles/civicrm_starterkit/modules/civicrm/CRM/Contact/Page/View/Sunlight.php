@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,23 +23,24 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Page_View_Sunlight extends CRM_Contact_Page_View {
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
    *
-   * @return void
+   * return null
+   * @access public
    */
-  public function browse() {
+  function browse() {
     // get the primary city, state and zip for the contact
     $ids = array($this->_contactId);
     $locations = CRM_Contact_BAO_Contact_Location::getMapInfo($ids);
@@ -53,17 +54,18 @@ class CRM_Contact_Page_View_Sunlight extends CRM_Contact_Page_View {
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     $this->browse();
 
     return parent::run();
   }
-
 }
+

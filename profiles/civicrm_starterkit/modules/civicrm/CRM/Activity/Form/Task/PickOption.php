@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,33 +39,37 @@
 class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
 
   /**
-   * The title of the group.
+   * the title of the group
    *
    * @var string
    */
   protected $_title;
 
   /**
-   * Maximum Activities that should be allowed to update.
+   * maximum Activities that should be allowed to update
+   *
    */
   protected $_maxActivities = 100;
 
   /**
-   * Variable to store redirect path.
+   * variable to store redirect path
+   *
    */
   protected $_userContext;
 
   /**
-   * Variable to store contact Ids.
+   * variable to store contact Ids
+   *
    */
   public $_contacts;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     /*
      * initialize the task and row fields
      */
@@ -79,10 +83,7 @@ class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
     $validate = FALSE;
     //validations
     if (count($this->_activityHolderIds) > $this->_maxActivities) {
-      CRM_Core_Session::setStatus(ts("The maximum number of Activities you can select to send an email is %1. You have selected %2. Please select fewer Activities from your search results and try again.", array(
-            1 => $this->_maxActivities,
-            2 => count($this->_activityHolderIds),
-          )), ts("Maximum Exceeded"), "error");
+      CRM_Core_Session::setStatus(ts("The maximum number of Activities you can select to send an email is %1. You have selected %2. Please select fewer Activities from your search results and try again.", array(1 => $this->_maxActivities, 2 => count($this->_activityHolderIds))), ts("Maximum Exceeded"), "error");
       $validate = TRUE;
     }
     // then redirect
@@ -92,40 +93,42 @@ class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     $this->addElement('checkbox', 'with_contact', ts('With Contact'));
     $this->addElement('checkbox', 'assigned_to', ts('Assigned to Contact'));
     $this->addElement('checkbox', 'created_by', ts('Created by'));
     $this->setDefaults(array('with_contact' => 1));
-    $this->addDefaultButtons(ts('Continue'));
+    $this->addDefaultButtons(ts('Continue >>'));
   }
 
   /**
-   * Add local and global form rules.
+   * Add local and global form rules
    *
+   * @access protected
    *
    * @return void
    */
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Activity_Form_Task_PickOption', 'formRule'));
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields) {
-    if (!isset($fields['with_contact']) &&
+  static function formRule($fields) {
+    if ( !isset($fields['with_contact']) &&
       !isset($fields['assigned_to']) &&
       !isset($fields['created_by'])
     ) {
@@ -135,10 +138,11 @@ class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     // Clear any formRule errors from Email form in case they came back here via Cancel button
@@ -173,7 +177,7 @@ class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
     $this->_contacts = array_unique($this->_contacts);
 
     //bounce to pick option if no contacts to send to
-    if (empty($this->_contacts)) {
+    if ( empty($this->_contacts) ) {
       $urlParams = "_qf_PickOption_display=true&qfKey={$params['qfKey']}";
       $urlRedirect = CRM_Utils_System::url('civicrm/activity/search', $urlParams);
       CRM_Core_Error::statusBounce(
@@ -184,5 +188,5 @@ class CRM_Activity_Form_Task_PickOption extends CRM_Activity_Form_Task {
 
     $this->set('contacts', $this->_contacts);
   }
-
 }
+

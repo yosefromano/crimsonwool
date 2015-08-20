@@ -1,4 +1,5 @@
-(function($, _) {
+(function($) {
+  var CRM = (window.CRM) ? (window.CRM) : (window.CRM = {});
   if (!CRM.ProfileSelector) CRM.ProfileSelector = {};
 
   CRM.ProfileSelector.DummyModel = CRM.Backbone.Model.extend({
@@ -6,4 +7,4 @@
       profile_id: null
     }
   });
-})(CRM.$, CRM._);
+})(cj);

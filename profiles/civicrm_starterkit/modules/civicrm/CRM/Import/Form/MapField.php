@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,45 +40,51 @@
 abstract class CRM_Import_Form_MapField extends CRM_Core_Form {
 
   /**
-   * Cache of preview data values
+   * cache of preview data values
    *
    * @var array
+   * @access protected
    */
   protected $_dataValues;
 
   /**
-   * Mapper fields
+   * mapper fields
    *
    * @var array
+   * @access protected
    */
   protected $_mapperFields;
 
   /**
-   * Loaded mapping ID
+   * loaded mapping ID
    *
    * @var int
+   * @access protected
    */
   protected $_loadedMappingId;
 
   /**
-   * Number of columns in import file
+   * number of columns in import file
    *
    * @var int
+   * @access protected
    */
   protected $_columnCount;
 
   /**
-   * Column headers, if we have them
+   * column headers, if we have them
    *
    * @var array
+   * @access protected
    */
   protected $_columnHeaders;
 
   /**
-   * An array of booleans to keep track of whether a field has been used in
+   * an array of booleans to keep track of whether a field has been used in
    * form building already.
    *
    * @var array
+   * @access protected
    */
   protected $_fieldUsed;
 
@@ -86,18 +92,20 @@ abstract class CRM_Import_Form_MapField extends CRM_Core_Form {
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Match Fields');
   }
 
   /**
-   * Attempt to match header labels with our mapper fields.
+   * Attempt to match header labels with our mapper fields
    *
-   * @param string $header
-   * @param array $patterns
+   * @param header
+   * @param mapperFields
    *
    * @return string
+   * @access public
    */
   public function defaultFromHeader($header, &$patterns) {
     foreach ($patterns as $key => $re) {
@@ -116,17 +124,18 @@ abstract class CRM_Import_Form_MapField extends CRM_Core_Form {
   }
 
   /**
-   * Guess at the field names given the data and patterns from the schema.
+   * Guess at the field names given the data and patterns from the schema
    *
-   * @param array $patterns
-   * @param string $index
+   * @param patterns
+   * @param index
    *
    * @return string
+   * @access public
    */
   public function defaultFromData(&$patterns, $index) {
-    $best = '';
+    $best     = '';
     $bestHits = 0;
-    $n = count($this->_dataValues);
+    $n        = count($this->_dataValues);
 
     foreach ($patterns as $key => $re) {
       // Skip empty key/patterns

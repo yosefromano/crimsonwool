@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,16 +38,13 @@
  */
 class CRM_Core_BAO_Phone extends CRM_Core_DAO_Phone {
 
-  /**
+  /*
    * Create phone object - note that the create function calls 'add' but
    * has more business logic
    *
-   * @param array $params
-   *
-   * @return object
-   * @throws API_Exception
+   * @param array $params input parameters
    */
-  public static function create($params) {
+  static function create($params) {
     // Ensure mysql phone function exists
     CRM_Core_DAO::checkSqlFunctionsExist();
 
@@ -63,15 +60,15 @@ class CRM_Core_BAO_Phone extends CRM_Core_DAO_Phone {
   }
 
   /**
-   * Takes an associative array and adds phone.
+   * takes an associative array and adds phone
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   * @param array  $params         (reference ) an assoc array of name/value pairs
    *
-   * @return object
-   *   CRM_Core_BAO_Phone object on success, null otherwise
+   * @return object       CRM_Core_BAO_Phone object on success, null otherwise
+   * @access public
+   * @static
    */
-  public static function add(&$params) {
+  static function add(&$params) {
     // Ensure mysql phone function exists
     CRM_Core_DAO::checkSqlFunctionsExist();
 
@@ -90,12 +87,13 @@ class CRM_Core_BAO_Phone extends CRM_Core_DAO_Phone {
    * Given the list of params in the params array, fetch the object
    * and store the values in the values array
    *
-   * @param array $entityBlock
+   * @param array entityBlock input parameters to find object
    *
-   * @return array
-   *   array of phone objects
+   * @return array    array of phone objects
+   * @access public
+   * @static
    */
-  public static function &getValues($entityBlock) {
+  static function &getValues($entityBlock) {
     $getValues = CRM_Core_BAO_Block::getValues('phone', $entityBlock);
     return $getValues;
   }
@@ -103,17 +101,14 @@ class CRM_Core_BAO_Phone extends CRM_Core_DAO_Phone {
   /**
    * Get all the phone numbers for a specified contact_id, with the primary being first
    *
-   * @param int $id
-   *   The contact id.
+   * @param int $id the contact id
    *
-   * @param bool $updateBlankLocInfo
-   * @param null $type
-   * @param array $filters
-   *
-   * @return array
-   *   the array of phone ids which are potential numbers
+   * @return array  the array of phone ids which are potential numbers
+   * @access public
+   * @static
    */
-  public static function allPhones($id, $updateBlankLocInfo = FALSE, $type = NULL, $filters = array()) {
+  static function allPhones($id, $updateBlankLocInfo = FALSE, $type = NULL, $filters = array(
+    )) {
     if (!$id) {
       return NULL;
     }
@@ -142,6 +137,7 @@ LEFT JOIN civicrm_location_type ON ( civicrm_phone.location_type_id = civicrm_lo
 WHERE     civicrm_contact.id = %1 $cond
 ORDER BY civicrm_phone.is_primary DESC,  phone_id ASC ";
 
+
     $params = array(
       1 => array(
         $id,
@@ -150,8 +146,8 @@ ORDER BY civicrm_phone.is_primary DESC,  phone_id ASC ";
     );
 
     $numbers = $values = array();
-    $dao = CRM_Core_DAO::executeQuery($query, $params);
-    $count = 1;
+    $dao     = CRM_Core_DAO::executeQuery($query, $params);
+    $count   = 1;
     while ($dao->fetch()) {
       $values = array(
         'locationType' => $dao->locationType,
@@ -175,16 +171,14 @@ ORDER BY civicrm_phone.is_primary DESC,  phone_id ASC ";
   /**
    * Get all the phone numbers for a specified location_block id, with the primary phone being first
    *
-   * @param array $entityElements
-   *   The array containing entity_id and.
-   *   entity_table name
+   * @param array $entityElements the array containing entity_id and
+   * entity_table name
    *
-   * @param null $type
-   *
-   * @return array
-   *   the array of phone ids which are potential numbers
+   * @return array  the array of phone ids which are potential numbers
+   * @access public
+   * @static
    */
-  public static function allEntityPhones($entityElements, $type = NULL) {
+  static function allEntityPhones($entityElements, $type = NULL) {
     if (empty($entityElements)) {
       return NULL;
     }
@@ -232,12 +226,12 @@ ORDER BY ph.is_primary DESC, phone_id ASC ";
   /**
    * Set NULL to phone, mapping, uffield
    *
-   * @param $optionId
-   *   Value of option to be deleted.
+   * @param $optionId value of option to be deleted
    *
-   * @return void
+   * return void
+   * @static
    */
-  public static function setOptionToNull($optionId) {
+  static function setOptionToNull($optionId) {
     if (!$optionId) {
       return;
     }
@@ -263,12 +257,12 @@ ORDER BY ph.is_primary DESC, phone_id ASC ";
   }
 
   /**
-   * Call common delete function.
+   * Call common delete function
    */
-  public static function del($id) {
+  static function del($id) {
     // Ensure mysql phone function exists
     CRM_Core_DAO::checkSqlFunctionsExist();
     return CRM_Contact_BAO_Contact::deleteObjectWithPrimary('Phone', $id);
   }
-
 }
+

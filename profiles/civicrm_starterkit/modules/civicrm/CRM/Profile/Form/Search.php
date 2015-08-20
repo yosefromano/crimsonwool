@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,25 +44,28 @@
 class CRM_Profile_Form_Search extends CRM_Profile_Form {
 
   /**
-   * Pre processing work done here.
+   * pre processing work done here.
    *
    * @param
    *
    * @return void
+   *
+   * @access public
+   *
    */
-  public function preProcess() {
+  function preProcess() {
     $this->_mode = CRM_Profile_Form::MODE_SEARCH;
     parent::preProcess();
   }
 
   /**
-   * Set the default form values.
+   * Set the default form values
    *
+   * @access protected
    *
-   * @return array
-   *   the default array reference
+   * @return array the default array reference
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     // note we intentionally overwrite value since we use it as defaults
     // and its all pass by value
@@ -88,9 +91,7 @@ class CRM_Profile_Form_Search extends CRM_Profile_Form {
         }
       }
       elseif (in_array($key, array(
-        'birth_date',
-        'deceased_date',
-      ))) {
+        'birth_date', 'deceased_date'))) {
         list($value) = CRM_Utils_Date::setDateDefaults($value);
       }
 
@@ -100,9 +101,10 @@ class CRM_Profile_Form_Search extends CRM_Profile_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     // Is proximity search enabled for this profile?
@@ -115,12 +117,12 @@ class CRM_Profile_Form_Search extends CRM_Profile_Form {
     }
 
     $this->addButtons(array(
-      array(
-        'type' => 'refresh',
-        'name' => ts('Search'),
-        'isDefault' => TRUE,
-      ),
-    ));
+        array(
+          'type' => 'refresh',
+          'name' => ts('Search'),
+          'isDefault' => TRUE,
+        ),
+      ));
 
     parent::buildQuickForm();
   }
@@ -128,10 +130,10 @@ class CRM_Profile_Form_Search extends CRM_Profile_Form {
   /**
    *
    *
+   * @access public
    *
    * @return void
    */
-  public function postProcess() {
-  }
-
+  public function postProcess() {}
 }
+

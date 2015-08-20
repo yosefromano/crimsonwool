@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,41 +23,32 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 require_once 'ezc/Base/src/ezc_bootstrap.php';
 require_once 'ezc/autoload/mail_autoload.php';
-
-/**
- * Class CRM_Mailing_MailStore_Imap
- */
 class CRM_Mailing_MailStore_Imap extends CRM_Mailing_MailStore {
 
   /**
-   * Connect to the supplied IMAP server and make sure the two mailboxes exist.
+   * Connect to the supplied IMAP server and make sure the two mailboxes exist
    *
-   * @param string $host
-   *   Host to connect to.
-   * @param string $username
-   *   Authentication username.
-   * @param string $password
-   *   Authentication password.
-   * @param bool $ssl
-   *   Whether to use IMAP or IMAPS.
-   * @param string $folder
-   *   Name of the inbox folder.
+   * @param string $host      host to connect to
+   * @param string $username  authentication username
+   * @param string $password  authentication password
+   * @param bool   $ssl       whether to use IMAP or IMAPS
+   * @param string $folder    name of the inbox folder
    *
-   * @return \CRM_Mailing_MailStore_Imap
+   * @return void
    */
-  public function __construct($host, $username, $password, $ssl = TRUE, $folder = 'INBOX') {
+  function __construct($host, $username, $password, $ssl = TRUE, $folder = 'INBOX') {
     // default to INBOX if an empty string
     if (!$folder) {
       $folder = 'INBOX';
@@ -74,9 +65,9 @@ class CRM_Mailing_MailStore_Imap extends CRM_Mailing_MailStore {
     $this->_transport->authenticate($username, $password);
     $this->_transport->selectMailbox($folder);
 
-    $this->_ignored = implode($this->_transport->getHierarchyDelimiter(), array($folder, 'CiviMail', 'ignored'));
+    $this->_ignored   = implode($this->_transport->getHierarchyDelimiter(), array($folder, 'CiviMail', 'ignored'));
     $this->_processed = implode($this->_transport->getHierarchyDelimiter(), array($folder, 'CiviMail', 'processed'));
-    $boxes = $this->_transport->listMailboxes();
+    $boxes            = $this->_transport->listMailboxes();
 
     if ($this->_debug) {
       print 'mailboxes found: ' . implode(', ', $boxes) . "\n";
@@ -94,19 +85,18 @@ class CRM_Mailing_MailStore_Imap extends CRM_Mailing_MailStore {
   /**
    * Expunge the messages marked for deletion, CRM-7356
    */
-  public function expunge() {
+  function expunge() {
     $this->_transport->expunge();
   }
 
   /**
-   * Move the specified message to the ignored folder.
+   * Move the specified message to the ignored folder
    *
-   * @param int $nr
-   *   Number of the message to move.
+   * @param integer $nr  number of the message to move
    *
    * @return void
    */
-  public function markIgnored($nr) {
+  function markIgnored($nr) {
     if ($this->_debug) {
       print "setting $nr as seen and moving it to the ignored mailbox\n";
     }
@@ -116,14 +106,13 @@ class CRM_Mailing_MailStore_Imap extends CRM_Mailing_MailStore {
   }
 
   /**
-   * Move the specified message to the processed folder.
+   * Move the specified message to the processed folder
    *
-   * @param int $nr
-   *   Number of the message to move.
+   * @param integer $nr  number of the message to move
    *
    * @return void
    */
-  public function markProcessed($nr) {
+  function markProcessed($nr) {
     if ($this->_debug) {
       print "setting $nr as seen and moving it to the processed mailbox\n";
     }
@@ -131,5 +120,5 @@ class CRM_Mailing_MailStore_Imap extends CRM_Mailing_MailStore {
     $this->_transport->copyMessages($nr, $this->_processed);
     $this->_transport->delete($nr);
   }
-
 }
+

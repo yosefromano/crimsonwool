@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,11 +40,13 @@
 class CRM_Contact_Form_Edit_Lock {
 
   /**
-   * Build the form object.
+   * This function provides the HTML form elements
    *
-   * @param CRM_Core_Form $form
-   *   Form object.
+   * @param object $form form object
+   * @param int $inlineEditMode ( 1 for contact summary
+   * top bar form and 2 for display name edit )
    *
+   * @access public
    * @return void
    */
   public static function buildQuickForm(&$form) {
@@ -54,16 +56,15 @@ class CRM_Contact_Form_Edit_Lock {
   /**
    * Ensure that modified_date hasn't changed in the underlying DB
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param int $contactID
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $contactID = NULL) {
+  static function formRule($fields, $files, $contactID = NULL) {
     $errors = array();
 
     $timestamps = CRM_Contact_BAO_Contact::getTimestamps($contactID);
@@ -76,5 +77,4 @@ class CRM_Contact_Form_Edit_Lock {
 
     return empty($errors) ? TRUE : $errors;
   }
-
 }

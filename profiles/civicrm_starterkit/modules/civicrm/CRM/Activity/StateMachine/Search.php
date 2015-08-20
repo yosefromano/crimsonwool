@@ -1,15 +1,15 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
  | CiviCRM is free software; you can copy, modify, and distribute it  |
  | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+ | Version 3, 19 November 2007.                                       |
  |                                                                    |
  | CiviCRM is distributed in the hope that it will be useful, but     |
  | WITHOUT ANY WARRANTY; without even the implied warranty of         |
@@ -17,37 +17,34 @@
  | See the GNU Affero General Public License for more details.        |
  |                                                                    |
  | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
+ | License along with this program; if not, contact CiviCRM LLC       |
  | at info[AT]civicrm[DOT]org. If you have questions about the        |
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Activity_StateMachine_Search extends CRM_Core_StateMachine {
 
   /**
-   * The task that the wizard is currently processing.
+   * The task that the wizard is currently processing
    *
    * @var string
+   * @protected
    */
   protected $_task;
 
   /**
-   * Class constructor.
-   *
-   * @param object $controller
-   * @param \const|int $action
+   * class constructor
    */
-  public function __construct($controller, $action = CRM_Core_Action::NONE) {
+  function __construct($controller, $action = CRM_Core_Action::NONE) {
     parent::__construct($controller, $action);
 
     $this->_pages = array();
@@ -73,17 +70,20 @@ class CRM_Activity_StateMachine_Search extends CRM_Core_StateMachine {
    * to avoid using  conditional state machine, much more efficient
    * and simpler
    *
-   * @param CRM_Core_Controller $controller
-   *   The controller object.
+   * @param CRM_Core_Controller $controller the controller object
    *
-   * @param string $formName
-   *
-   * @return string
-   *   the name of the form that will handle the task
+   * @return string the name of the form that will handle the task
+   * @access protected
    */
-  public function taskName($controller, $formName = 'Search') {
+  function taskName($controller, $formName = 'Search') {
     // total hack, check POST vars and then session to determine stuff
-    $value = CRM_Utils_Array::value('task', $_POST);
+    // fix value if print button is pressed
+    if (CRM_Utils_Array::value('_qf_' . $formName . '_next_print', $_POST)) {
+      $value = CRM_Activity_Task::PRINT_ACTIVITIES;
+    }
+    else {
+      $value = CRM_Utils_Array::value('task', $_POST);
+    }
     if (!isset($value)) {
       $value = $this->_controller->get('task');
     }
@@ -92,25 +92,17 @@ class CRM_Activity_StateMachine_Search extends CRM_Core_StateMachine {
   }
 
   /**
-   * Return the form name of the task.
+   * return the form name of the task
    *
    * @return string
+   * @access public
    */
-  public function getTaskFormName() {
+  function getTaskFormName() {
     return CRM_Utils_String::getClassName($this->_task);
   }
 
-  /**
-   * Should the controller reset the session.
-   * In some cases, specifically search we want to remember
-   * state across various actions and want to go back to the
-   * beginning from the final state, but retain the same session
-   * values
-   *
-   * @return bool
-   */
-  public function shouldReset() {
+  function shouldReset() {
     return FALSE;
   }
-
 }
+

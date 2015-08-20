@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -127,15 +127,15 @@
 {literal}
   <script type="text/javascript">
     //show edit profile field links
-    CRM.$(function($) {
+    cj(function () {
       // show edit for both contact and activity profile
-      $('select[id$="profile_id"]').change(function () {
-        buildLinks($(this), $(this).val());
+      cj('select[id$="profile_id"]').change(function () {
+        buildLinks(cj(this), cj(this).val());
       });
 
       // make sure we set edit links for both profiles when form loads
-      $('select[id$="profile_id"]').each(function (e) {
-        buildLinks($(this), $(this).val());
+      cj('select[id$="profile_id"]').each(function (e) {
+        buildLinks(cj(this), cj(this).val());
       });
     });
   </script>

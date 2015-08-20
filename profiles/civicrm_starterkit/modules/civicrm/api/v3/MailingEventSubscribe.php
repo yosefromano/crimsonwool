@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,24 +24,28 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * APIv3 functions for registering/processing mailing group events.
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_MailerGroup
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * $Id$
+ *
  */
 
 /**
- * Subscribe from mailing group.
+ * Subscribe from mailing group
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'survey'
  *
- * @throws API_Exception
- * @return array
- *   api result array
+ * @return array api result array
+ * {@getfields mailing_event_subscribe_create}
+ * @access public
  */
 function civicrm_api3_mailing_event_subscribe_create($params) {
   $email      = $params['email'];
@@ -49,7 +54,7 @@ function civicrm_api3_mailing_event_subscribe_create($params) {
 
   $group            = new CRM_Contact_DAO_Group();
   $group->is_active = 1;
-  $group->id        = (int) $group_id;
+  $group->id        = (int)$group_id;
   if (!$group->find(TRUE)) {
     throw new API_Exception('Invalid Group id');
   }
@@ -58,6 +63,7 @@ function civicrm_api3_mailing_event_subscribe_create($params) {
 
   if ($subscribe !== NULL) {
     /* Ask the contact for confirmation */
+
 
     $subscribe->send_confirm_request($email);
 
@@ -72,22 +78,13 @@ function civicrm_api3_mailing_event_subscribe_create($params) {
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_mailing_event_subscribe_create_spec(&$params) {
-  $params['email'] = array(
-    'api.required' => 1,
-    'title' => 'Unsubscribe Email',
-    'type' => CRM_Utils_Type::T_STRING,
-  );
-  $params['group_id'] = array(
-    'api.required' => 1,
-    'title' => 'Unsubscribe From Group',
-    'type' => CRM_Utils_Type::T_INT,
-  );
+  $params['email']['api.required'] = 1;
+  $params['group_id']['api.required'] = 1;
 }
+

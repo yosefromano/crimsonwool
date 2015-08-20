@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,23 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_BAO_CustomValueTable {
 
-  /**
-   * @param array $customParams
-   *
-   * @throws Exception
-   */
-  public static function create(&$customParams) {
+  static function create(&$customParams) {
     if (empty($customParams) ||
       !is_array($customParams)
     ) {
@@ -48,29 +43,29 @@ class CRM_Core_BAO_CustomValueTable {
 
     foreach ($customParams as $tableName => $tables) {
       foreach ($tables as $index => $fields) {
-        $sqlOP = NULL;
-        $hookID = NULL;
-        $hookOP = NULL;
-        $entityID = NULL;
+        $sqlOP      = NULL;
+        $hookID     = NULL;
+        $hookOP     = NULL;
+        $entityID   = NULL;
         $isMultiple = FALSE;
-        $set = array();
-        $params = array();
-        $count = 1;
+        $set        = array();
+        $params     = array();
+        $count      = 1;
         foreach ($fields as $field) {
           if (!$sqlOP) {
-            $entityID = $field['entity_id'];
-            $hookID = $field['custom_group_id'];
+            $entityID   = $field['entity_id'];
+            $hookID     = $field['custom_group_id'];
             $isMultiple = $field['is_multiple'];
             if (array_key_exists('id', $field)) {
-              $sqlOP = "UPDATE $tableName ";
-              $where = " WHERE  id = %{$count}";
+              $sqlOP          = "UPDATE $tableName ";
+              $where          = " WHERE  id = %{$count}";
               $params[$count] = array($field['id'], 'Integer');
               $count++;
               $hookOP = 'edit';
             }
             else {
-              $sqlOP = "INSERT INTO $tableName ";
-              $where = NULL;
+              $sqlOP  = "INSERT INTO $tableName ";
+              $where  = NULL;
               $hookOP = 'create';
             }
           }
@@ -85,7 +80,7 @@ class CRM_Core_BAO_CustomValueTable {
                 $value = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $value) . CRM_Core_DAO::VALUE_SEPARATOR;
                 $type = 'String';
               }
-              elseif (!is_numeric($value) && !strstr($value, CRM_Core_DAO::VALUE_SEPARATOR)) {
+              elseif (!is_numeric($value)) {
                 //fix for multi select state, CRM-3437
                 $mulValues = explode(',', $value);
                 $validStates = array();
@@ -96,12 +91,12 @@ class CRM_Core_BAO_CustomValueTable {
                   CRM_Utils_Array::lookupValue($states, 'state_province',
                     CRM_Core_PseudoConstant::stateProvince(), TRUE
                   );
-                  if (empty($states['state_province_id'])) {
+                  if (!CRM_Utils_Array::value('state_province_id', $states)) {
                     CRM_Utils_Array::lookupValue($states, 'state_province',
                       CRM_Core_PseudoConstant::stateProvinceAbbreviation(), TRUE
                     );
                   }
-                  $validStates[] = CRM_Utils_Array::value('state_province_id', $states);
+                  $validStates[] = $states['state_province_id'];
                 }
                 $value = implode(CRM_Core_DAO::VALUE_SEPARATOR,
                   $validStates
@@ -115,19 +110,15 @@ class CRM_Core_BAO_CustomValueTable {
                 $value = NULL;
                 $type = 'Timestamp';
               }
-              else {
-                $type = 'String';
-              }
               break;
 
             case 'Country':
               $type = 'Integer';
-              $mulValues = explode(',', $value);
               if (is_array($value)) {
                 $value = CRM_Core_DAO::VALUE_SEPARATOR . implode(CRM_Core_DAO::VALUE_SEPARATOR, $value) . CRM_Core_DAO::VALUE_SEPARATOR;
                 $type = 'String';
               }
-              elseif (!is_numeric($value) && !strstr($value, CRM_Core_DAO::VALUE_SEPARATOR)) {
+              elseif (!is_numeric($value)) {
                 //fix for multi select country, CRM-3437
                 $mulValues = explode(',', $value);
                 $validCountries = array();
@@ -137,12 +128,12 @@ class CRM_Core_BAO_CustomValueTable {
                   CRM_Utils_Array::lookupValue($countries, 'country',
                     CRM_Core_PseudoConstant::country(), TRUE
                   );
-                  if (empty($countries['country_id'])) {
+                  if (!CRM_Utils_Array::value('country_id', $countries)) {
                     CRM_Utils_Array::lookupValue($countries, 'country',
                       CRM_Core_PseudoConstant::countryIsoCode(), TRUE
                     );
                   }
-                  $validCountries[] = CRM_Utils_Array::value('country_id', $states);
+                  $validCountries[] = $countries['country_id'];
                 }
                 $value = implode(CRM_Core_DAO::VALUE_SEPARATOR,
                   $validCountries
@@ -155,9 +146,6 @@ class CRM_Core_BAO_CustomValueTable {
                 // gross but effective hack
                 $value = NULL;
                 $type = 'Timestamp';
-              }
-              else {
-                $type = 'String';
               }
               break;
 
@@ -234,9 +222,9 @@ class CRM_Core_BAO_CustomValueTable {
             $params[$count] = array($entityID, 'Integer');
             $count++;
 
-            $fieldNames = implode(',', array_keys($set));
+            $fieldNames  = implode(',', array_keys($set));
             $fieldValues = implode(',', array_values($set));
-            $query = "$sqlOP ( $fieldNames ) VALUES ( $fieldValues )";
+            $query       = "$sqlOP ( $fieldNames ) VALUES ( $fieldValues )";
             // for multiple values we dont do on duplicate key update
             if (!$isMultiple) {
               $query .= " ON DUPLICATE KEY UPDATE $setClause";
@@ -258,13 +246,13 @@ class CRM_Core_BAO_CustomValueTable {
   }
 
   /**
-   * Given a field return the mysql data type associated with it.
+   * given a field return the mysql data type associated with it
    *
-   * @param string $type
-   * @param int $maxLength
+   * @param string $type the civicrm type string
    *
-   * @return string
-   *   the mysql data store placeholder
+   * @return the mysql data store placeholder
+   * @access public
+   * @static
    */
   public static function fieldToSQLType($type, $maxLength = 255) {
     if (!isset($maxLength) ||
@@ -284,7 +272,6 @@ class CRM_Core_BAO_CustomValueTable {
 
       case 'Int':
         return 'int';
-
       // the below three are FK's, and have constraints added to them
 
       case 'ContactReference':
@@ -311,12 +298,7 @@ class CRM_Core_BAO_CustomValueTable {
     }
   }
 
-  /**
-   * @param array $params
-   * @param $entityTable
-   * @param int $entityID
-   */
-  public static function store(&$params, $entityTable, $entityID) {
+  static function store(&$params, $entityTable, $entityID) {
     $cvParams = array();
     foreach ($params as $fieldID => $param) {
       foreach ($param as $index => $customValue) {
@@ -333,12 +315,12 @@ class CRM_Core_BAO_CustomValueTable {
           'file_id' => $customValue['file_id'],
         );
 
-        // Fix Date type to be timestamp, since that is how we store in db.
+        // fix Date type to be timestamp, since that is how we store in db
         if ($cvParam['type'] == 'Date') {
           $cvParam['type'] = 'Timestamp';
         }
 
-        if (!empty($customValue['id'])) {
+        if (CRM_Utils_Array::value('id', $customValue)) {
           $cvParam['id'] = $customValue['id'];
         }
         if (!array_key_exists($customValue['table_name'], $cvParams)) {
@@ -357,16 +339,7 @@ class CRM_Core_BAO_CustomValueTable {
     }
   }
 
-  /**
-   * Post process function.
-   *
-   * @param array $params
-   * @param $customFields
-   * @param $entityTable
-   * @param int $entityID
-   * @param $customFieldExtends
-   */
-  public static function postProcess(&$params, &$customFields, $entityTable, $entityID, $customFieldExtends) {
+  static function postProcess(&$params, &$customFields, $entityTable, $entityID, $customFieldExtends) {
     $customData = CRM_Core_BAO_CustomField::postProcess($params,
       $customFields,
       $entityID,
@@ -381,25 +354,21 @@ class CRM_Core_BAO_CustomValueTable {
   /**
    * Return an array of all custom values associated with an entity.
    *
-   * @param int $entityID
-   *   Identification number of the entity.
-   * @param string $entityType
-   *   Type of entity that the entityID corresponds to, specified.
+   * @param int         $entityID      Identification number of the entity
+   * @param string      $entityType    Type of entity that the entityID corresponds to, specified
    *                                   as a string with format "'<EntityName>'". Comma separated
    *                                   list may be used to specify OR matches. Allowable values
    *                                   are enumerated types in civicrm_custom_group.extends field.
    *                                   Optional. Default value assumes entityID references a
    *                                   contact entity.
-   * @param array $fieldIDs
-   *   Optional list of fieldIDs that we want to retrieve. If this.
+   * @param array       $fieldIDs      optional list of fieldIDs that we want to retrieve. If this
    *                                   is set the entityType is ignored
    *
-   * @param bool $formatMultiRecordField
-   *
-   * @return array
-   *   Array of custom values for the entity with key=>value
+   * @return array      $fields        Array of custom values for the entity with key=>value
    *                                   pairs specified as civicrm_custom_field.id => custom value.
    *                                   Empty array if no custom values found.
+   * @access public
+   * @static
    */
   public static function &getEntityValues($entityID, $entityType = NULL, $fieldIDs = NULL, $formatMultiRecordField = FALSE) {
     if (!$entityID) {
@@ -424,14 +393,13 @@ class CRM_Core_BAO_CustomValueTable {
     }
     $cond = implode(' AND ', $cond);
 
-    // First find all the fields that extend this type of entity.
+    // first find all the fields that extend this type of entity
     $query = "
 SELECT cg.table_name,
        cg.id as groupID,
        cg.is_multiple,
        cf.column_name,
-       cf.id as fieldID,
-       cf.data_type as fieldDataType
+       cf.id as fieldID
 FROM   civicrm_custom_group cg,
        civicrm_custom_field cf
 WHERE  cf.custom_group_id = cg.id
@@ -451,7 +419,6 @@ AND    $cond
       $fields[$dao->table_name][] = $dao->fieldID;
       $select[$dao->table_name][] = "{$dao->column_name} AS custom_{$dao->fieldID}";
       $isMultiple[$dao->table_name] = $dao->is_multiple ? TRUE : FALSE;
-      $file[$dao->table_name][$dao->fieldID] = $dao->fieldDataType;
     }
 
     $result = array();
@@ -464,8 +431,7 @@ AND    $cond
           if ($isMultiple[$tableName]) {
             if ($formatMultiRecordField) {
               $result["{$dao->id}"]["{$fieldID}"] = $dao->$fieldName;
-            }
-            else {
+            } else {
               $result["{$fieldID}_{$dao->id}"] = $dao->$fieldName;
             }
           }
@@ -479,18 +445,16 @@ AND    $cond
   }
 
   /**
-   * Take in an array of entityID, custom_XXX => value
+   * Function to take in an array of entityID, custom_XXX => value
    * and set the value in the appropriate table. Should also be able
    * to set the value to null. Follows api parameter/return conventions
    *
    * @array $params
    *
-   * @param array $params
-   *
-   * @throws Exception
    * @return array
+   * @static
    */
-  public static function setValues(&$params) {
+  static function setValues(&$params) {
 
     if (!isset($params['entityID']) ||
       CRM_Utils_Type::escape($params['entityID'], 'Integer', FALSE) === NULL
@@ -507,8 +471,8 @@ AND    $cond
         $fieldID = (int ) $customFieldInfo[0];
         if (CRM_Utils_Type::escape($fieldID, 'Integer', FALSE) === NULL) {
           return CRM_Core_Error::createAPIError(ts('field ID needs to be of type Integer for index %1',
-            array(1 => $fieldID)
-          ));
+              array(1 => $fieldID)
+            ));
         }
         if (!array_key_exists($fieldID, $fieldValues)) {
           $fieldValues[$fieldID] = array();
@@ -564,18 +528,18 @@ AND    cf.id IN ( $fieldIDList )
             case 'Country':
             case 'Money':
             case 'Float':
-              $fieldValue['value'] = (int) 0;
+              $fieldValue['value'] = (int)0;
               break;
           }
         }
         // Ensure that value is of the right data type
         elseif (CRM_Utils_Type::escape($fieldValue['value'], $dataType, FALSE) === NULL) {
           return CRM_Core_Error::createAPIError(ts('value: %1 is not of the right field data type: %2',
-            array(
-              1 => $fieldValue['value'],
-              2 => $dao->data_type,
-            )
-          ));
+              array(
+                1 => $fieldValue['value'],
+                2 => $dao->data_type
+              )
+            ));
         }
 
         $cvParam = array(
@@ -617,7 +581,7 @@ AND    cf.id IN ( $fieldIDList )
   }
 
   /**
-   * Take in an array of entityID, custom_ID
+   * Function to take in an array of entityID, custom_ID
    * and gets the value from the appropriate table.
    *
    * To get the values of custom fields with IDs 13 and 43 for contact ID 1327, use:
@@ -629,12 +593,10 @@ AND    cf.id IN ( $fieldIDList )
    *
    * @array $params
    *
-   * @param array $params
-   *
-   * @throws Exception
    * @return array
+   * @static
    */
-  public static function &getValues(&$params) {
+  static function &getValues(&$params) {
     if (empty($params)) {
       return NULL;
     }
@@ -655,8 +617,8 @@ AND    cf.id IN ( $fieldIDList )
         $idx = substr($n, 7);
         if (CRM_Utils_Type::escape($idx, 'Integer', FALSE) === NULL) {
           return CRM_Core_Error::createAPIError(ts('field ID needs to be of type Integer for index %1',
-            array(1 => $idx)
-          ));
+              array(1 => $idx)
+            ));
         }
         $fieldIDs[] = (int ) $idx;
       }
@@ -708,5 +670,5 @@ AND    cf.id IN ( $fieldIDList )
       return $result;
     }
   }
-
 }
+

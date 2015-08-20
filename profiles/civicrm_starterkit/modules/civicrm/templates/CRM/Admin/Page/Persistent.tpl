@@ -2,7 +2,11 @@
 {if $type eq 'configTemplates'}
     <table class="report-layout">
       <div class="action-link">
-        {crmButton p='civicrm/admin/tplstrings/add' q='reset=1&action=add' icon="circle-plus"}{ts}Add New String{/ts}{/crmButton}
+        <a href="{crmURL p='civicrm/admin/tplstrings/add' q='reset=1&action=add'}"  class="button">
+          <span>
+             <div class="icon add-icon"></div>{ts}Add New String{/ts}
+          </span>
+        </a>
       </div>
       {if !empty( $template_row) }
       <tr>
@@ -33,7 +37,11 @@
       </head>
       <br/>
       <div class="action-link">
-         {crmButton p='civicrm/admin/tplstrings/add' q='reset=1&action=add&config=1' icon="circle-plus"}{ts}Add New Config{/ts}{/crmButton}
+         <a href="{crmURL p='civicrm/admin/tplstrings/add' q='reset=1&action=add&config=1'}"  class="button">
+           <span>
+              <div class="icon add-icon"></div>{ts}Add New Config{/ts}
+           </span>
+         </a>
       </div>
       <br/>
       {if !empty( $template_row) }

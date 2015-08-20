@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,22 +23,17 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Contact_Form_Search_Custom_Sample extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
-  protected $_aclFrom = NULL;
-  protected $_aclWhere = NULL;
-  /**
-   * @param $formValues
-   */
-  public function __construct(&$formValues) {
+  function __construct(&$formValues) {
     parent::__construct($formValues);
 
     if (!isset($formValues['state_province_id'])) {
@@ -51,17 +46,14 @@ class CRM_Contact_Form_Search_Custom_Sample extends CRM_Contact_Form_Search_Cust
     }
 
     $this->_columns = array(
-      ts('Contact ID') => 'contact_id',
+      ts('Contact Id') => 'contact_id',
       ts('Contact Type') => 'contact_type',
       ts('Name') => 'sort_name',
       ts('State') => 'state_province',
     );
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   */
-  public function buildForm(&$form) {
+  function buildForm(&$form) {
 
     $form->add('text',
       'household_name',
@@ -84,10 +76,7 @@ class CRM_Contact_Form_Search_Custom_Sample extends CRM_Contact_Form_Search_Cust
     $form->assign('elements', array('household_name', 'state_province_id'));
   }
 
-  /**
-   * @return array
-   */
-  public function summary() {
+  function summary() {
     $summary = array(
       'summary' => 'This is a summary',
       'total' => 50.0,
@@ -95,31 +84,11 @@ class CRM_Contact_Form_Search_Custom_Sample extends CRM_Contact_Form_Search_Cust
     return $summary;
   }
 
-  /**
-   * @param int $offset
-   * @param int $rowcount
-   * @param null $sort
-   * @param bool $returnSQL
-   *
-   * @return string
-   */
-  public function contactIDs($offset = 0, $rowcount = 0, $sort = NULL, $returnSQL = FALSE) {
-    return $this->all($offset, $rowcount, $sort, FALSE, TRUE);
-  }
-
-  /**
-   * @param int $offset
-   * @param int $rowcount
-   * @param null $sort
-   * @param bool $includeContactIDs
-   * @param bool $justIDs
-   *
-   * @return string
-   */
-  public function all($offset = 0, $rowcount = 0, $sort = NULL, $includeContactIDs = FALSE, $justIDs = FALSE) {
+  function all($offset = 0, $rowcount = 0, $sort = NULL,
+    $includeContactIDs = FALSE, $justIDs = FALSE
+  ) {
     if ($justIDs) {
       $selectClause = "contact_a.id as contact_id";
-      $sort = 'contact_a.id';
     }
     else {
       $selectClause = "
@@ -136,34 +105,24 @@ state_province.name    as state_province
     );
   }
 
-  /**
-   * @return string
-   */
-  public function from() {
-    $this->buildACLClause('contact_a');
-    $from = "
+  function from() {
+    return "
 FROM      civicrm_contact contact_a
 LEFT JOIN civicrm_address address ON ( address.contact_id       = contact_a.id AND
                                        address.is_primary       = 1 )
 LEFT JOIN civicrm_email           ON ( civicrm_email.contact_id = contact_a.id AND
                                        civicrm_email.is_primary = 1 )
-LEFT JOIN civicrm_state_province state_province ON state_province.id = address.state_province_id {$this->_aclFrom}
+LEFT JOIN civicrm_state_province state_province ON state_province.id = address.state_province_id
 ";
-    return $from;
   }
 
-  /**
-   * @param bool $includeContactIDs
-   *
-   * @return string
-   */
-  public function where($includeContactIDs = FALSE) {
+  function where($includeContactIDs = FALSE) {
     $params = array();
     $where = "contact_a.contact_type   = 'Household'";
 
-    $count = 1;
+    $count  = 1;
     $clause = array();
-    $name = CRM_Utils_Array::value('household_name',
+    $name   = CRM_Utils_Array::value('household_name',
       $this->_formValues
     );
     if ($name != NULL) {
@@ -189,10 +148,6 @@ LEFT JOIN civicrm_state_province state_province ON state_province.id = address.s
       $clause[] = "state_province.id = %{$count}";
     }
 
-    if ($this->_aclWhere) {
-      $clause[] = " {$this->_aclWhere} ";
-    }
-
     if (!empty($clause)) {
       $where .= ' AND ' . implode(' AND ', $clause);
     }
@@ -200,33 +155,21 @@ LEFT JOIN civicrm_state_province state_province ON state_province.id = address.s
     return $this->whereClause($where, $params);
   }
 
-  /**
-   * @return string
-   */
-  public function templateFile() {
+  function templateFile() {
     return 'CRM/Contact/Form/Search/Custom.tpl';
   }
 
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     return array(
       'household_name' => '',
     );
   }
 
-  /**
-   * @param $row
-   */
-  public function alterRow(&$row) {
+  function alterRow(&$row) {
     $row['sort_name'] .= ' ( altered )';
   }
 
-  /**
-   * @param $title
-   */
-  public function setTitle($title) {
+  function setTitle($title) {
     if ($title) {
       CRM_Utils_System::setTitle($title);
     }
@@ -234,12 +177,5 @@ LEFT JOIN civicrm_state_province state_province ON state_province.id = address.s
       CRM_Utils_System::setTitle(ts('Search'));
     }
   }
-
-  /**
-   * @param string $tableAlias
-   */
-  public function buildACLClause($tableAlias = 'contact') {
-    list($this->_aclFrom, $this->_aclWhere) = CRM_Contact_BAO_Contact_Permission::cacheClause($tableAlias);
-  }
-
 }
+

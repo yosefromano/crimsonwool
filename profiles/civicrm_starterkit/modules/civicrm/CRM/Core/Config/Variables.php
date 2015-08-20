@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * Variables class contains definitions of all the core config settings that are allowed on
@@ -31,28 +31,28 @@
  * it need to be defined here first.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
 
   /**
-   * The debug level for civicrm.
+   * the debug level for civicrm
    * @var int
    */
   public $debug = 0;
   public $backtrace = 0;
 
   /**
-   * The directory where Smarty and plugins are installed.
+   * the directory where Smarty and plugins are installed
    * @var string
    */
   public $smartyDir = NULL;
   public $pluginsDir = NULL;
 
   /**
-   * The root directory of our template tree.
+   * the root directory of our template tree
    * @var string
    */
   public $templateDir = NULL;
@@ -253,17 +253,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $userFrameworkUsersTableName = 'users';
   public $userFrameworkClass = 'CRM_Utils_System_Drupal';
   public $userHookClass = 'CRM_Utils_Hook_Drupal';
-
-  /**
-   * @var string|CRM_Core_Permission_Base
-   */
   public $userPermissionClass = 'CRM_Core_Permission_Drupal';
-
-  /**
-   * @var NULL|CRM_Core_Permission_Temp
-   */
-  public $userPermissionTemp = NULL;
-
   public $userFrameworkURLVar = 'q';
   public $userFrameworkDSN = NULL;
   public $userFrameworkBaseURL = NULL;
@@ -272,7 +262,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $userFrameworkLogging = FALSE;
 
   /**
-   * The handle for import file size
+   * the handle for import file size
    * @var int
    */
   public $maxImportFileSize = 1048576;
@@ -335,11 +325,11 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $logging = FALSE;
 
   /**
-   * Whether public pages should display "empowered by CiviCRM"
+   * Whether CiviCRM should check for newer versions
    *
    * @var boolean
    */
-  public $empoweredBy = TRUE;
+  public $versionCheck = TRUE;
 
   /**
    * Array of enabled add-on components (e.g. CiviContribute, CiviMail...)
@@ -347,12 +337,8 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    * @var array
    */
   public $enableComponents = array(
-    'CiviContribute',
-    'CiviPledge',
-    'CiviMember',
-    'CiviEvent',
-    'CiviMail',
-    'CiviReport',
+    'CiviContribute', 'CiviPledge', 'CiviMember',
+    'CiviEvent', 'CiviMail', 'CiviReport',
   );
   public $enableComponentIDs = array(1, 6, 2, 3, 4, 8);
 
@@ -364,49 +350,49 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $enableSSL = FALSE;
 
   /**
-   * Error template to use for fatal errors
+   * error template to use for fatal errors
    *
    * @var string
    */
   public $fatalErrorTemplate = 'CRM/common/fatal.tpl';
 
   /**
-   * Fatal error handler
+   * fatal error handler
    *
    * @var string
    */
   public $fatalErrorHandler = NULL;
 
   /**
-   * Legacy encoding for file encoding conversion
+   * legacy encoding for file encoding conversion
    *
    * @var string
    */
   public $legacyEncoding = 'Windows-1252';
 
   /**
-   * Field separator for import/export csv file
+   * field separator for import/export csv file
    *
    * @var string
    */
   public $fieldSeparator = ',';
 
   /**
-   * Max location blocks in address
+   * max location blocks in address
    *
    * @var integer
    */
   public $maxLocationBlocks = 2;
 
   /**
-   * The font path where captcha fonts are stored
+   * the font path where captcha fonts are stored
    *
    * @var string
    */
   public $captchaFontPath = '/usr/X11R6/lib/X11/fonts/';
 
   /**
-   * The font to use for captcha
+   * the font to use for captcha
    *
    * @var string
    */
@@ -429,7 +415,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $dashboardCacheTimeout = 1440;
 
   /**
-   * Flag to indicate if acl cache is NOT to be reset
+   * flag to indicate if acl cache is NOT to be reset
    */
   public $doNotResetCache = 0;
 
@@ -441,24 +427,24 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $oldInputStyle = 1;
 
   /**
-   * Should we disable key generation for forms
+   * should we disbable key generation for forms
    *
    * @var boolean
    */
   public $formKeyDisable = FALSE;
 
   /**
-   * determine whether the call is from cms or civicrm
+   * to determine wether the call is from cms or civicrm
    */
   public $inCiviCRM = FALSE;
 
   /**
-   * Component registry object (of CRM_Core_Component type)
+   * component registry object (of CRM_Core_Component type)
    */
   public $componentRegistry = NULL;
 
   /**
-   * PDF receipt as attachment is disabled by default (CRM-8350)
+   * PDF reciept as attachment is disabled by default (CRM-8350)
    */
   public $doNotAttachPDFReceipt = FALSE;
 
@@ -479,7 +465,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   public $wpBasePage = NULL;
 
   /**
-   * Provide addressSequence.
+   * Provide addressSequence
    *
    * @param
    *
@@ -494,7 +480,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   }
 
   /**
-   * Provide cached default currency symbol.
+   * Provide cached default currency symbol
    *
    * @param
    *
@@ -519,7 +505,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   }
 
   /**
-   * Provide cached default currency symbol.
+   * Provide cached default currency symbol
    *
    * @param
    *
@@ -540,7 +526,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   }
 
   /**
-   * Provide cached default country name.
+   * Provide cached default country name
    *
    * @param
    *
@@ -548,7 +534,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
    */
   public function defaultContactCountryName() {
     static $cachedContactCountryName = NULL;
-    if (!$cachedContactCountryName && $this->defaultContactCountry) {
+    if (!$cachedContactCountryName) {
       $countryCodes = CRM_Core_PseudoConstant::country();
       $cachedContactCountryName = $countryCodes[$this->defaultContactCountry];
     }
@@ -556,7 +542,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   }
 
   /**
-   * Provide cached country limit translated to names.
+   * Provide cached country limit translated to names
    *
    * @param
    *
@@ -586,7 +572,7 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
   }
 
   /**
-   * Provide cached province limit translated to names.
+   * Provide cached province limit translated to names
    *
    * @param
    *
@@ -614,6 +600,6 @@ class CRM_Core_Config_Variables extends CRM_Core_Config_Defaults {
     }
     return $cachedProvinceLimit;
   }
-
 }
 // end CRM_Core_Config
+

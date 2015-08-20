@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,33 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Utils_Crypt {
 
-  /**
-   * Encrypts a string using AES256 in ECB mode, if encryption is enabled.
-   *
-   * After encrypting the string, it is base64 encoded.
-   *
-   * If encryption is not enabled, either due to CIVICRM_SITE_KEY being
-   * undefined or due to unavailability of the mcrypt module, the string is
-   * merely base64 encoded and is not encrypted at all.
-   *
-   * @param string $string
-   *   Plaintext to be encrypted.
-   * @return string
-   *   Base64-encoded ciphertext, or base64-encoded plaintext if encryption is
-   *   disabled or unavailable.
-   */
-  public static function encrypt($string) {
+  static function encrypt($string) {
     if (empty($string)) {
       return $string;
     }
@@ -59,8 +44,8 @@ class CRM_Utils_Crypt {
     ) {
       $td = mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_ECB, '');
       // ECB mode - iv not needed - CRM-8198
-      $iv = '00000000000000000000000000000000';
-      $ks = mcrypt_enc_get_key_size($td);
+      $iv  = '00000000000000000000000000000000';
+      $ks  = mcrypt_enc_get_key_size($td);
       $key = substr(sha1(CIVICRM_SITE_KEY), 0, $ks);
 
       mcrypt_generic_init($td, $key, $iv);
@@ -71,19 +56,7 @@ class CRM_Utils_Crypt {
     return base64_encode($string);
   }
 
-  /**
-   * Decrypts ciphertext encrypted with AES256 in ECB mode, if possible.
-   *
-   * If the mcrypt module is not available or if CIVICRM_SITE_KEY is not set,
-   * the provided ciphertext is only base64-decoded, not decrypted.
-   *
-   * @param string $string
-   *   Ciphertext to be decrypted.
-   * @return string
-   *   Plaintext, or base64-decoded ciphertext if encryption is disabled or
-   *   unavailable.
-   */
-  public static function decrypt($string) {
+  static function decrypt($string) {
     if (empty($string)) {
       return $string;
     }
@@ -98,8 +71,8 @@ class CRM_Utils_Crypt {
     ) {
       $td = mcrypt_module_open(MCRYPT_RIJNDAEL_256, '', MCRYPT_MODE_ECB, '');
       // ECB mode - iv not needed - CRM-8198
-      $iv = '00000000000000000000000000000000';
-      $ks = mcrypt_enc_get_key_size($td);
+      $iv  = '00000000000000000000000000000000';
+      $ks  = mcrypt_enc_get_key_size($td);
       $key = substr(sha1(CIVICRM_SITE_KEY), 0, $ks);
 
       mcrypt_generic_init($td, $key, $iv);
@@ -110,5 +83,5 @@ class CRM_Utils_Crypt {
 
     return $string;
   }
-
 }
+

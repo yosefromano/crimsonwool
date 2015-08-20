@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -36,38 +36,35 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_ACL_Page_ACL extends CRM_Core_Page_Basic {
 
-  public $useLivePageJS = TRUE;
-
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * Get BAO Name.
+   * Get BAO Name
    *
-   * @return string
-   *   Classname of BAO.
+   * @return string Classname of BAO.
    */
-  public function getBAOName() {
+  function getBAOName() {
     return 'CRM_ACL_BAO_ACL';
   }
 
   /**
-   * Get action Links.
+   * Get action Links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
    */
-  public function &links() {
+  function &links() {
     if (!(self::$_links)) {
       self::$_links = array(
         CRM_Core_Action::UPDATE => array(
@@ -78,12 +75,14 @@ class CRM_ACL_Page_ACL extends CRM_Core_Page_Basic {
         ),
         CRM_Core_Action::DISABLE => array(
           'name' => ts('Disable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_ACL_BAO_ACL' . '\',\'' . 'enable-disable' . '\' );"',
+          'ref' => 'disable-action',
           'title' => ts('Disable ACL'),
         ),
         CRM_Core_Action::ENABLE => array(
           'name' => ts('Enable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_ACL_BAO_ACL' . '\',\'' . 'disable-enable' . '\' );"',
+          'ref' => 'enable-action',
           'title' => ts('Enable ACL'),
         ),
         CRM_Core_Action::DELETE => array(
@@ -105,8 +104,10 @@ class CRM_ACL_Page_ACL extends CRM_Core_Page_Basic {
    * Finally it calls the parent's run method.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // get the requested action
     $action = CRM_Utils_Request::retrieve('action', 'String',
       // default to 'browse'
@@ -120,14 +121,11 @@ class CRM_ACL_Page_ACL extends CRM_Core_Page_Basic {
     );
 
     // set breadcrumb to append to admin/access
-    $breadCrumb = array(
-      array(
-        'title' => ts('Access Control'),
+    $breadCrumb = array(array('title' => ts('Access Control'),
         'url' => CRM_Utils_System::url('civicrm/admin/access',
           'reset=1'
         ),
-      ),
-    );
+      ));
     CRM_Utils_System::appendBreadCrumb($breadCrumb);
     // what action to take ?
     if ($action & (CRM_Core_Action::ADD | CRM_Core_Action::DELETE)) {
@@ -143,21 +141,23 @@ class CRM_ACL_Page_ACL extends CRM_Core_Page_Basic {
       }
     }
 
+
     // finally browse the acl's
-    if ($action & CRM_Core_Action::BROWSE) {
-      $this->browse();
-    }
+    $this->browse();
 
     // parent run
     return parent::run();
   }
 
   /**
-   * Browse all acls.
+   * Browse all acls
    *
    * @return void
+   * @access public
+   * @static
    */
-  public function browse() {
+  function browse() {
+
     // get all acl's sorted by weight
     $acl = array();
     $query = "
@@ -172,21 +172,17 @@ ORDER BY entity_id
 
     $roles = CRM_Core_OptionGroup::values('acl_role');
 
-    $group = array(
-      '-1' => ts('- select -'),
+    $group = array('-1' => ts('- select -'),
       '0' => ts('All Groups'),
     ) + CRM_Core_PseudoConstant::group();
-    $customGroup = array(
-      '-1' => ts('- select -'),
+    $customGroup = array('-1' => ts('- select -'),
       '0' => ts('All Custom Groups'),
     ) + CRM_Core_PseudoConstant::get('CRM_Core_DAO_CustomField', 'custom_group_id');
-    $ufGroup = array(
-      '-1' => ts('- select -'),
+    $ufGroup = array('-1' => ts('- select -'),
       '0' => ts('All Profiles'),
     ) + CRM_Core_PseudoConstant::get('CRM_Core_DAO_UFField', 'uf_group_id');
 
-    $event = array(
-      '-1' => ts('- select -'),
+    $event = array('-1' => ts('- select -'),
       '0' => ts('All Events'),
     ) + CRM_Event_PseudoConstant::event();
 
@@ -199,6 +195,7 @@ ORDER BY entity_id
       $acl[$dao->id]['object_table'] = $dao->object_table;
       $acl[$dao->id]['object_id'] = $dao->object_id;
       $acl[$dao->id]['is_active'] = $dao->is_active;
+
 
       if ($acl[$dao->id]['entity_id']) {
         $acl[$dao->id]['entity'] = $roles[$acl[$dao->id]['entity_id']];
@@ -239,50 +236,38 @@ ORDER BY entity_id
         $action -= CRM_Core_Action::DISABLE;
       }
 
-      $acl[$dao->id]['action'] = CRM_Core_Action::formLink(
-        self::links(),
-        $action,
-        array('id' => $dao->id),
-        ts('more'),
-        FALSE,
-        'ACL.manage.action',
-        'ACL',
-        $dao->id
+      $acl[$dao->id]['action'] = CRM_Core_Action::formLink(self::links(), $action,
+        array('id' => $dao->id)
       );
     }
     $this->assign('rows', $acl);
   }
 
   /**
-   * Get name of edit form.
+   * Get name of edit form
    *
-   * @return string
-   *   Classname of edit form.
+   * @return string Classname of edit form.
    */
-  public function editForm() {
+  function editForm() {
     return 'CRM_ACL_Form_ACL';
   }
 
   /**
-   * Get edit form name.
+   * Get edit form name
    *
-   * @return string
-   *   name of this page.
+   * @return string name of this page.
    */
-  public function editName() {
+  function editName() {
     return 'ACL';
   }
 
   /**
    * Get user context.
    *
-   * @param null $mode
-   *
-   * @return string
-   *   user context.
+   * @return string user context.
    */
-  public function userContext($mode = NULL) {
+  function userContext($mode = NULL) {
     return 'civicrm/acl';
   }
-
 }
+

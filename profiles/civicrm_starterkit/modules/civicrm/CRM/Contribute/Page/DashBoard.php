@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,22 +43,21 @@ class CRM_Contribute_Page_DashBoard extends CRM_Core_Page {
    * the contact and calls the appropriate type of page to view.
    *
    * @return void
+   * @access public
+   *
    */
-  public function preProcess() {
+  function preProcess() {
     CRM_Utils_System::setTitle(ts('CiviContribute'));
 
-    $status = array('Valid', 'Cancelled');
-    $prefixes = array('start', 'month', 'year');
-    $startDate = NULL;
+    $status      = array('Valid', 'Cancelled');
+    $prefixes    = array('start', 'month', 'year');
+    $startDate   = NULL;
     $startToDate = $monthToDate = $yearToDate = array();
 
     //get contribution dates.
     $dates = CRM_Contribute_BAO_Contribution::getContributionDates();
     foreach (array(
-               'now',
-               'yearDate',
-               'monthDate',
-             ) as $date) {
+      'now', 'yearDate', 'monthDate') as $date) {
       $$date = $dates[$date];
     }
     // fiscal years end date
@@ -102,12 +101,13 @@ class CRM_Contribute_Page_DashBoard extends CRM_Core_Page {
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     $controller = new CRM_Core_Controller_Simple('CRM_Contribute_Form_Search',
@@ -127,10 +127,9 @@ class CRM_Contribute_Page_DashBoard extends CRM_Core_Page {
     $chartForm->setEmbedded(TRUE);
     $chartForm->process();
     $chartForm->run();
-    CRM_Core_Resources::singleton()
-      ->addScriptFile('civicrm', 'templates/CRM/Contribute/Page/DashBoard.js', 1, 'html-header');
+    CRM_Core_Resources::singleton()->addScriptFile('civicrm', 'templates/CRM/Contribute/Page/DashBoard.js');
 
     return parent::run();
   }
-
 }
+

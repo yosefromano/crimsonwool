@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,6 +43,7 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
    * The action links for notes that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
@@ -50,15 +51,17 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
    * The action links for comments that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_commentLinks = NULL;
 
   /**
-   * View details of a note.
+   * View details of a note
    *
    * @return void
+   * @access public
    */
-  public function view() {
+  function view() {
     $note = new CRM_Core_DAO_Note();
     $note->id = $this->_id;
     if ($note->find(TRUE)) {
@@ -80,12 +83,15 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
   }
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
+   *
+   * return null
+   * @access public
    */
-  public function browse() {
-    $note = new CRM_Core_DAO_Note();
+  function browse() {
+    $note               = new CRM_Core_DAO_Note();
     $note->entity_table = 'civicrm_contact';
-    $note->entity_id = $this->_contactId;
+    $note->entity_id    = $this->_contactId;
 
     $note->orderBy('modified_date desc');
 
@@ -99,7 +105,7 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
     $mask = CRM_Core_Action::mask($permissions);
 
     $values = array();
-    $links = self::links();
+    $links  = self::links();
     $action = array_sum(array_keys($links)) & $mask;
 
     $note->find();
@@ -112,12 +118,7 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
           array(
             'id' => $note->id,
             'cid' => $this->_contactId,
-          ),
-          ts('more'),
-          FALSE,
-          'note.selector.row',
-          'Note',
-          $note->id
+          )
         );
         $contact = new CRM_Contact_DAO_Contact();
         $contact->id = $note->contact_id;
@@ -125,10 +126,6 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
         $contact->fetch();
         $values[$note->id]['createdBy'] = $contact->display_name;
         $values[$note->id]['comment_count'] = CRM_Core_BAO_Note::getChildCount($note->id);
-
-        // paper icon view for attachments part
-        $paperIconAttachmentInfo = CRM_Core_BAO_File::paperIconAttachment('civicrm_note', $note->id);
-        $values[$note->id]['attachment'] = $paperIconAttachmentInfo;
       }
     }
 
@@ -144,22 +141,18 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
         'id' => $note->id,
         'pid' => $note->entity_id,
         'cid' => $note->entity_id,
-      ),
-      ts('more'),
-      FALSE,
-      'note.comment.action',
-      'Note',
-      $note->id
+      )
     );
     $this->assign('commentAction', $commentAction);
-
-    $this->ajaxResponse['tabCount'] = CRM_Contact_BAO_Contact::getCountComponent('note', $this->_contactId);
   }
 
   /**
-   * called when action is update or new.
+   * This function is called when action is update or new
+   *
+   * return null
+   * @access public
    */
-  public function edit() {
+  function edit() {
     $controller = new CRM_Core_Controller_Simple('CRM_Note_Form_Note', ts('Contact Notes'), $this->_action);
     $controller->setEmbedded(TRUE);
 
@@ -171,9 +164,8 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
     $session->pushUserContext($url);
 
     if (CRM_Utils_Request::retrieve('confirmed', 'Boolean',
-      CRM_Core_DAO::$_nullObject
-    )
-    ) {
+        CRM_Core_DAO::$_nullObject
+      )) {
       CRM_Core_BAO_Note::del($this->_id);
       CRM_Utils_System::redirect($url);
     }
@@ -187,7 +179,7 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
     $controller->run();
   }
 
-  public function preProcess() {
+  function preProcess() {
     $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
     if ($this->_id && CRM_Core_BAO_Note::getNotePrivacyHidden($this->_id)) {
@@ -200,6 +192,9 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
     // check logged in url permission
     CRM_Contact_Page_View::checkUserPermission($this);
 
+    // set page title
+    CRM_Contact_Page_View::setTitle($this->_contactId);
+
     $displayName = CRM_Contact_BAO_Contact::displayName($this->_contactId);
     CRM_Utils_System::setTitle(ts('Notes for') . ' ' . $displayName);
 
@@ -208,12 +203,13 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     if ($this->_action & CRM_Core_Action::VIEW) {
@@ -232,21 +228,22 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
   }
 
   /**
-   * Delete the note object from the db.
+   * delete the note object from the db
    *
    * @return void
+   * @access public
    */
-  public function delete() {
+  function delete() {
     CRM_Core_BAO_Note::del($this->_id);
   }
 
   /**
-   * Get action links.
+   * Get action links
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
+   * @static
    */
-  public static function &links() {
+  static function &links() {
     if (!(self::$_links)) {
       $deleteExtra = ts('Are you sure you want to delete this note?');
 
@@ -273,6 +270,7 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
           'name' => ts('Delete'),
           'url' => 'civicrm/contact/view/note',
           'qs' => 'action=delete&reset=1&cid=%%cid%%&id=%%id%%&selectedChild=note',
+          'extra' => 'onclick = "if (confirm(\'' . $deleteExtra . '\') ) this.href+=\'&amp;confirmed=1\'; else return false;"',
           'title' => ts('Delete Note'),
         ),
       );
@@ -281,13 +279,14 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
   }
 
   /**
-   * Get action links for comments.
+   * Get action links for comments
    *
-   * @return array
-   *   (reference) of action links
+   * @return array (reference) of action links
+   * @static
    */
-  public static function &commentLinks() {
+  static function &commentLinks() {
     if (!(self::$_commentLinks)) {
+      $deleteExtra = ts('Are you sure you want to delete this comment?');
       self::$_commentLinks = array(
         CRM_Core_Action::VIEW => array(
           'name' => ts('View'),
@@ -305,11 +304,12 @@ class CRM_Contact_Page_View_Note extends CRM_Core_Page {
           'name' => ts('Delete'),
           'url' => 'civicrm/contact/view/note',
           'qs' => 'action=delete&reset=1&cid=%%cid%%&id={id}&selectedChild=note',
+          'extra' => 'onclick = "if (confirm(\'' . $deleteExtra . '\') ) this.href+=\'&amp;confirmed=1\'; else return false;"',
           'title' => ts('Delete Comment'),
         ),
       );
     }
     return self::$_commentLinks;
   }
-
 }
+

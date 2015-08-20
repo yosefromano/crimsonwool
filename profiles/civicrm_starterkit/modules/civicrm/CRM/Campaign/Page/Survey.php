@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -38,14 +38,9 @@
  */
 class CRM_Campaign_Page_Survey extends CRM_Core_Page {
 
-  public $useLivePageJS = TRUE;
-
   private static $_actionLinks;
 
-  /**
-   * @return array
-   */
-  public function &actionLinks() {
+  function &actionLinks() {
     // check if variable _actionsLinks is populated
     if (!isset(self::$_actionLinks)) {
 
@@ -58,12 +53,14 @@ class CRM_Campaign_Page_Survey extends CRM_Core_Page {
         ),
         CRM_Core_Action::DISABLE => array(
           'name' => ts('Disable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Campaign_BAO_Survey' . '\',\'' . 'enable-disable' . '\' );"',
+          'ref' => 'disable-action',
           'title' => ts('Disable Survey'),
         ),
         CRM_Core_Action::ENABLE => array(
           'name' => ts('Enable'),
-          'ref' => 'crm-enable-disable',
+          'extra' => 'onclick = "enableDisable( %%id%%,\'' . 'CRM_Campaign_BAO_Survey' . '\',\'' . 'disable-enable' . '\' );"',
+          'ref' => 'enable-action',
           'title' => ts('Enable Survey'),
         ),
         CRM_Core_Action::DELETE => array(
@@ -77,14 +74,14 @@ class CRM_Campaign_Page_Survey extends CRM_Core_Page {
     return self::$_actionLinks;
   }
 
-  public function browse() {
+  function browse() {
 
     $surveys = CRM_Campaign_BAO_Survey::getSurveySummary();
 
     if (!empty($surveys)) {
 
-      $surveyType = CRM_Campaign_BAO_Survey::getSurveyActivityType();
-      $campaigns = CRM_Campaign_BAO_Campaign::getAllCampaign();
+      $surveyType    = CRM_Campaign_BAO_Survey::getSurveyActivityType();
+      $campaigns     = CRM_Campaign_BAO_Campaign::getAllCampaign();
       $activityTypes = CRM_Core_OptionGroup::values('activity_type', FALSE, FALSE, FALSE, FALSE, 'name');
       foreach ($surveys as $sid => $survey) {
         $surveys[$sid]['campaign_id'] = $campaigns[$survey['campaign_id']];
@@ -99,16 +96,7 @@ class CRM_Campaign_Page_Survey extends CRM_Core_Page {
           $action -= CRM_Core_Action::DISABLE;
         }
 
-        $surveys[$sid]['action'] = CRM_Core_Action::formLink(
-          $this->actionLinks(),
-          $action,
-          array('id' => $sid),
-          ts('more'),
-          FALSE,
-          'survey.selector.row',
-          'Survey',
-          $sid
-        );
+        $surveys[$sid]['action'] = CRM_Core_Action::formLink($this->actionLinks(), $action, array('id' => $sid));
       }
     }
 
@@ -116,10 +104,7 @@ class CRM_Campaign_Page_Survey extends CRM_Core_Page {
     $this->assign('addSurveyUrl', CRM_Utils_System::url('civicrm/survey/add', 'reset=1&action=add'));
   }
 
-  /**
-   * @return string
-   */
-  public function run() {
+  function run() {
     if (!CRM_Campaign_BAO_Campaign::accessCampaign()) {
       CRM_Utils_System::permissionDenied();
     }
@@ -132,5 +117,5 @@ class CRM_Campaign_Page_Survey extends CRM_Core_Page {
 
     return parent::run();
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,38 +41,36 @@
 class CRM_Event_Form_Task_SaveSearch extends CRM_Event_Form_Task {
 
   /**
-   * Saved search id if any.
+   * saved search id if any
    *
    * @var int
    */
   protected $_id;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
-   */
-  public function preProcess() {
+   * @access public
+   */ function preProcess() {
     parent::preProcess();
     $this->_id = NULL;
   }
 
   /**
-   * Build the form object - it consists of
+   * Build the form - it consists of
    *    - displaying the QILL (query in local language)
    *    - displaying elements for saving the search
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     CRM_Utils_System::setTitle(ts('Smart Group'));
     // get the qill
     $query = new CRM_Event_BAO_Query($this->get('formValues'));
     $qill = $query->qill();
-
-    // Values from the search form
-    $formValues = $this->controller->exportValues();
 
     // need to save qill for the smarty template
     $this->assign('qill', $qill);
@@ -97,7 +95,6 @@ class CRM_Event_Form_Task_SaveSearch extends CRM_Event_Form_Task {
     }
     else {
       $this->addDefaultButtons(ts('Save Smart Group'));
-      $this->assign('partiallySelected', $formValues['radio_ts'] != 'ts_all');
     }
 
     $this->addRule('title', ts('Name already exists in Database.'),
@@ -106,8 +103,9 @@ class CRM_Event_Form_Task_SaveSearch extends CRM_Event_Form_Task {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
    * @return void
    */
@@ -121,6 +119,7 @@ class CRM_Event_Form_Task_SaveSearch extends CRM_Event_Form_Task {
     $savedSearch = new CRM_Contact_BAO_SavedSearch();
     $savedSearch->id = $this->_id;
     $savedSearch->form_values = serialize($this->get('formValues'));
+    $savedSearch->mapping_id = $mappingId;
     $savedSearch->save();
     $this->set('ssID', $savedSearch->id);
     CRM_Core_Session::setStatus(ts("Your smart group has been saved as '%1'.", array(1 => $formValues['title'])), ts('Saved'), 'success');
@@ -138,5 +137,5 @@ class CRM_Event_Form_Task_SaveSearch extends CRM_Event_Form_Task {
     }
     $group = CRM_Contact_BAO_Group::create($params);
   }
-
 }
+

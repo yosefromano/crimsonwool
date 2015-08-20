@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,41 +23,44 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_BAO_PreferencesDate extends CRM_Core_DAO_PreferencesDate {
 
   /**
-   * Static holder for the default LT.
+   * static holder for the default LT
    */
   static $_defaultPreferencesDate = NULL;
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * contact_id. We'll tweak this function to be more full featured over a period
+   * of time. This is the inverse function of create. It also stores all the retrieved
+   * values in the default array
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @return CRM_Core_BAO_PreferencesDate|null
-   *   object on success, null otherwise
+   * @return object CRM_Core_BAO_PreferencesDate object on success, null otherwise
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     $dao = new CRM_Core_DAO_PreferencesDate();
     $dao->copyValues($params);
     if ($dao->find(TRUE)) {
@@ -68,29 +71,30 @@ class CRM_Core_BAO_PreferencesDate extends CRM_Core_DAO_PreferencesDate {
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return void
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
    *
+   * @access public
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     CRM_Core_Error::fatal();
   }
 
   /**
-   * Delete preference dates.
+   * Function to delete preference dates
    *
-   * @param int $id
+   * @param  int  $id
    *
+   * @access public
+   * @static
    */
-  public static function del($id) {
+  static function del($id) {
     CRM_Core_Error::fatal();
   }
-
 }
+

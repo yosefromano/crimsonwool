@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,18 +39,17 @@
 class CRM_Contact_Form_Edit_IM {
 
   /**
-   * Build the form object elements for an IM object.
+   * build the form elements for an IM object
    *
-   * @param CRM_Core_Form $form
-   *   Reference to the form object.
-   * @param int $blockCount
-   *   Block number to build.
-   * @param bool $blockEdit
-   *   Is it block edit.
+   * @param CRM_Core_Form $form       reference to the form object
+   * @param int           $blockCount block number to build
+   * @param boolean       $blockEdit  is it block edit
    *
    * @return void
+   * @access public
+   * @static
    */
-  public static function buildQuickForm(&$form, $blockCount = NULL, $blockEdit = FALSE) {
+  static function buildQuickForm(&$form, $blockCount = NULL, $blockEdit = FALSE) {
     if (!$blockCount) {
       $blockId = ($form->get('IM_Block_Count')) ? $form->get('IM_Block_Count') : 1;
     }
@@ -60,14 +59,10 @@ class CRM_Contact_Form_Edit_IM {
     $form->applyFilter('__ALL__', 'trim');
 
     //IM provider select
-    $form->addSelect("im[$blockId][provider_id]", array('entity' => 'im', 'class' => 'eight', 'placeholder' => NULL));
+    $form->addElement('select', "im[$blockId][provider_id]", '', CRM_Core_PseudoConstant::get('CRM_Core_DAO_IM', 'provider_id'));
 
     //Block type select
-    $form->addSelect("im[$blockId][location_type_id]", array(
-        'entity' => 'im',
-        'class' => 'eight',
-        'placeholder' => NULL,
-      ));
+    $form->addElement('select', "im[$blockId][location_type_id]", '', CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id'));
 
     //IM box
     $form->addElement('text', "im[$blockId][name]", ts('Instant Messenger'),
@@ -82,5 +77,5 @@ class CRM_Contact_Form_Edit_IM {
 
     $form->addElement('radio', "im[$blockId][is_primary]", '', '', '1', $js);
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -37,29 +37,32 @@
  * This class generates form components for Membership Type
  *
  */
-class CRM_Member_Form_MembershipStatus extends CRM_Member_Form_MembershipConfig {
+class CRM_Member_Form_MembershipStatus extends CRM_Member_Form {
 
   /**
-   * Set default values for the form. MobileProvider that in edit/view mode
+   * This function sets the default values for the form. MobileProvider that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function setDefaultValues() {
+    $defaults = array();
     $defaults = parent::setDefaultValues();
 
     //finding default weight to be put
-    if (empty($defaults['weight'])) {
+    if (!CRM_Utils_Array::value('weight', $defaults)) {
       $defaults['weight'] = CRM_Utils_Weight::getDefaultWeight('CRM_Member_DAO_MembershipStatus');
     }
     return $defaults;
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
@@ -85,19 +88,19 @@ class CRM_Member_Form_MembershipStatus extends CRM_Member_Form_MembershipConfig 
     );
 
     $this->add('select', 'start_event', ts('Start Event'), CRM_Core_SelectValues::eventDate(), TRUE);
-    $this->add('select', 'start_event_adjust_unit', ts('Start Event Adjustment'), array('' => ts('- select -')) + CRM_Core_SelectValues::unitList());
+    $this->add('select', 'start_event_adjust_unit', ts('Start Event Adjustment'), CRM_Core_SelectValues::unitList());
     $this->add('text', 'start_event_adjust_interval', ts('Start Event Adjust Interval'),
       CRM_Core_DAO::getAttribute('CRM_Member_DAO_MembershipStatus', 'start_event_adjust_interval')
     );
-    $this->add('select', 'end_event', ts('End Event'), array('' => ts('- select -')) + CRM_Core_SelectValues::eventDate());
-    $this->add('select', 'end_event_adjust_unit', ts('End Event Adjustment'), array('' => ts('- select -')) + CRM_Core_SelectValues::unitList());
+    $this->add('select', 'end_event', ts('End Event'), CRM_Core_SelectValues::eventDate(), FALSE);
+    $this->add('select', 'end_event_adjust_unit', ts('End Event Adjustment'), CRM_Core_SelectValues::unitList());
     $this->add('text', 'end_event_adjust_interval', ts('End Event Adjust Interval'),
       CRM_Core_DAO::getAttribute('CRM_Member_DAO_MembershipStatus', 'end_event_adjust_interval')
     );
     $this->add('checkbox', 'is_current_member', ts('Current Membership?'));
     $this->add('checkbox', 'is_admin', ts('Administrator Only?'));
 
-    $this->add('text', 'weight', ts('Order'),
+    $this->add('text', 'weight', ts('Weight'),
       CRM_Core_DAO::getAttribute('CRM_Member_DAO_MembershipStatus', 'weight')
     );
     $this->add('checkbox', 'is_default', ts('Default?'));
@@ -105,17 +108,18 @@ class CRM_Member_Form_MembershipStatus extends CRM_Member_Form_MembershipConfig 
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     if ($this->_action & CRM_Core_Action::DELETE) {
-      try {
+      try{
         CRM_Member_BAO_MembershipStatus::del($this->_id);
       }
-      catch (CRM_Core_Exception $e) {
+      catch(CRM_Core_Exception $e) {
         CRM_Core_Error::statusBounce($e->getMessage(), NULL, ts('Delete Failed'));
       }
       CRM_Core_Session::setStatus(ts('Selected membership status has been deleted.'), ts('Record Deleted'), 'success');
@@ -141,9 +145,8 @@ class CRM_Member_Form_MembershipStatus extends CRM_Member_Form_MembershipConfig 
 
       $membershipStatus = CRM_Member_BAO_MembershipStatus::add($params, $ids);
       CRM_Core_Session::setStatus(ts('The membership status \'%1\' has been saved.',
-        array(1 => $membershipStatus->label)
-      ), ts('Saved'), 'success');
+          array(1 => $membershipStatus->label)
+        ), ts('Saved'), 'success');
     }
   }
-
 }

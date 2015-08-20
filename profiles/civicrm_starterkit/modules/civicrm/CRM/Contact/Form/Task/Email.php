@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -56,80 +56,27 @@ class CRM_Contact_Form_Task_Email extends CRM_Contact_Form_Task {
   public $_noEmails = FALSE;
 
   /**
-   * All the existing templates in the system.
+   * all the existing templates in the system
    *
    * @var array
    */
   public $_templates = NULL;
 
   /**
-   * Store "to" contact details.
-   * @var array
-   */
-  public $_toContactDetails = array();
-
-  /**
-   * Store all selected contact id's, that includes to, cc and bcc contacts
-   * @var array
-   */
-  public $_allContactIds = array();
-
-  /**
-   * Store only "to" contact ids.
-   * @var array
-   */
-  public $_toContactIds = array();
-
-  /**
-   * Store only "cc" contact ids.
-   * @var array
-   */
-  public $_ccContactIds = array();
-
-  /**
-   * Store only "bcc" contact ids.
-   * @var array
-   */
-  public $_bccContactIds = array();
-
-  /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
-   */
-  public function preProcess() {
+   * @access public
+   */ function preProcess() {
     // store case id if present
-    $this->_caseId = CRM_Utils_Request::retrieve('caseid', 'String', $this, FALSE);
+    $this->_caseId = CRM_Utils_Request::retrieve('caseid', 'Positive', $this, FALSE);
     $this->_context = CRM_Utils_Request::retrieve('context', 'String', $this);
 
-    $cid = CRM_Utils_Request::retrieve('cid', 'String', $this, FALSE);
-
-    // Allow request to specify email id rather than contact id
-    $toEmailId = CRM_Utils_Request::retrieve('email_id', 'String', $this);
-    if ($toEmailId) {
-      $toEmail = civicrm_api('email', 'getsingle', array('version' => 3, 'id' => $toEmailId));
-      if (!empty($toEmail['email']) && !empty($toEmail['contact_id'])) {
-        $this->_toEmail = $toEmail;
-      }
-      if (!$cid) {
-        $cid = $toEmail['contact_id'];
-        $this->set('cid', $cid);
-      }
-    }
-
+    $cid = CRM_Utils_Request::retrieve('cid', 'Positive', $this, FALSE);
     if ($cid) {
-      $cid = explode(',', $cid);
-      $displayName = array();
-
-      foreach ($cid as $val) {
-        $displayName[] = CRM_Contact_BAO_Contact::displayName($val);
-      }
-
-      CRM_Utils_System::setTitle(implode(',', $displayName) . ' - ' . ts('Email'));
+      CRM_Contact_Page_View::setTitle($cid);
     }
-    else {
-      CRM_Utils_System::setTitle(ts('New Email'));
-    }
+
     CRM_Contact_Form_Task_EmailCommon::preProcessFromAddress($this);
 
     if (!$cid && $this->_context != 'standalone') {
@@ -148,8 +95,9 @@ class CRM_Contact_Form_Task_Email extends CRM_Contact_Form_Task {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
@@ -162,13 +110,14 @@ class CRM_Contact_Form_Task_Email extends CRM_Contact_Form_Task {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     CRM_Contact_Form_Task_EmailCommon::postProcess($this);
   }
-
 }
+

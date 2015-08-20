@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -47,7 +47,7 @@
       <th>{ts}Participant Count{/ts} {help id="id-participant-count"}</th>
       <th>{ts}Max Participant{/ts} {help id="id-participant-max"}</th>
   {/if}
-        <th>{ts}Order{/ts}</th>
+        <th>{ts}Weight{/ts}</th>
       <th>{ts}Active?{/ts}</th>
     </tr>
 

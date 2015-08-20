@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -39,7 +39,7 @@
 
     {if $events}
         <div class="report-pager">
-            {include file="CRM/common/pager.tpl" location="top"}
+            {include file="CRM/common/pager.tpl" location="top" noForm=0}
         </div>
         {foreach from=$events item=eventID}
                   <table class="report-layout">
@@ -82,7 +82,7 @@
         {/foreach}
 
     <div class="report-pager">
-            {include file="CRM/common/pager.tpl"}
+            {include file="CRM/common/pager.tpl" noForm=0}
         </div>
         {if !$section }
             {*Statistics at the bottom of the page*}

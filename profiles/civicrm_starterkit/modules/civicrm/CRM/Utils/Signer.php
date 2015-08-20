@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -60,12 +60,10 @@ class CRM_Utils_Signer {
   /**
    * Instantiate a signature-processor
    *
-   * @param string $secret
-   *   private.
-   * @param array $paramNames
-   *   Array, fields which should be part of the signature.
+   * @param $secret string, private
+   * @param $paramNames array, fields which should be part of the signature
    */
-  public function __construct($secret, $paramNames) {
+  function __construct($secret, $paramNames) {
     sort($paramNames); // ensure consistent serialization of payloads
     $this->secret = $secret;
     $this->paramNames = $paramNames;
@@ -76,21 +74,18 @@ class CRM_Utils_Signer {
   /**
    * Generate a signature for a set of key-value pairs
    *
-   * @param array $params
-   *   Array, key-value pairs.
-   * @param string $salt
-   *   the salt (if known) or NULL (for auto-generated).
+   * @param $params array, key-value pairs
+   * @param $salt string, the salt (if known) or NULL (for auto-generated)
    * @return string, the full public token representing the signature
    */
-  public function sign($params, $salt = NULL) {
+  function sign($params, $salt = NULL) {
     $message = array();
     $message['secret'] = $this->secret;
     $message['payload'] = array();
     if (empty($salt)) {
       $message['salt'] = $this->createSalt();
-    }
-    else {
-      $message['salt'] = $salt;
+    } else {
+      $message['salt'] =  $salt;
     }
     // recall: paramNames is pre-sorted for stability
     foreach ($this->paramNames as $paramName) {
@@ -98,12 +93,11 @@ class CRM_Utils_Signer {
         if (is_numeric($params[$paramName])) {
           $params[$paramName] = (string) $params[$paramName];
         }
-      }
-      else {// $paramName is not included or ===NULL
+      } else { // $paramName is not included or ===NULL
         $params[$paramName] = '';
       }
-      $message['payload'][$paramName] = $params[$paramName];
-    }
+        $message['payload'][$paramName] = $params[$paramName];
+      }
     $token = $message['salt'] . $this->signDelim . md5(serialize($message));
     return $token;
   }
@@ -111,15 +105,11 @@ class CRM_Utils_Signer {
   /**
    * Determine whether a token represents a proper signature for $params
    *
-   * @param string $token
-   *   the full public token representing the signature.
-   * @param array $params
-   *   Array, key-value pairs.
-   *
-   * @throws Exception
+   * @param $token string, the full public token representing the signature
+   * @param $params array, key-value pairs
    * @return bool, TRUE iff all $paramNames for the submitted validate($params) and the original sign($params)
    */
-  public function validate($token, $params) {
+  function validate($token, $params) {
     list ($salt, $signature) = explode($this->signDelim, $token);
     if (strlen($salt) != self::SALT_LEN) {
       throw new Exception("Invalid salt [$token]=[$salt][$signature]");
@@ -128,13 +118,9 @@ class CRM_Utils_Signer {
     return ($token == $newToken);
   }
 
-  /**
-   * @return string
-   */
-  public function createSalt() {
+  function createSalt() {
     // It would be more secure to generate a new value but liable to run this
     // many times on certain admin pages; so instead we'll re-use the hash.
     return $this->defaultSalt;
   }
-
 }

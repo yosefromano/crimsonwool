@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,20 +39,21 @@
 class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_ContributionPage {
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
    * @return void
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     if (isset($this->_id)) {
       $title = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_ContributionPage', $this->_id, 'title');
-      CRM_Utils_System::setTitle(ts('Premiums') . " ($title)");
-      $dao = new CRM_Contribute_DAO_Premium();
+      CRM_Utils_System::setTitle(ts('Premiums (%1)', array(1 => $title)));
+      $dao               = new CRM_Contribute_DAO_Premium();
       $dao->entity_table = 'civicrm_contribution_page';
-      $dao->entity_id = $this->_id;
+      $dao->entity_id    = $this->_id;
       $dao->find(TRUE);
       CRM_Core_DAO::storeValues($dao, $defaults);
     }
@@ -60,9 +61,10 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     $attributes = CRM_Core_DAO::getAttribute('CRM_Contribute_DAO_Premium');
@@ -74,7 +76,7 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
 
     $this->add('text', 'premiums_contact_email', ts('Contact Email') . ' ', $attributes['premiums_contact_email']);
 
-    $this->addRule('premiums_contact_email', ts('Please enter a valid email address.') . ' ', 'email');
+    $this->addRule('premiums_contact_email', ts('Please enter a valid email address for Contact Email') . ' ', 'email');
 
     $this->add('text', 'premiums_contact_phone', ts('Contact Phone'), $attributes['premiums_contact_phone']);
 
@@ -85,7 +87,7 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
     // CRM-10999 Control label and position for No Thank-you radio button
     $this->add('text', 'premiums_nothankyou_label', ts('No Thank-you Label'), $attributes['premiums_nothankyou_label']);
     $positions = array(1 => ts('Before Premiums'), 2 => ts('After Premiums'));
-    $this->add('select', 'premiums_nothankyou_position', ts('No Thank-you Option'), $positions);
+    $this->add('select','premiums_nothankyou_position', ts('No Thank-you Option'), $positions);
     $showForm = TRUE;
 
     if ($this->_single) {
@@ -109,18 +111,18 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
   }
 
   /**
-   * Validation.
+   * Function for validation
    *
-   * @param array $params
-   *   (ref.) an assoc array of name/value pairs.
+   * @param array $params (ref.) an assoc array of name/value pairs
    *
-   * @return bool|array
-   *   mixed true or array of errors
+   * @return mixed true or array of errors
+   * @access public
+   * @static
    */
   public static function formRule($params) {
     $errors = array();
-    if (!empty($params['premiums_active'])) {
-      if (empty($params['premiums_nothankyou_label'])) {
+    if (CRM_Utils_Array::value('premiums_active', $params)) {
+      if (!CRM_Utils_Array::value('premiums_nothankyou_label', $params)) {
         $errors['premiums_nothankyou_label'] = ts('No Thank-you Label is a required field.');
       }
     }
@@ -128,9 +130,10 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
   }
 
   /**
-   * Process the form.
+   * Process the form
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     // get the submitted form values.
@@ -138,9 +141,9 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
 
     // we do this in case the user has hit the forward/back button
 
-    $dao = new CRM_Contribute_DAO_Premium();
+    $dao               = new CRM_Contribute_DAO_Premium();
     $dao->entity_table = 'civicrm_contribution_page';
-    $dao->entity_id = $this->_id;
+    $dao->entity_id    = $this->_id;
     $dao->find(TRUE);
     $premiumID = $dao->id;
     if ($premiumID) {
@@ -162,9 +165,10 @@ class CRM_Contribute_Form_ContributionPage_Premium extends CRM_Contribute_Form_C
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Premiums');
   }
-
 }
+

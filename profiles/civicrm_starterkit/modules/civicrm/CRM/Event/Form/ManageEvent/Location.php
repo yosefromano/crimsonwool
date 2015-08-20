@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,13 +23,13 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -41,42 +41,45 @@
 class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
 
   /**
-   * How many locationBlocks should we display?
+   * how many locationBlocks should we display?
    *
    * @var int
    * @const
    */
-  const LOCATION_BLOCKS = 1;
+  CONST LOCATION_BLOCKS = 1;
 
   /**
-   * The variable, for storing the location array
+   * the variable, for storing the location array
    *
    * @var array
    */
   protected $_locationIds = array();
 
   /**
-   * The variable, for storing location block id with event
+   * the variable, for storing location block id with event
    *
    * @var int
    */
   protected $_oldLocBlockId = 0;
 
   /**
-   * Get the db values for this form.
+   * get the db values for this form
+   *
    */
   public $_values = array();
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     parent::preProcess();
 
     $this->_values = $this->get('values');
     if ($this->_id && empty($this->_values)) {
+
       //get location values.
       $params = array(
         'entity_id' => $this->_id,
@@ -95,19 +98,22 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
   }
 
   /**
-   * Set default values for the form. Note that in edit/view mode
+   * This function sets the default values for the form. Note that in edit/view mode
    * the default values are retrieved from the database
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = $this->_values;
 
-    if (!empty($defaults['loc_block_id'])) {
+    if (CRM_Utils_Array::value('loc_block_id', $defaults)) {
       $defaults['loc_event_id'] = $defaults['loc_block_id'];
       $countLocUsed = CRM_Event_BAO_Event::countEventsUsingLocBlockId($defaults['loc_block_id']);
-      $this->assign('locUsed', $countLocUsed);
+      if ($countLocUsed > 1) {
+        $this->assign('locUsed', TRUE);
+      }
     }
 
     $config = CRM_Core_Config::singleton();
@@ -119,31 +125,45 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
       $defaults['address'][1]['state_province_id'] = $config->defaultContactStateProvince;
     }
 
+    if (!empty($defaults['address'])) {
+      foreach ($defaults['address'] as $key => $value) {
+        CRM_Contact_Form_Edit_Address::fixStateSelect($this,
+          "address[$key][country_id]",
+          "address[$key][state_province_id]",
+          "address[$key][county_id]",
+          CRM_Utils_Array::value('country_id', $value,
+            $config->defaultContactCountry
+          ),
+          CRM_Utils_Array::value('state_province_id', $value)
+        );
+      }
+    }
     $defaults['location_option'] = $this->_oldLocBlockId ? 2 : 1;
 
     return $defaults;
   }
 
   /**
-   * Add local and global form rules.
+   * Add local and global form rules
    *
+   * @access protected
    *
    * @return void
    */
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Event_Form_ManageEvent_Location', 'formRule'));
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields) {
+  static function formRule($fields) {
     // check for state/country mapping
     $errors = CRM_Contact_Form_Edit_Address::formRule($fields, CRM_Core_DAO::$_nullArray, CRM_Core_DAO::$_nullObject);
 
@@ -151,9 +171,10 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
   }
 
   /**
-   *  function to build location block.
+   *  function to build location block
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     //load form for child blocks
@@ -181,10 +202,10 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
     $locationEvents = CRM_Event_BAO_Event::getLocationEvents();
     // remove duplicates and make sure that the duplicate entry with key as
     // loc_block_id of this event (this->_id) is preserved
-    if (!empty($locationEvents[$this->_oldLocBlockId])) {
+    if (CRM_Utils_Array::value($this->_oldLocBlockId, $locationEvents)) {
       $possibleDuplicate = $locationEvents[$this->_oldLocBlockId];
       $locationEvents = array_flip(array_unique($locationEvents));
-      if (!empty($locationEvents[$possibleDuplicate])) {
+      if (CRM_Utils_Array::value($possibleDuplicate, $locationEvents)) {
         $locationEvents[$possibleDuplicate] = $this->_oldLocBlockId;
       }
       $locationEvents = array_flip($locationEvents);
@@ -196,15 +217,18 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
     $events = array();
     if (!empty($locationEvents)) {
       $this->assign('locEvents', TRUE);
-      $optionTypes = array(
-        '1' => ts('Create new location'),
+      $optionTypes = array('1' => ts('Create new location'),
         '2' => ts('Use existing location'),
       );
 
-      $this->addRadio('location_option', ts("Choose Location"), $optionTypes);
+      $this->addRadio('location_option', ts("Choose Location"), $optionTypes,
+        array(
+          'onclick' => "showLocFields();"), '<br/>', FALSE
+      );
 
       if (!isset($locationEvents[$this->_oldLocBlockId]) || (!$this->_oldLocBlockId)) {
-        $locationEvents = array('' => ts('- select -')) + $locationEvents;
+        $locationEvents = array(
+          '' => ts('- select -')) + $locationEvents;
       }
       $this->add('select', 'loc_event_id', ts('Use Location'), $locationEvents);
     }
@@ -213,17 +237,19 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
   }
 
   /**
-   * Process the form submission.
+   * Function to process the form
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
     $params = $this->exportValues();
     $deleteOldBlock = FALSE;
 
     // if 'use existing location' option is selected -
-    if (CRM_Utils_Array::value('location_option', $params) == 2 && !empty($params['loc_event_id']) &&
+    if (CRM_Utils_Array::value('location_option', $params) == 2 &&
+      CRM_Utils_Array::value('loc_event_id', $params) &&
       ($params['loc_event_id'] != $this->_oldLocBlockId)
     ) {
       // if new selected loc is different from old loc, update the loc_block_id
@@ -256,11 +282,8 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
 
     $defaultLocationType = CRM_Core_BAO_LocationType::getDefault();
     foreach (array(
-               'address',
-               'phone',
-               'email',
-             ) as $block) {
-      if (empty($params[$block]) || !is_array($params[$block])) {
+      'address', 'phone', 'email') as $block) {
+      if (!CRM_Utils_Array::value($block, $params) || !is_array($params[$block])) {
         continue;
       }
       foreach ($params[$block] as $count => & $values) {
@@ -279,18 +302,18 @@ class CRM_Event_Form_ManageEvent_Location extends CRM_Event_Form_ManageEvent {
     $params['id'] = $this->_id;
     CRM_Event_BAO_Event::add($params);
 
-    // Update tab "disabled" css class
-    $this->ajaxResponse['tabValid'] = TRUE;
     parent::endPostProcess();
   }
+  //end of function
 
   /**
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Event Location');
   }
-
 }
+

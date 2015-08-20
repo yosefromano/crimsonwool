@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -43,14 +43,14 @@ return array(
     'name' => 'uploadDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Upload Directory',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => '',
+    'description' => null,
+    'help_text' => 'If set, new contacts that are created when signing a petition are assigned a tag of this name.',
   ),
   'imageUploadDir' => array(
     'group_name' => 'Directory Preferences',
@@ -58,14 +58,14 @@ return array(
     'name' => 'imageUploadDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Image Directory',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => NULL,
+    'description' => null,
+    'help_text' => null,
   ),
   'customFileUploadDir' => array(
     'group_name' => 'Directory Preferences',
@@ -73,14 +73,14 @@ return array(
     'name' => 'customFileUploadDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Custom Files Upload Directory',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => NULL,
+    'description' => null,
+    'help_text' => null,
   ),
   'customTemplateDir' => array(
     'group_name' => 'Directory Preferences',
@@ -88,14 +88,14 @@ return array(
     'name' => 'customTemplateDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Custom Template Directory',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => NULL,
+    'description' => null,
+    'help_text' => null,
   ),
   'customPHPPathDir' => array(
     'group_name' => 'Directory Preferences',
@@ -103,14 +103,14 @@ return array(
     'name' => 'customPHPPathDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Custom PHP Path',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => NULL,
+    'description' => null,
+    'help_text' => null,
   ),
   'extensionsDir' => array(
     'group_name' => 'Directory Preferences',
@@ -118,14 +118,14 @@ return array(
     'name' => 'extensionsDir',
     'type' => 'Url',
     'html_type' => 'Text',
-    'default' => NULL,
+    'default' => null,
     'add' => '4.1',
     'prefetch' => 1,
-    'title' => 'Extensions Directory',
+    'title' => null,
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
-    'help_text' => NULL,
+    'description' => null,
+    'help_text' => null,
   ),
 
 

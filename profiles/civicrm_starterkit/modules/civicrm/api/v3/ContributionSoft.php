@@ -1,9 +1,11 @@
 <?php
+// $Id$
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,34 +25,39 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
- * This api exposes CiviCRM soft credits.
+ * File for the CiviCRM APIv3 soft credit functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_ContributionSoft
+ *
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: ContributionSoft.php 2013-05-01 Jon Goldberg $
  */
 
 /**
- * Create or Update a Soft Credit.
+ * Create or Update a Soft Credit
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param array $params  Associative array of property
+ *                       name/value pairs to insert in new 'contribution_soft'
  *
- * @return array
- *   API result array
+ * @example ContributionSoftCreate.php Standard Create Example //FIXME
+ *
+ * @return array API result array
+ * {@getfields contribution_soft_create}
+ * @access public
  */
 function civicrm_api3_contribution_soft_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_contribution_soft_create_spec(&$params) {
   $params['contribution_id']['api.required'] = 1;
@@ -59,25 +66,37 @@ function _civicrm_api3_contribution_soft_create_spec(&$params) {
 }
 
 /**
- * Deletes an existing Soft Credit.
+ * Deletes an existing Soft Credit
  *
- * @param array $params
+ * @param  array  $params
+ *
+ * @example ContributionSoftDelete.php Standard Delete Example
+ *
+ * @return boolean | error  true if successfull, error otherwise
+ * {@getfields contribution_soft_delete}
+ * @access public
  */
 function civicrm_api3_contribution_soft_delete($params) {
-  // Non standard BAO - we have to write custom code to cope.
+  // non standard BAO - we have to write custom code to cope
   CRM_Contribute_BAO_ContributionSoft::del(array('id' => $params['id']));
 
 }
 
 /**
- * Retrieve one or more Soft Credits.
+ * Retrieve one or more Soft Credits
  *
- * @param array $params
- *   Array per getfields metadata.
+ * @param  array input parameters
  *
- * @return array
- *   API result
+ *
+ * @example ContributionSoftGet.php Standard Get Example
+ *
+ * @param  array $params  an associative array of name/value pairs.
+ *
+ * @return  array api result
+ * {@getfields contribution_soft_get}
+ * @access public
  */
 function civicrm_api3_contribution_soft_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
+

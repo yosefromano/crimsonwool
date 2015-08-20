@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -61,7 +61,7 @@
                 <td class="form-item even-row{if $wizard.currentStepName == 'Preview'} labels{/if}">
                     {if $wizard.currentStepName == 'Preview'}
           {if $softCreditFields && $softCreditFields[$i] != ''}
-          {$mapper[$i]} - {$softCreditFields[$i]} {if $mapperSoftCreditType[$i]}({$mapperSoftCreditType[$i].label}){/if}
+          {$mapper[$i]} - {$softCreditFields[$i]}
       {else}
           {$mapper[$i]}
       {/if}

@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +24,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,25 +40,28 @@
 class CRM_Utils_Recent {
 
   /**
-   * Max number of items in queue.
+   * max number of items in queue
    *
    * @int
    */
-  const MAX_ITEMS = 10, STORE_NAME = 'CRM_Utils_Recent';
+  CONST MAX_ITEMS = 10, STORE_NAME = 'CRM_Utils_Recent';
 
   /**
-   * The list of recently viewed items.
+   * The list of recently viewed items
    *
    * @var array
+   * @static
    */
   static private $_recent = NULL;
 
   /**
-   * Initialize this class and set the static variables.
+   * initialize this class and set the static variables
    *
    * @return void
+   * @access public
+   * @static
    */
-  public static function initialize() {
+  static function initialize() {
     if (!self::$_recent) {
       $session = CRM_Core_Session::singleton();
       self::$_recent = $session->get(self::STORE_NAME);
@@ -68,34 +72,30 @@ class CRM_Utils_Recent {
   }
 
   /**
-   * Return the recently viewed array.
+   * return the recently viewed array
    *
-   * @return array
-   *   the recently viewed array
+   * @return array the recently viewed array
+   * @access public
+   * @static
    */
-  public static function &get() {
+  static function &get() {
     self::initialize();
     return self::$_recent;
   }
 
   /**
-   * Add an item to the recent stack.
+   * add an item to the recent stack
    *
-   * @param string $title
-   *   The title to display.
-   * @param string $url
-   *   The link for the above title.
-   * @param string $id
-   *   Object id.
-   * @param $type
-   * @param int $contactId
-   * @param string $contactName
-   * @param array $others
+   * @param string $title  the title to display
+   * @param string $url    the link for the above title
+   * @param string $icon   a link to a graphical image
+   * @param string $id     object id
    *
    * @return void
+   * @access public
+   * @static
    */
-  public static function add(
-    $title,
+  static function add($title,
     $url,
     $id,
     $type,
@@ -144,14 +144,15 @@ class CRM_Utils_Recent {
   }
 
   /**
-   * Delete an item from the recent stack.
+   * delete an item from the recent stack
    *
-   * @param array $recentItem
-   *   Array of the recent Item to be removed.
+   * @param array $recentItem array of the recent Item to be removed
    *
    * @return void
+   * @access public
+   * @static
    */
-  public static function del($recentItem) {
+  static function del($recentItem) {
     self::initialize();
     $tempRecent = self::$_recent;
 
@@ -160,9 +161,8 @@ class CRM_Utils_Recent {
     // make sure item is not already present in list
     for ($i = 0; $i < count($tempRecent); $i++) {
       if (!($tempRecent[$i]['id'] == $recentItem['id'] &&
-        $tempRecent[$i]['type'] == $recentItem['type']
-      )
-      ) {
+          $tempRecent[$i]['type'] == $recentItem['type']
+        )) {
         self::$_recent[] = $tempRecent[$i];
       }
     }
@@ -172,14 +172,15 @@ class CRM_Utils_Recent {
   }
 
   /**
-   * Delete an item from the recent stack.
+   * delete an item from the recent stack
    *
-   * @param string $id
-   *   Contact id that had to be removed.
+   * @param string $id  contact id that had to be removed
    *
    * @return void
+   * @access public
+   * @static
    */
-  public static function delContact($id) {
+  static function delContact($id) {
     self::initialize();
 
     $tempRecent = self::$_recent;
@@ -198,5 +199,5 @@ class CRM_Utils_Recent {
     $session = CRM_Core_Session::singleton();
     $session->set(self::STORE_NAME, self::$_recent);
   }
-
 }
+

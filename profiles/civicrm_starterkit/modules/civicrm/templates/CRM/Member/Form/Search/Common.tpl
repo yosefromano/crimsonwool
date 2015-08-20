@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -24,11 +24,23 @@
  +--------------------------------------------------------------------+
 *}
 <tr>
-  <td><label>{$form.membership_type_id.label}</label><br />
-      {$form.membership_type_id.html|crmAddClass:twenty}
+  <td><label>{ts}Membership Type(s){/ts}</label><br />
+    <div class="listing-box">
+    {foreach from=$form.member_membership_type_id item="membership_type_val"}
+      <div class="{cycle values='odd-row,even-row'}">
+        {$membership_type_val.html}
+      </div>
+    {/foreach}
+    </div>
   </td>
-  <td><label>{$form.membership_status_id.label}</label><br />
-      {$form.membership_status_id.html}
+  <td><label>{ts}Membership Status{/ts}</label><br />
+    <div class="listing-box">
+    {foreach from=$form.member_status_id item="membership_status_val"}
+      <div class="{cycle values='odd-row,even-row'}">
+        {$membership_status_val.html}
+      </div>
+    {/foreach}
+    </div>
   </td>
 </tr>
 
@@ -38,6 +50,10 @@
     <br />{$form.member_source.html}
     <p>
     {$form.member_test.label} {help id="is-test" file="CRM/Contact/Form/Search/Advanced"} &nbsp;{$form.member_test.html}
+      <span class="crm-clear-link">
+        (<a href="#" title="unselect" onclick="unselectRadio('member_test', '{$form.formName}'); return false;" >
+        {ts}clear{/ts}</a>)
+      </span>
     </p>
   </td>
   <td>
@@ -45,12 +61,24 @@
     {$form.member_is_primary.label}
     {help id="id-member_is_primary" file="CRM/Member/Form/Search.hlp"}
     {$form.member_is_primary.html}
+      <span class="crm-clear-link">
+        (<a href="#" title="unselect" onclick="unselectRadio('member_is_primary', '{$form.formName}'); return false;" >
+        {ts}clear{/ts}</a>)
+      </span>
     </p>
     <p>
     {$form.member_pay_later.label}&nbsp;{$form.member_pay_later.html}
+      <span class="crm-clear-link">
+        (<a href="#" title="unselect" onclick="unselectRadio('member_pay_later', '{$form.formName}'); return false;" >
+        {ts}clear{/ts}</a>)
+      </span>
     </p>
     <p>
     {$form.member_auto_renew.label}&nbsp;{$form.member_auto_renew.html}
+      <span class="crm-clear-link">
+        (<a href="#" title="unselect" onclick="unselectRadio('member_auto_renew', '{$form.formName}'); return false;" >
+        {ts}clear{/ts}</a>)
+      </span>
     </p>
   </td>
 </tr>

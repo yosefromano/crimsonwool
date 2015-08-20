@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * Metadata for an extension (e.g. the extension's "info.xml" file)
@@ -31,7 +31,7 @@
 class CRM_Extension_Info {
 
   /**
-   * Extension info file name.
+   * Extension info file name
    */
   const FILENAME = 'info.xml';
 
@@ -42,12 +42,11 @@ class CRM_Extension_Info {
   public $file = NULL;
 
   /**
-   * Load extension info an XML file.
+   * Load extension info an XML file
    *
-   * @param $file
-   *
-   * @throws CRM_Extension_Exception_ParseException
+   * @param string $string XML content
    * @return CRM_Extension_Info
+   * @throws CRM_Extension_Exception
    */
   public static function loadFromFile($file) {
     list ($xml, $error) = CRM_Utils_XML::parseFile($file);
@@ -61,12 +60,9 @@ class CRM_Extension_Info {
   }
 
   /**
-   * Load extension info a string.
+   * Load extension info a string
    *
-   * @param string $string
-   *   XML content.
-   *
-   * @throws CRM_Extension_Exception_ParseException
+   * @param string $string XML content
    * @return CRM_Extension_Info
    */
   public static function loadFromString($string) {
@@ -80,19 +76,12 @@ class CRM_Extension_Info {
     return $instance;
   }
 
-  /**
-   * @param null $key
-   * @param null $type
-   * @param null $name
-   * @param null $label
-   * @param null $file
-   */
-  public function __construct($key = NULL, $type = NULL, $name = NULL, $label = NULL, $file = NULL) {
-    $this->key = $key;
-    $this->type = $type;
-    $this->name = $name;
-    $this->label = $label;
-    $this->file = $file;
+  function __construct($key = NULL, $type = NULL, $name = NULL, $label = NULL, $file = NULL) {
+    $this->key       = $key;
+    $this->type      = $type;
+    $this->name      = $name;
+    $this->label     = $label;
+    $this->file      = $file;
   }
 
   /**
@@ -102,9 +91,9 @@ class CRM_Extension_Info {
    * @return void
    */
   public function parse($info) {
-    $this->key = (string) $info->attributes()->key;
-    $this->type = (string) $info->attributes()->type;
-    $this->file = (string) $info->file;
+    $this->key   = (string) $info->attributes()->key;
+    $this->type  = (string) $info->attributes()->type;
+    $this->file  = (string) $info->file;
     $this->label = (string) $info->name;
 
     // Convert first level variables to CRM_Core_Extension properties

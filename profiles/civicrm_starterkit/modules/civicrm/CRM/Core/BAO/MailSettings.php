@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,21 +23,21 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
@@ -45,61 +45,52 @@ class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
    * Return the DAO object containing to the default row of
    * civicrm_mail_settings and cache it for further calls
    *
-   * @param bool $reset
-   *
-   * @return CRM_Core_BAO_MailSettings
-   *   DAO with the default mail settings set
+   * @return object  DAO with the default mail settings set
    */
-  public static function defaultDAO($reset = FALSE) {
-    static $mailSettings = array();
-    $domainID = CRM_Core_Config::domainID();
-    if (empty($mailSettings[$domainID]) || $reset) {
-      $dao = new self();
+  static function &defaultDAO() {
+    static $dao = NULL;
+    if (!$dao) {
+      $dao             = new self;
       $dao->is_default = 1;
-      $dao->domain_id = $domainID;
+      $dao->domain_id  = CRM_Core_Config::domainID();
       $dao->find(TRUE);
-      $mailSettings[$domainID] = $dao;
     }
-    return $mailSettings[$domainID];
+    return $dao;
   }
 
   /**
-   * Return the domain from the default set of settings.
+   * Return the domain from the default set of settings
    *
-   * @return string
-   *   default domain
+   * @return string  default domain
    */
-  public static function defaultDomain() {
+  static function defaultDomain() {
     return self::defaultDAO()->domain;
   }
 
   /**
-   * Return the localpart from the default set of settings.
+   * Return the localpart from the default set of settings
    *
-   * @return string
-   *   default localpart
+   * @return string  default localpart
    */
-  public static function defaultLocalpart() {
+  static function defaultLocalpart() {
     return self::defaultDAO()->localpart;
   }
 
   /**
-   * Return the return path from the default set of settings.
+   * Return the return path from the default set of settings
    *
-   * @return string
-   *   default return path
+   * @return string  default return path
    */
-  public static function defaultReturnPath() {
+  static function defaultReturnPath() {
     return self::defaultDAO()->return_path;
   }
 
   /**
    * Return the "include message ID" flag from the default set of settings.
    *
-   * @return bool
-   *   default include message ID
+   * @return boolean  default include message ID
    */
-  public static function includeMessageId() {
+  static function includeMessageId() {
     return CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME,
       'include_message_id',
       NULL,
@@ -108,18 +99,19 @@ class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
   }
 
   /**
-   * Retrieve DB object based on input parameters.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * mail settings id. It also stores all the retrieved
+   * values in the default array
    *
-   * It also stores all the retrieved values in the default array.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
-   *
-   * @return CRM_Core_BAO_MailSettings
+   * @return object CRM_Core_BAO_MailSettings object
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     $mailSettings = new CRM_Core_DAO_MailSettings();
     $mailSettings->copyValues($params);
 
@@ -133,27 +125,26 @@ class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
   }
 
   /**
-   * Add new mail Settings.
+   * function to add new mail Settings.
    *
-   * @param array $params
-   *   Reference array contains the values submitted by the form.
+   * @param array $params reference array contains the values submitted by the form
    *
+   * @access public
+   * @static
    *
    * @return object
    */
-  public static function add(&$params) {
+  static function add(&$params) {
     $result = NULL;
     if (empty($params)) {
       return $result;
     }
 
-    if (empty($params['id'])) {
-      $params['is_ssl'] = CRM_Utils_Array::value('is_ssl', $params, FALSE);
-      $params['is_default'] = CRM_Utils_Array::value('is_default', $params, FALSE);
-    }
+    $params['is_ssl'] = CRM_Utils_Array::value('is_ssl', $params, FALSE);
+    $params['is_default'] = CRM_Utils_Array::value('is_default', $params, FALSE);
 
     //handle is_default.
-    if (!empty($params['is_default'])) {
+    if ($params['is_default']) {
       $query = 'UPDATE civicrm_mail_settings SET is_default = 0 WHERE domain_id = %1';
       $queryParams = array(1 => array(CRM_Core_Config::domainID(), 'Integer'));
       CRM_Core_DAO::executeQuery($query, $queryParams);
@@ -167,14 +158,15 @@ class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
   }
 
   /**
-   * Takes an associative array and creates a mail settings object.
+   * takes an associative array and creates a mail settings object
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
+   * @param array $params (reference ) an assoc array of name/value pairs
    *
-   * @return CRM_Core_BAO_MailSettings
+   * @return object CRM_Core_BAO_MailSettings object
+   * @access public
+   * @static
    */
-  public static function create(&$params) {
+  static function &create(&$params) {
     $transaction = new CRM_Core_Transaction();
 
     $mailSettings = self::add($params);
@@ -184,29 +176,30 @@ class CRM_Core_BAO_MailSettings extends CRM_Core_DAO_MailSettings {
     }
 
     $transaction->commit();
-    CRM_Core_BAO_MailSettings::defaultDAO(TRUE);
+
     return $mailSettings;
   }
 
   /**
-   * Delete the mail settings.
+   * Function to delete the mail settings.
    *
-   * @param int $id
-   *   Mail settings id.
+   * @param int $id mail settings id
    *
-   * @return mixed|null
+   * @access public
+   * @static
+   *
    */
-  public static function deleteMailSettings($id) {
+  static function deleteMailSettings($id) {
     $results = NULL;
     $transaction = new CRM_Core_Transaction();
 
-    $mailSettings = new CRM_Core_DAO_MailSettings();
+    $mailSettings     = new CRM_Core_DAO_MailSettings();
     $mailSettings->id = $id;
-    $results = $mailSettings->delete();
+    $results          = $mailSettings->delete();
 
     $transaction->commit();
 
     return $results;
   }
-
 }
+

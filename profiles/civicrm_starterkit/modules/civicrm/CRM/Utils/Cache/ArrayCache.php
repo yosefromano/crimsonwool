@@ -1,8 +1,4 @@
 <?php
-
-/**
- * Class CRM_Utils_Cache_Arraycache
- */
 class CRM_Utils_Cache_Arraycache implements CRM_Utils_Cache_Interface {
 
   /**
@@ -11,44 +7,31 @@ class CRM_Utils_Cache_Arraycache implements CRM_Utils_Cache_Interface {
   private $_cache;
 
   /**
-   * Constructor.
+   * Constructor
    *
-   * @param array $config
-   *   An array of configuration params.
+   * @param array   $config  an array of configuration params
    *
-   * @return \CRM_Utils_Cache_Arraycache
+   * @return void
    */
-  public function __construct($config) {
+  function __construct($config) {
     $this->_cache = array();
   }
 
-  /**
-   * @param string $key
-   * @param mixed $value
-   */
-  public function set($key, &$value) {
+  function set($key, &$value) {
     $this->_cache[$key] = $value;
   }
 
-  /**
-   * @param string $key
-   *
-   * @return mixed
-   */
-  public function get($key) {
+  function get($key) {
     return CRM_Utils_Array::value($key, $this->_cache);
   }
 
-  /**
-   * @param string $key
-   */
-  public function delete($key) {
+  function delete($key) {
     unset($this->_cache[$key]);
   }
 
-  public function flush() {
+  function flush() {
     unset($this->_cache);
     $this->_cache = array();
   }
-
 }
+

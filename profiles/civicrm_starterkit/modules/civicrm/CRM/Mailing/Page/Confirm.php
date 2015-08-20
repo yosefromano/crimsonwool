@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +23,20 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Mailing_Page_Confirm extends CRM_Core_Page {
-  /**
-   * @return string
-   * @throws Exception
-   */
-  public function run() {
-    CRM_Utils_System::addHTMLHead('<META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">');
-
-    $contact_id = CRM_Utils_Request::retrieve('cid', 'Integer', CRM_Core_DAO::$_nullObject);
+  function run() {
+    $contact_id   = CRM_Utils_Request::retrieve('cid', 'Integer', CRM_Core_DAO::$_nullObject);
     $subscribe_id = CRM_Utils_Request::retrieve('sid', 'Integer', CRM_Core_DAO::$_nullObject);
-    $hash = CRM_Utils_Request::retrieve('h', 'String', CRM_Core_DAO::$_nullObject);
+    $hash         = CRM_Utils_Request::retrieve('h', 'String', CRM_Core_DAO::$_nullObject);
 
     if (!$contact_id ||
       !$subscribe_id ||
@@ -66,5 +60,5 @@ class CRM_Mailing_Page_Confirm extends CRM_Core_Page {
 
     return parent::run();
   }
-
 }
+

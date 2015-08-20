@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -48,7 +48,7 @@ return array(
     'title' => 'Tag for Unconfirmed Petition Signers',
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
+    'description' => null,
     'help_text' => 'If set, new contacts that are created when signing a petition are assigned a tag of this name.',
   ),
   'petition_contacts' => array(
@@ -62,7 +62,7 @@ return array(
     'title' => 'Petition Signers Group',
     'is_domain' => 1,
     'is_contact' => 0,
-    'description' => NULL,
+    'description' => null,
     'help_text' => 'If set, new contacts that are created when signing a petition are assigned a tag of this name.',
   ),
 

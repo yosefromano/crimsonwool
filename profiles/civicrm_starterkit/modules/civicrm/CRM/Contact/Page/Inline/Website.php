@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,14 +45,16 @@ class CRM_Contact_Page_Inline_Website extends CRM_Core_Page {
    * This method is called after the page is created.
    *
    * @return void
+   * @access public
+   *
    */
-  public function run() {
+  function run() {
     // get the emails for this contact
     $contactId = CRM_Utils_Request::retrieve('cid', 'Positive', CRM_Core_DAO::$_nullObject, TRUE, NULL, $_REQUEST);
 
     $websiteTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Website', 'website_type_id');
 
-    $params = array('contact_id' => $contactId);
+    $params   = array('contact_id' => $contactId);
     $websites = CRM_Core_BAO_Website::getValues($params, CRM_Core_DAO::$_nullArray);
     if (!empty($websites)) {
       foreach ($websites as $key => & $value) {
@@ -69,5 +71,5 @@ class CRM_Contact_Page_Inline_Website extends CRM_Core_Page {
     // finally call parent
     parent::run();
   }
-
 }
+

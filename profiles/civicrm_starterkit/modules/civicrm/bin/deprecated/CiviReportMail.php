@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,16 +23,14 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * A PHP cron script to mail the result set of specified report to the
  * recipients mentioned for that report
  */
 class CiviReportMail {
-  /**
-   */
-  public function __construct() {
+  function __construct() {
     $this->initialize();
 
     CRM_Utils_System::authenticateScript(TRUE);
@@ -41,15 +39,16 @@ class CiviReportMail {
     CRM_Core_Error::debug_log_message('CiviReportMail.php');
   }
 
-  public function initialize() {
+  function initialize() {
     require_once '../civicrm.config.php';
     require_once 'CRM/Core/Config.php';
 
     $config = CRM_Core_Config::singleton();
   }
 
-  public function run() {
-    $lock = Civi\Core\Container::singleton()->get('lockManager')->acquire('worker.report.CiviReportMail');
+  function run() {
+    require_once 'CRM/Core/Lock.php';
+    $lock = new CRM_Core_Lock('CiviReportMail');
 
     if ($lock->isAcquired()) {
       // try to unset any time limits
@@ -68,9 +67,9 @@ class CiviReportMail {
 
     $lock->release();
   }
-
 }
 
 session_start();
-$obj = new CiviReportMail();
+$obj = new CiviReportMail;
 $obj->run();
+

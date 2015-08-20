@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,11 +26,9 @@
 {* this template is used for displaying survey information *}
 {if $campaigns}
   <div class="action-link">
-      <a href="{$addCampaignUrl}" class="button">
-        <span><div class="icon ui-icon-circle-plus"></div> {ts}Add Campaign{/ts}</span>
-      </a>
+      <a href="{$addCampaignUrl}" class="button"><span>&raquo; {ts}Add Campaign{/ts}</span></a>
   </div>
-  {include file="CRM/common/enableDisableApi.tpl"}
+  {include file="CRM/common/enableDisable.tpl"}
   <div id="campaignType">
     <table id="options" class="display">
       <thead>
@@ -46,8 +44,8 @@
   </tr>
       </thead>
       {foreach from=$campaigns item=campaign}
-        <tr id="campaign-{$campaign.campaign_id}" class="crm-entity {if $campaign.is_active neq 1} disabled{/if}">
-          <td class="crm-editable" data-field="title">{$campaign.title}</td>
+        <tr id="row_{$campaign.campaign_id}" {if $campaign.is_active neq 1}class="disabled"{/if}>
+          <td>{$campaign.title}</td>
           <td>{$campaign.description}</td>
           <td>{$campaign.start_date}</td>
           <td>{$campaign.end_date}</td>
@@ -63,11 +61,9 @@
 {else}
     <div class="messages status no-popup">
         <div class="icon inform-icon"></div> &nbsp;
-        {ts}None found.{/ts}
+        {ts}No Campaigns found.{/ts}
     </div>
 {/if}
 <div class="action-link">
-  <a href="{$addCampaignUrl}" class="button">
-    <span><div class="icon ui-icon-circle-plus"></div> {ts}Add Campaign{/ts}</span>
-  </a>
+   <a href="{$addCampaignUrl}" class="button"><span>&raquo; {ts}Add Campaign{/ts}</span></a>
 </div>

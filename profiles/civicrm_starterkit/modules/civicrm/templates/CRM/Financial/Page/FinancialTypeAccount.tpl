@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,13 +31,13 @@
   <div class="form-item">
     {if $action ne 1 and $action ne 2}
       <div class="action-link">
-      {crmButton q="action=add&reset=1&aid=$aid" id="newfinancialTypeAccount"  icon="circle-plus"}{ts}Assign Account{/ts}{/crmButton}
-  {crmButton p="civicrm/admin/financial/financialType" q="action=update&id=`$aid`&reset=1" icon="pencil"}{ts}Edit Financial Type{/ts}{/crmButton}
+      <a href="{crmURL q="action=add&reset=1&aid=$aid"}" id="newfinancialTypeAccount" class="button"><span><div class="icon add-icon"></div>{ts}Assign Account{/ts}</span></a>
+  <a href="{crmURL p="civicrm/admin/financial/financialType" q="action=update&id=`$aid`&reset=1"}" class="button"><span><div class="icon edit-icon"></div>{ts}Edit Financial Type{/ts}</span></a>
       </div>
     {/if}
     {strip}
     {* handle enable/disable actions*}
-     {include file="CRM/common/enableDisableApi.tpl"}
+     {include file="CRM/common/enableDisable.tpl"}
       <table cellpadding="0" cellspacing="0" border="0">
         <thead class="sticky">
           <th>{ts}Relationship{/ts}</th>
@@ -64,8 +64,8 @@
 
     {if $action ne 1 and $action ne 2}
       <div class="action-link">
-      {crmButton q="action=add&reset=1&aid=$aid" id="newfinancialTypeAccount"  icon="circle-plus"}{ts}Assign Account{/ts}{/crmButton}
-  {crmButton p="civicrm/admin/financial/financialType" q="action=update&id=`$aid`&reset=1" icon="pencil"}{ts}Edit Financial Type{/ts}{/crmButton}
+      <a href="{crmURL q="action=add&reset=1&aid=$aid"}" id="newfinancialTypeAccount" class="button"><span><div class="icon add-icon"></div>{ts}Assign Account{/ts}</span></a>
+  <a href="{crmURL p="civicrm/admin/financial/financialType" q="action=update&id=`$aid`&reset=1"}" class="button"><span><div class="icon edit-icon"></div>{ts}Edit Financial Type{/ts}</span></a>
       </div>
     {/if}
     </div>

@@ -1,9 +1,11 @@
 <?php
+// $Id$
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,69 +28,81 @@
  */
 
 /**
- * This api exposes CiviCRM Dashboard.
+ * File for the CiviCRM APIv3 Dashboard functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_Activity
+ * @copyright CiviCRM LLC (c) 2004-2013
+ * @version $Id: Activity.php 30486 2010-11-02 16:12:09Z shot $
+ *
  */
 
 
 /**
  * Creates or updates an Dashlet.
  *
- * @param array $params
+ * @param array  $params       Associative array of property name/value
+ *                             pairs for the Dashlet.
  *
- * @return array
- *   Array containing 'is_error' to denote success or failure and details of the created activity
+ * @return array Array containing 'is_error' to denote success or failure and details of the created activity
+ *
  */
 function civicrm_api3_dashboard_create($params) {
-  civicrm_api3_verify_one_mandatory($params, NULL, array(
-      'name',
-      'label',
-      'url',
-      'fullscreen_url',
-    )
-  );
-  return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params, 'Dashboard');
+  if (!CRM_Utils_Array::value('id', $params)) {
+    civicrm_api3_verify_one_mandatory($params,
+      NULL,
+      array(
+        'name',
+        'label',
+        'url',
+        'fullscreen_url',
+      )
+    );
+  }
+  // create dashboard element
+  $dashboardBAO = CRM_Core_BAO_Dashboard::addDashlet($params);
+  if (isset($dashboardBAO->id)) {
+    _civicrm_api3_object_to_array($dashboardBAO, $dashboardArray[$dashboardBAO->id]);
+    return civicrm_api3_create_success($dashboardArray, $params, 'dashboard', 'create', $dashboardBAO);
+  }
 }
 
 /**
- * Specify Meta data for create.
- *
- * Note that this data is retrievable via the getfields function
+ * Specify Meta data for create. Note that this data is retrievable via the getfields function
  * and is used for pre-filling defaults and ensuring mandatory requirements are met.
- *
- * @param array $params
- *   array of parameters determined by getfields.
+ * @param array $params (reference) array of parameters determined by getfields
  */
 function _civicrm_api3_dashboard_create_spec(&$params) {
   unset($params['version']);
 }
 
 /**
- * Gets a CiviCRM Dashlets according to parameters.
+ * Gets a CiviCRM Dashlets according to parameters
  *
- * @param array $params
+ * @param array  $params       Associative array of property name/value
+ *                             pairs for the activity.
  *
  * @return array
+ *
  */
 function civicrm_api3_dashboard_get($params) {
   $bao = new CRM_Core_BAO_Dashboard();
-  _civicrm_api3_dao_set_filter($bao, $params, TRUE);
+  _civicrm_api3_dao_set_filter($bao, $params, TRUE, 'Dashboard');
   $dashlets = _civicrm_api3_dao_to_array($bao, $params, TRUE, 'Dashboard');
-  return civicrm_api3_create_success($dashlets, $params, 'Dashboard', 'get', $bao);
+  return civicrm_api3_create_success($dashlets, $params, 'dashboard', 'get', $bao);
 }
 
 /**
  * Delete a specified Dashlet.
  *
- * @param array $params
- *   Array holding 'id' of dashlet to be deleted.
+ * @param array $params array holding 'id' OR 'name' of dashlet to be deleted
  *
- * @return array
+ * @return void|CRM_Core_Error  An error if 'name or ID' is invalid,
+ *
  */
 function civicrm_api3_dashboard_delete($params) {
   if (CRM_Core_BAO_Dashboard::deleteDashlet($params['id'])) {
-    return civicrm_api3_create_success(1, $params, 'Dashboard', 'delete');
+    return civicrm_api3_create_success(1, $params, 'dashboard', 'delete');
   }
   else {
     return civicrm_api3_create_error('Could not delete dashlet');

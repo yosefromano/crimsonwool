@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,8 +26,11 @@
 
 {literal}
 <script type="text/javascript">
-  CRM.$(function($) {
-    $('#birth_date_from, #birth_date_to').attr({startOffset: '200', endoffset: '0'});
+  cj(document).ready(function(){
+    cj('#birth_date_from').attr('startOffset',200);
+    cj('#birth_date_from').attr('endoffset',0);
+    cj('#birth_date_to').attr('startOffset',200);
+    cj('#birth_date_to').attr('endoffset',0);
   });
 </script>
 {/literal}

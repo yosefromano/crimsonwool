@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,11 +40,12 @@
 class CRM_Contact_Form_Task_HookSample extends CRM_Contact_Form_Task {
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     parent::preProcess();
 
     // display name and email of all contact ids
@@ -56,6 +57,7 @@ FROM   civicrm_contact c, civicrm_email e
 WHERE  e.contact_id = c.id
 AND    e.is_primary = 1
 AND    c.id IN ( $contactIDs )";
+
 
     $rows = array();
     $dao = CRM_Core_DAO::executeQuery($query);
@@ -72,22 +74,23 @@ AND    c.id IN ( $contactIDs )";
   }
 
   /**
-   * Build the form object - it consists of
+   * Build the form - it consists of
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     $this->addDefaultButtons(ts('Back to Search'), 'done');
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
    * @return void
    */
-  public function postProcess() {
-  }
-
+  public function postProcess() {}
 }
+

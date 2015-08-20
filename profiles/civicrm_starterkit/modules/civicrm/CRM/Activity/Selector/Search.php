@@ -1,15 +1,15 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
  | CiviCRM is free software; you can copy, modify, and distribute it  |
  | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2007 and the CiviCRM Licensing Exception.   |
+ | Version 3, 19 November 2007.                                       |
  |                                                                    |
  | CiviCRM is distributed in the hope that it will be useful, but     |
  | WITHOUT ANY WARRANTY; without even the implied warranty of         |
@@ -17,18 +17,17 @@
  | See the GNU Affero General Public License for more details.        |
  |                                                                    |
  | You should have received a copy of the GNU Affero General Public   |
- | License and the CiviCRM Licensing Exception along                  |
- | with this program; if not, contact CiviCRM LLC                     |
+ | License along with this program; if not, contact CiviCRM LLC       |
  | at info[AT]civicrm[DOT]org. If you have questions about the        |
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,19 +44,22 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
    * This defines two actions- View and Edit.
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * We use desc to remind us what that column is, name is used in the tpl
+   * we use desc to remind us what that column is, name is used in the tpl
    *
    * @var array
+   * @static
    */
   static $_columnHeaders;
 
   /**
    * Properties of contact we're interested in displaying
    * @var array
+   * @static
    */
 
   static $_properties = array(
@@ -80,95 +82,94 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
   );
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * are we restricting ourselves to a single contact
    *
+   * @access protected
    * @var boolean
    */
   protected $_single = FALSE;
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * are we restricting ourselves to a single contact
    *
+   * @access protected
    * @var boolean
    */
   protected $_limit = NULL;
 
   /**
-   * What context are we being invoked from.
+   * what context are we being invoked from
    *
+   * @access protected
    * @var string
    */
   protected $_context = NULL;
 
   /**
-   * What component context are we being invoked from.
+   * what component context are we being invoked from
    *
+   * @access protected
    * @var string
    */
   protected $_compContext = NULL;
 
   /**
-   * QueryParams is the array returned by exportValues called on.
+   * queryParams is the array returned by exportValues called on
    * the HTML_QuickForm_Controller for that page.
    *
    * @var array
+   * @access protected
    */
   public $_queryParams;
 
   /**
-   * Represent the type of selector.
+   * represent the type of selector
    *
    * @var int
+   * @access protected
    */
   protected $_action;
 
   /**
-   * The additional clause that we restrict the search with.
+   * The additional clause that we restrict the search with
    *
    * @var string
    */
   protected $_activityClause = NULL;
 
   /**
-   * The query object.
+   * The query object
    *
    * @var string
    */
   protected $_query;
 
   /**
-   * Class constructor.
+   * Class constructor
    *
-   * @param array $queryParams
-   *   Array of parameters for query.
-   * @param \const|int $action - action of search basic or advanced.
-   * @param string $activityClause
-   *   If the caller wants to further restrict the search (used in activities).
-   * @param bool $single
-   *   Are we dealing only with one contact?.
-   * @param int $limit
-   *   How many activities do we want returned.
+   * @param array   $queryParams array of parameters for query
+   * @param int     $action - action of search basic or advanced.
+   * @param string  $activityClause if the caller wants to further restrict the search (used in activities)
+   * @param boolean $single are we dealing only with one contact?
+   * @param int     $limit  how many activities do we want returned
    *
-   * @param string $context
-   * @param null $compContext
-   *
-   * @return \CRM_Activity_Selector_Search
+   * @return CRM_Contact_Selector
+   * @access public
    */
-  public function __construct(
-    &$queryParams,
-    $action = CRM_Core_Action::NONE,
+  function __construct(&$queryParams,
+    $action         = CRM_Core_Action::NONE,
     $activityClause = NULL,
-    $single = FALSE,
-    $limit = NULL,
-    $context = 'search',
-    $compContext = NULL
+    $single         = FALSE,
+    $limit          = NULL,
+    $context        = 'search',
+    $compContext    = NULL
   ) {
     // submitted form values
     $this->_queryParams = &$queryParams;
 
-    $this->_single = $single;
-    $this->_limit = $limit;
-    $this->_context = $context;
+    $this->_single      = $single;
+    $this->_limit       = $limit;
+    $this->_context     = $context;
     $this->_compContext = $compContext;
 
     $this->_activityClause = $activityClause;
@@ -184,31 +185,34 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
     );
     $this->_query->_distinctComponentClause = '( civicrm_activity.id )';
     $this->_query->_groupByComponentClause = " GROUP BY civicrm_activity.id ";
+    //CRM_Core_Error::debug( $this->_query ); exit();
   }
+  //end of constructor
 
   /**
-   * Getter for array of the parameters required for creating pager.
+   * getter for array of the parameters required for creating pager.
    *
-   * @param $action
-   * @param array $params
+   * @param
+   * @access public
    */
-  public function getPagerParams($action, &$params) {
+  function getPagerParams($action, &$params) {
     $params['status'] = ts('Activities %%StatusMessage%%');
     $params['csvString'] = NULL;
     $params['rowCount'] = CRM_Utils_Pager::ROWCOUNT;
     $params['buttonTop'] = 'PagerTopButton';
     $params['buttonBottom'] = 'PagerBottomButton';
   }
+  //end of function
 
   /**
    * Returns total number of rows for the query.
    *
-   * @param string $action
+   * @param
    *
-   * @return int
-   *   Total number of rows
+   * @return int Total number of rows
+   * @access public
    */
-  public function getTotalCount($action) {
+  function getTotalCount($action) {
     return $this->_query->searchQuery(0, 0, NULL,
       TRUE, FALSE,
       FALSE, FALSE,
@@ -218,23 +222,17 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
   }
 
   /**
-   * Returns all the rows in the given offset and rowCount.
+   * returns all the rows in the given offset and rowCount
    *
-   * @param string $action
-   *   The action being performed.
-   * @param int $offset
-   *   The row number to start from.
-   * @param int $rowCount
-   *   The number of rows to return.
-   * @param string $sort
-   *   The sql string that describes the sort order.
-   * @param string $output
-   *   What should the result set include (web/email/csv).
+   * @param enum   $action   the action being performed
+   * @param int    $offset   the row number to start from
+   * @param int    $rowCount the number of rows to return
+   * @param string $sort     the sql string that describes the sort order
+   * @param enum   $output   what should the result set include (web/email/csv)
    *
-   * @return array
-   *   rows in the given offset and rowCount
+   * @return array  rows in the given offset and rowCount
    */
-  public function &getRows($action, $offset, $rowCount, $sort, $output = NULL) {
+  function &getRows($action, $offset, $rowCount, $sort, $output = NULL) {
     $result = $this->_query->searchQuery(
       $offset, $rowCount, $sort,
       FALSE, FALSE,
@@ -242,8 +240,8 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
       FALSE,
       $this->_activityClause
     );
-    $rows = array();
-    $mailingIDs = CRM_Mailing_BAO_Mailing::mailingACLIDs();
+    $rows           = array();
+    $mailingIDs     = CRM_Mailing_BAO_Mailing::mailingACLIDs();
     $accessCiviMail = CRM_Core_Permission::check('access CiviMail');
 
     //get all campaigns.
@@ -254,8 +252,6 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
     $sourceID = CRM_Utils_Array::key('Activity Source', $activityContacts);
     $assigneeID = CRM_Utils_Array::key('Activity Assignees', $activityContacts);
     $targetID = CRM_Utils_Array::key('Activity Targets', $activityContacts);
-    //get all activity types
-    $activityTypes = CRM_Core_PseudoConstant::activityType(TRUE, TRUE, FALSE, 'name', TRUE);
 
     while ($result->fetch()) {
       $row = array();
@@ -277,7 +273,7 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
         $contactId = CRM_Utils_Array::value('source_contact_id', $row);
       }
 
-      $row['target_contact_name'] = CRM_Activity_BAO_ActivityContact::getNames($row['activity_id'], $targetID);
+      $row['target_contact_name']   = CRM_Activity_BAO_ActivityContact::getNames($row['activity_id'], $targetID);
       $row['assignee_contact_name'] = CRM_Activity_BAO_ActivityContact::getNames($row['activity_id'], $assigneeID);
       list($row['source_contact_name'], $row['source_contact_id']) = CRM_Activity_BAO_ActivityContact::getNames($row['activity_id'], $sourceID, TRUE);
       $row['source_contact_name'] = implode(',', array_values($row['source_contact_name']));
@@ -286,14 +282,16 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
       if ($this->_context == 'search') {
         $row['checkbox'] = CRM_Core_Form::CB_PREFIX . $result->activity_id;
       }
-      $row['contact_type'] = CRM_Contact_BAO_Contact_Utils::getImage($result->contact_sub_type ? $result->contact_sub_type : $result->contact_type, FALSE, $result->contact_id
+      $row['contact_type'] = CRM_Contact_BAO_Contact_Utils::getImage($result->contact_sub_type ?
+        $result->contact_sub_type : $result->contact_type, FALSE, $result->contact_id
       );
       $accessMailingReport = FALSE;
-      $activityTypeId = $row['activity_type_id'];
+      $activityType        = CRM_Core_PseudoConstant::activityType(TRUE, TRUE, FALSE, 'name', TRUE);
+      $activityTypeId      = CRM_Utils_Array::key($row['activity_type'], $activityType);
       if ($row['activity_is_test']) {
         $row['activity_type'] = $row['activity_type'] . " (test)";
       }
-      $bulkActivityTypeID = CRM_Utils_Array::key('Bulk Email', $activityTypes);
+      $bulkActivityTypeID = CRM_Utils_Array::key('Bulk Email', $activityType);
       $row['mailingId'] = '';
       if (
         $accessCiviMail &&
@@ -321,12 +319,7 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
           'id' => $result->activity_id,
           'cid' => $contactId,
           'cxt' => $this->_context,
-        ),
-        ts('more'),
-        FALSE,
-        'activity.selector.row',
-        'Activity',
-        $result->activity_id
+        )
       );
 
       //carry campaign to selector.
@@ -339,12 +332,6 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
         );
       }
 
-      //Check if recurring activity
-      $repeat = CRM_Core_BAO_RecurringEntity::getPositionAndCount($row['activity_id'], 'civicrm_activity');
-      $row['repeat'] = '';
-      if ($repeat) {
-        $row['repeat'] = ts('Repeating (%1 of %2)', array(1 => $repeat[0], 2 => $repeat[1]));
-      }
       $rows[] = $row;
     }
 
@@ -352,24 +339,23 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
   }
 
   /**
-   * @return array
-   *   which contains an array of strings
+   *
+   * @return array  $qill  which contains an array of strings
+   * @access public
    */
   public function getQILL() {
     return $this->_query->qill();
   }
 
   /**
-   * Returns the column headers as an array of tuples:
+   * returns the column headers as an array of tuples:
    * (name, sortName (key to the sort array))
    *
-   * @param string $action
-   *   The action being performed.
-   * @param string $output
-   *   What should the result set include (web/email/csv).
+   * @param string $action the action being performed
+   * @param enum   $output what should the result set include (web/email/csv)
    *
-   * @return array
-   *   the column headers that need to be displayed
+   * @return array the column headers that need to be displayed
+   * @access public
    */
   public function &getColumnHeaders($action = NULL, $output = NULL) {
     if (!isset(self::$_columnHeaders)) {
@@ -381,7 +367,7 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
         ),
         array(
           'name' => ts('Subject'),
-          'sort' => 'activity_subject',
+          'sort' => 'subject',
           'direction' => CRM_Utils_Sort::DONTCARE,
         ),
         array(
@@ -398,7 +384,7 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
         ),
         array(
           'name' => ts('Status'),
-          'sort' => 'activity_status',
+          'sort' => 'status_id',
           'direction' => CRM_Utils_Sort::DONTCARE,
         ),
         array(
@@ -409,31 +395,24 @@ class CRM_Activity_Selector_Search extends CRM_Core_Selector_Base implements CRM
     return self::$_columnHeaders;
   }
 
-  /**
-   * @return mixed
-   */
-  public function alphabetQuery() {
+  function alphabetQuery() {
     return $this->_query->searchQuery(NULL, NULL, NULL, FALSE, FALSE, TRUE);
   }
 
-  /**
-   * @return string
-   */
-  public function &getQuery() {
+  function &getQuery() {
     return $this->_query;
   }
 
   /**
-   * Name of export file.
+   * name of export file.
    *
-   * @param string $output
-   *   Type of output.
+   * @param string $output type of output
    *
-   * @return string
-   *   name of the file
+   * @return string name of the file
    */
-  public function getExportFileName($output = 'csv') {
+  function getExportFileName($output = 'csv') {
     return ts('CiviCRM Activity Search');
   }
-
 }
+//end of class
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,23 +39,26 @@
 class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
 
   /**
-   * Number of columns in where.
+   * number of columns in where
    *
    * @var int
+   * @access public
    */
   public $_columnCount;
 
   /**
-   * Number of blocks to be shown.
+   * number of blocks to be shown
    *
    * @var int
+   * @access public
    */
   public $_blockCount;
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function preProcess() {
     $this->set('searchFormName', 'Builder');
@@ -102,7 +105,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
     }
     // Add javascript
     CRM_Core_Resources::singleton()
-      ->addScriptFile('civicrm', 'templates/CRM/Contact/Form/Search/Builder.js', 1, 'html-header')
+      ->addScriptFile('civicrm', 'templates/CRM/Contact/Form/Search/Builder.js')
       ->addSetting(array(
         'searchBuilder' => array(
           // Index of newly added/expanded block (1-based index)
@@ -123,27 +126,27 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
   }
 
   /**
-   * Add local and global form rules.
+   * Add local and global form rules
    *
+   * @access protected
    *
    * @return void
    */
-  public function addRules() {
+  function addRules() {
     $this->addFormRule(array('CRM_Contact_Form_Search_Builder', 'formRule'), $this);
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param $values
-   * @param $files
-   * @param $self
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($values, $files, $self) {
-    if (!empty($values['addMore']) || !empty($values['addBlock'])) {
+  static function formRule($values, $files, $self) {
+    if (CRM_Utils_Array::value('addMore', $values) || CRM_Utils_Array::value('addBlock', $values)) {
       return TRUE;
     }
     $fields = self::fields();
@@ -159,8 +162,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
         $v[2] = self::checkArrayKeyEmpty($v[2]);
 
         if (in_array($v[1], array('IS NULL', 'IS NOT NULL', 'IS EMPTY', 'IS NOT EMPTY')) &&
-          !empty($v[2])
-        ) {
+          !empty($v[2])) {
           $errorMsg["value[$v[3]][$v[4]]"] = ts('Please clear your value if you want to use %1 operator.', array(1 => $v[1]));
         }
         elseif (($v[0] == 'group' || $v[0] == 'tag') && !empty($v[2])) {
@@ -176,7 +178,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
             foreach ($grpId as $val) {
               $error = CRM_Utils_Type::validate($val, 'Integer', FALSE);
               if ($error != $val) {
-                $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter a valid value.");
+                $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter valid value.");
                 break;
               }
             }
@@ -212,9 +214,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
 
             // hack to handle custom data of type state and country
             if (in_array($type, array(
-              'Country',
-              'StateProvince',
-            ))) {
+              'Country', 'StateProvince'))) {
               $type = "Integer";
             }
           }
@@ -229,17 +229,10 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
             $fldValue = CRM_Utils_Array::value($fldName, $fields);
             $fldType = CRM_Utils_Array::value('type', $fldValue);
             $type = CRM_Utils_Type::typeToString($fldType);
-
-            if (strstr($v[1], 'IN')) {
-              if (empty($v[2])) {
-                $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter a value.");
-              }
-            }
             // Check Empty values for Integer Or Boolean Or Date type For operators other than IS NULL and IS NOT NULL.
-            elseif (!in_array($v[1],
-              array('IS NULL', 'IS NOT NULL', 'IS EMPTY', 'IS NOT EMPTY'))
-            ) {
-              if ((($type == 'Int' || $type == 'Boolean') && !is_array($v[2]) && !trim($v[2])) && $v[2] != '0') {
+            if (!in_array($v[1],
+                array('IS NULL', 'IS NOT NULL', 'IS EMPTY', 'IS NOT EMPTY'))) {
+              if ((($type == 'Int' || $type == 'Boolean') && !trim($v[2])) && $v[2] != '0') {
                 $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter a value.");
               }
               elseif ($type == 'Date' && !trim($v[2])) {
@@ -250,36 +243,26 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
 
           if ($type && empty($errorMsg)) {
             // check for valid format while using IN Operator
-            if (strstr($v[1], 'IN')) {
-              if (!is_array($v[2])) {
-                $inVal = trim($v[2]);
-                //checking for format to avoid db errors
-                if ($type == 'Int') {
-                  if (!preg_match('/^[A-Za-z0-9\,]+$/', $inVal)) {
-                    $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter correct Data (in valid format).");
-                  }
+            if ($v[1] == 'IN') {
+              $inVal = trim($v[2]);
+              //checking for format to avoid db errors
+              if ($type == 'Int') {
+                if (!preg_match('/^[(]([A-Za-z0-9\,]+)[)]$/', $inVal)) {
+                  $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter correct Data (in valid format).");
                 }
-                else {
-                  if (!preg_match('/^[A-Za-z0-9åäöÅÄÖüÜœŒæÆøØ()\,\s]+$/', $inVal)) {
-                    $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter correct Data (in valid format).");
-                  }
+              }
+              else {
+                if (!(substr($inVal, 0, 1) == '(' && substr($inVal, -1, 1) == ')') && !preg_match('/^[(]([A-Za-z0-9åäöÅÄÖüÜœŒæÆøØ\,\s]+)[)]$/', $inVal)) {
+                  $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter correct Data (in valid format).");
                 }
               }
 
               // Validate each value in parenthesis to avoid db errors
               if (empty($errorMsg)) {
                 $parenValues = array();
-                $parenValues = is_array($v[2]) ? (array_key_exists($v[1], $v[2])) ? $v[2][$v[1]] : $v[2] : explode(',', trim($inVal, "(..)"));
+                $parenValues = explode(',', trim($inVal, "(..)"));
                 foreach ($parenValues as $val) {
-                  if ($type == 'Date' || $type == 'Timestamp') {
-                    $val = CRM_Utils_Date::processDate($val);
-                    if ($type == 'Date') {
-                      $val = substr($val, 0, 8);
-                    }
-                  }
-                  else {
-                    $val = trim($val);
-                  }
+                  $val = trim($val);
                   if (!$val && $val != '0') {
                     $errorMsg["value[$v[3]][$v[4]]"] = ts("Please enter the values correctly.");
                   }
@@ -313,29 +296,21 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
     return TRUE;
   }
 
-  public function normalizeFormValues() {
-  }
+  public function normalizeFormValues() {}
 
-  /**
-   * @param $formValues
-   *
-   * @return array
-   */
-  public function convertFormValues(&$formValues) {
+  public function &convertFormValues(&$formValues) {
     return CRM_Core_BAO_Mapping::formattedFields($formValues);
   }
 
-  /**
-   * @return array
-   */
   public function &returnProperties() {
     return CRM_Core_BAO_Mapping::returnProperties($this->_formValues);
   }
 
   /**
-   * Process the uploaded file.
+   * Process the uploaded file
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $this->set('isAdvanced', '2');
@@ -356,7 +331,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
       $addMore = CRM_Utils_Array::value('addMore', $params);
       for ($x = 1; $x <= $this->_blockCount; $x++) {
         if (!empty($addMore[$x])) {
-          $this->set('newBlock', $x);
+          $this->set('newBlock',  $x);
           $this->_columnCount[$x] = $this->_columnCount[$x] + 5;
           $this->set('columnCount', $this->_columnCount);
           $this->set('showSearchForm', TRUE);
@@ -385,7 +360,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
       $this->_formValues = $this->controller->exportValues($this->_name);
 
       // set the group if group is submitted
-      if (!empty($this->_formValues['uf_group_id'])) {
+      if (CRM_Utils_Array::value('uf_group_id', $this->_formValues)) {
         $this->set('id', $this->_formValues['uf_group_id']);
       }
       else {
@@ -408,7 +383,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
       $this->_sortByCharacter = NULL;
     }
 
-    $this->_params = $this->convertFormValues($this->_formValues);
+    $this->_params = &$this->convertFormValues($this->_formValues);
     $this->_returnProperties = &$this->returnProperties();
 
     // CRM-10338 check if value is empty array
@@ -419,10 +394,7 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
     parent::postProcess();
   }
 
-  /**
-   * @return array
-   */
-  public static function fields() {
+  static function fields() {
     $fields = array_merge(
       CRM_Contact_BAO_Contact::exportableFields('All', FALSE, TRUE),
       CRM_Core_Component::getQueryFields(),
@@ -435,11 +407,10 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
   /**
    * CRM-9434 Hackish function to fetch fields with options.
    * FIXME: When our core fields contain reliable metadata this will be much simpler.
-   * @return array
-   *   (string => string) key: field_name value: api entity name
-   *   Note: options are fetched via ajax using the api "getoptions" method
+   * @return array: (string => string) key: field_name value: api entity name
+   * Note: options are fetched via ajax using the api "getoptions" method
    */
-  public static function fieldOptions() {
+  static function fieldOptions() {
     // Hack to add options not retrieved by getfields
     // This list could go on and on, but it would be better to fix getfields
     $options = array(
@@ -455,36 +426,18 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
       'member_is_pay_later' => 'yesno',
       'is_override' => 'yesno',
     );
-    $entities = array(
-      'contact',
-      'address',
-      'activity',
-      'participant',
-      'pledge',
-      'member',
-      'contribution',
-      'case',
-      'grant',
-    );
+    $entities = array('contact', 'address', 'activity', 'participant', 'pledge', 'member', 'contribution');
     CRM_Contact_BAO_Query_Hook::singleton()->alterSearchBuilderOptions($entities, $options);
     foreach ($entities as $entity) {
       $fields = civicrm_api3($entity, 'getfields');
       foreach ($fields['values'] as $field => $info) {
-        if (!empty($info['options']) || !empty($info['pseudoconstant']) || !empty($info['option_group_id'])) {
+        if (!empty($info['options']) || !empty($info['pseudoconstant']) || !empty($info['option_group_id']) || !empty($info['enumValues'])) {
           $options[$field] = $entity;
-          // Hack for when search field doesn't match db field - e.g. "country" instead of "country_id"
           if (substr($field, -3) == '_id') {
             $options[substr($field, 0, -3)] = $entity;
           }
         }
-        elseif (!empty($info['data_type']) && in_array($info['data_type'], array('StateProvince', 'Country'))) {
-          $options[$field] = $entity;
-        }
-        elseif (in_array(substr($field, 0, 3), array(
-              'is_',
-              'do_',
-            )) || CRM_Utils_Array::value('data_type', $info) == 'Boolean'
-        ) {
+        elseif (in_array(substr($field, 0, 3), array('is_', 'do_')) || CRM_Utils_Array::value('data_type', $info) == 'Boolean') {
           $options[$field] = 'yesno';
           if ($entity != 'contact') {
             $options[$entity . '_' . $field] = 'yesno';
@@ -502,21 +455,21 @@ class CRM_Contact_Form_Search_Builder extends CRM_Contact_Form_Search {
    * CRM-10338
    * tags and groups use array keys for selection list.
    * if using IS NULL/NOT NULL, an array with no array key is created
-   * convert that to simple NULL so processing can proceed
+   * convert that to simple null so processing can proceed
    */
-  public static function checkArrayKeyEmpty($val) {
+  static function checkArrayKeyEmpty($val) {
     if (is_array($val)) {
-      $v2empty = TRUE;
+      $v2empty = true;
       foreach ($val as $vk => $vv) {
         if (!empty($vk)) {
-          $v2empty = FALSE;
+          $v2empty = false;
         }
       }
       if ($v2empty) {
-        $val = NULL;
+        $val = null;
       }
     }
     return $val;
   }
-
 }
+

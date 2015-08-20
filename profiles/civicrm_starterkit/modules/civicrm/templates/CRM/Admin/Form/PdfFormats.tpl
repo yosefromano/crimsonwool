@@ -1,6 +1,6 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
  | Copyright (C) 2011 Marty Wright                                    |
  | Licensed to CiviCRM under the Academic Free License version 3.0.   |
@@ -66,6 +66,10 @@
         </td>
     </tr>
   </table>
+{/if}
+<div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
+</div>
+
 {literal}
 <script type="text/javascript" >
 
@@ -139,7 +143,3 @@ function convertMetric( value, from, to ) {
 
 </script>
 {/literal}
-
-{/if}
-  <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
-</div>

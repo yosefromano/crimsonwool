@@ -1,15 +1,15 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
  | CiviCRM is free software; you can copy, modify, and distribute it  |
  | under the terms of the GNU Affero General Public License           |
- | Version 3, 19 November 2009 and the CiviCRM Licensing Exception.   |
+ | Version 3, 19 November 2009.                                       |
  |                                                                    |
  | CiviCRM is distributed in the hope that it will be useful, but     |
  | WITHOUT ANY WARRANTY; without even the implied warranty of         |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -48,34 +48,29 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
   private $_dataSourceClass;
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
 
     //Test database user privilege to create table(Temporary) CRM-4725
-    $errorScope = CRM_Core_TemporaryErrorScope::ignoreException();
-    $daoTestPrivilege = new CRM_Core_DAO();
+    CRM_Core_Error::ignoreException();
+    $daoTestPrivilege = new CRM_Core_DAO;
     $daoTestPrivilege->query("CREATE TEMPORARY TABLE import_job_permission_one(test int) ENGINE=InnoDB");
     $daoTestPrivilege->query("CREATE TEMPORARY TABLE import_job_permission_two(test int) ENGINE=InnoDB");
-    $daoTestPrivilege->query("DROP TEMPORARY TABLE IF EXISTS import_job_permission_one, import_job_permission_two");
-    unset($errorScope);
+    $daoTestPrivilege->query("DROP TABLE IF EXISTS import_job_permission_one, import_job_permission_two");
+    CRM_Core_Error::setCallback();
 
     if ($daoTestPrivilege->_lastError) {
       CRM_Core_Error::fatal(ts('Database Configuration Error: Insufficient permissions. Import requires that the CiviCRM database user has permission to create temporary tables. Contact your site administrator for assistance.'));
     }
 
-    $results = array();
-    $config = CRM_Core_Config::singleton();
-    $handler = opendir($config->uploadDir);
+    $results    = array();
+    $config     = CRM_Core_Config::singleton();
+    $handler    = opendir($config->uploadDir);
     $errorFiles = array('sqlImport.errors', 'sqlImport.conflicts', 'sqlImport.duplicates', 'sqlImport.mismatch');
-
-    // check for post max size avoid when called twice
-    $snippet = CRM_Utils_Array::value('snippet', $_GET, 0);
-    if (empty($snippet)) {
-      CRM_Core_Config_Defaults::formatUnitSize(ini_get('post_max_size'), TRUE);
-    }
 
     while ($file = readdir($handler)) {
       if ($file != '.' && $file != '..' &&
@@ -86,10 +81,7 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     }
     closedir($handler);
     if (!empty($results)) {
-      CRM_Core_Error::fatal(ts('<b>%1</b> file(s) in %2 directory are not writable. Listed file(s) might be used during the import to log the errors occurred during Import process. Contact your site administrator for assistance.', array(
-            1 => implode(', ', $results),
-            2 => $config->uploadDir,
-          )));
+      CRM_Core_Error::fatal(ts('<b>%1</b> file(s) in %2 directory are not writable. Listed file(s) might be used during the import to log the errors occurred during Import process. Contact your site administrator for assistance.', array(1 => implode(', ', $results), 2 => $config->uploadDir)));
     }
 
     $this->_dataSourceIsValid = FALSE;
@@ -127,10 +119,12 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
+
   public function buildQuickForm() {
 
     // If there's a dataSource in the query string, we need to load
@@ -138,8 +132,8 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     if ($this->_dataSourceIsValid) {
       $this->_dataSourceClassFile = str_replace('_', '/', $this->_dataSource) . ".php";
       require_once $this->_dataSourceClassFile;
-      $this->_dataSourceClass = new $this->_dataSource();
-      $this->_dataSourceClass->buildQuickForm($this);
+      $this->_dataSourceClass = new $this->_dataSource;
+      $this->_dataSourceClass->buildQuickForm( $this );
     }
 
     // Get list of data sources and display them as options
@@ -172,12 +166,13 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     );
 
     $mappingArray = CRM_Core_BAO_Mapping::getMappings(CRM_Core_OptionGroup::getValue('mapping_type',
-      'Import Contact',
-      'name'
-    ));
+        'Import Contact',
+        'name'
+      ));
 
     $this->assign('savedMapping', $mappingArray);
     $this->addElement('select', 'savedMapping', ts('Mapping Option'), array('' => ts('- select -')) + $mappingArray);
+
 
     $js = array('onClick' => "buildSubTypes();buildDedupeRules();");
     // contact types option
@@ -220,7 +215,7 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     $this->addButtons(array(
         array(
           'type' => 'upload',
-          'name' => ts('Continue'),
+          'name' => ts('Continue >>'),
           'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
           'isDefault' => TRUE,
         ),
@@ -232,19 +227,7 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     );
   }
 
-  /**
-   * This virtual function is used to set the default values of
-   * various form elements
-   *
-   * access        public
-   *
-   * @return array
-   *   reference to the array of default values
-   */
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $config = CRM_Core_Config::singleton();
     $defaults = array(
       'dataSource' => 'CRM_Import_DataSource_CSV',
@@ -261,15 +244,11 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     return $defaults;
   }
 
-  /**
-   * @return array
-   * @throws Exception
-   */
   private function _getDataSources() {
     // Open the data source dir and scan it for class files
-    $config = CRM_Core_Config::singleton();
+    $config        = CRM_Core_Config::singleton();
     $dataSourceDir = $config->importDataSourceDir;
-    $dataSources = array();
+    $dataSources   = array();
     if (!is_dir($dataSourceDir)) {
       CRM_Core_Error::fatal("Import DataSource directory $dataSourceDir does not exist");
     }
@@ -285,8 +264,8 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
       ) {
         $dataSourceClass = "CRM_Import_DataSource_" . $matches[1];
         require_once $dataSourceDir . DIRECTORY_SEPARATOR . $dataSourceFile;
-        $object = new $dataSourceClass();
-        $info = $object->getInfo();
+        $object = new $dataSourceClass;
+        $info   = $object->getInfo();
         $dataSources[$dataSourceClass] = $info['title'];
       }
     }
@@ -299,6 +278,7 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
    * and then setup some common data structures for the next step
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $this->controller->resetPage('MapField');
@@ -337,12 +317,12 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
         $this->_params['import_table_name'] = 'civicrm_import_job_' . md5(uniqid(rand(), TRUE));
       }
 
-      $this->_dataSourceClass->postProcess($this->_params, $db, $this);
+      $this->_dataSourceClass->postProcess( $this->_params, $db, $this );
 
       // We should have the data in the DB now, parse it
       $importTableName = $this->get('importTableName');
-      $fieldNames = $this->_prepareImportTable($db, $importTableName);
-      $mapper = array();
+      $fieldNames      = $this->_prepareImportTable($db, $importTableName);
+      $mapper          = array();
 
       $parser = new CRM_Contact_Import_Parser_Contact($mapper);
       $parser->setMaxLinesToProcess(100);
@@ -368,18 +348,16 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
   }
 
   /**
-   * Add a PK and status column to the import table so we can track our progress.
+   * Add a PK and status column to the import table so we can track our progress
    * Returns the name of the primary key and status columns
    *
-   * @param $db
-   * @param string $importTableName
-   *
    * @return array
+   * @access private
    */
   private function _prepareImportTable($db, $importTableName) {
     /* TODO: Add a check for an existing _status field;
-     *  if it exists, create __status instead and return that
-     */
+         *  if it exists, create __status instead and return that
+         */
 
     $statusFieldName = '_status';
     $primaryKeyName = '_id';
@@ -388,12 +366,12 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
     $this->set('statusFieldName', $statusFieldName);
 
     /* Make sure the PK is always last! We rely on this later.
-     * Should probably stop doing that at some point, but it
-     * would require moving to associative arrays rather than
-     * relying on numerical order of the fields. This could in
-     * turn complicate matters for some DataSources, which
-     * would also not be good. Decisions, decisions...
-     */
+         * Should probably stop doing that at some point, but it
+         * would require moving to associative arrays rather than
+         * relying on numerical order of the fields. This could in
+         * turn complicate matters for some DataSources, which
+         * would also not be good. Decisions, decisions...
+         */
 
     $alterQuery = "ALTER TABLE $importTableName
                        ADD COLUMN $statusFieldName VARCHAR(32)
@@ -411,9 +389,10 @@ class CRM_Contact_Import_Form_DataSource extends CRM_Core_Form {
    *
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Choose Data Source');
   }
-
 }
+

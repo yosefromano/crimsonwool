@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,18 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 
 /**
- * This class generates form components for processing a contribution
+ * This class generates form components for processing a ontribution
  *
  */
 class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
@@ -47,18 +47,15 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
   protected $_selfService = FALSE;
 
   public $_bltID = NULL;
-
-  /**
-   * @var array current payment processor including a copy of the object in 'object' key
-   */
-  public $_paymentProcessor = array();
+  public $_paymentProcessor = NULL;
 
   public $_paymentProcessorObj = NULL;
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     $this->_mid = CRM_Utils_Request::retrieve('mid', 'Integer', $this, FALSE);
@@ -77,13 +74,13 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
     $this->_coid = CRM_Utils_Request::retrieve('coid', 'Integer', $this, FALSE);
     if ($this->_coid) {
       $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_coid, 'contribute', 'info');
-      $this->_paymentProcessor['object'] = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_coid, 'contribute', 'obj');
+      $this->_paymentProcessorObj = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_coid, 'contribute', 'obj');
       $this->_subscriptionDetails = CRM_Contribute_BAO_ContributionRecur::getSubscriptionDetails($this->_coid, 'contribution');
     }
 
     if ($this->_mid) {
       $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_mid, 'membership', 'info');
-      $this->_paymentProcessor['object'] = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_mid, 'membership', 'obj');
+      $this->_paymentProcessorObj = CRM_Financial_BAO_PaymentProcessor::getProcessorForEntity($this->_mid, 'membership', 'obj');
       $this->_subscriptionDetails = CRM_Contribute_BAO_ContributionRecur::getSubscriptionDetails($this->_mid, 'membership');
       $membershipTypes = CRM_Member_PseudoConstant::membershipType();
       $membershipTypeId = CRM_Core_DAO::getFieldValue('CRM_Member_DAO_Membership', $this->_mid, 'membership_type_id');
@@ -104,10 +101,10 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
       $this->_selfService = TRUE;
     }
 
-    if (!$this->_paymentProcessor['object']->isSupported('updateSubscriptionBillingInfo')) {
+    if (!$this->_paymentProcessorObj->isSupported('updateSubscriptionBillingInfo')) {
       CRM_Core_Error::fatal(ts("%1 processor doesn't support updating subscription billing details.",
-        array(1 => $this->_paymentProcessor['object']->_processorName)
-      ));
+          array(1 => $this->_paymentProcessorObj->_processorName)
+        ));
     }
     $this->assign('paymentProcessor', $this->_paymentProcessor);
 
@@ -129,32 +126,15 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
     CRM_Contribute_BAO_ContributionRecur::setSubscriptionContext();
   }
 
-  /**
-   * This virtual function is used to set the default values of
-   * various form elements
-   *
-   * access        public
-   *
-   * @return array
-   *   reference to the array of default values
-   */
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $this->_defaults = array();
 
     if ($this->_subscriptionDetails->contact_id) {
-      $fields = array();
-      $names = array(
-        'first_name',
-        'middle_name',
-        'last_name',
-        "street_address-{$this->_bltID}",
-        "city-{$this->_bltID}",
-        "postal_code-{$this->_bltID}",
-        "country_id-{$this->_bltID}",
-        "state_province_id-{$this->_bltID}",
+      $options = array();
+      $fields  = array();
+      $names   = array(
+        'first_name', 'middle_name', 'last_name', "street_address-{$this->_bltID}", "city-{$this->_bltID}",
+        "postal_code-{$this->_bltID}", "country_id-{$this->_bltID}", "state_province_id-{$this->_bltID}",
       );
       foreach ($names as $name) {
         $fields[$name] = 1;
@@ -180,23 +160,28 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
       }
     }
 
+
     $config = CRM_Core_Config::singleton();
     // set default country from config if no country set
-    if (empty($this->_defaults["billing_country_id-{$this->_bltID}"])) {
+    if (!CRM_Utils_Array::value("billing_country_id-{$this->_bltID}", $this->_defaults)) {
       $this->_defaults["billing_country_id-{$this->_bltID}"] = $config->defaultContactCountry;
     }
+
+    // now fix all state country selectors
+    CRM_Core_BAO_Address::fixAllStateSelects($this, $this->_defaults);
 
     return $this->_defaults;
   }
 
   /**
-   * Build the form object.
+   * Function to build the form
    *
-   * @return void
+   * @return None
+   * @access public
    */
   public function buildQuickForm() {
     $type = 'next';
-    if ($this->_selfService) {
+    if ( $this->_selfService ) {
       $type = 'submit';
     }
 
@@ -213,37 +198,36 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
       )
     );
 
-    CRM_Core_Payment_Form::buildPaymentForm($this, $this->_paymentProcessor['object'], TRUE, TRUE);
+    CRM_Core_Payment_Form::buildCreditCard($this);
     $this->addFormRule(array('CRM_Contribute_Form_UpdateBilling', 'formRule'), $this);
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param $self
+   * @param array $fields  the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $self) {
+  static function formRule($fields, $files, $self) {
     $errors = array();
     CRM_Core_Form::validateMandatoryFields($self->_fields, $fields, $errors);
 
-    // validate the payment instrument values (e.g. credit card number)
-    CRM_Core_Payment_Form::validatePaymentInstrument($self->_paymentProcessor['id'], $fields, $errors, $self);
+    // make sure that credit card number and cvv are valid
+    CRM_Core_Payment_Form::validateCreditCard($fields, $errors);
 
     return empty($errors) ? TRUE : $errors;
   }
 
   /**
-   * Process the form.
+   * Process the form
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
@@ -301,7 +285,7 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
           array(
             1 => $this->_subscriptionDetails->amount,
             2 => $this->_subscriptionDetails->frequency_interval,
-            3 => $this->_subscriptionDetails->frequency_unit,
+            3 => $this->_subscriptionDetails->frequency_unit
           )
         );
         $msgTitle = ts('Details Updated');
@@ -333,7 +317,7 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
 
       // format new billing name
       $name = $processorParams['first_name'];
-      if (!empty($processorParams['middle_name'])) {
+      if (CRM_Utils_Array::value('middle_name', $processorParams)) {
         $name .= " {$processorParams['middle_name']}";
       }
       $name .= ' ' . $processorParams['last_name'];
@@ -342,7 +326,7 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
 
       // format old billing name
       $name = $this->_defaults['first_name'];
-      if (!empty($this->_defaults['middle_name'])) {
+      if (CRM_Utils_Array::value('middle_name', $this->_defaults)) {
         $name .= " {$this->_defaults['middle_name']}";
       }
       $name .= ' ' . $this->_defaults['last_name'];
@@ -425,21 +409,18 @@ class CRM_Contribute_Form_UpdateBilling extends CRM_Core_Form {
     }
 
     $session = CRM_Core_Session::singleton();
-    $userID = $session->get('userID');
-    if ($userID && $status) {
+    $userID  = $session->get('userID');
+    if ( $userID && $status) {
       $session->setStatus($status, $msgTitle, $msgType);
-    }
-    elseif (!$userID) {
-      if ($status) {
+    } else if (!$userID) {
+      if ($status)
         CRM_Utils_System::setUFMessage($status);
-      }
       $result = (int) ($updateSubscription && isset($ctype));
-      if (isset($tplParams)) {
+      if (isset($tplParams))
         $session->set('resultParams', $tplParams);
-      }
       return CRM_Utils_System::redirect(CRM_Utils_System::url('civicrm/contribute/subscriptionstatus',
-        "reset=1&task=billing&result={$result}"));
+                                                              "reset=1&task=billing&result={$result}"));
     }
   }
-
 }
+

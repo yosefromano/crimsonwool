@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,17 +23,18 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  * This abstract class provides the framework for component configuration
  * and provides aggregation methods for injecting it into system config.
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
+
 abstract class CRM_Core_Component_Config {
 
   /**
@@ -41,8 +42,9 @@ abstract class CRM_Core_Component_Config {
    * configuration file and injects them into system wide
    * configuration object.
    *
-   * @param CRM_Core_Config $config
-   * @param $oldMode
+   * @return array collection of component settings
+   * @access public
+   *
    */
   public function add($config, $oldMode) {
     foreach (get_class_vars(get_class($this)) as $key => $value) {
@@ -51,7 +53,7 @@ abstract class CRM_Core_Component_Config {
   }
 
   /**
-   * @param array $defaults
+   * TODO
    */
   public function setDefaults(&$defaults) {
     foreach (get_class_vars(get_class($this)) as $key => $value) {
@@ -60,5 +62,5 @@ abstract class CRM_Core_Component_Config {
       }
     }
   }
-
 }
+

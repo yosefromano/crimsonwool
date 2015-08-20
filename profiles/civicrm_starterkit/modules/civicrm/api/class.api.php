@@ -5,7 +5,7 @@
  * This class allows to consume the API, either from within a module that knows civicrm already:
  *
  * @code
- *   require_once('api/class.api.php');
+ *   require_once('api/class/api.php');
  *   $api = new civicrm_api3();
  * @endcode
  *
@@ -20,9 +20,7 @@
  * or to query a remote server via the rest api
  *
  * @code
- *   $api = new civicrm_api3 (array ('server' => 'http://example.org',
- *                                   'api_key'=>'theusersecretkey',
- *                                   'key'=>'thesitesecretkey'));
+ *   $api = new civicrm_api3 (array ('server' => 'http://example.org','api_key'=>'theusersecretkey','key'=>'thesitesecretkey'));
  * @endcode
  *
  * No matter how initialised and if civicrm is local or remote, you use the class the same way.
@@ -79,11 +77,9 @@
 class civicrm_api3 {
 
   /**
-   * Class constructor.
-   *
-   * @param array $config API configuration.
+   * @param array API configuration.
    */
-  public function __construct($config = NULL) {
+  function __construct($config = NULL) {
     $this->local      = TRUE;
     $this->input      = array();
     $this->lastResult = array();
@@ -128,21 +124,14 @@ class civicrm_api3 {
   }
 
   /**
-   * Convert to string.
    *
-   * @return string
    */
   public function __toString() {
     return json_encode($this->lastResult);
   }
 
   /**
-   * Perform action.
    *
-   * @param $action
-   * @param $params
-   *
-   * @return bool
    */
   public function __call($action, $params) {
     // @TODO Check if it's a valid action.
@@ -155,10 +144,7 @@ class civicrm_api3 {
   }
 
   /**
-   * As of PHP 5.3.0.
-   *
-   * @param $name
-   * @param $arguments
+   *  As of PHP 5.3.0
    */
   public static function __callStatic($name, $arguments) {
     // Should we implement it ?
@@ -166,15 +152,9 @@ class civicrm_api3 {
   }
 
   /**
-   * Call via rest.
    *
-   * @param $entity
-   * @param $action
-   * @param array $params
-   *
-   * @return \stdClass
    */
-  public function remoteCall($entity, $action, $params = array()) {
+  function remoteCall($entity, $action, $params = array()) {
     $fields = "key={$this->key}&api_key={$this->api_key}";
     $query = $this->uri . "&entity=$entity&action=$action";
     foreach ($params as $k => $v) {
@@ -191,7 +171,7 @@ class civicrm_api3 {
       $result = curl_exec($ch);
       // CiviCRM expects to get back a CiviCRM error object.
       if (curl_errno($ch)) {
-        $res = new stdClass();
+        $res = new stdClass;
         $res->is_error = 1;
         $res->error_message = curl_error($ch);
         $res->level = "cURL";
@@ -206,7 +186,7 @@ class civicrm_api3 {
       $result = file_get_contents($query . '&' . $fields);
     }
     if (!$res = json_decode($result)) {
-      $res = new stdClass();
+      $res = new stdClass;
       $res->is_error = 1;
       $res->error_message = 'Unable to parse returned JSON';
       $res->level = 'json_decode';
@@ -216,16 +196,7 @@ class civicrm_api3 {
     return $res;
   }
 
-  /**
-   * Call api function.
-   *
-   * @param $entity
-   * @param string $action
-   * @param array $params
-   *
-   * @return bool
-   */
-  public function call($entity, $action = 'Get', $params = array()) {
+  function call($entity, $action = 'Get', $params = array()) {
     if (is_int($params)) {
       $params = array('id' => $params);
     }
@@ -259,7 +230,7 @@ class civicrm_api3 {
   /**
    * Helper method for long running programs (eg bots).
    */
-  public function ping() {
+  function ping() {
     global $_DB_DATAOBJECT;
     foreach ($_DB_DATAOBJECT['CONNECTIONS'] as & $c) {
       if (!$c->connection->ping()) {
@@ -273,26 +244,20 @@ class civicrm_api3 {
 
   /**
    * Return the last error message.
-   * @return string
    */
-  public function errorMsg() {
+  function errorMsg() {
     return $this->lastResult->error_message;
   }
 
   /**
-   * Initialize.
+   *
    */
-  public function init() {
+  function init() {
     CRM_Core_DAO::init($this->cfg->dsn);
   }
 
   /**
-   * Get attribute.
    *
-   * @param $name
-   * @param null $value
-   *
-   * @return $this
    */
   public function attr($name, $value = NULL) {
     if ($value === NULL) {
@@ -307,31 +272,21 @@ class civicrm_api3 {
   }
 
   /**
-   * Is this an error.
    *
-   * @return bool
    */
   public function is_error() {
     return (property_exists($this->lastResult, 'is_error') && $this->lastResult->is_error);
   }
 
   /**
-   * Check if var is set.
    *
-   * @param string $name
-   *
-   * @return bool
    */
   public function is_set($name) {
     return (isset($this->lastResult->$name));
   }
 
   /**
-   * Get object.
    *
-   * @param string $name
-   *
-   * @return $this
    */
   public function __get($name) {
     // @TODO Test if valid entity.
@@ -356,7 +311,6 @@ class civicrm_api3 {
 
   /**
    * Or use $api->value.
-   * @return array
    */
   public function values() {
     if (is_array($this->lastResult)) {
@@ -369,10 +323,8 @@ class civicrm_api3 {
 
   /**
    * Or use $api->result.
-   * @return array
    */
   public function result() {
     return $this->lastResult;
   }
-
 }

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -44,13 +44,16 @@
 class CRM_Profile_Form_Dynamic extends CRM_Profile_Form {
 
   /**
-   * Pre processing work done here.
+   * pre processing work done here.
    *
    * @param
    *
    * @return void
+   *
+   * @access public
+   *
    */
-  public function preProcess() {
+  function preProcess() {
     if ($this->get('register')) {
       $this->_mode = CRM_Profile_Form::MODE_REGISTER;
     }
@@ -69,9 +72,10 @@ class CRM_Profile_Form_Dynamic extends CRM_Profile_Form {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     $this->addButtons(array(
@@ -91,23 +95,21 @@ class CRM_Profile_Form_Dynamic extends CRM_Profile_Form {
   }
 
   /**
-   * Global form rule.
+   * global form rule
    *
-   * @param array $fields
-   *   The input form values.
-   * @param array $files
-   *   The uploaded files if any.
-   * @param CRM_Core_Form $form
+   * @param array $fields the input form values
+   * @param array $files   the uploaded files if any
+   * @param array $options additional user data
    *
-   *
-   * @return bool|array
-   *   true if no errors, else array of errors
+   * @return true if no errors, else array of errors
+   * @access public
+   * @static
    */
-  public static function formRule($fields, $files, $form) {
+  static function formRule($fields, $files, $form) {
     $errors = array();
 
     // if no values, return
-    if (empty($fields) || empty($fields['edit'])) {
+    if (empty($fields) || !CRM_Utils_Array::value('edit', $fields)) {
       return TRUE;
     }
 
@@ -117,11 +119,12 @@ class CRM_Profile_Form_Dynamic extends CRM_Profile_Form {
   /**
    * Process the user submitted custom data values.
    *
+   * @access public
    *
    * @return void
    */
   public function postProcess() {
     parent::postProcess();
   }
-
 }
+

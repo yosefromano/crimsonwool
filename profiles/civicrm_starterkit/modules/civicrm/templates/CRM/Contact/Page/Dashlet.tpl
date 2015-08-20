@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -59,20 +59,20 @@
 
 {literal}
 <script type="text/javascript">
-  CRM.$(function($) {
+  cj(function() {
       var currentReSortEvent;
-    $(".dash-column").sortable({
+    cj(".dash-column").sortable({
       connectWith: '.dash-column',
       update: saveSorting
     });
 
-    $(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
+    cj(".portlet").addClass("ui-widget ui-widget-content ui-helper-clearfix ui-corner-all")
       .find(".portlet-header")
         .addClass("ui-widget-header ui-corner-all")
         .end()
       .find(".portlet-content");
 
-    $(".dash-column").disableSelection();
+    cj(".dash-column").disableSelection();
 
     function saveSorting(e, ui) {
             // this is to prevent double post call
@@ -86,8 +86,8 @@
                 dashletColumns = Array();
 
                 // build post params
-                $('div[id^=existing-dashlets-col-]').each( function( i ) {
-                    $(this).find('.portlet-header').each( function( j ) {
+                cj('div[id^=existing-dashlets-col-]').each( function( i ) {
+                    cj(this).find('.portlet-header').each( function( j ) {
                         var elementID = this.id;
                         var idState = elementID.split('-');
                         params['columns[' + i + '][' + idState[0] + ']'] = idState[1];
@@ -98,16 +98,16 @@
                 var postUrl = {/literal}"{crmURL p='civicrm/ajax/dashboard' h=0 }"{literal};
                 params['op'] = 'save_columns';
                 params['key'] = {/literal}"{crmKey name='civicrm/ajax/dashboard'}"{literal};
-                $.post( postUrl, params, function(response, status) {
+                cj.post( postUrl, params, function(response, status) {
                     // TO DO show done / disable escape action
                 });
             }
         }
 
-        $('.delete-dashlet').click( function( ) {
+        cj('.delete-dashlet').click( function( ) {
             var message = {/literal}'{ts escape="js"}Do you want to remove this dashlet as an "Available Dashlet", AND delete it from all user dashboards?{/ts}'{literal};
             if ( confirm( message) ) {
-                var dashletID = $(this).parent().attr('id');
+                var dashletID = cj(this).parent().attr('id');
                 var idState = dashletID.split('-')
 
                 // Build a list of params to post to the server.
@@ -119,9 +119,9 @@
                 var postUrl = {/literal}"{crmURL p='civicrm/ajax/dashboard' h=0 }"{literal};
                 params['op'] = 'delete_dashlet';
                 params['key'] = {/literal}"{crmKey name='civicrm/ajax/dashboard'}"{literal};
-                $.post( postUrl, params, function(response, status) {
+                cj.post( postUrl, params, function(response, status) {
                     // delete dom object
-                    $('#' + dashletID ).parent().remove();
+                    cj('#' + dashletID ).parent().remove();
                 });
             }
         });

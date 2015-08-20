@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -36,13 +36,11 @@
 /**
  * Add a class to an html element
  *
- * @param string $string
- *   The html to be tweaked.
- * @param string $class
- *   The new class or classes to add (separate with a space).
+ * @param string $string    the html to be tweaked
+ * @param string $class     the new class or classes to add (separate with a space)
  *
- * @return string
- *   the new modified html string
+ * @return string        the new modified html string
+ * @access public
  */
 function smarty_modifier_crmAddClass($string, $class) {
   // Standardize white space
@@ -55,3 +53,4 @@ function smarty_modifier_crmAddClass($string, $class) {
   }
   return $string;
 }
+

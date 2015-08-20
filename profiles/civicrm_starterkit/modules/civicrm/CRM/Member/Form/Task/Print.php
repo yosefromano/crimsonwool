@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,11 +39,12 @@
 class CRM_Member_Form_Task_Print extends CRM_Member_Form_Task {
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
+  function preProcess() {
     parent::preprocess();
 
     // set print view, so that print templates are called
@@ -66,14 +67,15 @@ class CRM_Member_Form_Task_Print extends CRM_Member_Form_Task {
   }
 
   /**
-   * Build the form object - it consists of
+   * Build the form - it consists of
    *    - displaying the QILL (query in local language)
    *    - displaying elements for saving the search
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     //
     // just need to add a javacript to popup the window for printing
     //
@@ -93,13 +95,14 @@ class CRM_Member_Form_Task_Print extends CRM_Member_Form_Task {
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
    * @return void
    */
   public function postProcess() {
     // redirect to the main search page after printing is over
   }
-
 }
+

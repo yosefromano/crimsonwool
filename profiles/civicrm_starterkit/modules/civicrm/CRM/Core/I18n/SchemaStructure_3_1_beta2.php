@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,20 +23,17 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_I18n_SchemaStructure_3_1_beta2 {
-  /**
-   * @return array
-   */
-  public static function &columns() {
+  static function &columns() {
     static $result = NULL;
     if (!$result) {
       $result = array(
@@ -192,10 +189,7 @@ class CRM_Core_I18n_SchemaStructure_3_1_beta2 {
     return $result;
   }
 
-  /**
-   * @return array
-   */
-  public static function &indices() {
+  static function &indices() {
     static $result = NULL;
     if (!$result) {
       $result = array(
@@ -273,15 +267,12 @@ class CRM_Core_I18n_SchemaStructure_3_1_beta2 {
     return $result;
   }
 
-  /**
-   * @return array
-   */
-  public static function &tables() {
+  static function &tables() {
     static $result = NULL;
     if (!$result) {
       $result = array_keys(self::columns());
     }
     return $result;
   }
-
 }
+

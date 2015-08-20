@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,14 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
+{capture assign=infoTitle}{ts}Preview Mode{/ts}{/capture}
+{assign var="infoType" value="info"}
 {if $previewField}
-  {capture assign=infoTitle}{ts}Profile Field Preview{/ts}{/capture}
+  {capture assign=infoMessage}<strong>{ts}Profile Field Preview{/ts}</strong>{/capture}
 {else}
-  {capture assign=infoTitle}{ts}Profile Preview{/ts}{/capture}
+  {capture assign=infoMessage}<strong>{ts}Profile Preview{/ts}</strong>{/capture}
 {/if}
-{include file="CRM/common/info.tpl" infoType="no-popup profile-preview-msg" infoMessage=" "}
+{include file="CRM/common/info.tpl"}
 <div class="crm-form-block">
 
 {if ! empty( $fields )}
@@ -95,6 +97,9 @@
                       {/if}
                     {/foreach}
                   </table>
+                  {if $field.html_type eq 'Radio' and $form.formName eq 'Preview'}
+                    <span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('{$n}', '{$form.formName}'); return false;">{ts}clear{/ts}</a>)</span>
+                  {/if}
                 {/strip}
               </td>
             </tr>
@@ -118,15 +123,22 @@
                   &nbsp;{$form.$phone_ext_field.html}
                 {/if}
               {else}
-                {if $n|substr:0:3 eq 'im-'}
+                {if $n|substr:0:4 eq 'url-'}
+                  {assign var="websiteType" value=$n|cat:"-website_type_id"}
+                  {$form.$websiteType.html}&nbsp;
+                  {elseif $n|substr:0:3 eq 'im-'}
                   {assign var="provider" value=$n|cat:"-provider_id"}
                   {$form.$provider.html}&nbsp;
                 {/if}
                 {$form.$n.html}
                 {if $field.is_view eq 0}
-                  {if $field.html_type eq 'Autocomplete-Select'}
+                  {if ( $field.html_type eq 'Radio' or  $n eq 'gender') and $form.formName eq 'Preview'}
+                    <span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('{$n}', '{$form.formName}'); return false;">{ts}clear{/ts}</a>)</span>
+                  {elseif $field.html_type eq 'Autocomplete-Select'}
                     {if $field.data_type eq 'ContactReference'}
                     {include file="CRM/Custom/Form/ContactReference.tpl" element_name = $n}
+                      {else}
+                    {include file="CRM/Custom/Form/AutoComplete.tpl" element_name = $n}
                     {/if}
                   {/if}
                 {/if}

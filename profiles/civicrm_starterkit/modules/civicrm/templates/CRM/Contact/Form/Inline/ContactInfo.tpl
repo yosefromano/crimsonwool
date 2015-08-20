@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -29,12 +29,13 @@
     {include file="CRM/common/formButtons.tpl"}
   </div>
 
-  <div class="crm-clear">
+  <div class="crm-clear">  
     {if $contactType eq 'Individual'}
     <div class="crm-summary-row">
-      <div class="crm-label">{$form.employer_id.label}&nbsp;{help id="id-current-employer" file="CRM/Contact/Form/Contact.hlp"}</div>
+      <div class="crm-label">{$form.current_employer.label}&nbsp;{help id="id-current-employer" file="CRM/Contact/Form/Contact.hlp"}</div>
       <div class="crm-content">
-        {$form.employer_id.html|crmAddClass:big}
+        {$form.current_employer.html}
+        <div id="employer_address" style="display:none;"></div>
       </div>
     </div>
     <div class="crm-summary-row">
@@ -62,3 +63,7 @@
     </div>
   </div> <!-- end of main -->
 </div>
+
+{if $contactType eq 'Individual'}
+  {include file="CRM/Contact/Form/CurrentEmployer.tpl"}
+{/if}

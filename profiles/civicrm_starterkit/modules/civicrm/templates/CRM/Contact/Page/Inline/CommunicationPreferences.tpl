@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -60,14 +60,6 @@
         {$preferred_mail_format}
       </div>
     </div>
-    {if isset($communication_style_display)}
-    <div class="crm-summary-row">
-      <div class="crm-label">{ts}Communication Style{/ts}</div>
-      <div class="crm-content crm-contact-communication_style_display">
-        {$communication_style_display}
-      </div>
-    </div>
-    {/if}
     <div class="crm-summary-row">
       <div class="crm-label">{ts}Email Greeting{/ts}</div>
       <div class="crm-content crm-contact-email_greeting_display">

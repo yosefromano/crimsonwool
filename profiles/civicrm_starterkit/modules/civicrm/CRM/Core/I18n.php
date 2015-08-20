@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -55,12 +55,11 @@ class CRM_Core_I18n {
   /**
    * A locale-based constructor that shouldn't be called from outside of this class (use singleton() instead).
    *
-   * @param string $locale
-   *   the base of this certain object's existence.
+   * @param  $locale string  the base of this certain object's existence
    *
-   * @return \CRM_Core_I18n
+   * @return         void
    */
-  public function __construct($locale) {
+  function __construct($locale) {
     if ($locale != '' and $locale != 'en_US') {
       $config = CRM_Core_Config::singleton();
 
@@ -95,7 +94,7 @@ class CRM_Core_I18n {
 
       $mo_file = $config->gettextResourceDir . $locale . DIRECTORY_SEPARATOR . 'LC_MESSAGES' . DIRECTORY_SEPARATOR . 'civicrm.mo';
 
-      if (!file_exists($mo_file)) {
+      if (! file_exists($mo_file)) {
         // fallback to pre-4.5 mode
         $mo_file = $config->gettextResourceDir . $locale . DIRECTORY_SEPARATOR . 'civicrm.mo';
       }
@@ -109,23 +108,20 @@ class CRM_Core_I18n {
   /**
    * Returns whether gettext is running natively or using PHP-Gettext.
    *
-   * @return bool
-   *   True if gettext is native
+   * @return bool True if gettext is native
    */
-  public function isNative() {
+  function isNative() {
     return $this->_nativegettext;
   }
 
   /**
    * Return languages available in this instance of CiviCRM.
    *
-   * @param bool $justEnabled
-   *   whether to return all languages or just the enabled ones.
+   * @param $justEnabled boolean  whether to return all languages or just the enabled ones
    *
-   * @return array
-   *   Array of code/language name mappings
+   * @return             array    of code/language name mappings
    */
-  public static function languages($justEnabled = FALSE) {
+  static function languages($justEnabled = FALSE) {
     static $all = NULL;
     static $enabled = NULL;
 
@@ -135,7 +131,8 @@ class CRM_Core_I18n {
       // check which ones are available; add them to $all if not there already
       $config = CRM_Core_Config::singleton();
       $codes = array();
-      if (is_dir($config->gettextResourceDir) && $dir = opendir($config->gettextResourceDir)) {
+      if (is_dir($config->gettextResourceDir)) {
+        $dir = opendir($config->gettextResourceDir);
         while ($filename = readdir($dir)) {
           if (preg_match('/^[a-z][a-z]_[A-Z][A-Z]$/', $filename)) {
             $codes[] = $filename;
@@ -152,9 +149,7 @@ class CRM_Core_I18n {
         if ($code == 'en_US') {
           continue;
         }
-        if (!in_array($code, $codes)) {
-          unset($all[$code]);
-        }
+        if (!in_array($code, $codes))unset($all[$code]);
       }
     }
 
@@ -176,13 +171,12 @@ class CRM_Core_I18n {
   /**
    * Replace arguments in a string with their values. Arguments are represented by % followed by their number.
    *
-   * @param string $str
-   *   source string.
+   * @param  $str string  source string
+   * @param       mixed   arguments, can be passed in an array or through single variables
    *
-   * @return string
-   *   modified string
+   * @return      string  modified string
    */
-  public function strarg($str) {
+  function strarg($str) {
     $tr = array();
     $p = 0;
     for ($i = 1; $i < func_num_args(); $i++) {
@@ -214,16 +208,12 @@ class CRM_Core_I18n {
    *   - count - The item count for plural mode (3rd parameter of ngettext())
    *   - context - gettext context of that string (for homonym handling)
    *
-   * @param string $text
-   *   the original string.
-   * @param array $params
-   *   The params of the translation (if any).
-   *   - domain: string|array a list of translation domains to search (in order)
-   *   - context: string
-   * @return string
-   *   the translated string
+   * @param $text   string  the original string
+   * @param $params array   the params of the translation (if any)
+   *
+   * @return        string  the translated string
    */
-  public function crm_translate($text, $params = array()) {
+  function crm_translate($text, $params = array()) {
     if (isset($params['escape'])) {
       $escape = $params['escape'];
       unset($params['escape']);
@@ -235,7 +225,7 @@ class CRM_Core_I18n {
     // in such cases we return early, only doing SQL/JS escaping
     if (isset($params['skip']) and $params['skip']) {
       if (isset($escape) and ($escape == 'sql')) {
-        $text = CRM_Core_DAO::escapeString($text);
+        $text = mysql_escape_string($text);
       }
       if (isset($escape) and ($escape == 'js')) {
         $text = addcslashes($text, "'");
@@ -243,7 +233,6 @@ class CRM_Core_I18n {
       return $text;
     }
 
-    $plural = $count = NULL;
     if (isset($params['plural'])) {
       $plural = $params['plural'];
       unset($params['plural']);
@@ -260,69 +249,10 @@ class CRM_Core_I18n {
       $context = NULL;
     }
 
-    if (isset($params['domain'])) {
-      $domain = $params['domain'];
-      unset($params['domain']);
-    }
-    else {
-      $domain = NULL;
-    }
-
-    $raw = !empty($params['raw']);
-    unset($params['raw']);
-
-    if (!empty($domain)) {
-      // It might be prettier to cast to an array, but this is high-traffic stuff.
-      if (is_array($domain)) {
-        foreach ($domain as $d) {
-          $candidate = $this->crm_translate_raw($text, $d, $count, $plural, $context);
-          if ($candidate != $text) {
-            $text = $candidate;
-            break;
-          }
-        }
-      }
-      else {
-        $text = $this->crm_translate_raw($text, $domain, $count, $plural, $context);
-      }
-    }
-    else {
-      $text = $this->crm_translate_raw($text, NULL, $count, $plural, $context);
-    }
-
-    // replace the numbered %1, %2, etc. params if present
-    if (count($params) && !$raw) {
-      $text = $this->strarg($text, $params);
-    }
-
-    // escape SQL if we were asked for it
-    if (isset($escape) and ($escape == 'sql')) {
-      $text = CRM_Core_DAO::escapeString($text);
-    }
-
-    // escape for JavaScript (if requested)
-    if (isset($escape) and ($escape == 'js')) {
-      $text = addcslashes($text, "'");
-    }
-
-    return $text;
-  }
-
-  /**
-   * Lookup the raw translation of a string (without any extra escaping or interpolation).
-   *
-   * @param string $text
-   * @param string|NULL $domain
-   * @param int|NULL $count
-   * @param string $plural
-   * @param string $context
-   * @return mixed|string|translated
-   */
-  protected function crm_translate_raw($text, $domain, $count, $plural, $context) {
     // gettext domain for extensions
     $domain_changed = FALSE;
-    if (!empty($domain) && $this->_phpgettext) {
-      if ($this->setGettextDomain($domain)) {
+    if (! empty($params['domain']) && $this->_phpgettext) {
+      if ($this->setGettextDomain($params['domain'])) {
         $domain_changed = TRUE;
       }
     }
@@ -349,9 +279,9 @@ class CRM_Core_I18n {
       !$exactMatch &&
       isset($stringTable['enabled']['wildcardMatch'])
     ) {
-      $search = array_keys($stringTable['enabled']['wildcardMatch']);
+      $search  = array_keys($stringTable['enabled']['wildcardMatch']);
       $replace = array_values($stringTable['enabled']['wildcardMatch']);
-      $text = str_replace($search, $replace, $text);
+      $text    = str_replace($search, $replace, $text);
     }
 
     // dont translate if we've done exactMatch already
@@ -385,6 +315,21 @@ class CRM_Core_I18n {
       }
     }
 
+    // replace the numbered %1, %2, etc. params if present
+    if (count($params)) {
+      $text = $this->strarg($text, $params);
+    }
+
+    // escape SQL if we were asked for it
+    if (isset($escape) and ($escape == 'sql')) {
+      $text = mysql_escape_string($text);
+    }
+
+    // escape for JavaScript (if requested)
+    if (isset($escape) and ($escape == 'js')) {
+      $text = addcslashes($text, "'");
+    }
+
     if ($domain_changed) {
       $this->setGettextDomain('civicrm');
     }
@@ -395,27 +340,23 @@ class CRM_Core_I18n {
   /**
    * Translate a string to the current locale.
    *
-   * @param string $string
-   *   this string should be translated.
+   * @param  $string string  this string should be translated
    *
-   * @return string
-   *   the translated string
+   * @return         string  the translated string
    */
-  public function translate($string) {
+  function translate($string) {
     return ($this->_phpgettext) ? $this->_phpgettext->translate($string) : $string;
   }
 
   /**
    * Localize (destructively) array values.
    *
-   * @param array $array
-   *   the array for localization (in place).
-   * @param array $params
-   *   an array of additional parameters.
+   * @param  $array array  the array for localization (in place)
+   * @param  $params array an array of additional parameters
    *
-   * @return void
+   * @return        void
    */
-  public function localizeArray(
+  function localizeArray(
     &$array,
     $params = array()
   ) {
@@ -435,12 +376,11 @@ class CRM_Core_I18n {
   /**
    * Localize (destructively) array elements with keys of 'title'.
    *
-   * @param array $array
-   *   the array for localization (in place).
+   * @param  $array array  the array for localization (in place)
    *
-   * @return void
+   * @return        void
    */
-  public function localizeTitles(&$array) {
+  function localizeTitles(&$array) {
     foreach ($array as $key => $value) {
       if (is_array($value)) {
         $this->localizeTitles($value);
@@ -455,20 +395,18 @@ class CRM_Core_I18n {
   /**
    * Binds a gettext domain, wrapper over bindtextdomain().
    *
-   * @param $key
-   *   Key of the extension (can be 'civicrm', or 'org.example.foo').
+   * @param  $key Key of the extension (can be 'civicrm', or 'org.example.foo').
    *
-   * @return Bool
-   *   True if the domain was changed for an extension.
+   * @return Boolean True if the domain was changed for an extension.
    */
-  public function setGettextDomain($key) {
+  function setGettextDomain($key) {
     /* No domain changes for en_US */
-    if (!$this->_phpgettext) {
+    if (! $this->_phpgettext) {
       return FALSE;
     }
 
     // It's only necessary to find/bind once
-    if (!isset($this->_extensioncache[$key])) {
+    if (! isset($this->_extensioncache[$key])) {
       $config = CRM_Core_Config::singleton();
 
       try {
@@ -513,10 +451,8 @@ class CRM_Core_I18n {
 
   /**
    * Static instance provider - return the instance for the current locale.
-   *
-   * @return CRM_Core_I18n
    */
-  public static function &singleton() {
+  static function &singleton() {
     static $singleton = array();
 
     global $tsLocale;
@@ -530,10 +466,9 @@ class CRM_Core_I18n {
   /**
    * Set the LC_TIME locale if it's not set already (for a given language choice).
    *
-   * @return string
-   *   the final LC_TIME that got set
+   * @return string  the final LC_TIME that got set
    */
-  public static function setLcTime() {
+  static function setLcTime() {
     static $locales = array();
 
     global $tsLocale;
@@ -545,19 +480,15 @@ class CRM_Core_I18n {
 
     return $locales[$tsLocale];
   }
-
 }
 
 /**
  * Short-named function for string translation, defined in global scope so it's available everywhere.
  *
- * @param $text
- *   String string for translating.
- * @param array $params
- *   Array an array of additional parameters.
+ * @param  $text   string  string for translating
+ * @param  $params array   an array of additional parameters
  *
- * @return string
- *   the translated string
+ * @return         string  the translated string
  */
 function ts($text, $params = array()) {
   static $config = NULL;
@@ -589,3 +520,4 @@ function ts($text, $params = array()) {
     return $i18n->crm_translate($text, $params);
   }
 }
+

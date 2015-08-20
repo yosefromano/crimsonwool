@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -43,22 +43,22 @@
         <p>{ts}Click 'Upgrade Now' if you are ready to proceed. Otherwise click 'Cancel' to return to the CiviCRM home page.{/ts}</p>
         <input type="hidden" name="action" value="begin" />
         <input type="submit" value="{ts}Upgrade Now{/ts}" name="upgrade" onclick="return confirm('{ts escape="js"}Are you sure you are ready to upgrade now?{/ts}');" /> &nbsp;&nbsp;
-        <a class="button cancel crm-form-submit" value="{ts}Cancel{/ts}" href="{$cancelURL}">{ts}Cancel{/ts}</a>
+        <input type="button" value="{ts}Cancel{/ts}" onclick="window.location='{$cancelURL}';" />
     </form>
   </div>
 
 {else}
     <div class="crm-container" style="margin-top: 2em; padding: 1em; background-color: #EEFFEE; border: 1px #070 solid; color: black;">
-      <div class="bold" style="padding: 1em; background-color: rgba(255, 255, 255, 0.76);">
+      <p><span class="crm-status-icon success"> </span><strong>{$message}</strong></p>
+      <div style="padding: 1em; background-color: rgba(255, 255, 255, 0.76);">
         <p>
           <img style="display:block; float:left; width:40px; margin-right:10px;" src="{$config->resourceBase}i/logo_lg.png">
-          {ts 1='https://civicrm.org/membership' 2='https://civicrm.org/contribute'}The CiviCRM Core Team has been hard at work and is proud to release 4.6, the first major update of 2015. Though it is packed with enhancements and continues to mature the leading open source CRM for nonprofits worldwide, it does come with a cost to produce, maintain and improve upon. Without funding from organizations like yours, future releases are at risk of never being realized. We invite you to enjoy the improvements in 4.6 and ask that you <a href="%1" target="_blank">support CiviCRM by becoming a member</a> or by <a href="%2" target="_blank">making a donation</a>. ~ Dave Greenberg, Co-Founder{/ts} 
+          {ts 1='http://civicrm.org/civicrm/profile/create?reset=1&gid=15'}This release was made possible by contributions from people like <strong>you</strong>. <a href="%1" target="_blank">Register your site</a> to join the community.{/ts}
         </p>
         <p>
-          {ts 1='https://civicrm.org/register-site'}Not ready for a membership yet? You can still help us learn how to improve CiviCRM by <a href="%1" target="_blank">registering your site</a>.{/ts}
+          {ts 1='http://civicrm.org/contribute' 2='http://civicrm.org/make-it-happen'}If CiviCRM is useful to your organization, consider making a <a href="%1" target="_blank">monthly contribution</a>, or helping to <a href="%2" target="_blank">fund a proposed improvement</a>.{/ts}
         </p>
       </div>
-      <p><span class="crm-status-icon success"> </span>{$message}</p>
       {if $afterUpgradeMessage}
         <h3>{ts}Important Notes{/ts}</h3>
         <p>{$afterUpgradeMessage}</p>

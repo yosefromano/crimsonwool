@@ -134,6 +134,7 @@
 <div class="crm-section {$form.payment_type.name}-section">
   <div class="label">{$form.payment_type.label}</div>
   <div class="content">{$form.payment_type.html}
+    <span class="crm-clear-link">(<a href="#" title="unselect" onclick="unselectRadio('payment_type', '{$form.formName}'); return false;">{ts}clear{/ts}</a>)</span>
   </div>
   <div class="clear"></div>
 </div>
@@ -155,23 +156,23 @@
 <script type="text/javascript">
 var pay_later_sel = "input#{$form.is_pay_later.name}";
 {literal}
-CRM.$(function($) {
+cj("document").ready(function() {
   function refresh() {
-    var is_pay_later = $(pay_later_sel).prop("checked");
-    $(".credit_card_info-group").toggle(!is_pay_later);
-    $(".pay-later-instructions").toggle(is_pay_later);
-    $("div.billingNameInfo-section .description").html(is_pay_later ? "Enter the billing address at which you can be invoiced." : "Enter the name as shown on your credit or debit card, and the billing address for this card.");
+    var is_pay_later = cj(pay_later_sel).attr("checked");
+    cj(".credit_card_info-group").toggle(!is_pay_later);
+    cj(".pay-later-instructions").toggle(is_pay_later);
+    cj("div.billingNameInfo-section .description").html(is_pay_later ? "Enter the billing address at which you can be invoiced." : "Enter the name as shown on your credit or debit card, and the billing address for this card.");
   }
-  $("input#source").prop('disabled', true);
+  cj("input#source").attr('disabled', 'disabled');
 
-  $(pay_later_sel).change(function() {
+  cj(pay_later_sel).change(function() {
     refresh();
   });
-  $(".payment_type-section :radio").change(function() {
-    var sel = $(this).attr("id");
-    $(".check_number-section").toggle(
-        $(this).is(":checked") &&
-        $("label[for="+sel+"]").html() == "{/literal}{ts escape='js'}Check{/ts}{literal}"
+  cj(".payment_type-section :radio").change(function() {
+    var sel = cj(this).attr("id");
+    cj(".check_number-section").toggle(
+        cj(this).is(":checked") &&
+        cj("label[for="+sel+"]").html() == "{/literal}{ts escape='js'}Check{/ts}{literal}"
     );
   });
   refresh();

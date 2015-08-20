@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,42 +23,45 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
 
   /**
-   * Static holder for the default LT.
+   * static holder for the default LT
    */
   static $_defaultLocationType = NULL;
   static $_billingLocationType = NULL;
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
   /**
-   * Fetch object based on array of properties.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * contact_id. We'll tweak this function to be more full featured over a period
+   * of time. This is the inverse function of create. It also stores all the retrieved
+   * values in the default array
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @return CRM_Core_BAO_LocaationType|null
-   *   object on success, null otherwise
+   * @return object CRM_Core_BAO_LocaationType object on success, null otherwise
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     $locationType = new CRM_Core_DAO_LocationType();
     $locationType->copyValues($params);
     if ($locationType->find(TRUE)) {
@@ -69,29 +72,31 @@ class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
    *
+   * @access public
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_Core_DAO_LocationType', $id, 'is_active', $is_active);
   }
 
   /**
-   * Retrieve the default location_type.
+   * retrieve the default location_type
    *
-   * @return object
-   *   The default location type object on success,
+   * @param NULL
+   *
+   * @return object           The default location type object on success,
    *                          null otherwise
+   * @static
+   * @access public
    */
-  public static function &getDefault() {
+  static function &getDefault() {
     if (self::$_defaultLocationType == NULL) {
       $params = array('is_default' => 1);
       $defaults = array();
@@ -100,12 +105,11 @@ class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
     return self::$_defaultLocationType;
   }
 
-  /**
-   * Get ID of billing location type.
-   *
-   * @return int
+  /*
+   * Get ID of billing location type
+   * @return integer
    */
-  public static function getBilling() {
+  static function getBilling() {
     if (self::$_billingLocationType == NULL) {
       $locationTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id', array(), 'validate');
       self::$_billingLocationType = array_search('Billing', $locationTypes);
@@ -114,15 +118,17 @@ class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
   }
 
   /**
-   * Add a Location Type.
+   * Function to add a Location Type
    *
-   * @param array $params
-   *   Reference array contains the values submitted by the form.
+   * @param array $params reference array contains the values submitted by the form
+   * @param array $ids    reference array contains the id
    *
+   * @access public
+   * @static
    *
    * @return object
    */
-  public static function create(&$params) {
+  static function create(&$params) {
     $params['is_active'] = CRM_Utils_Array::value('is_active', $params, FALSE);
     $params['is_default'] = CRM_Utils_Array::value('is_default', $params, FALSE);
     $params['is_reserved'] = CRM_Utils_Array::value('is_reserved', $params, FALSE);
@@ -141,13 +147,14 @@ class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
   }
 
   /**
-   * Delete location Types.
+   * Function to delete location Types
    *
-   * @param int $locationTypeId
-   *   ID of the location type to be deleted.
+   * @param  int  $locationTypeId     ID of the location type to be deleted.
    *
+   * @access public
+   * @static
    */
-  public static function del($locationTypeId) {
+  static function del($locationTypeId) {
     $entity = array('address', 'phone', 'email', 'im');
     //check dependencies
     foreach ($entity as $key) {
@@ -167,5 +174,5 @@ class CRM_Core_BAO_LocationType extends CRM_Core_DAO_LocationType {
     $locationType->id = $locationTypeId;
     $locationType->delete();
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,19 +40,21 @@
 class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
 
   /**
-   * The action links that we need to display for the browse screen.
+   * The action links that we need to display for the browse screen
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
   public $_permission = NULL;
   public $_contactId = NULL;
 
   /**
-   * called when action is browse.
+   * This function is called when action is browse
    *
-   */
-  public function browse() {
+   * return null
+   * @access public
+   */ function browse() {
     $controller = new CRM_Core_Controller_Simple('CRM_Grant_Form_Search', ts('Grants'), $this->_action);
     $controller->setEmbedded(TRUE);
     $controller->reset();
@@ -64,16 +66,16 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
     if ($this->_contactId) {
       $displayName = CRM_Contact_BAO_Contact::displayName($this->_contactId);
       $this->assign('displayName', $displayName);
-      $this->ajaxResponse['tabCount'] = CRM_Contact_BAO_Contact::getCountComponent('grant', $this->_contactId);
     }
   }
 
   /**
-   * called when action is view.
+   * This function is called when action is view
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function view() {
+  function view() {
     $controller = new CRM_Core_Controller_Simple('CRM_Grant_Form_GrantView', 'View Grant', $this->_action);
     $controller->setEmbedded(TRUE);
     $controller->set('id', $this->_id);
@@ -83,11 +85,12 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
   }
 
   /**
-   * called when action is update or new.
+   * This function is called when action is update or new
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function edit() {
+  function edit() {
     $controller = new CRM_Core_Controller_Simple('CRM_Grant_Form_Grant', 'Create grant', $this->_action);
     $controller->setEmbedded(TRUE);
     $controller->set('id', $this->_id);
@@ -97,14 +100,15 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
   }
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
+   * @access public
    */
-  public function preProcess() {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
+  function preProcess() {
+    $context       = CRM_Utils_Request::retrieve('context', 'String', $this);
     $this->_action = CRM_Utils_Request::retrieve('action', 'String', $this, FALSE, 'browse');
-    $this->_id = CRM_Utils_Request::retrieve('id', 'Positive', $this);
+    $this->_id     = CRM_Utils_Request::retrieve('id', 'Positive', $this);
 
     if ($context == 'standalone') {
       $this->_action = CRM_Core_Action::ADD;
@@ -117,6 +121,9 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
 
       // check logged in url permission
       CRM_Contact_Page_View::checkUserPermission($this);
+
+      // set page title
+      CRM_Utils_System::setTitle(ts('Grant by') .  ' ' . $displayName);
     }
     $this->assign('action', $this->_action);
 
@@ -128,12 +135,13 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
   }
 
   /**
-   * the main function that is called when the page loads,
+   * This function is the main function that is called when the page loads,
    * it decides the which action has to be taken for the page.
    *
-   * @return null
+   * return null
+   * @access public
    */
-  public function run() {
+  function run() {
     $this->preProcess();
 
     $this->setContext();
@@ -150,10 +158,10 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
     return parent::run();
   }
 
-  public function setContext() {
-    $context = CRM_Utils_Request::retrieve('context', 'String', $this);
+  function setContext() {
+    $context   = CRM_Utils_Request::retrieve('context', 'String', $this);
     $this->_id = CRM_Utils_Request::retrieve('id', 'Integer', $this);
-    $session = CRM_Core_Session::singleton();
+    $session   = CRM_Core_Session::singleton();
 
     $qfKey = CRM_Utils_Request::retrieve('key', 'String', $this);
     //validate the qfKey
@@ -199,12 +207,11 @@ class CRM_Grant_Page_Tab extends CRM_Contact_Page_View {
     $session->pushUserContext($url);
 
     if (CRM_Utils_Request::retrieve('confirmed', 'Boolean',
-      CRM_Core_DAO::$_nullObject
-    )
-    ) {
+        CRM_Core_DAO::$_nullObject
+      )) {
       CRM_Grant_BAO_Grant::del($this->_id);
       CRM_Utils_System::redirect($url);
     }
   }
-
 }
+

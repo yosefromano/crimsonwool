@@ -1,9 +1,10 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,22 +24,20 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Report_Form_Contribute_LoggingDetail extends CRM_Logging_ReportDetail {
-  /**
-   */
-  public function __construct() {
-    $logging = new CRM_Logging_Schema();
+  function __construct() {
+    $logging        = new CRM_Logging_Schema;
     $this->tables[] = 'civicrm_contribution';
-    $this->tables = array_merge($this->tables, array_keys($logging->customDataLogTables()));
+    $this->tables   = array_merge($this->tables, array_keys($logging->customDataLogTables()));
 
     $this->detail = 'logging/contribute/detail';
     $this->summary = 'logging/contribute/summary';
@@ -46,11 +45,11 @@ class CRM_Report_Form_Contribute_LoggingDetail extends CRM_Logging_ReportDetail 
     parent::__construct();
   }
 
-  public function buildQuickForm() {
+  function buildQuickForm() {
     parent::buildQuickForm();
 
     // link back to summary report
     $this->assign('backURL', CRM_Report_Utils_Report::getNextUrl('logging/contribute/summary', 'reset=1', FALSE, TRUE));
   }
-
 }
+

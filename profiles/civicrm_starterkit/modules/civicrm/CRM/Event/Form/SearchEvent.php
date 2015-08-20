@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,26 +23,23 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Event_Form_SearchEvent extends CRM_Core_Form {
 
-  /**
-   * @return array
-   */
-  public function setDefaultValues() {
+  function setDefaultValues() {
     $defaults = array();
     $defaults['eventsByDates'] = 0;
 
     $this->_showHide = new CRM_Core_ShowHideBlocks();
-    if (empty($defaults['eventsByDates'])) {
+    if (!CRM_Utils_Array::value('eventsByDates', $defaults)) {
       $this->_showHide->addHide('id_fromToDates');
     }
 
@@ -51,8 +48,9 @@ class CRM_Event_Form_SearchEvent extends CRM_Core_Form {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
@@ -61,8 +59,12 @@ class CRM_Event_Form_SearchEvent extends CRM_Core_Form {
       array(CRM_Core_DAO::getAttribute('CRM_Event_DAO_Event', 'title'))
     );
 
-    $this->addSelect('event_type_id', array('multiple' => TRUE, 'context' => 'search'));
-    
+    $event_type = CRM_Core_OptionGroup::values('event_type', FALSE);
+
+    foreach ($event_type as $eventId => $eventName) {
+      $this->addElement('checkbox', "event_type_id[$eventId]", 'Event Type', $eventName);
+    }
+
     $eventsByDates = array();
     $searchOption = array(ts('Show Current and Upcoming Events'), ts('Search All or by Date Range'));
     $this->addRadio('eventsByDates', ts('Events by Dates'), $searchOption, array('onclick' => "return showHideByValue('eventsByDates','1','id_fromToDates','block','radio',true);"), "<br />");
@@ -73,15 +75,15 @@ class CRM_Event_Form_SearchEvent extends CRM_Core_Form {
     CRM_Campaign_BAO_Campaign::addCampaignInComponentSearch($this);
 
     $this->addButtons(array(
-      array(
-        'type' => 'refresh',
-        'name' => ts('Search'),
-        'isDefault' => TRUE,
-      ),
-    ));
+        array(
+          'type' => 'refresh',
+          'name' => ts('Search'),
+          'isDefault' => TRUE,
+        ),
+      ));
   }
 
-  public function postProcess() {
+  function postProcess() {
     $params = $this->controller->exportValues($this->_name);
     $parent = $this->controller->getParent();
     $parent->set('searchResult', 1);
@@ -105,5 +107,5 @@ class CRM_Event_Form_SearchEvent extends CRM_Core_Form {
       }
     }
   }
-
 }
+

@@ -1,24 +1,19 @@
 <?php
-
-/**
- * Class CRM_Event_Cart_Page_CheckoutAJAX
- */
 class CRM_Event_Cart_Page_CheckoutAJAX {
-  public function add_participant_to_cart() {
+  function add_participant_to_cart() {
+    require 'CRM/Core/Transaction.php';
     $transaction = new CRM_Core_Transaction();
-    $cart_id = CRM_Utils_Request::retrieve('cart_id', 'Integer');
-    $event_id = CRM_Utils_Request::retrieve('event_id', 'Integer');
+    $cart_id     = $_GET['cart_id'];
+    $event_id    = $_GET['event_id'];
 
-    $cart = CRM_Event_Cart_BAO_Cart::find_by_id($cart_id);
+    $cart = CRM_Event_Cart_BAO_Cart::find_by_id($_GET['cart_id']);
 
-    $params_array = array(
-      'cart_id' => $cart->id,
-      'contact_id' => CRM_Event_Cart_Form_Cart::find_or_create_contact(),
-      'event_id' => $event_id,
-    );
-
-    //XXX security?
-    $participant = CRM_Event_Cart_BAO_MerParticipant::create($params_array);
+    //XXX security
+    $participant = CRM_Event_Cart_BAO_MerParticipant::create(array(
+        'cart_id' => $cart->id,
+        'contact_id' => CRM_Event_Cart_Form_Cart::find_or_create_contact(),
+        'event_id' => $event_id,
+      ));
     $participant->save();
 
     $form = new CRM_Core_Form();
@@ -45,12 +40,11 @@ class CRM_Event_Cart_Page_CheckoutAJAX {
     CRM_Utils_System::civiExit();
   }
 
-  public function remove_participant_from_cart() {
-    $id = CRM_Utils_Request::retrieve('id', 'Integer');
-    $participant = CRM_Event_Cart_BAO_MerParticipant::get_by_id($id);
+  function remove_participant_from_cart() {
+    $participant = CRM_Event_Cart_BAO_MerParticipant::get_by_id($_GET['id']);
     $participant->delete();
 
     CRM_Utils_System::civiExit();
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,35 +23,23 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
 
   static $_paymentProcessor = NULL;
-
-  /**
-   * Constructor.
-   */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
 
-  /**
-   * @param string $name
-   * @param $type
-   * @param string $location
-   * @param bool $abort
-   *
-   * @return mixed
-   */
-  public static function retrieve($name, $type, $location = 'POST', $abort = TRUE) {
+  static function retrieve($name, $type, $location = 'POST', $abort = TRUE) {
     static $store = NULL;
     $value = CRM_Utils_Request::retrieve($name, $type, $store,
       FALSE, NULL, $location
@@ -64,15 +52,7 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
     return $value;
   }
 
-  /**
-   * @param $input
-   * @param $ids
-   * @param $objects
-   * @param $first
-   *
-   * @return bool
-   */
-  public function recur(&$input, &$ids, &$objects, $first) {
+  function recur(&$input, &$ids, &$objects, $first) {
     if (!isset($input['txnType'])) {
       CRM_Core_Error::debug_log_message("Could not find txn_type in input request");
       echo "Failure: Invalid parameters<p>";
@@ -204,13 +184,15 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
       }
 
       $contribution->contact_id = $ids['contact'];
-      $contribution->financial_type_id = $objects['contributionType']->id;
+      $contribution->financial_type_id  = $objects['contributionType']->id;
       $contribution->contribution_page_id = $ids['contributionPage'];
       $contribution->contribution_recur_id = $ids['contributionRecur'];
       $contribution->receive_date = $now;
       $contribution->currency = $objects['contribution']->currency;
       $contribution->payment_instrument_id = $objects['contribution']->payment_instrument_id;
       $contribution->amount_level = $objects['contribution']->amount_level;
+      $contribution->honor_contact_id = $objects['contribution']->honor_contact_id;
+      $contribution->honor_type_id = $objects['contribution']->honor_type_id;
       $contribution->campaign_id = $objects['contribution']->campaign_id;
 
       $objects['contribution'] = &$contribution;
@@ -221,17 +203,7 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
     );
   }
 
-  /**
-   * @param $input
-   * @param $ids
-   * @param $objects
-   * @param bool $recur
-   * @param bool $first
-   *
-   * @return bool
-   */
-  public function single(
-    &$input, &$ids, &$objects,
+  function single(&$input, &$ids, &$objects,
     $recur = FALSE,
     $first = FALSE
   ) {
@@ -290,13 +262,10 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
     $this->completeTransaction($input, $ids, $objects, $transaction, $recur);
   }
 
-  /**
-   * Main function.
-   *
-   * @return bool
-   */
-  public function main() {
-    //@todo - this could be refactored like PayPalProIPN & a test could be added
+  function main() {
+    // CRM_Core_Error::debug_var( 'GET' , $_GET , true, true );
+    // CRM_Core_Error::debug_var( 'POST', $_POST, true, true );
+   //@todo - this could be refactored like PayPalProIPN & a test could be added
 
     $objects = $ids = $input = array();
     $component = CRM_Utils_Array::value('module', $_GET);
@@ -348,13 +317,7 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
     }
   }
 
-  /**
-   * @param $input
-   * @param $ids
-   *
-   * @return bool
-   */
-  public function getInput(&$input, &$ids) {
+  function getInput(&$input, &$ids) {
     if (!$this->getBillingID($ids)) {
       return FALSE;
     }
@@ -380,10 +343,9 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
       $input[$name] = $value ? $value : NULL;
     }
 
-    $input['is_test'] = self::retrieve('test_ipn', 'Integer', 'POST', FALSE);
+    $input['is_test']    = self::retrieve('test_ipn', 'Integer', 'POST', FALSE);
     $input['fee_amount'] = self::retrieve('mc_fee', 'Money', 'POST', FALSE);
     $input['net_amount'] = self::retrieve('settle_amount', 'Money', 'POST', FALSE);
-    $input['trxn_id'] = self::retrieve('txn_id', 'String', 'POST', FALSE);
+    $input['trxn_id']    = self::retrieve('txn_id', 'String', 'POST', FALSE);
   }
-
 }

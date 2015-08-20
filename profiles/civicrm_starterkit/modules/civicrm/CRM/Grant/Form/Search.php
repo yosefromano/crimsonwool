@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,59 +40,122 @@
 /**
  * This file is for civigrant search
  */
-class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
+class CRM_Grant_Form_Search extends CRM_Core_Form {
 
   /**
-   * The params that are sent to the query.
+   * Are we forced to run a search
+   *
+   * @var int
+   * @access protected
+   */
+  protected $_force;
+
+  /**
+   * name of search button
+   *
+   * @var string
+   * @access protected
+   */
+  protected $_searchButtonName;
+
+  /**
+   * name of print button
+   *
+   * @var string
+   * @access protected
+   */
+  protected $_printButtonName;
+
+  /**
+   * name of action button
+   *
+   * @var string
+   * @access protected
+   */
+  protected $_actionButtonName;
+
+  /**
+   * form values that we will be using
    *
    * @var array
+   * @access protected
+   */
+  protected $_formValues;
+
+  /**
+   * the params that are sent to the query
+   *
+   * @var array
+   * @access protected
    */
   protected $_queryParams;
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * have we already done this search
    *
+   * @access protected
+   * @var boolean
+   */
+  protected $_done;
+
+  /**
+   * are we restricting ourselves to a single contact
+   *
+   * @access protected
    * @var boolean
    */
   protected $_single = FALSE;
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * are we restricting ourselves to a single contact
    *
+   * @access protected
    * @var boolean
    */
   protected $_limit = NULL;
 
   /**
-   * Prefix for the controller.
+   * what context are we being invoked from
+   *
+   * @access protected
+   * @var string
+   */
+  protected $_context = NULL;
+
+  /**
+   * prefix for the controller
+   *
    */
   protected $_prefix = "grant_";
 
   protected $_defaults;
 
   /**
-   * Processing needed for buildForm and later.
+   * processing needed for buildForm and later
    *
    * @return void
-   */
-  public function preProcess() {
+   * @access public
+   */ function preProcess() {
+
     /**
      * set the button names
      */
+
     $this->_searchButtonName = $this->getButtonName('refresh');
+    $this->_printButtonName = $this->getButtonName('next', 'print');
     $this->_actionButtonName = $this->getButtonName('next', 'action');
 
     $this->_done = FALSE;
     $this->defaults = array();
 
     /*
-     * we allow the controller to set force/reset externally, useful when we are being
-     * driven by the wizard framework
-     */
+         * we allow the controller to set force/reset externally, useful when we are being
+         * driven by the wizard framework
+         */
 
-    $this->_reset = CRM_Utils_Request::retrieve('reset', 'Boolean', CRM_Core_DAO::$_nullObject);
-    $this->_force = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE);
-    $this->_limit = CRM_Utils_Request::retrieve('limit', 'Positive', $this);
+    $this->_reset   = CRM_Utils_Request::retrieve('reset', 'Boolean', CRM_Core_DAO::$_nullObject);
+    $this->_force   = CRM_Utils_Request::retrieve('force', 'Boolean', $this, FALSE);
+    $this->_limit   = CRM_Utils_Request::retrieve('limit', 'Positive', $this);
     $this->_context = CRM_Utils_Request::retrieve('context', 'String', $this, FALSE, 'search');
 
     $this->assign("context", $this->_context);
@@ -155,28 +218,74 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
-    parent::buildQuickForm();
-    $this->addElement('text', 'sort_name', ts('Name or Email'), array('class' => 'twenty') + CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Contact', 'sort_name'));
+  function buildQuickForm() {
+    $this->addElement('text', 'sort_name', ts('Name or Email'), CRM_Core_DAO::getAttribute('CRM_Contact_DAO_Contact', 'sort_name'));
 
     CRM_Grant_BAO_Query::buildSearchForm($this);
+
+    /*
+         * add form checkboxes for each row. This is needed out here to conform to QF protocol
+         * of all elements being declared in builQuickForm
+         */
+
 
     $rows = $this->get('rows');
     if (is_array($rows)) {
       if (!$this->_single) {
-        $this->addRowSelectors($rows);
+        $this->addElement('checkbox', 'toggleSelect', NULL, NULL, array('onchange' => "toggleTaskAction( true ); return toggleCheckboxVals('mark_x_',this);"));
+        foreach ($rows as $row) {
+          $this->addElement('checkbox', CRM_Utils_Array::value('checkbox', $row),
+            NULL, NULL,
+            array('onclick' => " toggleTaskAction( true ); return checkSelectedBox('" . CRM_Utils_Array::value('checkbox', $row) . "');")
+          );
+          $grant_id = $row['grant_id'];
+        }
       }
+
+      $total = $cancel = 0;
 
       $permission = CRM_Core_Permission::getPermission();
 
-      $this->addTaskMenu(CRM_Grant_Task::permissionedTaskTitles($permission));
+      $tasks = array('' => ts('- actions -'));
+      $permissionedTask = CRM_Grant_Task::permissionedTaskTitles($permission);
+      if (is_array($permissionedTask) && !CRM_Utils_System::isNull($permissionedTask)) {
+        $tasks += $permissionedTask;
+      }
+
+      $this->add('select', 'task', ts('Actions:') . ' ', $tasks);
+      $this->add('submit', $this->_actionButtonName, ts('Go'),
+        array(
+          'class' => 'form-submit',
+          'onclick' => "return checkPerformAction('mark_x', '" . $this->getName() . "', 0);",
+        )
+      );
+
+      $this->add('submit', $this->_printButtonName, ts('Print'),
+        array(
+          'class' => 'form-submit',
+          'onclick' => "return checkPerformAction('mark_x', '" . $this->getName() . "', 1);",
+        )
+      );
+
+      // need to perform tasks on all or selected items ? using radio_ts(task selection) for it
+      $this->addElement('radio', 'radio_ts', NULL, '', 'ts_sel', array('checked' => 'checked'));
+      $this->addElement('radio', 'radio_ts', NULL, '', 'ts_all', array('onchange' => $this->getName() . ".toggleSelect.checked = false; toggleCheckboxVals('mark_x_',this); toggleTaskAction( true );"));
     }
 
+    // add buttons
+    $this->addButtons(array(
+        array(
+          'type' => 'refresh',
+          'name' => ts('Search'),
+          'isDefault' => TRUE,
+        ),
+      ));
   }
 
   /**
@@ -194,8 +303,9 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
    * @param
    *
    * @return void
+   * @access public
    */
-  public function postProcess() {
+  function postProcess() {
     if ($this->_done) {
       return;
     }
@@ -210,15 +320,13 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
       $this->_formValues = CRM_Contact_BAO_SavedSearch::getFormValues($this->_ssID);
     }
 
-    CRM_Core_BAO_CustomValue::fixCustomFieldValue($this->_formValues);
-
     $this->_queryParams = CRM_Contact_BAO_Query::convertFormValues($this->_formValues);
 
     $this->set('formValues', $this->_formValues);
     $this->set('queryParams', $this->_queryParams);
 
     $buttonName = $this->controller->getButtonName();
-    if ($buttonName == $this->_actionButtonName) {
+    if ($buttonName == $this->_actionButtonName || $buttonName == $this->_printButtonName) {
       // check actionName and if next, then do not repeat a search, since we are going to the next page
 
       // hack, make sure we reset the task values
@@ -234,6 +342,7 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
         $this->get(CRM_Utils_Sort::SORT_DIRECTION)
       );
     }
+
 
     $selector = new CRM_Grant_Selector_Search($this->_queryParams,
       $this->_action,
@@ -267,17 +376,17 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
   }
 
   /**
-   * Set the default form values.
+   * Set the default form values
    *
+   * @access protected
    *
-   * @return array
-   *   the default array reference
+   * @return array the default array reference
    */
-  public function &setDefaultValues() {
+  function &setDefaultValues() {
     return $this->_formValues;
   }
 
-  public function fixFormValues() {
+  function fixFormValues() {
     // if this search has been forced
     // then see if there are any get values, and if so over-ride the post values
     // note that this means that GET over-rides POST :)
@@ -307,10 +416,7 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
     }
   }
 
-  /**
-   * @return null
-   */
-  public function getFormValues() {
+  function getFormValues() {
     return NULL;
   }
 
@@ -318,9 +424,10 @@ class CRM_Grant_Form_Search extends CRM_Core_Form_Search {
    * Return a descriptive name for the page, used in wizard header
    *
    * @return string
+   * @access public
    */
   public function getTitle() {
     return ts('Find Grants');
   }
-
 }
+

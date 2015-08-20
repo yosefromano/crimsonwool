@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -49,52 +49,42 @@ class CRM_Case_Form_Task_Restore extends CRM_Case_Form_Task {
   protected $_single = FALSE;
 
   /**
-   * Build all the data structures needed to build the form.
+   * build all the data structures needed to build the form
    *
    * @return void
-   */
-  public function preProcess() {
+   * @access public
+   */ function preProcess() {
     parent::preProcess();
   }
 
   /**
-   * Build the form object.
+   * Build the form
    *
+   * @access public
    *
    * @return void
    */
-  public function buildQuickForm() {
+  function buildQuickForm() {
     $this->addDefaultButtons(ts('Restore Cases'), 'done');
   }
 
   /**
-   * Process the form after the input has been submitted and validated.
+   * process the form after the input has been submitted and validated
    *
+   * @access public
    *
-   * @return void
+   * @return None
    */
   public function postProcess() {
-    $restoredCases = $failed = 0;
+    $restoredCases = 0;
     foreach ($this->_caseIds as $caseId) {
       if (CRM_Case_BAO_Case::restoreCase($caseId)) {
         $restoredCases++;
       }
-      else {
-        $failed++;
-      }
     }
 
-    if ($restoredCases) {
-      $msg = ts('%count case restored from trash.', array(
-        'plural' => '%count cases restored from trash.',
-        'count' => $restoredCases,
-      ));
-      CRM_Core_Session::setStatus($msg, ts('Restored'), 'success');
-    }
-
-    if ($failed) {
-      CRM_Core_Session::setStatus(ts('1 could not be restored.', array('plural' => '%count could not be restored.', 'count' => $failed)), ts('Error'), 'error');
-    }
+    CRM_Core_Session::setStatus($restoredCases, ts('Restored Cases'), 'success');
+    CRM_Core_Session::setStatus('', ts('Total Selected Case(s): %1', array(1 => count($this->_caseIds))), 'info');
   }
-
 }
+

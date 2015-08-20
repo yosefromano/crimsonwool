@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,34 +40,39 @@
 class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
 
   /**
-   * Batch entry fields.
+   * Batch entry fields
    */
   private static $_contriBatchEntryFields = NULL;
   private static $_memberBatchEntryFields = NULL;
 
 
   /**
-   * Fetch object based on array of properties.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. Typically the valid params are only
+   * contact_id. We'll tweak this function to be more full featured over a period
+   * of time. This is the inverse function of create. It also stores all the retrieved
+   * values in the default array
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @return CRM_Core_BAO_UFField
+   * @return object CRM_Core_BAO_UFField object
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     return CRM_Core_DAO::commonRetrieve('CRM_Core_DAO_UFField', $params, $defaults);
   }
 
   /**
    * Get the form title.
    *
-   * @param int $id
-   *   Id of uf_form.
+   * @param int $id id of uf_form
    *
-   * @return string
-   *   title
+   * @return string title
+   *
+   * @access public
+   * @static
    *
    */
   public static function getTitle($id) {
@@ -75,17 +80,16 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id         id of the database record
+   * @param boolean  $is_active  value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object              DAO object on sucess, null otherwise
+   * @access public
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     //check if custom data profile field is disabled
     if ($is_active) {
       if (CRM_Core_BAO_UFField::checkUFStatus($id)) {
@@ -103,10 +107,12 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
   /**
    * Delete the profile Field.
    *
-   * @param int $id
-   *   Field Id.
+   * @param int  $id    Field Id
    *
-   * @return bool
+   * @return boolean
+   *
+   * @access public
+   * @static
    *
    */
   public static function del($id) {
@@ -118,30 +124,26 @@ class CRM_Core_BAO_UFField extends CRM_Core_DAO_UFField {
   }
 
   /**
-   * Check duplicate for duplicate field in a group.
+   * Function to check duplicate for duplicate field in a group
    *
-   * @param array $params
-   *   An associative array with field and values.
+   * @param array $params an associative array with field and values
    * @param $ids
    *
    * @return mixed
    * @ids   array $ids    array that containd ids
    *
+   * @access public
+   * @static
    */
   public static function duplicateField($params, $ids) {
     $ufField = new CRM_Core_DAO_UFField();
     $ufField->uf_group_id = CRM_Utils_Array::value('uf_group', $ids);
     $ufField->field_type = $params['field_name'][0];
     $ufField->field_name = $params['field_name'][1];
-    if ($params['field_name'][1] == 'url') {
-      $ufField->website_type_id = CRM_Utils_Array::value(2, $params['field_name'], NULL);
-    }
-    else {
-      $ufField->location_type_id = (CRM_Utils_Array::value(2, $params['field_name'])) ? $params['field_name'][2] : 'NULL';
-    }
+    $ufField->location_type_id = (CRM_Utils_Array::value(2, $params['field_name'])) ? $params['field_name'][2] : 'NULL';
     $ufField->phone_type_id = CRM_Utils_Array::value(3, $params['field_name']);
 
-    if (!empty($ids['uf_field'])) {
+    if (CRM_Utils_Array::value('uf_field', $ids)) {
       $ufField->whereAdd("id <> " . CRM_Utils_Array::value('uf_field', $ids));
     }
 
@@ -191,31 +193,25 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Add the UF Field.
+   * function to add the UF Field
    *
-   * @param array $params
-   *   (reference) array containing the values submitted by the form.
-   * @param array $ids
-   *   Array containing the id.
+   * @param array $params (reference) array containing the values submitted by the form
+   * @param array $ids array containing the id
    *
-   * @return CRM_Core_BAO_UFField
+   * @return object CRM_Core_BAO_UFField object
+   *
+   * @access public
+   * @static
    *
    */
-  public static function add(&$params, $ids = array()) {
+  static function add(&$params, $ids = array()) {
     // set values for uf field properties and save
     $ufField = new CRM_Core_DAO_UFField();
     $ufField->field_type = $params['field_name'][0];
     $ufField->field_name = $params['field_name'][1];
 
     //should not set location type id for Primary
-    $locationTypeId = NULL;
-    if ($params['field_name'][1] == 'url') {
-      $ufField->website_type_id = CRM_Utils_Array::value(2, $params['field_name']);
-    }
-    else {
-      $locationTypeId = CRM_Utils_Array::value(2, $params['field_name']);
-      $ufField->website_type_id = NULL;
-    }
+    $locationTypeId = CRM_Utils_Array::value(2, $params['field_name']);
     if ($locationTypeId) {
       $ufField->location_type_id = $locationTypeId;
     }
@@ -247,17 +243,16 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Automatically determine one weight and modify others.
+   * Automatically determine one weight and modify others
    *
-   * @param array $params
-   *   UFField record, e.g. with 'weight', 'uf_group_id', and 'field_id'.
+   * @param array $params UFField record, e.g. with 'weight', 'uf_group_id', and 'field_id'
    * @return int
    */
   public static function autoWeight($params) {
     // fix for CRM-316
     $oldWeight = NULL;
 
-    if (!empty($params['field_id'])) {
+    if (CRM_Utils_Array::value('field_id', $params)) {
       $oldWeight = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFField', $params['field_id'], 'weight', 'id');
     }
     $fieldValues = array('uf_group_id' => $params['group_id']);
@@ -265,16 +260,16 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Enable/disable profile field given a custom field id
+   * Function to enable/disable profile field given a custom field id
    *
-   * @param int $customFieldId
-   *   Custom field id.
-   * @param bool $is_active
-   *   Set the is_active field.
+   * @param int      $customFieldId     custom field id
+   * @param boolean  $is_active         set the is_active field
    *
    * @return void
+   * @static
+   * @access public
    */
-  public static function setUFField($customFieldId, $is_active) {
+  static function setUFField($customFieldId, $is_active) {
     //find the profile id given custom field
     $ufField = new CRM_Core_DAO_UFField();
     $ufField->field_name = "custom_" . $customFieldId;
@@ -287,17 +282,17 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Copy existing profile fields to
+   * Function to copy existing profile fields to
    * new profile from the already built profile
    *
-   * @param int $old_id
-   *   From which we need to copy.
-   * @param bool $new_id
-   *   In which to copy.
+   * @param int      $old_id  from which we need to copy
+   * @param boolean  $new_id  in which to copy
    *
    * @return void
+   * @static
+   * @access public
    */
-  public static function copy($old_id, $new_id) {
+  static function copy($old_id, $new_id) {
     $ufField = new CRM_Core_DAO_UFField();
     $ufField->uf_group_id = $old_id;
     $ufField->find();
@@ -310,15 +305,16 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Delete profile field given a custom field.
+   * Function to delete profile field given a custom field
    *
-   * @param int $customFieldId
-   *   ID of the custom field to be deleted.
+   * @param int   $customFieldId      ID of the custom field to be deleted
    *
    * @return void
    *
+   * @static
+   * @access public
    */
-  public static function delUFField($customFieldId) {
+  static function delUFField($customFieldId) {
     //find the profile id given custom field id
     $ufField = new CRM_Core_DAO_UFField();
     $ufField->field_name = "custom_" . $customFieldId;
@@ -331,16 +327,16 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Enable/disable profile field given a custom group id
+   * Function to enable/disable profile field given a custom group id
    *
-   * @param int $customGroupId
-   *   Custom group id.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $customGroupId custom group id
+   * @param boolean  $is_active value we want to set the is_active field
    *
    * @return void
+   * @static
+   * @access public
    */
-  public static function setUFFieldStatus($customGroupId, $is_active) {
+  function setUFFieldStatus($customGroupId, $is_active) {
     //find the profile id given custom group id
     $queryString = "SELECT civicrm_custom_field.id as custom_field_id
                         FROM   civicrm_custom_field, civicrm_custom_group
@@ -356,14 +352,17 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Check the status of custom field used in uf fields.
+   * Function to check the status of custom field used in uf fields
    *
-   * @param int $UFFieldId
+   * @params  int $UFFieldId     uf field id
    *
-   * @return bool
-   *   false if custom field are disabled else true
+   * @param $UFFieldId
+   *
+   * @return boolean   false if custom field are disabled else true
+   * @static
+   * @access public
    */
-  public static function checkUFStatus($UFFieldId) {
+  static function checkUFStatus($UFFieldId) {
     $fieldName = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFField', $UFFieldId, 'field_name');
     // return if field is not a custom field
     if (!$customFieldId = CRM_Core_BAO_CustomField::getKeyID($fieldName)) {
@@ -384,10 +383,10 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Find out whether given profile group using Activity
+   * Function to find out whether given profile group using Activity
    * Profile fields with contact fields
    */
-  public static function checkContactActivityProfileType($ufGroupId) {
+  static function checkContactActivityProfileType($ufGroupId) {
     $ufGroup = new CRM_Core_DAO_UFGroup();
     $ufGroup->id = $ufGroupId;
     $ufGroup->find(TRUE);
@@ -440,21 +439,19 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Find out whether given profile group uses $required
+   * Function to find out whether given profile group uses $required
    * and/or $optional profile types
    *
-   * @param int $ufGroupId
-   *   Profile id.
-   * @param array $required
-   *   Array of types those are required.
-   * @param array $optional
-   *   Array of types those are optional.
+   * @param integer $ufGroupId  profile id
+   * @param array   $required   array of types those are required
+   * @param array   $optional   array of types those are optional
    *
-   * @return bool
+   * @return boolean $valid
+   * @static
    */
-  public static function checkValidProfileType($ufGroupId, $required, $optional = NULL) {
+  static function checkValidProfileType($ufGroupId, $required, $optional = NULL) {
     if (!is_array($required) || empty($required)) {
-      return FALSE;
+      return;
     }
 
     $ufGroup = new CRM_Core_DAO_UFGroup();
@@ -492,14 +489,19 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Check for mix profile fields (eg: individual + other contact types)
+   * function to check for mix profile fields (eg: individual + other contact types)
    *
-   * @param int $ufGroupId
+   * @params int     $ufGroupId  uf group id
+   * @params boolean $check      this is to check mix profile (if true it will check if profile is
+   *                             pure ie. it contains only one contact type)
    *
-   * @return bool
-   *   true for mix profile else false
+   * @param $ufGroupId
+   *
+   * @return  true for mix profile else false
+   * @acess public
+   * @static
    */
-  public static function checkProfileType($ufGroupId) {
+  static function checkProfileType($ufGroupId) {
     $ufGroup = new CRM_Core_DAO_UFGroup();
     $ufGroup->id = $ufGroupId;
     $ufGroup->find(TRUE);
@@ -555,22 +557,21 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Get the profile type (eg: individual/organization/household)
+   * function to get the profile type (eg: individual/organization/household)
    *
-   * @param int $ufGroupId
-   *   Uf group id.
-   * @param bool $returnMixType
-   *   This is true, then field type of mix profile field is returned.
-   * @param bool $onlyPure
-   *   True if only pure profiles are required.
+   * @param int $ufGroupId     uf group id
+   * @param boolean $returnMixType this is true, then field type of  mix profile field is returned
+   * @param boolean $onlyPure      true if only pure profiles are required
    *
    * @param bool $skipComponentType
    *
-   * @return string
-   *   profile group_type
+   * @return  profile group_type
+   * @acess public
+   * @static
    *
+   * TODO Why is this function in this class? It seems to be about the UFGroup.
    */
-  public static function getProfileType($ufGroupId, $returnMixType = TRUE, $onlyPure = FALSE, $skipComponentType = FALSE) {
+  static function getProfileType($ufGroupId, $returnMixType = TRUE, $onlyPure = FALSE, $skipComponentType = FALSE) {
     $ufGroup = new CRM_Core_DAO_UFGroup();
     $ufGroup->id = $ufGroupId;
     $ufGroup->is_active = 1;
@@ -580,19 +581,22 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Get the profile type (eg: individual/organization/household)
+   * function to get the profile type (eg: individual/organization/household)
    *
-   * @param string $ufGroupType
-   * @param bool $returnMixType
-   *   This is true, then field type of mix profile field is returned.
-   * @param bool $onlyPure
-   *   True if only pure profiles are required.
+   * @param $ufGroupType
+   * @param boolean $returnMixType this is true, then field type of  mix profile field is returned
+   * @param boolean $onlyPure      true if only pure profiles are required
+   *
    * @param bool $skipComponentType
    *
-   * @return string  profile group_type
+   * @internal param int $ufGroupId uf group id
+   * @return  profile group_type
+   * @acess public
+   * @static
    *
+   * TODO Why is this function in this class? It seems to be about the UFGroup.
    */
-  public static function calculateProfileType($ufGroupType, $returnMixType = TRUE, $onlyPure = FALSE, $skipComponentType = FALSE) {
+  public static function calculateProfileType($ufGroupType, $returnMixType = TRUE, $onlyPure = FALSE, $skipComponentType= FALSE) {
     // profile types
     $contactTypes = array('Contact', 'Individual', 'Household', 'Organization');
     $subTypes = CRM_Contact_BAO_ContactType::subTypes();
@@ -686,14 +690,15 @@ WHERE cf.id IN (" . $customFieldIds . ") AND is_multiple = 1 LIMIT 0,1";
   }
 
   /**
-   * Check for mix profiles groups (eg: individual + other contact types)
+   * function to check for mix profiles groups (eg: individual + other contact types)
    *
    * @param $ctype
    *
-   * @return bool
-   *   true for mix profile group else false
+   * @return  true for mix profile group else false
+   * @acess public
+   * @static
    */
-  public static function checkProfileGroupType($ctype) {
+  static function checkProfileGroupType($ctype) {
     $ufGroup = new CRM_Core_DAO_UFGroup();
 
     $query = "
@@ -721,13 +726,15 @@ SELECT ufg.id as id
   }
 
   /**
-   * Check for searchable or in selector field for given profile.
+   * check for searchable or in selector field for given profile.
    *
-   * @param int $profileID
+   * @params int     $profileID profile id.
    *
-   * @return bool
+   * @param $profileID
+   *
+   * @return boolean $result    true/false.
    */
-  public static function checkSearchableORInSelector($profileID) {
+  static function checkSearchableORInSelector($profileID) {
     $result = FALSE;
     if (!$profileID) {
       return $result;
@@ -749,13 +756,15 @@ SELECT  id
   }
 
   /**
-   * Reset In selector and is searchable values for given $profileID.
+   *Reset In selector and is seachable values for given $profileID.
    *
-   * @param int $profileID
+   * @params int $profileID profile id.
    *
-   * @return void
+   * @param $profileID
+   *
+   * @return void.
    */
-  public function resetInSelectorANDSearchable($profileID) {
+  function resetInSelectorANDSearchable($profileID) {
     if (!$profileID) {
       return;
     }
@@ -778,30 +787,16 @@ SELECT  id
    * transfer profile address data to billing fields
    * http://issues.civicrm.org/jira/browse/CRM-5869
    *
-   * @param string $key
-   *   Field key - e.g. street_address-Primary, first_name.
-   * @param array $profileAddressFields
-   *   Array of profile fields that relate to address fields.
-   * @param array $profileFilter
-   *   Filter to apply to profile fields - expected usage is to only fill based on.
-   *   the bottom profile per CRM-13726
-   *
-   * @return bool
-   *   Can the address block be hidden safe in the knowledge all fields are elsewhere collected (see CRM-15118)
+   * @param string $key Field key - e.g. street_address-Primary, first_name
+   * @param array $profileAddressFields array of profile fields that relate to address fields
+   * @param array $profileFilter filter to apply to profile fields - expected usage is to only fill based on
+   * the bottom profile per CRM-13726
    */
-  public static function assignAddressField($key, &$profileAddressFields, $profileFilter) {
+  static function assignAddressField($key, &$profileAddressFields, $profileFilter) {
     $billing_id = CRM_Core_BAO_LocationType::getBilling();
     list($prefixName, $index) = CRM_Utils_System::explode('-', $key, 2);
 
-    $profileFields = civicrm_api3('uf_field', 'get', array_merge($profileFilter,
-      array(
-        'is_active' => 1,
-        'return' => 'field_name, is_required',
-        'options' => array(
-          'limit' => 0,
-        ),
-      )
-    ));
+    $profileFields = civicrm_api3('uf_field', 'get', array_merge($profileFilter, array('is_active' => 1, 'return' => 'field_name')));
     //check for valid fields ( fields that are present in billing block )
     $validBillingFields = array(
       'first_name',
@@ -812,52 +807,44 @@ SELECT  id
       'city',
       'state_province',
       'postal_code',
-      'country',
+      'country'
     );
-    $requiredBillingFields = array_diff($validBillingFields, array('middle_name', 'supplemental_address_1'));
     $validProfileFields = array();
-    $requiredProfileFields = array();
 
     foreach ($profileFields['values'] as $field) {
-      if (in_array($field['field_name'], $validBillingFields)) {
+      if(in_array($field['field_name'], $validBillingFields)) {
         $validProfileFields[] = $field['field_name'];
-      }
-      if ($field['is_required']) {
-        $requiredProfileFields[] = $field['field_name'];
       }
     }
 
-    if (!in_array($prefixName, $validProfileFields)) {
-      return FALSE;
+    if (!in_array($prefixName, $validProfileFields) ) {
+      return;
     }
 
     if (!empty($index) && (
-        // it's empty so we set it OR
-        !CRM_Utils_array::value($prefixName, $profileAddressFields)
+      // it's empty so we set it OR
+      !CRM_Utils_array::value($prefixName, $profileAddressFields)
         //we are dealing with billing id (precedence)
         || $index == $billing_id
         // we are dealing with primary & billing not set
         || ($index == 'Primary' && $profileAddressFields[$prefixName] != $billing_id)
         || ($index == CRM_Core_BAO_LocationType::getDefault()->id
-          && $profileAddressFields[$prefixName] != $billing_id
-          && $profileAddressFields[$prefixName] != 'Primary'
-        )
+        && $profileAddressFields[$prefixName] != $billing_id
+        && $profileAddressFields[$prefixName] != 'Primary'
       )
+    )
     ) {
       $profileAddressFields[$prefixName] = $index;
     }
-
-    $potentiallyMissingRequiredFields = array_diff($requiredBillingFields, $requiredProfileFields);
-    CRM_Core_Resources::singleton()
-      ->addSetting(array('billing' => array('billingProfileIsHideable' => empty($potentiallyMissingRequiredFields))));
   }
 
   /**
-   * Get a list of fields which can be added to profiles.
+   * Get a list of fields which can be added to profiles
    *
-   * @param int $gid : UF group ID
-   * @param array $defaults : Form defaults
+   * @param int $gid: UF group ID
+   * @param array $defaults: Form defaults
    * @return array, multidimensional; e.g. $result['FieldGroup']['field_name']['label']
+   * @static
    */
   public static function getAvailableFields($gid = NULL, $defaults = array()) {
     $fields = array(
@@ -930,7 +917,12 @@ SELECT  id
           'name' => 'contribution_note',
           'title' => ts('Contribution Note'),
         );
-        $fields['Contribution'] = array_merge($contribFields, self::getContribBatchEntryFields());
+        if ($gid && CRM_Core_DAO::getFieldValue('CRM_Core_DAO_UFGroup', $gid, 'name') == 'contribution_batch_entry') {
+          $fields['Contribution'] = array_merge($contribFields, self::getContribBatchEntryFields());
+        }
+        else {
+          $fields['Contribution'] = $contribFields;
+        }
       }
     }
 
@@ -976,24 +968,6 @@ SELECT  id
       }
     }
 
-    if (CRM_Core_Permission::access('CiviCase')) {
-      $caseFields = CRM_Case_BAO_Query::getFields(TRUE);
-      $caseFields = array_merge($caseFields, CRM_Core_BAO_CustomField::getFieldsForImport('Case'));
-      if ($caseFields) {
-        // Remove fields not supported by profiles
-        CRM_Utils_Array::remove($caseFields,
-          'case_id',
-          'case_type',
-          'case_start_date',
-          'case_end_date',
-          'case_role',
-          'case_status',
-          'case_deleted'
-        );
-      }
-      $fields['Case'] = $caseFields;
-    }
-
     $activityFields = CRM_Activity_BAO_Activity::getProfileFields();
     if ($activityFields) {
       // campaign related fields.
@@ -1026,7 +1000,7 @@ SELECT  id
     ));
     //unset selected fields
     foreach ($groupFieldList as $key => $value) {
-      if (is_int($key)) {
+      if (is_integer($key)) {
         unset($fields['Individual'][$value], $fields['Household'][$value], $fields['Organization'][$value]);
         continue;
       }
@@ -1043,11 +1017,12 @@ SELECT  id
   }
 
   /**
-   * Get a list of fields which can be added to profiles.
+   * Get a list of fields which can be added to profiles
    *
    * @param bool $force
    *
    * @return array, multidimensional; e.g. $result['field_name']['label']
+   * @static
    */
   public static function getAvailableFieldsFlat($force = FALSE) {
     // FIXME reset when data model changes
@@ -1068,20 +1043,17 @@ SELECT  id
   }
 
   /**
-   * Determine whether the given field_name is valid.
+   * Determine whether the given field_name is valid
    *
    * @param string $fieldName
    * @return bool
    */
-  public static function isValidFieldName($fieldName) {
+  static function isValidFieldName($fieldName) {
     $availableFields = CRM_Core_BAO_UFField::getAvailableFieldsFlat();
     return isset($availableFields[$fieldName]);
   }
 
-  /**
-   * @return array|null
-   */
-  public static function getContribBatchEntryFields() {
+  static function getContribBatchEntryFields() {
     if (self::$_contriBatchEntryFields === NULL) {
       self::$_contriBatchEntryFields = array(
         'send_receipt' => array(
@@ -1091,10 +1063,6 @@ SELECT  id
         'soft_credit' => array(
           'name' => 'soft_credit',
           'title' => ts('Soft Credit'),
-        ),
-        'soft_credit_type' => array(
-          'name' => 'soft_credit_type',
-          'title' => ts('Soft Credit Type'),
         ),
         'product_name' => array(
           'name' => 'product_name',
@@ -1109,9 +1077,6 @@ SELECT  id
     return self::$_contriBatchEntryFields;
   }
 
-  /**
-   * @return array|null
-   */
   public static function getMemberBatchEntryFields() {
     if (self::$_memberBatchEntryFields === NULL) {
       self::$_memberBatchEntryFields = array(
@@ -1151,5 +1116,5 @@ SELECT  id
     }
     return self::$_memberBatchEntryFields;
   }
-
 }
+

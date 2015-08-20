@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -26,10 +26,11 @@
 {if $trackingFields and ! empty($trackingFields)}
 {literal}
 <script type="text/javascript">
-CRM.$(function($) {
+cj(
+   function( ) {
 {/literal}
     {foreach from=$trackingFields key=trackingFieldName item=dontCare}
-       $("#{$trackingFieldName}").parent().parent().hide( );
+       cj("#{$trackingFieldName}").parent().parent().hide( );
     {/foreach}
 {literal}
   }

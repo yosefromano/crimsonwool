@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,37 +45,35 @@ class CRM_Activity_BAO_ICalendar {
   protected $activity;
 
   /**
-   * Constructor.
+   * Constructor
    *
-   * @param object $act
-   *   Reference to an activity object.
+   * @param object $act Reference to an activity object
    *
-   * @return \CRM_Activity_BAO_ICalendar
+   * @return void
+   * @access public
    */
-  public function __construct(&$act) {
+  function __construct( &$act ) {
     $this->activity = $act;
   }
 
   /**
-   * Add an ics attachment to the input array.
+   * Add an ics attachment to the input array
    *
-   * @param array $attachments
-   *   Reference to array in same format returned from CRM_Core_BAO_File::getEntityFile().
-   * @param array $contacts
-   *   Array of contacts (attendees).
+   * @param array $attachments  Reference to array in same format returned from CRM_Core_BAO_File::getEntityFile()
+   * @param array $contacts     Array of contacts (attendees)
    *
-   * @return string|null
-   *   Array index of the added attachment in the $attachments array, else NULL.
+   * @return string   Array index of the added attachment in the $attachments array, or else null.
+   * @access public
    */
-  public function addAttachment(&$attachments, $contacts) {
+  function addAttachment( &$attachments, $contacts ) {
     // Check preferences setting
-    if (CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'activity_assignee_notification_ics')) {
+    if ( CRM_Core_BAO_Setting::getItem( CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'activity_assignee_notification_ics' ) ) {
       $config = &CRM_Core_Config::singleton();
-      $this->icsfile = tempnam($config->customFileUploadDir, 'ics');
-      if ($this->icsfile !== FALSE) {
-        rename($this->icsfile, $this->icsfile . '.ics');
+      $this->icsfile = tempnam( $config->customFileUploadDir, 'ics' );
+      if ( $this->icsfile !== FALSE ) {
+        rename( $this->icsfile, $this->icsfile . '.ics' );
         $this->icsfile .= '.ics';
-        $icsFileName = basename($this->icsfile);
+        $icsFileName = basename( $this->icsfile );
 
         // get logged in user's primary email
         // TODO: Is there a better way to do this?
@@ -87,8 +85,8 @@ class CRM_Activity_BAO_ICalendar {
         $template->assign('contacts', $contacts);
         $template->assign('timezone', date_default_timezone_get());
         $calendar = $template->fetch('CRM/Activity/Calendar/ICal.tpl');
-        if (file_put_contents($this->icsfile, $calendar) !== FALSE) {
-          if (empty($attachments)) {
+        if ( file_put_contents( $this->icsfile, $calendar ) !== FALSE ) {
+          if ( empty( $attachments ) ) {
             $attachments = array();
           }
           $attachments['activity_ics'] = array(
@@ -96,46 +94,40 @@ class CRM_Activity_BAO_ICalendar {
             'fileName' => $icsFileName,
             'cleanName' => $icsFileName,
             'fullPath' => $this->icsfile,
-          );
+           );
           return 'activity_ics';
         }
       }
     }
-    return NULL;
+    return null;
   }
 
-  /**
-   * Remove temp file.
-   */
-  public function cleanup() {
-    if (!empty ($this->icsfile)) {
-      @unlink($this->icsfile);
+  function cleanup() {
+    if ( !empty ( $this->icsfile ) ) {
+      @unlink( $this->icsfile );
     }
   }
 
-  /**
-   * TODO: Is there a better way to do this?
-   * @return string
-   */
+  // TODO: Is there a better way to do this?
   private function getPrimaryEmail() {
     $session = &CRM_Core_Session::singleton();
     $uid = $session->get('userID');
     $primary = '';
-    $emails = CRM_Core_BAO_Email::allEmails($uid);
-    foreach ($emails as $eid => $e) {
-      if ($e['is_primary']) {
-        if ($e['email']) {
+    $emails = CRM_Core_BAO_Email::allEmails( $uid );
+    foreach ( $emails as $eid => $e ) {
+      if ( $e['is_primary'] ) {
+        if ( $e['email'] ) {
           $primary = $e['email'];
           break;
         }
       }
 
-      if (count($emails) == 1) {
+      if ( count($emails) == 1 ) {
         $primary = $e['email'];
         break;
       }
     }
     return $primary;
   }
-
 }
+

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,7 +23,7 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
@@ -35,76 +35,83 @@
  * implement the Selector/Api.interface.php class
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Core_Selector_Controller {
 
   /**
-   * Constants to determine if we should store
+   * constants to determine if we should store
    * the output in the session or template
    * @var int
    */
   // move the values from the session to the template
-  const SESSION = 1, TEMPLATE = 2,
-    TRANSFER = 4, EXPORT = 8, SCREEN = 16, PDF = 32;
+  CONST SESSION = 1, TEMPLATE = 2,
+  TRANSFER = 4, EXPORT = 8, SCREEN = 16, PDF = 32;
 
   /**
-   * A CRM Object that implements CRM_Core_Selector_API.
+   * a CRM Object that implements CRM_Core_Selector_API
    * @var object
    */
   protected $_object;
 
-  /**
-   * @var CRM_Utils_Sort
-   */
+  /*
+     * the CRM_Utils_Sort object
+     * @var object
+     */
+
   protected $_sort;
 
-  /**
-   * The current column to sort on
-   * @var int
-   */
+  /*
+     * the current column to sort on
+     * @var int
+     */
+
   protected $_sortID;
 
-  /**
-   * The sortOrder array
-   * @var array
-   */
+  /*
+     * the sortOrder array
+     * @var array
+     */
+
   protected $_sortOrder;
 
-  /**
-   * @var CRM_Utils_Pager
-   */
+  /*
+     * the CRM_Utils_Pager object
+     * @var object
+     */
+
   protected $_pager;
 
-  /**
-   * The pageID
-   * @var int
-   */
+  /*
+     * the pageID
+     * @var int
+     */
+
   protected $_pageID;
 
-  /**
-   * Offset
-   * @var int
-   */
+  /*
+     * offset
+     * @var int
+     */
+
   protected $_pagerOffset;
 
   /**
-   * Number of rows to return
+   * number of rows to return
    * @var int
    */
   protected $_pagerRowCount;
 
   /**
-   * Total number of rows
+   * total number of rows
    * @var int
    */
   protected $_total;
 
-  /**
-   * The objectAction for the WebObject
-   */
+  /* the objectAction for the WebObject */
+
   protected $_action;
 
   /**
@@ -119,7 +126,7 @@ class CRM_Core_Selector_Controller {
    * so the display routine needs to not do any work. (The
    * parent object takes care of the display)
    *
-   * @var bool
+   * @var boolean
    */
   protected $_embedded = FALSE;
 
@@ -127,7 +134,7 @@ class CRM_Core_Selector_Controller {
    * Are we in print mode? if so we need to modify the display
    * functionality to do a minimal display :)
    *
-   * @var bool
+   * @var boolean
    */
   protected $_print = FALSE;
 
@@ -153,7 +160,7 @@ class CRM_Core_Selector_Controller {
   protected $_prefix;
 
   /**
-   * Cache the smarty template for efficiency reasons
+   * cache the smarty template for efficiency reasons
    *
    * @var CRM_Core_Smarty
    */
@@ -163,46 +170,39 @@ class CRM_Core_Selector_Controller {
    * Array of properties that the controller dumps into the output object
    *
    * @var array
+   * @static
    */
   public static $_properties = array('columnHeaders', 'rows', 'rowsEmpty');
 
   /**
    * Should we compute actions dynamically (since they are quite verbose)
    *
-   * @var bool
+   * @var boolean
    */
   protected $_dynamicAction = FALSE;
 
   /**
-   * Class constructor.
+   * Class constructor
    *
-   * @param CRM_Core_Selector_API $object
-   *   An object that implements the selector API.
-   * @param int $pageID
-   *   Default pageID.
-   * @param int $sortID
-   *   Default sortID.
-   * @param int $action
-   *   The actions to potentially support.
-   * @param CRM_Core_Page|CRM_Core_Form $store place in session to store some values
-   * @param int $output
-   *   What do we so with the output, session/template//both.
+   * @param CRM_Core_Selector_API $object  an object that implements the selector API
+   * @param int               $pageID  default pageID
+   * @param int               $sortID  default sortID
+   * @param int               $action  the actions to potentially support
+   * @param CRM_Core_Page|CRM_Core_Form $store   place in session to store some values
+   * @param int               $output  what do we so with the output, session/template//both
    *
-   * @param null $prefix
-   * @param null $case
-   *
-   * @return \CRM_Core_Selector_Controller
-   */
-  public function __construct($object, $pageID, $sortID, $action, $store = NULL, $output = self::TEMPLATE, $prefix = NULL, $case = NULL) {
+   * @return Object
+   * @access public
+   */ function __construct($object, $pageID, $sortID, $action, $store = NULL, $output = self::TEMPLATE, $prefix = NULL, $case = NULL) {
 
     $this->_object = $object;
     $this->_pageID = $pageID ? $pageID : 1;
     $this->_sortID = $sortID ? $sortID : NULL;
     $this->_action = $action;
-    $this->_store = $store;
+    $this->_store  = $store;
     $this->_output = $output;
     $this->_prefix = $prefix;
-    $this->_case = $case;
+    $this->_case   = $case;
 
     // fix sortID
     if ($this->_sortID && strpos($this->_sortID, '_') === FALSE) {
@@ -253,15 +253,14 @@ class CRM_Core_Selector_Controller {
   }
 
   /**
-   * Have the GET vars changed, i.e. pageId or sortId that forces us to recompute the search values
+   * have the GET vars changed, i.e. pageId or sortId that forces us to recompute the search values
    *
-   * @param int $reset
-   *   Are we being reset.
+   * @param int $reset are we being reset
    *
-   * @return bool
-   *   if the GET params are different from the session params
+   * @return boolean   if the GET params are different from the session params
+   * @access public
    */
-  public function hasChanged($reset) {
+  function hasChanged($reset) {
 
     /**
      * if we are in reset state, i.e the store is cleaned out, we return false
@@ -298,8 +297,9 @@ class CRM_Core_Selector_Controller {
    *
    *
    * @return void
+   *
    */
-  public function run() {
+  function run() {
 
     // get the column headers
     $columnHeaders = &$this->_object->getColumnHeaders($this->_action, $this->_output);
@@ -340,8 +340,8 @@ class CRM_Core_Selector_Controller {
       $rows = self::getRows($this);
       CRM_Utils_Hook::searchColumns($contextName, $columnHeaders, $rows, $this);
       $rowsEmpty = count($rows) ? FALSE : TRUE;
-      $qill = $this->getQill();
-      $summary = $this->getSummary();
+      $qill      = $this->getQill();
+      $summary   = $this->getSummary();
       // if we need to store in session, lets update session
       if ($this->_output & self::SESSION) {
         $this->_store->set("{$this->_prefix}columnHeaders", $columnHeaders);
@@ -365,6 +365,7 @@ class CRM_Core_Selector_Controller {
         self::$_template->assign("{$this->_prefix}summary", $summary);
       }
 
+
       // always store the current pageID and sortID
       $this->_store->set($this->_prefix . CRM_Utils_Pager::PAGE_ID,
         $this->_pager->getCurrentPageID()
@@ -385,12 +386,10 @@ class CRM_Core_Selector_Controller {
   }
 
   /**
-   * Retrieve rows.
+   * function to retrieve rows.
    *
-   * @param CRM_Core_Form $form
-   *
-   * @return array
-   *   Array of rows
+   * @return array of rows
+   * @access public
    */
   public function getRows($form) {
     if ($form->_output == self::EXPORT || $form->_output == self::SCREEN) {
@@ -405,47 +404,47 @@ class CRM_Core_Selector_Controller {
   }
 
   /**
-   * Default function for qill, if needed to be implemented, we
+   * default function for qill, if needed to be implemented, we
    * expect the subclass to do it
    *
-   * @return string
-   *   the status message
+   * @return string the status message
+   * @access public
    */
   public function getQill() {
     return $this->_object->getQill();
   }
 
-  /**
-   * @return mixed
-   */
   public function getSummary() {
     return $this->_object->getSummary();
   }
 
   /**
-   * Getter for pager.
+   * getter for pager
    *
-   * @return CRM_Utils_Pager
+   * @return object CRM_Utils_Pager
+   * @access public
    */
-  public function getPager() {
+  function getPager() {
     return $this->_pager;
   }
 
   /**
-   * Getter for sort.
+   * getter for sort
    *
-   * @return CRM_Utils_Sort
+   * @return object CRM_Utils_Sort
+   * @access public
    */
-  public function getSort() {
+  function getSort() {
     return $this->_sort;
   }
 
   /**
-   * Move the variables from the session to the template.
+   * Move the variables from the session to the template
    *
    * @return void
+   * @access public
    */
-  public function moveFromSessionToTemplate() {
+  function moveFromSessionToTemplate() {
     self::$_template->assign_by_ref("{$this->_prefix}pager", $this->_pager);
 
     $rows = $this->_store->get("{$this->_prefix}rows");
@@ -483,59 +482,55 @@ class CRM_Core_Selector_Controller {
   }
 
   /**
-   * Setter for embedded.
+   * setter for embedded
    *
-   * @param bool $embedded
+   * @param boolean $embedded
    *
    * @return void
+   * @access public
    */
-  public function setEmbedded($embedded) {
+  function setEmbedded($embedded) {
     $this->_embedded = $embedded;
   }
 
   /**
-   * Getter for embedded.
+   * getter for embedded
    *
-   * @return bool
-   *   return the embedded value
+   * @return boolean return the embedded value
+   * @access public
    */
-  public function getEmbedded() {
+  function getEmbedded() {
     return $this->_embedded;
   }
 
   /**
-   * Setter for print.
+   * setter for print
    *
-   * @param bool $print
+   * @param boolean $print
    *
    * @return void
+   * @access public
    */
-  public function setPrint($print) {
+  function setPrint($print) {
     $this->_print = $print;
   }
 
   /**
-   * Getter for print.
+   * getter for print
    *
-   * @return bool
-   *   return the print value
+   * @return boolean return the print value
+   * @access public
    */
-  public function getPrint() {
+  function getPrint() {
     return $this->_print;
   }
 
-  /**
-   * @param $value
-   */
-  public function setDynamicAction($value) {
+  function setDynamicAction($value) {
     $this->_dynamicAction = $value;
   }
 
-  /**
-   * @return bool
-   */
-  public function getDynamicAction() {
+  function getDynamicAction() {
     return $this->_dynamicAction;
   }
-
 }
+

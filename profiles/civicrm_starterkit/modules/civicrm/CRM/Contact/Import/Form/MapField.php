@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,15 +40,16 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
 
   /**
-   * An array of all contact fields with
+   * an array of all contact fields with
    * formatted custom field names.
    *
    * @var array
+   * @access protected
    */
   protected $_formattedFieldNames;
 
   /**
-   * On duplicate.
+   * on duplicate
    *
    * @var int
    */
@@ -59,13 +60,14 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
   protected static $customFields;
 
   /**
-   * Attempt to match header labels with our mapper fields.
+   * Attempt to match header labels with our mapper fields
    * FIXME: This is essentially the same function as parent::defaultFromHeader
    *
-   * @param $columnName name of column header
-   * @param $patterns pattern to match for the column
+   * @param header
+   * @param mapperFields
    *
    * @return string
+   * @access public
    */
   public function defaultFromColumnName($columnName, &$patterns) {
 
@@ -91,9 +93,10 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
   }
 
   /**
-   * Set variables up before form is built.
+   * Function to set variables up before form is built
    *
    * @return void
+   * @access public
    */
   public function preProcess() {
     $dataSource = $this->get('dataSource');
@@ -107,7 +110,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     //format custom field names, CRM-2676
     switch ($this->get('contactType')) {
       case CRM_Import_Parser::CONTACT_INDIVIDUAL:
-        $contactType = 'Individual';
+        $contactType         = 'Individual';
         $highlightedFields[] = 'first_name';
         $highlightedFields[] = 'last_name';
         break;
@@ -133,13 +136,10 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     if ($this->_onDuplicate != CRM_Import_Parser::DUPLICATE_NOCHECK) {
       //Mark Dedupe Rule Fields as required, since it's used in matching contact
       foreach (array(
-                 'Individual',
-                 'Household',
-                 'Organization',
-               ) as $cType) {
+        'Individual', 'Household', 'Organization') as $cType) {
         $ruleParams = array(
           'contact_type' => $cType,
-          'used' => 'Unsupervised',
+          'used'         => 'Unsupervised',
         );
         $this->_dedupeFields[$cType] = CRM_Dedupe_BAO_Rule::dedupeRuleFields($ruleParams);
       }
@@ -156,7 +156,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     // retrieve and highlight required custom fields
     $formattedFieldNames = $this->formatCustomFieldName($this->_mapperFields);
     self::$customFields = CRM_Core_BAO_CustomField::getFields($this->_contactType);
-    foreach (self::$customFields as $key => $attr) {
+    foreach(self::$customFields as $key => $attr) {
       if (!empty($attr['is_required'])) {
         $highlightedFields[] = "custom_$key";
       }
@@ -199,9 +199,10 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
   }
 
   /**
-   * Build the form object.
+   * Function to actually build the form
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     //to save the current mappings
@@ -217,19 +218,19 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
       list($mappingName, $mappingContactType, $mappingLocation, $mappingPhoneType, $mappingImProvider, $mappingRelation, $mappingOperator, $mappingValue, $mappingWebsiteType) = CRM_Core_BAO_Mapping::getMappingFields($savedMapping);
 
       //get loaded Mapping Fields
-      $mappingName = CRM_Utils_Array::value(1, $mappingName);
+      $mappingName        = CRM_Utils_Array::value(1, $mappingName);
       $mappingContactType = CRM_Utils_Array::value(1, $mappingContactType);
-      $mappingLocation = CRM_Utils_Array::value(1, $mappingLocation);
-      $mappingPhoneType = CRM_Utils_Array::value(1, $mappingPhoneType);
-      $mappingImProvider = CRM_Utils_Array::value(1, $mappingImProvider);
-      $mappingRelation = CRM_Utils_Array::value(1, $mappingRelation);
+      $mappingLocation    = CRM_Utils_Array::value(1, $mappingLocation);
+      $mappingPhoneType   = CRM_Utils_Array::value(1, $mappingPhoneType);
+      $mappingImProvider  = CRM_Utils_Array::value(1, $mappingImProvider);
+      $mappingRelation    = CRM_Utils_Array::value(1, $mappingRelation);
       $mappingWebsiteType = CRM_Utils_Array::value(1, $mappingWebsiteType);
 
       $this->assign('loadedMapping', $savedMapping);
       $this->set('loadedMapping', $savedMapping);
 
-      $params = array('id' => $savedMapping);
-      $temp = array();
+      $params         = array('id' => $savedMapping);
+      $temp           = array();
       $mappingDetails = CRM_Core_BAO_Mapping::retrieve($params, $temp);
 
       $this->assign('savedName', $mappingDetails->name);
@@ -248,11 +249,11 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
     //-------- end of saved mapping stuff ---------
 
-    $defaults = array();
-    $mapperKeys = array_keys($this->_mapperFields);
-    $hasColumnNames = !empty($this->_columnNames);
-    $columnPatterns = $this->get('columnPatterns');
-    $dataPatterns = $this->get('dataPatterns');
+    $defaults         = array();
+    $mapperKeys       = array_keys($this->_mapperFields);
+    $hasColumnNames   = !empty($this->_columnNames);
+    $columnPatterns   = $this->get('columnPatterns');
+    $dataPatterns     = $this->get('dataPatterns');
     $hasLocationTypes = $this->get('fieldTypes');
 
     $this->_location_types = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id');
@@ -273,8 +274,8 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     $sel1 = $this->_mapperFields;
     $sel2[''] = NULL;
 
-    $phoneTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Phone', 'phone_type_id');
-    $imProviders = CRM_Core_PseudoConstant::get('CRM_Core_DAO_IM', 'provider_id');
+    $phoneTypes   = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Phone', 'phone_type_id');
+    $imProviders  = CRM_Core_PseudoConstant::get('CRM_Core_DAO_IM', 'provider_id');
     $websiteTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Website', 'website_type_id');
 
     foreach ($this->_location_types as $key => $value) {
@@ -317,7 +318,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
         //CRM-5125 for contact subtype specific relationshiptypes
         $cSubType = NULL;
-        if (!empty($contactRelationCache[$id]["contact_sub_type_{$second}"])) {
+        if (CRM_Utils_Array::value("contact_sub_type_{$second}", $contactRelationCache[$id])) {
           $cSubType = $contactRelationCache[$id]["contact_sub_type_{$second}"];
         }
 
@@ -343,7 +344,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
         }
 
         //fix to append custom group name to field name, CRM-2676
-        if (empty($this->_formattedFieldNames[$cType]) || $cType == $this->_contactType) {
+        if (!CRM_Utils_Array::value($cType, $this->_formattedFieldNames) || $cType == $this->_contactType) {
           $this->_formattedFieldNames[$cType] = $this->formatCustomFieldName($values);
         }
 
@@ -351,7 +352,8 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
         //Modified the Relationship fields if the fields are
         //present in dedupe rule
-        if ($this->_onDuplicate != CRM_Import_Parser::DUPLICATE_NOCHECK && !empty($this->_dedupeFields[$cType]) &&
+        if ($this->_onDuplicate != CRM_Import_Parser::DUPLICATE_NOCHECK &&
+          CRM_Utils_Array::value($cType, $this->_dedupeFields) &&
           is_array($this->_dedupeFields[$cType])
         ) {
           static $cTypeArray = array();
@@ -447,9 +449,9 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
               }
 
               $contactDetails = strtolower(str_replace(" ", "_", $mappingName[$i]));
-              $websiteTypeId = isset($mappingWebsiteType[$i]) ? $mappingWebsiteType[$i] : NULL;
-              $locationId = isset($mappingLocation[$i]) ? $mappingLocation[$i] : 0;
-              $phoneType = isset($mappingPhoneType[$i]) ? $mappingPhoneType[$i] : NULL;
+              $websiteTypeId  = isset($mappingWebsiteType[$i]) ? $mappingWebsiteType[$i] : NULL;
+              $locationId     = isset($mappingLocation[$i]) ? $mappingLocation[$i] : 0;
+              $phoneType      = isset($mappingPhoneType[$i]) ? $mappingPhoneType[$i] : NULL;
               //get provider id from saved mappings
               $imProvider = isset($mappingImProvider[$i]) ? $mappingImProvider[$i] : NULL;
 
@@ -491,8 +493,8 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
             else {
               $mappingHeader = array_keys($this->_mapperFields, $mappingName[$i]);
               $websiteTypeId = isset($mappingWebsiteType[$i]) ? $mappingWebsiteType[$i] : NULL;
-              $locationId = isset($mappingLocation[$i]) ? $mappingLocation[$i] : 0;
-              $phoneType = isset($mappingPhoneType[$i]) ? $mappingPhoneType[$i] : NULL;
+              $locationId    = isset($mappingLocation[$i]) ? $mappingLocation[$i] : 0;
+              $phoneType     = isset($mappingPhoneType[$i]) ? $mappingPhoneType[$i] : NULL;
               // get IM service provider id
               $imProvider = isset($mappingImProvider[$i]) ? $mappingImProvider[$i] : NULL;
 
@@ -602,36 +604,36 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     $this->setDefaults($defaults);
 
     $this->addButtons(array(
-        array(
-          'type' => 'back',
-          'name' => ts('Previous'),
-        ),
-        array(
-          'type' => 'next',
-          'name' => ts('Continue'),
-          'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
-          'isDefault' => TRUE,
-        ),
-        array(
-          'type' => 'cancel',
-          'name' => ts('Cancel'),
-        ),
+      array(
+        'type' => 'back',
+        'name' => ts('<< Previous'),
+      ),
+       array(
+         'type' => 'next',
+         'name' => ts('Continue >>'),
+         'spacing' => '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;',
+         'isDefault' => TRUE,
+       ),
+       array(
+         'type' => 'cancel',
+         'name' => ts('Cancel'),
+       ),
       )
     );
   }
 
   /**
-   * Global validation rules for the form.
+   * global validation rules for the form
    *
-   * @param array $fields
-   *   Posted values of the form.
+   * @param array $fields posted values of the form
    *
-   * @return array
-   *   list of errors to be posted back to the form
+   * @return array list of errors to be posted back to the form
+   * @static
+   * @access public
    */
-  public static function formRule($fields) {
+  static function formRule($fields) {
     $errors = array();
-    if (!empty($fields['saveMapping'])) {
+    if (CRM_Utils_Array::value('saveMapping', $fields)) {
       $nameField = CRM_Utils_Array::value('saveMappingName', $fields);
       if (empty($nameField)) {
         $errors['saveMappingName'] = ts('Name is required to save Import Mapping');
@@ -644,7 +646,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
       }
     }
     $template = CRM_Core_Smarty::singleton();
-    if (!empty($fields['saveMapping'])) {
+    if (CRM_Utils_Array::value('saveMapping', $fields)) {
       $template->assign('isCheked', TRUE);
     }
 
@@ -664,6 +666,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
    * preview the file and extract some summary statistics
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $params = $this->controller->exportValues('MapField');
@@ -675,14 +678,14 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
       return;
     }
 
-    $mapper = array();
-    $mapperKeys = array();
-    $mapperKeys = $this->controller->exportValue($this->_name, 'mapper');
+    $mapper         = array();
+    $mapperKeys     = array();
+    $mapperKeys     = $this->controller->exportValue($this->_name, 'mapper');
     $mapperKeysMain = array();
 
-    $phoneTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Phone', 'phone_type_id');
-    $imProviders = CRM_Core_PseudoConstant::get('CRM_Core_DAO_IM', 'provider_id');
-    $websiteTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Website', 'website_type_id');
+    $phoneTypes    = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Phone', 'phone_type_id');
+    $imProviders   = CRM_Core_PseudoConstant::get('CRM_Core_DAO_IM', 'provider_id');
+    $websiteTypes  = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Website', 'website_type_id');
     $locationTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id');
 
     //these mapper params need to set key as array and val as null.
@@ -702,21 +705,17 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     );
 
     //set respective mapper params to array.
-    foreach (array_keys($mapperParams) as $mapperParam) {
-      $$mapperParam = array();
-    }
+    foreach (array_keys($mapperParams) as $mapperParam)$$mapperParam = array();
 
     for ($i = 0; $i < $this->_columnCount; $i++) {
       //set respective mapper value to null
-      foreach (array_values($mapperParams) as $mapperParam) {
-        $$mapperParam = NULL;
-      }
+      foreach (array_values($mapperParams) as $mapperParam)$$mapperParam = NULL;
 
-      $fldName = CRM_Utils_Array::value(0, $mapperKeys[$i]);
-      $selOne = CRM_Utils_Array::value(1, $mapperKeys[$i]);
-      $selTwo = CRM_Utils_Array::value(2, $mapperKeys[$i]);
-      $selThree = CRM_Utils_Array::value(3, $mapperKeys[$i]);
-      $mapper[$i] = $this->_mapperFields[$mapperKeys[$i][0]];
+      $fldName            = CRM_Utils_Array::value(0, $mapperKeys[$i]);
+      $selOne             = CRM_Utils_Array::value(1, $mapperKeys[$i]);
+      $selTwo             = CRM_Utils_Array::value(2, $mapperKeys[$i]);
+      $selThree           = CRM_Utils_Array::value(3, $mapperKeys[$i]);
+      $mapper[$i]         = $this->_mapperFields[$mapperKeys[$i][0]];
       $mapperKeysMain[$i] = $fldName;
 
       //need to differentiate non location elements.
@@ -791,12 +790,8 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
     //set related contact propeties.
     $relProperties = array(
-      'related',
-      'relatedContactType',
-      'relatedContactDetails',
-      'relatedContactLocType',
-      'relatedContactPhoneType',
-      'relatedContactImProvider',
+      'related', 'relatedContactType', 'relatedContactDetails',
+      'relatedContactLocType', 'relatedContactPhoneType', 'relatedContactImProvider',
       'relatedContactWebsiteType',
     );
     foreach ($relProperties as $relProperty) {
@@ -807,7 +802,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     $this->set('loadMappingId', CRM_Utils_Array::value('mappingId', $params));
 
     //Updating Mapping Records
-    if (!empty($params['updateMapping'])) {
+    if (CRM_Utils_Array::value('updateMapping', $params)) {
 
       $locationTypes = CRM_Core_PseudoConstant::get('CRM_Core_DAO_Address', 'location_type_id');
 
@@ -824,14 +819,14 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
       for ($i = 0; $i < $this->_columnCount; $i++) {
         $updateMappingFields = new CRM_Core_DAO_MappingField();
-        $updateMappingFields->id = CRM_Utils_Array::value($i, $mappingFieldsId);
+        $updateMappingFields->id = CRM_Utils_Array::value($i,$mappingFieldsId);
         $updateMappingFields->mapping_id = $params['mappingId'];
         $updateMappingFields->column_number = $i;
 
         $mapperKeyParts = explode('_', $mapperKeys[$i][0], 3);
-        $id = isset($mapperKeyParts[0]) ? $mapperKeyParts[0] : NULL;
-        $first = isset($mapperKeyParts[1]) ? $mapperKeyParts[1] : NULL;
-        $second = isset($mapperKeyParts[2]) ? $mapperKeyParts[2] : NULL;
+        $id             = isset($mapperKeyParts[0]) ? $mapperKeyParts[0] : NULL;
+        $first          = isset($mapperKeyParts[1]) ? $mapperKeyParts[1] : NULL;
+        $second         = isset($mapperKeyParts[2]) ? $mapperKeyParts[2] : NULL;
         if (($first == 'a' && $second == 'b') || ($first == 'b' && $second == 'a')) {
           $updateMappingFields->relationship_type_id = $id;
           $updateMappingFields->relationship_direction = "{$first}_{$second}";
@@ -876,7 +871,7 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
     }
 
     //Saving Mapping Details and Records
-    if (!empty($params['saveMapping'])) {
+    if (CRM_Utils_Array::value('saveMapping', $params)) {
       $mappingParams = array(
         'name' => $params['saveMappingName'],
         'description' => $params['saveMappingDesc'],
@@ -910,9 +905,9 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
         $saveMappingFields->column_number = $i;
 
         $mapperKeyParts = explode('_', $mapperKeys[$i][0], 3);
-        $id = isset($mapperKeyParts[0]) ? $mapperKeyParts[0] : NULL;
-        $first = isset($mapperKeyParts[1]) ? $mapperKeyParts[1] : NULL;
-        $second = isset($mapperKeyParts[2]) ? $mapperKeyParts[2] : NULL;
+        $id             = isset($mapperKeyParts[0]) ? $mapperKeyParts[0] : NULL;
+        $first          = isset($mapperKeyParts[1]) ? $mapperKeyParts[1] : NULL;
+        $second         = isset($mapperKeyParts[2]) ? $mapperKeyParts[2] : NULL;
         if (($first == 'a' && $second == 'b') || ($first == 'b' && $second == 'a')) {
           $saveMappingFields->name = ucwords(str_replace("_", " ", $mapperKeys[$i][1]));
           $saveMappingFields->relationship_type_id = $id;
@@ -983,14 +978,13 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
   }
 
   /**
-   * Format custom field name.
+   * format custom field name.
    * combine group and field name to avoid conflict.
    *
-   * @param $fields
-   *
    * @return void
+   * @access public
    */
-  public function formatCustomFieldName(&$fields) {
+  function formatCustomFieldName(&$fields) {
     //CRM-2676, replacing the conflict for same custom field name from different custom group.
     $fieldIds = $formattedFieldNames = array();
     foreach ($fields as $key => $value) {
@@ -1013,5 +1007,5 @@ class CRM_Contact_Import_Form_MapField extends CRM_Import_Form_MapField {
 
     return $formattedFieldNames;
   }
-
 }
+

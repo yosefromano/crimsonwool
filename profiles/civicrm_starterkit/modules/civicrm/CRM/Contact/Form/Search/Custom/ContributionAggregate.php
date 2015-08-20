@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,44 +23,38 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
-class CRM_Contact_Form_Search_Custom_ContributionAggregate extends CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface {
+class CRM_Contact_Form_Search_Custom_ContributionAggregate implements CRM_Contact_Form_Search_Interface {
 
   protected $_formValues;
-  protected $_aclFrom = NULL;
-  protected $_aclWhere = NULL;
   public $_permissionedComponent;
 
-  /**
-   * @param $formValues
-   */
-  public function __construct(&$formValues) {
+  function __construct(&$formValues) {
     $this->_formValues = $formValues;
+    /**
+     * Define the columns for search result rows
+     */
 
-    // Define the columns for search result rows
     $this->_columns = array(
-      ts('Contact ID') => 'contact_id',
+      ts('Contact Id') => 'contact_id',
       ts('Name') => 'sort_name',
-      ts('Contribution Count') => 'donation_count',
-      ts('Contribution Amount') => 'donation_amount',
+      ts('Donation Count') => 'donation_count',
+      ts('Donation Amount') => 'donation_amount',
     );
 
     // define component access permission needed
     $this->_permissionedComponent = 'CiviContribute';
   }
 
-  /**
-   * @param CRM_Core_Form $form
-   */
-  public function buildForm(&$form) {
+  function buildForm(&$form) {
 
     /**
      * You can define a custom title for the search form
@@ -85,39 +79,29 @@ class CRM_Contact_Form_Search_Custom_ContributionAggregate extends CRM_Contact_F
     $form->addDate('start_date', ts('Contribution Date From'), FALSE, array('formatType' => 'custom'));
     $form->addDate('end_date', ts('...through'), FALSE, array('formatType' => 'custom'));
 
-    $form->addSelect('financial_type_id',
-      array('entity' => 'contribution', 'multiple' => 'multiple', 'context' => 'search')
-    );
+    $financial_types = CRM_Contribute_PseudoConstant::financialType();
+    foreach($financial_types as $financial_type_id => $financial_type) {
+      $form->addElement('checkbox', "financial_type_id[{$financial_type_id}]", 'Financial Type', $financial_type);
+    }
 
     /**
      * If you are using the sample template, this array tells the template fields to render
      * for the search form.
      */
-    $form->assign('elements', array('min_amount', 'max_amount', 'start_date', 'end_date'));
+    $form->assign('elements', array('min_amount', 'max_amount', 'start_date', 'end_date', 'financial_type_id'));
   }
 
   /**
    * Define the smarty template used to layout the search form and results listings.
-   *
-   * @return string
    */
-  public function templateFile() {
+  function templateFile() {
     return 'CRM/Contact/Form/Search/Custom/ContributionAggregate.tpl';
   }
 
   /**
-   * Construct the search query.
-   *
-   * @param int $offset
-   * @param int $rowcount
-   * @param string|object $sort
-   * @param bool $includeContactIDs
-   * @param bool $justIDs
-   *
-   * @return string
+   * Construct the search query
    */
-  public function all(
-    $offset = 0, $rowcount = 0, $sort = NULL,
+  function all($offset = 0, $rowcount = 0, $sort = NULL,
     $includeContactIDs = FALSE, $justIDs = FALSE
   ) {
 
@@ -174,27 +158,18 @@ $having
     return $sql;
   }
 
-  /**
-   * @return string
-   */
-  public function from() {
-    $this->buildACLClause('contact_a');
-    $from = "
+  function from() {
+    return "
 civicrm_contribution AS contrib,
-civicrm_contact AS contact_a {$this->_aclFrom}
+civicrm_contact AS contact_a
 ";
-
-    return $from;
   }
 
-  /**
-   * WHERE clause is an array built from any required JOINS plus conditional filters based on search criteria field values.
-   *
-   * @param bool $includeContactIDs
-   *
-   * @return string
-   */
-  public function where($includeContactIDs = FALSE) {
+  /*
+      * WHERE clause is an array built from any required JOINS plus conditional filters based on search criteria field values
+      *
+      */
+  function where($includeContactIDs = FALSE) {
     $clauses = array();
 
     $clauses[] = "contrib.contact_id = contact_a.id";
@@ -227,22 +202,14 @@ civicrm_contact AS contact_a {$this->_aclFrom}
     }
 
     if (!empty($this->_formValues['financial_type_id'])) {
-      $financial_type_ids = implode(',', array_values($this->_formValues['financial_type_id']));
+      $financial_type_ids = implode(',', array_keys($this->_formValues['financial_type_id']));
       $clauses[] = "contrib.financial_type_id IN ($financial_type_ids)";
-    }
-    if ($this->_aclWhere) {
-      $clauses[] = " {$this->_aclWhere} ";
     }
 
     return implode(' AND ', $clauses);
   }
 
-  /**
-   * @param bool $includeContactIDs
-   *
-   * @return string
-   */
-  public function having($includeContactIDs = FALSE) {
+  function having($includeContactIDs = FALSE) {
     $clauses = array();
     $min = CRM_Utils_Array::value('min_amount', $this->_formValues);
     if ($min) {
@@ -260,13 +227,9 @@ civicrm_contact AS contact_a {$this->_aclFrom}
   }
 
   /*
-   * Functions below generally don't need to be modified
-   */
-
-  /**
-   * @inheritDoc
-   */
-  public function count() {
+     * Functions below generally don't need to be modified
+     */
+  function count() {
     $sql = $this->all();
 
     $dao = CRM_Core_DAO::executeQuery($sql,
@@ -275,29 +238,15 @@ civicrm_contact AS contact_a {$this->_aclFrom}
     return $dao->N;
   }
 
-  /**
-   * @param int $offset
-   * @param int $rowcount
-   * @param null $sort
-   * @param bool $returnSQL Not used; included for consistency with parent; SQL is always returned
-   *
-   * @return string
-   */
-  public function contactIDs($offset = 0, $rowcount = 0, $sort = NULL, $returnSQL = TRUE) {
+  function contactIDs($offset = 0, $rowcount = 0, $sort = NULL) {
     return $this->all($offset, $rowcount, $sort, FALSE, TRUE);
   }
 
-  /**
-   * @return array
-   */
-  public function &columns() {
+  function &columns() {
     return $this->_columns;
   }
 
-  /**
-   * @param $title
-   */
-  public function setTitle($title) {
+  function setTitle($title) {
     if ($title) {
       CRM_Utils_System::setTitle($title);
     }
@@ -306,18 +255,8 @@ civicrm_contact AS contact_a {$this->_aclFrom}
     }
   }
 
-  /**
-   * @return null
-   */
-  public function summary() {
+  function summary() {
     return NULL;
   }
-
-  /**
-   * @param string $tableAlias
-   */
-  public function buildACLClause($tableAlias = 'contact') {
-    list($this->_aclFrom, $this->_aclWhere) = CRM_Contact_BAO_Contact_Permission::cacheClause($tableAlias);
-  }
-
 }
+

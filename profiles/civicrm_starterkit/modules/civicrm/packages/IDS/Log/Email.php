@@ -5,7 +5,7 @@
  *
  * Requirements: PHP5, SimpleXML
  *
- * Copyright (c) 2008 PHPIDS group (https://phpids.org)
+ * Copyright (c) 2008 PHPIDS group (http://php-ids.org)
  *
  * PHPIDS is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -215,15 +215,17 @@ class IDS_Log_Email implements IDS_Log_Interface
         * loop through all files in the tmp directory and
         * delete garbage files
         */
-        $dir = $this->tmp_path;
+        $dir            = $this->tmp_path;
         $numPrefixChars = strlen($this->file_prefix);
-        $files = scandir($dir);
+        $files          = scandir($dir);
         foreach ($files as $file) {
-            if (is_file($dir . DIRECTORY_SEPARATOR . $file)) {
+            if (is_file($dir . $file)) {
                 if (substr($file, 0, $numPrefixChars) == $this->file_prefix) {
-                    $lastModified = filemtime($dir . DIRECTORY_SEPARATOR . $file);
-                    if ((time() - $lastModified) > 3600) {
-                        unlink($dir . DIRECTORY_SEPARATOR . $file);
+                    $lastModified = filemtime($dir . $file);
+
+                    if ((
+                    time() - $lastModified) > 3600) {
+                        unlink($dir . $file);
                     }
                 }
             }

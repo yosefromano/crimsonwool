@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id: $
  *
  */
@@ -39,40 +39,41 @@
 class CRM_Core_BAO_Job extends CRM_Core_DAO_Job {
 
   /**
-   * Class constructor.
+   * class constructor
    */
-  public function __construct() {
+  function __construct() {
     parent::__construct();
   }
-
   /**
-   * Add the payment-processor type in the db
+   * Function to add the payment-processor type in the db
    *
-   * @param array $params
-   *   An assoc array of name/value pairs.
+   * @param array $params (reference ) an assoc array of name/value pairs
+   * @param array $ids    the array that holds all the db ids
    *
-   * @return CRM_Financial_DAO_PaymentProcessorType
+   * @return object CRM_Financial_DAO_PaymentProcessorType
+   * @access public
+   * @static
+   *
    */
-  public static function create($params) {
+  static function create($params) {
     $job = new CRM_Core_DAO_Job();
     $job->copyValues($params);
     return $job->save();
   }
 
   /**
-   * Retrieve DB object based on input parameters.
+   * Takes a bunch of params that are needed to match certain criteria and
+   * retrieves the relevant objects. It also stores all the retrieved
+   * values in the default array
    *
-   * It also stores all the retrieved values in the default array.
+   * @param array $params   (reference ) an assoc array of name/value pairs
+   * @param array $defaults (reference ) an assoc array to hold the flattened values
    *
-   * @param array $params
-   *   (reference ) an assoc array of name/value pairs.
-   * @param array $defaults
-   *   (reference ) an assoc array to hold the flattened values.
-   *
-   * @return CRM_Core_DAO_Job|null
-   *   object on success, null otherwise
+   * @return object CRM_Core_DAO_Job object on success, null otherwise
+   * @access public
+   * @static
    */
-  public static function retrieve(&$params, &$defaults) {
+  static function retrieve(&$params, &$defaults) {
     $job = new CRM_Core_DAO_Job();
     $job->copyValues($params);
     if ($job->find(TRUE)) {
@@ -83,32 +84,31 @@ class CRM_Core_BAO_Job extends CRM_Core_DAO_Job {
   }
 
   /**
-   * Update the is_active flag in the db.
+   * update the is_active flag in the db
    *
-   * @param int $id
-   *   Id of the database record.
-   * @param bool $is_active
-   *   Value we want to set the is_active field.
+   * @param int      $id        id of the database record
+   * @param boolean  $is_active value we want to set the is_active field
    *
-   * @return Object
-   *   DAO object on sucess, null otherwise
+   * @return Object             DAO object on sucess, null otherwise
    *
+   * @access public
+   * @static
    */
-  public static function setIsActive($id, $is_active) {
+  static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_Core_DAO_Job', $id, 'is_active', $is_active);
   }
 
   /**
-   * Function  to delete scheduled job.
+   * Function  to delete scheduled job
    *
-   * @param $jobID
-   *   ID of the job to be deleted.
+   * @param  int  $jobId     ID of the job to be deleted.
    *
-   * @return bool|null
+   * @access public
+   * @static
    */
-  public static function del($jobID) {
+  static function del($jobID) {
     if (!$jobID) {
-      CRM_Core_Error::fatal(ts('Invalid value passed to delete function.'));
+      CRM_Core_Error::fatal(ts('Invalid value passed to delete function'));
     }
 
     $dao = new CRM_Core_DAO_Job();
@@ -123,17 +123,17 @@ class CRM_Core_BAO_Job extends CRM_Core_DAO_Job {
   }
 
   /**
-   * Trim job table on a regular basis to keep it at a good size.
+   * Trim job table on a regular basis to keep it at a good size
    *
    * CRM-10513
    */
-  public static function cleanup($maxEntriesToKeep = 1000, $minDaysToKeep = 30) {
+  static function cleanup($maxEntriesToKeep = 1000, $minDaysToKeep = 30) {
     // Prevent the job log from getting too big
     // For now, keep last minDays days and at least maxEntries records
     $query = 'SELECT COUNT(*) FROM civicrm_job_log';
     $count = CRM_Core_DAO::singleValueQuery($query);
 
-    if ($count <= $maxEntriesToKeep) {
+    if ( $count <= $maxEntriesToKeep) {
       return;
     }
 

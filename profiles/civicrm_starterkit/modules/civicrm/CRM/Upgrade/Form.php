@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,17 +23,17 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
 class CRM_Upgrade_Form extends CRM_Core_Form {
-  const QUEUE_NAME = 'CRM_Upgrade';
+  CONST QUEUE_NAME = 'CRM_Upgrade';
 
   /**
    * Minimum size of MySQL's thread_stack option
@@ -44,24 +44,31 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
 
   protected $_config;
 
+  // note latestVersion is legacy code, and
+  // only used for 2.0 -> 2.1 upgrade
+  public $latestVersion;
+
   /**
-   * Upgrade for multilingual.
+   * Upgrade for multilingual
    *
    * @var boolean
+   * @public
    */
   public $multilingual = FALSE;
 
   /**
-   * Locales available for multilingual upgrade.
+   * locales available for multilingual upgrade
    *
    * @var array
+   * @public
    */
   public $locales;
 
   /**
-   * Number to string mapper.
+   * number to string mapper
    *
    * @var array
+   * @public
    */
   static $_numberMap = array(
     0 => 'Zero',
@@ -70,41 +77,22 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     3 => 'Three',
     4 => 'Four',
     5 => 'Five',
-    6 => 'Six',
+    6 => 'Fix',
     7 => 'Seven',
     8 => 'Eight',
     9 => 'Nine',
   );
 
-  /**
-   * Constructor for the basic form page.
-   *
-   * We should not use QuickForm directly. This class provides a lot
-   * of default convenient functions, rules and buttons
-   *
-   * @param object $state
-   *   State associated with this form.
-   * @param \const|\enum $action The mode the form is operating in (None/Create/View/Update/Delete)
-   * @param string $method
-   *   The type of http method used (GET/POST).
-   * @param string $name
-   *   The name of the form if different from class name.
-   *
-   * @return \CRM_Core_Form
-   */
-  /**
-   * @param null|object $state
-   * @param const|enum|int $action
-   * @param string $method
-   * @param null|string $name
-   */
-  public function __construct(
-    $state = NULL,
+  function __construct($state = NULL,
     $action = CRM_Core_Action::NONE,
     $method = 'post',
-    $name = NULL
+    $name   = NULL
   ) {
     $this->_config = CRM_Core_Config::singleton();
+
+    // this->latestVersion is legacy code, only used for 2.0 -> 2.1 upgrade
+    // latest ver in 2.1 series
+    $this->latestVersion = '2.1.6';
 
     $domain = new CRM_Core_DAO_Domain();
     $domain->find(TRUE);
@@ -126,12 +114,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     parent::__construct($state, $action, $method, $name);
   }
 
-  /**
-   * @param $version
-   *
-   * @return mixed
-   */
-  public static function &incrementalPhpObject($version) {
+  static function &incrementalPhpObject($version) {
     static $incrementalPhpObject = array();
 
     $versionParts = explode('.', $version);
@@ -144,13 +127,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     return $incrementalPhpObject[$versionName];
   }
 
-  /**
-   * @param $version
-   * @param $release
-   *
-   * @return bool
-   */
-  public function checkVersionRelease($version, $release) {
+  function checkVersionRelease($version, $release) {
     $versionParts = explode('.', $version);
     if ($versionParts[2] == $release) {
       return TRUE;
@@ -158,12 +135,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     return FALSE;
   }
 
-  /**
-   * @param $constraints
-   *
-   * @return array
-   */
-  public function checkSQLConstraints(&$constraints) {
+  function checkSQLConstraints(&$constraints) {
     $pass = $fail = 0;
     foreach ($constraints as $constraint) {
       if ($this->checkSQLConstraint($constraint)) {
@@ -176,28 +148,19 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     }
   }
 
-  /**
-   * @param $constraint
-   *
-   * @return bool
-   */
-  public function checkSQLConstraint($constraint) {
+  function checkSQLConstraint($constraint) {
     // check constraint here
     return TRUE;
   }
 
-  /**
-   * @param string $fileName
-   * @param bool $isQueryString
-   */
-  public function source($fileName, $isQueryString = FALSE) {
+  function source($fileName, $isQueryString = FALSE) {
 
     CRM_Utils_File::sourceSQLFile($this->_config->dsn,
       $fileName, NULL, $isQueryString
     );
   }
 
-  public function preProcess() {
+  function preProcess() {
     CRM_Utils_System::setTitle($this->getTitle());
     if (!$this->verifyPreDBState($errorMessage)) {
       if (!isset($errorMessage)) {
@@ -208,7 +171,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     $this->assign('recentlyViewed', FALSE);
   }
 
-  public function buildQuickForm() {
+  function buildQuickForm() {
     $this->addDefaultButtons($this->getButtonTitle(),
       'next',
       NULL,
@@ -216,41 +179,19 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     );
   }
 
-  /**
-   * Getter function for title. Should be over-ridden by derived class
-   *
-   * @return string
-   */
-  /**
-   * @return string
-   */
-  public function getTitle() {
+  function getTitle() {
     return ts('Title not Set');
   }
 
-  /**
-   * @return string
-   */
-  public function getFieldsetTitle() {
-    return '';
+  function getFieldsetTitle() {
+    return ts('');
   }
 
-  /**
-   * @return string
-   */
-  public function getButtonTitle() {
+  function getButtonTitle() {
     return ts('Continue');
   }
 
-  /**
-   * Use the form name to create the tpl file name.
-   *
-   * @return string
-   */
-  /**
-   * @return string
-   */
-  public function getTemplateFileName() {
+  function getTemplateFileName() {
     $this->assign('title',
       $this->getFieldsetTitle()
     );
@@ -260,7 +201,7 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     return 'CRM/Upgrade/Base.tpl';
   }
 
-  public function postProcess() {
+  function postProcess() {
     $this->upgrade();
 
     if (!$this->verifyPostDBState($errorMessage)) {
@@ -271,23 +212,13 @@ class CRM_Upgrade_Form extends CRM_Core_Form {
     }
   }
 
-  /**
-   * @param $query
-   *
-   * @return Object
-   */
-  public function runQuery($query) {
+  function runQuery($query) {
     return CRM_Core_DAO::executeQuery($query,
       CRM_Core_DAO::$_nullArray
     );
   }
 
-  /**
-   * @param $version
-   *
-   * @return Object
-   */
-  public function setVersion($version) {
+  function setVersion($version) {
     $this->logVersion($version);
 
     $query = "
@@ -297,12 +228,7 @@ SET    version = '$version'
     return $this->runQuery($query);
   }
 
-  /**
-   * @param $newVersion
-   *
-   * @return bool
-   */
-  public function logVersion($newVersion) {
+  function logVersion($newVersion) {
     if ($newVersion) {
       $oldVersion = CRM_Core_BAO_Domain::version();
 
@@ -322,12 +248,7 @@ SET    version = '$version'
     return FALSE;
   }
 
-  /**
-   * @param $version
-   *
-   * @return bool
-   */
-  public function checkVersion($version) {
+  function checkVersion($version) {
     $domainID = CRM_Core_DAO::getFieldValue('CRM_Core_DAO_Domain',
       $version, 'id',
       'version'
@@ -335,11 +256,7 @@ SET    version = '$version'
     return $domainID ? TRUE : FALSE;
   }
 
-  /**
-   * @return array
-   * @throws Exception
-   */
-  public function getRevisionSequence() {
+  function getRevisionSequence() {
     $revList = array();
     $sqlDir = implode(DIRECTORY_SEPARATOR,
       array(dirname(__FILE__), 'Incremental', 'sql')
@@ -360,34 +277,23 @@ SET    version = '$version'
 
     // sample test list
     /*         $revList = array(
-    '2.1.0', '2.2.beta2', '2.2.beta1', '2.2.alpha1', */
+      '2.1.0', '2.2.beta2', '2.2.beta1', '2.2.alpha1', */
 
     /*                          '2.2.alpha3', '2.2.0', '2.2.2', '2.1.alpha1', '2.1.3'); */
+
 
     usort($revList, 'version_compare');
     return $revList;
   }
 
-  /**
-   * @param $rev
-   * @param int $index
-   *
-   * @return null
-   */
-  public static function getRevisionPart($rev, $index = 1) {
+  static function getRevisionPart($rev, $index = 1) {
     $revPattern = '/^((\d{1,2})\.\d{1,2})\.(\d{1,2}|\w{4,7})?$/i';
     preg_match($revPattern, $rev, $matches);
 
     return array_key_exists($index, $matches) ? $matches[$index] : NULL;
   }
 
-  /**
-   * @param $tplFile
-   * @param $rev
-   *
-   * @return bool
-   */
-  public function processLocales($tplFile, $rev) {
+  function processLocales($tplFile, $rev) {
     $smarty = CRM_Core_Smarty::singleton();
     $smarty->assign('domainID', CRM_Core_Config::domainID());
 
@@ -399,27 +305,17 @@ SET    version = '$version'
     return $this->multilingual;
   }
 
-  /**
-   * @param $rev
-   */
-  public function setSchemaStructureTables($rev) {
+  function setSchemaStructureTables($rev) {
     if ($this->multilingual) {
       CRM_Core_I18n_Schema::schemaStructureTables($rev, TRUE);
     }
   }
 
-  /**
-   * @param $rev
-   *
-   * @throws Exception
-   */
-  public function processSQL($rev) {
+  function processSQL($rev) {
     $sqlFile = implode(DIRECTORY_SEPARATOR,
       array(
-        dirname(__FILE__),
-        'Incremental',
-        'sql',
-        $rev . '.mysql',
+        dirname(__FILE__), 'Incremental',
+        'sql', $rev . '.mysql',
       )
     );
     $tplFile = "$sqlFile.tpl";
@@ -436,13 +332,13 @@ SET    version = '$version'
   }
 
   /**
-   * Determine the start and end version of the upgrade process.
+   * Determine the start and end version of the upgrade process
    *
    * @return array(0=>$currentVer, 1=>$latestVer)
    */
-  public function getUpgradeVersions() {
+  function getUpgradeVersions() {
     $latestVer = CRM_Utils_System::version();
-    $currentVer = CRM_Core_BAO_Domain::version(TRUE);
+    $currentVer = CRM_Core_BAO_Domain::version(true);
     if (!$currentVer) {
       CRM_Core_Error::fatal(ts('Version information missing in civicrm database.'));
     }
@@ -471,12 +367,9 @@ SET    version = '$version'
   /**
    * Determine if $currentVer can be upgraded to $latestVer
    *
-   * @param $currentVer
-   * @param $latestVer
-   *
    * @return mixed, a string error message or boolean 'false' if OK
    */
-  public function checkUpgradeableVersion($currentVer, $latestVer) {
+  function checkUpgradeableVersion($currentVer, $latestVer) {
     $error = FALSE;
     // since version is suppose to be in valid format at this point, especially after conversion ($convertVer),
     // lets do a pattern check -
@@ -499,23 +392,23 @@ SET    version = '$version'
     $minPhpVersion = '5.3.3';
     if (version_compare($phpVersion, $minPhpVersion) < 0) {
       $error = ts('CiviCRM %3 requires PHP version %1 (or newer), but the current system uses %2 ',
-        array(
-          1 => $minPhpVersion,
-          2 => $phpVersion,
-          3 => $latestVer,
-        ));
+               array(
+                 1 => $minPhpVersion,
+                 2 => $phpVersion,
+                 3 => $latestVer
+               ));
     }
 
     // check for mysql trigger privileges
     if (!CRM_Core_DAO::checkTriggerViewPermission(FALSE, TRUE)) {
       $error = ts('CiviCRM %1 requires MySQL trigger privileges.',
-        array(1 => $latestVer));
+               array(1 => $latestVer));
     }
 
-    if (CRM_Core_DAO::getGlobalSetting('thread_stack', 0) < (1024 * self::MINIMUM_THREAD_STACK)) {
+    if (CRM_Core_DAO::getGlobalSetting('thread_stack', 0) < (1024*self::MINIMUM_THREAD_STACK)) {
       $error = ts('CiviCRM %1 requires MySQL thread stack >= %2k', array(
         1 => $latestVer,
-        2 => self::MINIMUM_THREAD_STACK,
+        2 => self::MINIMUM_THREAD_STACK
       ));
     }
 
@@ -525,12 +418,9 @@ SET    version = '$version'
   /**
    * Determine if $currentver already matches $latestVer
    *
-   * @param $currentVer
-   * @param $latestVer
-   *
    * @return mixed, a string error message or boolean 'false' if OK
    */
-  public function checkCurrentVersion($currentVer, $latestVer) {
+  function checkCurrentVersion($currentVer, $latestVer) {
     $error = FALSE;
 
     // since version is suppose to be in valid format at this point, especially after conversion ($convertVer),
@@ -547,18 +437,15 @@ SET    version = '$version'
   }
 
   /**
-   * Fill the queue with upgrade tasks.
+   * Fill the queue with upgrade tasks
    *
-   * @param string $currentVer
-   *   the original revision.
-   * @param string $latestVer
-   *   the target (final) revision.
-   * @param string $postUpgradeMessageFile
-   *   path of a modifiable file which lists the post-upgrade messages.
+   * @param $currentVer string, the original revision
+   * @param $latestVer string, the target (final) revision
+   * @param $postUpgradeMessageFile string, path of a modifiable file which lists the post-upgrade messages
    *
    * @return CRM_Queue
    */
-  public static function buildQueue($currentVer, $latestVer, $postUpgradeMessageFile) {
+  static function buildQueue($currentVer, $latestVer, $postUpgradeMessageFile) {
     $upgrade = new CRM_Upgrade_Form();
 
     // hack to make 4.0.x (D7,J1.6) codebase go through 3.4.x (d6, J1.5) upgrade files,
@@ -572,17 +459,17 @@ SET    version = '$version'
       CRM_Core_Error::fatal(ts('Failed to find or create queueing table'));
     }
     $queue = CRM_Queue_Service::singleton()->create(array(
-      'name' => self::QUEUE_NAME,
-      'type' => 'Sql',
-      'reset' => TRUE,
-    ));
+        'name' => self::QUEUE_NAME,
+        'type' => 'Sql',
+        'reset' => TRUE,
+      ));
 
     $revisions = $upgrade->getRevisionSequence();
     foreach ($revisions as $rev) {
       // proceed only if $currentVer < $rev
       if (version_compare($currentVer, $rev) < 0) {
         $beginTask = new CRM_Queue_Task(
-        // callback
+          // callback
           array('CRM_Upgrade_Form', 'doIncrementalUpgradeStart'),
           // arguments
           array($rev),
@@ -591,7 +478,7 @@ SET    version = '$version'
         $queue->createItem($beginTask);
 
         $task = new CRM_Queue_Task(
-        // callback
+          // callback
           array('CRM_Upgrade_Form', 'doIncrementalUpgradeStep'),
           // arguments
           array($rev, $currentVer, $latestVer, $postUpgradeMessageFile),
@@ -600,7 +487,7 @@ SET    version = '$version'
         $queue->createItem($task);
 
         $task = new CRM_Queue_Task(
-        // callback
+          // callback
           array('CRM_Upgrade_Form', 'doIncrementalUpgradeFinish'),
           // arguments
           array($rev, $currentVer, $latestVer, $postUpgradeMessageFile),
@@ -614,15 +501,14 @@ SET    version = '$version'
   }
 
   /**
-   * Perform an incremental version update.
+   * Perform an incremental version update
    *
-   * @param CRM_Queue_TaskContext $ctx
-   * @param string $rev
-   *   the target (intermediate) revision e.g '3.2.alpha1'.
-   *
-   * @return bool
+   * @param $rev string, the target (intermediate) revision e.g '3.2.alpha1'
+   * @param $currentVer string, the original revision
+   * @param $latestVer string, the target (final) revision
+   * @param $postUpgradeMessageFile string, path of a modifiable file which lists the post-upgrade messages
    */
-  public static function doIncrementalUpgradeStart(CRM_Queue_TaskContext $ctx, $rev) {
+  static function doIncrementalUpgradeStart(CRM_Queue_TaskContext $ctx, $rev) {
     $upgrade = new CRM_Upgrade_Form();
 
     // as soon as we start doing anything we append ".upgrade" to version.
@@ -633,93 +519,86 @@ SET    version = '$version'
   }
 
   /**
-   * Perform an incremental version update.
+   * Perform an incremental version update
    *
-   * @param CRM_Queue_TaskContext $ctx
-   * @param string $rev
-   *   the target (intermediate) revision e.g '3.2.alpha1'.
-   * @param string $originalVer
-   *   the original revision.
-   * @param string $latestVer
-   *   the target (final) revision.
-   * @param string $postUpgradeMessageFile
-   *   path of a modifiable file which lists the post-upgrade messages.
-   *
-   * @return bool
+   * @param $rev string, the target (intermediate) revision e.g '3.2.alpha1'
+   * @param $originalVer string, the original revision
+   * @param $latestVer string, the target (final) revision
+   * @param $postUpgradeMessageFile string, path of a modifiable file which lists the post-upgrade messages
    */
-  public static function doIncrementalUpgradeStep(CRM_Queue_TaskContext $ctx, $rev, $originalVer, $latestVer, $postUpgradeMessageFile) {
+  static function doIncrementalUpgradeStep(CRM_Queue_TaskContext$ctx, $rev, $originalVer, $latestVer, $postUpgradeMessageFile) {
     $upgrade = new CRM_Upgrade_Form();
 
     $phpFunctionName = 'upgrade_' . str_replace('.', '_', $rev);
 
-    $versionObject = $upgrade->incrementalPhpObject($rev);
-
-    // pre-db check for major release.
-    if ($upgrade->checkVersionRelease($rev, 'alpha1')) {
-      if (!(is_callable(array(
-        $versionObject,
-        'verifyPreDBstate',
-      )))
-      ) {
-        CRM_Core_Error::fatal("verifyPreDBstate method was not found for $rev");
+    // follow old upgrade process for all version
+    // below 3.2.alpha1
+    if (version_compare($rev, '3.2.alpha1') < 0) {
+      if (is_callable(array(
+        'CRM_Upgrade_Incremental_Legacy', $phpFunctionName))) {
+        call_user_func(array('CRM_Upgrade_Incremental_Legacy', $phpFunctionName), $rev);
       }
+      else {
+        $upgrade->processSQL($rev);
+      }
+    }
+    else {
+      // new upgrade process from version
+      // 3.2.alpha1
+      $versionObject = $upgrade->incrementalPhpObject($rev);
 
-      $error = NULL;
-      if (!($versionObject->verifyPreDBstate($error))) {
-        if (!isset($error)) {
-          $error = "post-condition failed for current upgrade for $rev";
+      // pre-db check for major release.
+      if ($upgrade->checkVersionRelease($rev, 'alpha1')) {
+        if (!(is_callable(array(
+          $versionObject, 'verifyPreDBstate')))) {
+          CRM_Core_Error::fatal("verifyPreDBstate method was not found for $rev");
         }
-        CRM_Core_Error::fatal($error);
+
+        $error = NULL;
+        if (!($versionObject->verifyPreDBstate($error))) {
+          if (!isset($error)) {
+            $error = "post-condition failed for current upgrade for $rev";
+          }
+          CRM_Core_Error::fatal($error);
+        }
+
       }
 
-    }
+      $upgrade->setSchemaStructureTables($rev);
 
-    $upgrade->setSchemaStructureTables($rev);
+      if (is_callable(array(
+        $versionObject, $phpFunctionName))) {
+        $versionObject->$phpFunctionName($rev, $originalVer, $latestVer);
+      }
+      else {
+        $upgrade->processSQL($rev);
+      }
 
-    if (is_callable(array(
-      $versionObject,
-      $phpFunctionName,
-    ))) {
-      $versionObject->$phpFunctionName($rev, $originalVer, $latestVer);
-    }
-    else {
-      $upgrade->processSQL($rev);
-    }
-
-    // set post-upgrade-message if any
-    if (is_callable(array(
-      $versionObject,
-      'setPostUpgradeMessage',
-    ))) {
-      $postUpgradeMessage = file_get_contents($postUpgradeMessageFile);
-      $versionObject->setPostUpgradeMessage($postUpgradeMessage, $rev);
-      file_put_contents($postUpgradeMessageFile, $postUpgradeMessage);
-    }
-    else {
-      $postUpgradeMessage = file_get_contents($postUpgradeMessageFile);
-      CRM_Upgrade_Incremental_Legacy::setPostUpgradeMessage($postUpgradeMessage, $rev);
-      file_put_contents($postUpgradeMessageFile, $postUpgradeMessage);
+      // set post-upgrade-message if any
+      if (is_callable(array(
+        $versionObject, 'setPostUpgradeMessage'))) {
+        $postUpgradeMessage = file_get_contents($postUpgradeMessageFile);
+        $versionObject->setPostUpgradeMessage($postUpgradeMessage, $rev);
+        file_put_contents($postUpgradeMessageFile, $postUpgradeMessage);
+      } else {
+        $postUpgradeMessage = file_get_contents($postUpgradeMessageFile);
+        CRM_Upgrade_Incremental_Legacy::setPostUpgradeMessage($postUpgradeMessage, $rev);
+        file_put_contents($postUpgradeMessageFile, $postUpgradeMessage);
+      }
     }
 
     return TRUE;
   }
 
   /**
-   * Perform an incremental version update.
+   * Perform an incremental version update
    *
-   * @param CRM_Queue_TaskContext $ctx
-   * @param string $rev
-   *   the target (intermediate) revision e.g '3.2.alpha1'.
-   * @param string $currentVer
-   *   the original revision.
-   * @param string $latestVer
-   *   the target (final) revision.
-   * @param string $postUpgradeMessageFile
-   *   path of a modifiable file which lists the post-upgrade messages.
-   *
-   * @return bool
+   * @param $rev string, the target (intermediate) revision e.g '3.2.alpha1'
+   * @param $currentVer string, the original revision
+   * @param $latestVer string, the target (final) revision
+   * @param $postUpgradeMessageFile string, path of a modifiable file which lists the post-upgrade messages
    */
-  public static function doIncrementalUpgradeFinish(CRM_Queue_TaskContext $ctx, $rev, $currentVer, $latestVer, $postUpgradeMessageFile) {
+  static function doIncrementalUpgradeFinish(CRM_Queue_TaskContext $ctx, $rev, $currentVer, $latestVer, $postUpgradeMessageFile) {
     $upgrade = new CRM_Upgrade_Form();
     $upgrade->setVersion($rev);
     CRM_Utils_System::flushCache();
@@ -729,7 +608,7 @@ SET    version = '$version'
     return TRUE;
   }
 
-  public static function doFinish() {
+  static function doFinish() {
     $upgrade = new CRM_Upgrade_Form();
     list($ignore, $latestVer) = $upgrade->getUpgradeVersions();
     // Seems extraneous in context, but we'll preserve old behavior
@@ -752,9 +631,6 @@ SET    version = '$version'
     // Rebuild all triggers and re-enable logging if needed
     $logging = new CRM_Logging_Schema();
     $logging->fixSchemaDifferences();
-
-    //CRM-16257 update Config.IDS.ini might be an old copy
-    CRM_Core_IDS::createConfigFile(TRUE);
   }
 
   /**
@@ -762,12 +638,9 @@ SET    version = '$version'
    * by calling the 'setPreUpgradeMessage' on each incremental upgrade
    * object.
    *
-   * @param string $preUpgradeMessage
-   *   alterable.
-   * @param $currentVer
-   * @param $latestVer
+   * @param $preUpgradeMessage string, alterable
    */
-  public function setPreUpgradeMessage(&$preUpgradeMessage, $currentVer, $latestVer) {
+  function setPreUpgradeMessage(&$preUpgradeMessage, $currentVer, $latestVer) {
     CRM_Upgrade_Incremental_Legacy::setPreUpgradeMessage($preUpgradeMessage, $currentVer, $latestVer);
 
     // Scan through all php files and see if any file is interested in setting pre-upgrade-message
@@ -779,14 +652,11 @@ SET    version = '$version'
         version_compare($rev, '3.2.alpha1') > 0
       ) {
         $versionObject = $this->incrementalPhpObject($rev);
-        if (is_callable(array(
-          $versionObject,
-          'setPreUpgradeMessage',
-        ))) {
-          $versionObject->setPreUpgradeMessage($preUpgradeMessage, $rev, $currentVer);
-        }
+         if (is_callable(array(
+          $versionObject, 'setPreUpgradeMessage'))) {
+           $versionObject->setPreUpgradeMessage($preUpgradeMessage, $rev, $currentVer);
+         }
       }
     }
   }
-
 }

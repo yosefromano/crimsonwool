@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -42,12 +42,12 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
   protected $_contactID;
 
   /**
-   * Lets do permission checking here.
+   * Lets do permission checking here
    * First check for valid mailing, if false return fatal
    * Second check for visibility
    * Call a hook to see if hook wants to override visibility setting
    */
-  public function checkPermission() {
+  function checkPermission() {
     if (!$this->_mailing) {
       return FALSE;
     }
@@ -62,7 +62,6 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
 
     // if user is an admin, return true
     if (CRM_Core_Permission::check('administer CiviCRM') ||
-      CRM_Core_Permission::check('approve mailings') ||
       CRM_Core_Permission::check('access CiviMail')
     ) {
       return TRUE;
@@ -72,22 +71,17 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
   }
 
   /**
-   * Run this page (figure out the action needed and perform it).
-   *
-   * @param int $id
-   * @param int $contactID
-   * @param bool $print
-   * @param bool $allowID
+   * run this page (figure out the action needed and perform it).
    *
    * @return void
    */
-  public function run($id = NULL, $contactID = NULL, $print = TRUE, $allowID = FALSE) {
+  function run($id = NULL, $contactID = NULL, $print = TRUE) {
     if (is_numeric($id)) {
       $this->_mailingID = $id;
     }
     else {
       $print = TRUE;
-      $this->_mailingID = CRM_Utils_Request::retrieve('id', 'String', CRM_Core_DAO::$_nullObject, TRUE);
+      $this->_mailingID = CRM_Utils_Request::retrieve('id', 'Integer', CRM_Core_DAO::$_nullObject, TRUE);
     }
 
     // # CRM-7651
@@ -102,30 +96,8 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
       $this->_contactID = $session->get('userID');
     }
 
-    // mailing key check
-    if (CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::MAILING_PREFERENCES_NAME, 'hash_mailing_url')) {
-      $this->_mailing = new CRM_Mailing_BAO_Mailing();
-
-      if (!is_numeric($this->_mailingID)) {
-        $this->_mailing->hash = $this->_mailingID;
-      }
-      elseif (is_numeric($this->_mailingID)) {
-        $this->_mailing->id = $this->_mailingID;
-        // if mailing is present and associated hash is present
-        // while 'hash' is not been used for mailing view : throw 'permissionDenied'
-        if ($this->_mailing->find() &&
-          CRM_Core_DAO::getFieldValue('CRM_Mailing_BAO_Mailing', $this->_mailingID, 'hash', 'id') &&
-          !$allowID
-        ) {
-          CRM_Utils_System::permissionDenied();
-          return;
-        }
-      }
-    }
-    else {
-      $this->_mailing = new CRM_Mailing_BAO_Mailing();
-      $this->_mailing->id = $this->_mailingID;
-    }
+    $this->_mailing = new CRM_Mailing_BAO_Mailing();
+    $this->_mailing->id = $this->_mailingID;
 
     if (!$this->_mailing->find(TRUE) ||
       !$this->checkPermission()
@@ -142,9 +114,9 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
     );
 
     // get contact detail and compose if contact id exists
-    $returnProperties = $this->_mailing->getReturnProperties();
     if (isset($this->_contactID)) {
       //get details of contact with token value including Custom Field Token Values.CRM-3734
+      $returnProperties = $this->_mailing->getReturnProperties();
       $params = array('contact_id' => $this->_contactID);
       $details = CRM_Utils_Token::getTokenDetails($params,
         $returnProperties,
@@ -156,8 +128,9 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
       $contactId = $this->_contactID;
     }
     else {
+      $details = array('test');
       //get tokens that are not contact specific resolved
-      $params = array('contact_id' => 0);
+      $params  = array('contact_id' => 0);
       $details = CRM_Utils_Token::getAnonymousTokenDetails($params,
         $returnProperties,
         TRUE, TRUE, NULL,
@@ -165,7 +138,7 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
         get_class($this)
       );
 
-      $details = CRM_Utils_Array::value(0, $details[0]);
+      $details = $details[0][0];
       $contactId = 0;
     }
     $mime = &$this->_mailing->compose(NULL, NULL, NULL, $contactId,
@@ -175,7 +148,8 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
     );
 
     $title = NULL;
-    if (isset($this->_mailing->body_html) && empty($_GET['text'])) {
+    if (isset($this->_mailing->body_html)) {
+      
       $header = 'Content-Type: text/html; charset=utf-8';
       $content = $mime->getHTMLBody();
       if (strpos($content, '<head>') === FALSE && strpos($content, '<title>') === FALSE) {
@@ -186,11 +160,7 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
       $header = 'Content-Type: text/plain; charset=utf-8';
       $content = $mime->getTXTBody();
     }
-    CRM_Utils_System::setTitle($this->_mailing->subject);
 
-    if (CRM_Utils_Array::value('snippet', $_GET) === 'json') {
-      CRM_Core_Page_AJAX::returnJsonResponse($content);
-    }
     if ($print) {
       header($header);
       print $title;
@@ -201,5 +171,5 @@ class CRM_Mailing_Page_View extends CRM_Core_Page {
       return $content;
     }
   }
-
 }
+

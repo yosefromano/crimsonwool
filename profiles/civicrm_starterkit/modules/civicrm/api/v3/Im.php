@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.2                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2012                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,58 +23,66 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
- * This api exposes CiviCRM IM records.
+ * File for the CiviCRM APIv3 IM functions
  *
  * @package CiviCRM_APIv3
+ * @subpackage API_IM
+ *
+ * @copyright CiviCRM LLC (c) 2004-2013
  */
 
 /**
- * Add an IM for a contact.
+ *  Add an IM for a contact
  *
- * @param array $params
+ * Allowed @params array keys are:
+ * {@getfields im_create}
  *
- * @return array
+ * @return array of newly created IM property values.
+ * @access public
  */
 function civicrm_api3_im_create($params) {
   return _civicrm_api3_basic_create(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Adjust Metadata for Create action.
+ * Adjust Metadata for Create action
  *
- * The metadata is used for setting defaults, documentation & validation.
- *
- * @param array $params
- *   Array of parameters determined by getfields.
+ * The metadata is used for setting defaults, documentation & validation
+ * @param array $params array or parameters determined by getfields
  */
 function _civicrm_api3_im_create_spec(&$params) {
   $params['contact_id']['api.required'] = 1;
 }
 
 /**
- * Deletes an existing IM.
+ * Deletes an existing IM
  *
- * @param array $params
+ * @param  array  $params
+ * {@getfields im_delete}
  *
- * @return array
- *   API result Array
+ * @return array API result Array
+ * @access public
+ * @todo convert to using Basic delete - BAO function non standard
  */
 function civicrm_api3_im_delete($params) {
   return _civicrm_api3_basic_delete(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
 
 /**
- * Retrieve one or more IM.
+ * Retrieve one or more IM
  *
- * @param array $params
- *   An associative array of name/value pairs.
+ * @param  mixed[]  (reference ) input parameters
+ * {@getfields im_get}
+ * @param  array $params  an associative array of name/value pairs.
  *
- * @return array
- *   details of found IM
+ * @return  array details of found IM
+ *
+ * @access public
  */
 function civicrm_api3_im_get($params) {
   return _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params);
 }
+

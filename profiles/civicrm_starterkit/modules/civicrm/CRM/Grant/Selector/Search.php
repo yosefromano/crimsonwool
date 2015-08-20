@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -45,19 +45,22 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
    * This defines two actions- View and Edit.
    *
    * @var array
+   * @static
    */
   static $_links = NULL;
 
   /**
-   * We use desc to remind us what that column is, name is used in the tpl
+   * we use desc to remind us what that column is, name is used in the tpl
    *
    * @var array
+   * @static
    */
   static $_columnHeaders;
 
   /**
    * Properties of contact we're interested in displaying
    * @var array
+   * @static
    */
   static $_properties = array(
     'contact_id',
@@ -77,85 +80,85 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
   );
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * are we restricting ourselves to a single contact
    *
+   * @access protected
    * @var boolean
    */
   protected $_single = FALSE;
 
   /**
-   * Are we restricting ourselves to a single contact.
+   * are we restricting ourselves to a single contact
    *
+   * @access protected
    * @var boolean
    */
   protected $_limit = NULL;
 
   /**
-   * What context are we being invoked from.
+   * what context are we being invoked from
    *
+   * @access protected
    * @var string
    */
   protected $_context = NULL;
 
   /**
-   * QueryParams is the array returned by exportValues called on.
+   * queryParams is the array returned by exportValues called on
    * the HTML_QuickForm_Controller for that page.
    *
    * @var array
+   * @access protected
    */
   public $_queryParams;
 
   /**
-   * Represent the type of selector.
+   * represent the type of selector
    *
    * @var int
+   * @access protected
    */
   protected $_action;
 
   /**
-   * The additional clause that we restrict the search with.
+   * The additional clause that we restrict the search with
    *
    * @var string
    */
   protected $_grantClause = NULL;
 
   /**
-   * The query object.
+   * The query object
    *
    * @var string
    */
   protected $_query;
 
   /**
-   * Class constructor.
+   * Class constructor
    *
-   * @param array $queryParams
-   *   Array of parameters for query.
-   * @param \const|int $action - action of search basic or advanced.
-   * @param string $grantClause
-   *   If the caller wants to further restrict the search.
-   * @param bool $single
-   *   Are we dealing only with one contact?.
-   * @param int $limit
-   *   How many participations do we want returned.
+   * @param array   $queryParams array of parameters for query
+   * @param int     $action - action of search basic or advanced.
+   * @param string  $grantClause if the caller wants to further restrict the search
+   * @param boolean $single are we dealing only with one contact?
+   * @param int     $limit  how many participations do we want returned
    *
-   * @param string $context
-   *
-   * @return \CRM_Grant_Selector_Search
+   * @return CRM_Contact_Selector
+   * @access public
    */
-  public function __construct(
-    &$queryParams,
-    $action = CRM_Core_Action::NONE,
+  function __construct(&$queryParams,
+    $action      = CRM_Core_Action::NONE,
     $grantClause = NULL,
-    $single = FALSE,
-    $limit = NULL,
-    $context = 'search'
+    $single      = FALSE,
+    $limit       = NULL,
+    $context     = 'search'
   ) {
     // submitted form values
     $this->_queryParams = &$queryParams;
 
-    $this->_single = $single;
-    $this->_limit = $limit;
+
+    $this->_single  = $single;
+    $this->_limit   = $limit;
     $this->_context = $context;
 
     $this->_grantClause = $grantClause;
@@ -169,6 +172,7 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
     $this->_query->_distinctComponentClause = " civicrm_grant.id";
     $this->_query->_groupByComponentClause = " GROUP BY civicrm_grant.id ";
   }
+  //end of constructor
 
   /**
    * This method returns the links that are given for each search row.
@@ -177,12 +181,12 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
    * - View
    * - Edit
    *
-   * @param string|null $key
-   *
    * @return array
+   * @access public
+   *
    */
-  public static function &links($key = NULL) {
-    $cid = CRM_Utils_Request::retrieve('cid', 'Integer');
+  static function &links($key = NULL) {
+    $cid = CRM_Utils_Request::retrieve('cid', 'Integer', $this);
     $extraParams = ($key) ? "&key={$key}" : NULL;
 
     if (!(self::$_links)) {
@@ -202,11 +206,13 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
       );
 
       if ($cid) {
+        $deleteExtra = ts('Are you sure you want to delete this grant?');
+
         $delLink = array(
-          CRM_Core_Action::DELETE => array(
-            'name' => ts('Delete'),
+          CRM_Core_Action::DELETE => array('name' => ts('Delete'),
             'url' => 'civicrm/contact/view/grant',
             'qs' => 'action=delete&reset=1&cid=%%cid%%&id=%%id%%&selectedChild=grant' . $extraParams,
+            'extra' => 'onclick = "if (confirm(\'' . $deleteExtra . '\') ) this.href+=\'&amp;confirmed=1\'; else return false;"',
             'title' => ts('Delete Grant'),
           ),
         );
@@ -215,14 +221,15 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
     }
     return self::$_links;
   }
+  //end of function
 
   /**
-   * Getter for array of the parameters required for creating pager.
+   * getter for array of the parameters required for creating pager.
    *
-   * @param $action
-   * @param array $params
+   * @param
+   * @access public
    */
-  public function getPagerParams($action, &$params) {
+  function getPagerParams($action, &$params) {
     $params['status'] = ts('Grant') . ' %%StatusMessage%%';
     $params['csvString'] = NULL;
     if ($this->_limit) {
@@ -235,16 +242,17 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
     $params['buttonTop'] = 'PagerTopButton';
     $params['buttonBottom'] = 'PagerBottomButton';
   }
+  //end of function
 
   /**
    * Returns total number of rows for the query.
    *
    * @param
    *
-   * @return int
-   *   Total number of rows
+   * @return int Total number of rows
+   * @access public
    */
-  public function getTotalCount($action) {
+  function getTotalCount($action) {
     return $this->_query->searchQuery(0, 0, NULL,
       TRUE, FALSE,
       FALSE, FALSE,
@@ -254,23 +262,17 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
   }
 
   /**
-   * Returns all the rows in the given offset and rowCount     *
+   * returns all the rows in the given offset and rowCount     *
    *
-   * @param string $action
-   *   The action being performed.
-   * @param int $offset
-   *   The row number to start from.
-   * @param int $rowCount
-   *   The number of rows to return.
-   * @param string $sort
-   *   The sql string that describes the sort order.
-   * @param string $output
-   *   What should the result set include (web/email/csv).
+   * @param enum   $action   the action being performed
+   * @param int    $offset   the row number to start from
+   * @param int    $rowCount the number of rows to return
+   * @param string $sort     the sql string that describes the sort order
+   * @param enum   $output   what should the result set include (web/email/csv)
    *
-   * @return int
-   *   the total number of rows for this action
+   * @return int   the total number of rows for this action
    */
-  public function &getRows($action, $offset, $rowCount, $sort, $output = NULL) {
+  function &getRows($action, $offset, $rowCount, $sort, $output = NULL) {
     $result = $this->_query->searchQuery($offset, $rowCount, $sort,
       FALSE, FALSE,
       FALSE, FALSE,
@@ -310,15 +312,11 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
           'id' => $result->grant_id,
           'cid' => $result->contact_id,
           'cxt' => $this->_context,
-        ),
-        ts('more'),
-        FALSE,
-        'grant.selector.row',
-        'Grant',
-        $result->grant_id
+        )
       );
 
-      $row['contact_type'] = CRM_Contact_BAO_Contact_Utils::getImage($result->contact_sub_type ? $result->contact_sub_type : $result->contact_type, FALSE, $result->contact_id
+      $row['contact_type'] = CRM_Contact_BAO_Contact_Utils::getImage($result->contact_sub_type ?
+        $result->contact_sub_type : $result->contact_type, FALSE, $result->contact_id
       );
 
       $rows[] = $row;
@@ -328,29 +326,31 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
   }
 
   /**
-   * @inheritDoc
+   *
+   * @return array              $qill         which contains an array of strings
+   * @access public
    */
+
+  // the current internationalisation is bad, but should more or less work
+  // for most of "European" languages
   public function getQILL() {
     return $this->_query->qill();
   }
 
   /**
-   * Returns the column headers as an array of tuples:
+   * returns the column headers as an array of tuples:
    * (name, sortName (key to the sort array))
    *
-   * @param string $action
-   *   The action being performed.
-   * @param string $output
-   *   What should the result set include (web/email/csv).
+   * @param string $action the action being performed
+   * @param enum   $output what should the result set include (web/email/csv)
    *
-   * @return array
-   *   the column headers that need to be displayed
+   * @return array the column headers that need to be displayed
+   * @access public
    */
   public function &getColumnHeaders($action = NULL, $output = NULL) {
     if (!isset(self::$_columnHeaders)) {
       self::$_columnHeaders = array(
-        array(
-          'name' => ts('Status'),
+        array('name' => ts('Status'),
           'sort' => 'grant_status',
           'direction' => CRM_Utils_Sort::DONTCARE,
         ),
@@ -402,24 +402,20 @@ class CRM_Grant_Selector_Search extends CRM_Core_Selector_Base implements CRM_Co
     return self::$_columnHeaders;
   }
 
-  /**
-   * @return string
-   */
-  public function &getQuery() {
+  function &getQuery() {
     return $this->_query;
   }
 
   /**
-   * Name of export file.
+   * name of export file.
    *
-   * @param string $output
-   *   Type of output.
+   * @param string $output type of output
    *
-   * @return string
-   *   name of the file
+   * @return string name of the file
    */
-  public function getExportFileName($output = 'csv') {
+  function getExportFileName($output = 'csv') {
     return ts('CiviCRM Grant Search');
   }
-
 }
+//end of class
+

@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -42,6 +42,18 @@
               {if $form.contact_tags}
                 <td><label>{ts}Contributor Tag(s){/ts}</label>
                     {$form.contact_tags.html}
+                    {literal}
+                    <script type="text/javascript">
+
+                    cj("select#contact_tags").crmasmSelect({
+                        addItemTarget: 'bottom',
+                        animate: false,
+                        highlight: true,
+                        sortable: true,
+                        respectParents: true
+                    });
+                    </script>
+                    {/literal}   
                 </td>
               {else}
                 <td>&nbsp;</td>
@@ -50,6 +62,18 @@
               {if $form.group}
                 <td><label>{ts}Contributor Group(s){/ts}</label>
                     {$form.group.html}
+                    {literal}
+                    <script type="text/javascript">
+                    cj("select#group").crmasmSelect({
+                        addItemTarget: 'bottom',
+                        animate: false,
+                        highlight: true,
+                        sortable: true,
+                        respectParents: true
+                    });
+
+                    </script>
+                    {/literal}
                 </td>
               {else}
                 <td>&nbsp;</td>
@@ -90,4 +114,11 @@
 
 </div>
 {/if}
+{literal}
+<script type="text/javascript">
+cj(function() {
+   cj().crmAccordions();
+});
+</script>
+{/literal}
 

@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -39,9 +39,10 @@
 class CRM_Contact_Form_Inline_Demographics extends CRM_Contact_Form_Inline {
 
   /**
-   * Build the form object elements.
+   * build the form elements
    *
    * @return void
+   * @access public
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
@@ -49,15 +50,16 @@ class CRM_Contact_Form_Inline_Demographics extends CRM_Contact_Form_Inline {
   }
 
   /**
-   * Process the form.
+   * process the form
    *
    * @return void
+   * @access public
    */
   public function postProcess() {
     $params = $this->exportValues();
 
     // Process / save demographics
-    if (empty($params['is_deceased'])) {
+    if (!CRM_Utils_Array::value('is_deceased', $params)) {
       $params['is_deceased'] = FALSE;
       $params['deceased_date'] = NULL;
     }
@@ -73,5 +75,4 @@ class CRM_Contact_Form_Inline_Demographics extends CRM_Contact_Form_Inline {
 
     $this->response();
   }
-
 }

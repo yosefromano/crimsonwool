@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -40,71 +40,40 @@
 class CRM_Utils_PagerAToZ {
 
   /**
-   * Returns the alphabetic array for sorting by character.
+   * returns the alphabetic array for sorting by character
    *
-   * @param array $query
-   *   The query object.
-   * @param string $sortByCharacter
-   *   The character that we are potentially sorting on.
+   * @param array  $query           The query object
+   * @param string $sortByCharacter The character that we are potentially sorting on
    *
-   * @param bool $isDAO
-   *
-   * @return string
-   *   The html formatted string
+   * @return string                 The html formatted string
+   * @access public
+   * @static
    */
-  public static function getAToZBar(&$query, $sortByCharacter, $isDAO = FALSE) {
+  static function getAToZBar(&$query, $sortByCharacter, $isDAO = FALSE) {
     $AToZBar = self::createLinks($query, $sortByCharacter, $isDAO);
     return $AToZBar;
   }
 
   /**
-   * Return the all the static characters.
+   * Function to return the all the static characters
    *
-   * @return array
-   *   is a array of static characters
+   * @return array $staticAlphabets is a array of static characters
+   * @access private
+   * @static
    */
-  public static function getStaticCharacters() {
-    $staticAlphabets = array(
-      'A',
-      'B',
-      'C',
-      'D',
-      'E',
-      'F',
-      'G',
-      'H',
-      'I',
-      'J',
-      'K',
-      'L',
-      'M',
-      'N',
-      'O',
-      'P',
-      'Q',
-      'R',
-      'S',
-      'T',
-      'U',
-      'V',
-      'W',
-      'X',
-      'Y',
-      'Z',
-    );
+  static function getStaticCharacters() {
+    $staticAlphabets = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z');
     return $staticAlphabets;
   }
 
   /**
-   * Return the all the dynamic characters.
+   * Function to return the all the dynamic characters
    *
-   * @param $query
-   * @param $isDAO
-   *
-   * @return array
-   *   is a array of dynamic characters
+   * @return array $dynamicAlphabets is a array of dynamic characters
+   * @access private
+   * @static
    */
-  public static function getDynamicCharacters(&$query, $isDAO) {
+  static function getDynamicCharacters(&$query, $isDAO) {
     if ($isDAO) {
       $result = $query;
     }
@@ -123,19 +92,16 @@ class CRM_Utils_PagerAToZ {
   }
 
   /**
-   * Create the links.
+   * create the links
    *
-   * @param array $query
-   *   The form values for search.
-   * @param string $sortByCharacter
-   *   The character that we are potentially sorting on.
+   * @param array  $query          The form values for search
+   * @param string $sortByCharacter The character that we are potentially sorting on
    *
-   * @param $isDAO
-   *
-   * @return array
-   *   with links
+   * @return array with links
+   * @access private
+   * @static
    */
-  public static function createLinks(&$query, $sortByCharacter, $isDAO) {
+  static function createLinks(&$query, $sortByCharacter, $isDAO) {
     $AToZBar = self::getStaticCharacters();
     $dynamicAlphabets = self::getDynamicCharacters($query, $isDAO);
 
@@ -150,7 +116,7 @@ class CRM_Utils_PagerAToZ {
     //get the current path
     $path = CRM_Utils_System::currentPath();
 
-    $qfKey = NULL;
+    $qfKey = null;
     if (isset($query->_formValues)) {
       $qfKey = CRM_Utils_Array::value('qfKey', $query->_formValues);
     }
@@ -198,5 +164,5 @@ class CRM_Utils_PagerAToZ {
     $aToZBar[] = array('item' => $url);
     return $aToZBar;
   }
-
 }
+

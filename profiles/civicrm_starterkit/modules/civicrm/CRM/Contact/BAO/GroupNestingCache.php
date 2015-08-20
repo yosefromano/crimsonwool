@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.4                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2013                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -23,12 +23,12 @@
  | GNU Affero General Public License or the licensing of CiviCRM,     |
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
- */
+*/
 
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2013
  * $Id$
  *
  */
@@ -51,15 +51,13 @@ WHERE  n.child_group_id  = gc.id
     $tree = array();
     while ($dao->fetch()) {
       if (!array_key_exists($dao->child, $tree)) {
-        $tree[$dao->child] = array(
-          'children' => array(),
+        $tree[$dao->child] = array('children' => array(),
           'parents' => array(),
         );
       }
 
       if (!array_key_exists($dao->parent, $tree)) {
-        $tree[$dao->parent] = array(
-          'children' => array(),
+        $tree[$dao->parent] = array('children' => array(),
           'parents' => array(),
         );
       }
@@ -82,11 +80,11 @@ SET    parents  = null,
 
     $values = array();
     foreach (array_keys($tree) as $id) {
-      $parents = implode(',', $tree[$id]['parents']);
+      $parents  = implode(',', $tree[$id]['parents']);
       $children = implode(',', $tree[$id]['children']);
-      $parents = $parents == NULL ? 'null' : "'$parents'";
+      $parents  = $parents == NULL ? 'null' : "'$parents'";
       $children = $children == NULL ? 'null' : "'$children'";
-      $sql = "
+      $sql      = "
 UPDATE civicrm_group
 SET    parents  = $parents ,
        children = $children
@@ -99,12 +97,7 @@ WHERE  id = $id
     CRM_Core_BAO_Cache::setItem($tree, 'contact groups', 'nestable tree hierarchy');
   }
 
-  /**
-   * @param $tree
-   *
-   * @return bool
-   */
-  public static function checkCyclicGraph(&$tree) {
+  static function checkCyclicGraph(&$tree) {
     // lets keep this simple, we should probably use a graph algoritm here at some stage
 
     // foreach group that has a parent or a child, ensure that
@@ -118,13 +111,7 @@ WHERE  id = $id
     return FALSE;
   }
 
-  /**
-   * @param $tree
-   * @param int $id
-   *
-   * @return bool
-   */
-  public static function isCyclic(&$tree, $id) {
+  static function isCyclic(&$tree, $id) {
     $parents = $children = array();
     self::getAll($parent, $tree, $id, 'parents');
     self::getAll($child, $tree, $id, 'children');
@@ -142,13 +129,7 @@ WHERE  id = $id
     return FALSE;
   }
 
-  /**
-   * @param int $id
-   * @param $groups
-   *
-   * @return array
-   */
-  public static function getPotentialCandidates($id, &$groups) {
+  static function getPotentialCandidates($id, &$groups) {
     $tree = CRM_Core_BAO_Cache::getItem('contact groups', 'nestable tree hierarchy');
 
     if ($tree === NULL) {
@@ -167,13 +148,7 @@ WHERE  id = $id
     return array_keys($potential);
   }
 
-  /**
-   * @param $potential
-   * @param $tree
-   * @param int $id
-   * @param $token
-   */
-  public static function invalidate(&$potential, &$tree, $id, $token) {
+  static function invalidate(&$potential, &$tree, $id, $token) {
     unset($potential[$id]);
 
     if (!isset($tree[$id]) ||
@@ -187,13 +162,7 @@ WHERE  id = $id
     }
   }
 
-  /**
-   * @param $all
-   * @param $tree
-   * @param int $id
-   * @param $token
-   */
-  public static function getAll(&$all, &$tree, $id, $token) {
+  static function getAll(&$all, &$tree, $id, $token) {
     // if seen before, dont do anything
     if (isset($all[$id])) {
       return;
@@ -211,10 +180,7 @@ WHERE  id = $id
     }
   }
 
-  /**
-   * @return string
-   */
-  public static function json() {
+  static function json() {
     $tree = CRM_Core_BAO_Cache::getItem('contact groups', 'nestable tree hierarchy');
 
     if ($tree === NULL) {
@@ -260,5 +226,5 @@ WHERE  id = $id
 }";
     return $json;
   }
-
 }
+

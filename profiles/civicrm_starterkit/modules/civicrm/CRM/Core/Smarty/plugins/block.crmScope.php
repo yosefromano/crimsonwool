@@ -15,28 +15,36 @@
  * {/tsScope}
  * @endcode
  *
- * @param array $params
- *   Must define 'name'.
- * @param string $content
- *   Default content.
- * @param CRM_Core_Smarty $smarty
- *   The Smarty object.
- *
- * @param $repeat
+ * @param array $params   must define 'name'
+ * @param string $content    Default content
+ * @param object $smarty  the Smarty object
  *
  * @return string
  */
 function smarty_block_crmScope($params, $content, &$smarty, &$repeat) {
-  /** @var CRM_Core_Smarty $smarty */
+  // A list of variables/values to save temporarily
+  static $backupFrames = array();
 
   if ($repeat) {
     // open crmScope
-    $smarty->pushScope($params);
+    $vars = $smarty->get_template_vars();
+    $backupFrame = array();
+    foreach ($params as $key => $value) {
+      $backupFrame[$key] = isset($vars[$key]) ? $vars[$key] : NULL;
+    }
+    $backupFrames[] = $backupFrame;
+    _smarty_block_crmScope_applyFrame($smarty, $params);
   }
   else {
     // close crmScope
-    $smarty->popScope();
+    _smarty_block_crmScope_applyFrame($smarty, array_pop($backupFrames));
   }
 
   return $content;
+}
+
+function _smarty_block_crmScope_applyFrame(&$smarty, $frame) {
+  foreach ($frame as $key => $value) {
+    $smarty->assign($key, $value);
+  }
 }
