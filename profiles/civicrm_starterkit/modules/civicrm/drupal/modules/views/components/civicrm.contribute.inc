@@ -1,7 +1,7 @@
 <?php
 /*
   +--------------------------------------------------------------------+
-  | CiviCRM version 4.4                                                |
+  | CiviCRM version 4.6                                                |
   +--------------------------------------------------------------------+
   | This file is a part of CiviCRM.                                    |
   |                                                                    |
@@ -59,15 +59,14 @@ function _civicrm_contribute_data(&$data, $enabled) {
     'field' => 'contribution_recur_id',
   );
 
-
-  // TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
+  //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
+  
   $data['civicrm_contribution']['table']['join']['civicrm_contact'] = array(
     'left_table' => 'civicrm_contact',
     'left_field' => 'id',
     'field' => 'contact_id',
   );
 
-  //TABLE JOINS FOR CIVICRM CONTRIBUTIONS GO HERE!
   $data['civicrm_contribution']['table']['join']['civicrm_participant'] = array(
     'left_table' => 'civicrm_participant_payment',
     'left_field' => 'contribution_id',
@@ -606,7 +605,8 @@ function _civicrm_contribute_data(&$data, $enabled) {
     ),
     'relationship' => array(
       'base' => 'civicrm_contact',
-      'field' => 'id',
+      'left_field' => 'id',
+      'field' => 'contact_id',
       'handler' => 'views_handler_relationship',
       'label' => t('Soft Contribution -> Contact Record'),
     ),
