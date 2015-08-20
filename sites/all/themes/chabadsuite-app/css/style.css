@@ -52,7 +52,7 @@ body :-ms-input-placeholder {
 	    background-image: -ms-linear-gradient(left top, #097D47 0%, #24B574 100%);
 	    background-image: linear-gradient(to left top, #097d47 0%, #24b574 100%);
     position: absolute;
-    top: 20%;
+    top: 9%;
     left: 0;
     width: 100%;
     
