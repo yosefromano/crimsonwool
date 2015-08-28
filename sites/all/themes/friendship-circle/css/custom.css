@@ -8224,18 +8224,19 @@ h1.hp-sitename {
   /* line 812, ../scss/custom.scss */
   .columns {
     padding-right: 0;
+    padding-left: 0;
   }
 }
-/* line 816, ../scss/custom.scss */
+/* line 817, ../scss/custom.scss */
 .bean-social-media-links {
   float: left;
 }
-/* line 818, ../scss/custom.scss */
+/* line 819, ../scss/custom.scss */
 .bean-social-media-links img {
   padding-bottom: 10px;
 }
 
-/* line 822, ../scss/custom.scss */
+/* line 823, ../scss/custom.scss */
 .signup-blurb {
   float: left;
   padding-right: 18px;
@@ -8245,7 +8246,7 @@ h1.hp-sitename {
   font-size: 35px;
 }
 
-/* line 830, ../scss/custom.scss */
+/* line 831, ../scss/custom.scss */
 a.emaillink {
   float: left;
   display: inline;
@@ -8253,7 +8254,7 @@ a.emaillink {
   padding-top: 4px;
 }
 
-/* line 836, ../scss/custom.scss */
+/* line 837, ../scss/custom.scss */
 input.emaillink {
   float: left;
   width: 183px;
@@ -8263,25 +8264,25 @@ input.emaillink {
 }
 
 /*///////////// YOSEF'S TWEAKS AND OVERRIDES //////////////////*/
-/* line 844, ../scss/custom.scss */
+/* line 845, ../scss/custom.scss */
 .page-programs .row {
   background: none;
 }
 
-/* line 847, ../scss/custom.scss */
+/* line 848, ../scss/custom.scss */
 .page-programs .panel {
   background: #ffffff;
   border-radius: 12px;
   border-color: white;
 }
 
-/* line 854, ../scss/custom.scss */
+/* line 855, ../scss/custom.scss */
 .l-triptych.row {
   border-radius: 5px;
 }
 
 @media (min-width: 950px) {
-  /* line 860, ../scss/custom.scss */
+  /* line 861, ../scss/custom.scss */
   .top-bar {
     position: fixed;
     width: 100%;
@@ -8289,7 +8290,7 @@ input.emaillink {
   }
 }
 /*/////////// BH ///////////////*/
-/* line 867, ../scss/custom.scss */
+/* line 868, ../scss/custom.scss */
 .bh {
   text-align: right;
   padding-right: 1em;
@@ -8304,20 +8305,20 @@ input.emaillink {
 }
 
 @media all and (max-width: 480px) {
-  /* line 878, ../scss/custom.scss */
+  /* line 879, ../scss/custom.scss */
   .bh {
     position: absolute;
     top: -30px;
   }
 }
 /*///////// CIVI DONATE PAGE ///////////*/
-/* line 884, ../scss/custom.scss */
+/* line 885, ../scss/custom.scss */
 .crm-container .crm-section .content {
   margin-left: 40%;
 }
 
 /*//////////// MEERKAT STUFF /////////////*/
-/* line 890, ../scss/custom.scss */
+/* line 891, ../scss/custom.scss */
 div#meerkat-wrap {
   background: rgba(255, 255, 255, 0.93);
   padding: 1em;
@@ -8327,30 +8328,30 @@ div#meerkat-wrap {
   color: #2B9C94;
   min-height: 600px;
 }
-/* line 898, ../scss/custom.scss */
+/* line 899, ../scss/custom.scss */
 div#meerkat-wrap h2 {
   color: #983997;
   font-weight: 700;
   font-size: 36px;
 }
-/* line 903, ../scss/custom.scss */
+/* line 904, ../scss/custom.scss */
 div#meerkat-wrap .field-name-field-meerkat-verbiage {
   font-size: 18px;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-/* line 908, ../scss/custom.scss */
+/* line 909, ../scss/custom.scss */
 div#meerkat-wrap a {
   font-size: 23px;
 }
 
 /*//////// MISC TWEAKS ////////////*/
-/* line 914, ../scss/custom.scss */
+/* line 915, ../scss/custom.scss */
 .alert-box.alert {
   margin-top: 50px;
 }
 
-/* line 918, ../scss/custom.scss */
+/* line 919, ../scss/custom.scss */
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img {
   width: 100%;
 }
