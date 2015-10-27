@@ -932,3 +932,9 @@ input[type="text"], input[type="password"]{
     width: 80%;
     border-radius: 4px;
 }
+
+input[type="email"] {
+    width: 50%;
+    min-width: 300px;
+    border-radius: 4px;
+}
