@@ -8355,3 +8355,14 @@ div#meerkat-wrap a {
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img {
   width: 100%;
 }
+
+/* line 927, ../scss/custom.scss */
+select {
+  width: inherit;
+}
+
+/* line 931, ../scss/custom.scss */
+input[type="text"], input[type="password"] {
+  width: 80%;
+  border-radius: 4px;
+}

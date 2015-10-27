@@ -920,3 +920,15 @@ div#meerkat-wrap{
   width:100%;
 	}
 }
+
+
+///////webform/////
+
+select {
+    width: inherit;
+}
+
+input[type="text"], input[type="password"]{
+    width: 80%;
+    border-radius: 4px;
+}
