@@ -8362,7 +8362,7 @@ select {
 }
 
 /* line 931, ../scss/custom.scss */
-input[type="text"], input[type="password"] {
+.not-front input[type="text"], input[type="password"] {
   width: 80%;
   border-radius: 4px;
 }
