@@ -928,7 +928,7 @@ select {
     width: inherit;
 }
 
-input[type="text"], input[type="password"]{
+.not-front input[type="text"], input[type="password"]{
     width: 80%;
     border-radius: 4px;
 }
@@ -938,3 +938,4 @@ input[type="email"] {
     min-width: 300px;
     border-radius: 4px;
 }
+
