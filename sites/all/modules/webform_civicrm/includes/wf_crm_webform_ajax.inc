@@ -8,7 +8,7 @@
 module_load_include('inc', 'webform_civicrm', 'includes/wf_crm_webform_base');
 
 class wf_crm_webform_ajax extends wf_crm_webform_base {
-  
+
   function __construct() {
     civicrm_initialize();
   }
@@ -77,7 +77,7 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
       if ($_GET['load'] == 'name') {
         if ($_GET['cid'][0] === '-') {
           // HTML hack to get prompt to show up different than search results
-          $data = '<em><i>' . $component['extra']['none_prompt'] . '</i></em>';
+          $data = '<em><i>' . filter_xss($component['extra']['none_prompt']) . '</i></em>';
         }
         else {
           $data = $name;
@@ -91,9 +91,9 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
         // Populate other contact ids for related data
         foreach ($_GET as $k => $v) {
           if (substr($k, 0, 3) == 'cid' && $v && is_numeric($v)) {
-            $this->id['cid'][substr($k, 3)] = (int) $v;
+            $this->ent['contact'][substr($k, 3)]['id'] = (int) $v;
           }
-          $this->id['cid'][$c] = (int) $_GET['cid'];
+          $this->ent['contact'][$c]['id'] = (int) $_GET['cid'];
         }
         $contact = $this->loadContact($c, $component['extra']['hide_fields']);
         $states = $countries = array();
@@ -108,7 +108,7 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
               $val = array('val' => $contact[$table][$n][$field]);
               // Retrieve file info
               if ($dataType === 'File') {
-                $val = $this->getFileInfo($field, $val['val']);
+                $val = $this->getFileInfo($field, $val['val'], $ent, $n);
               }
               // Explode multivalue strings
               elseif (is_string($val['val']) && strpos($val['val'], $sp) !== FALSE) {

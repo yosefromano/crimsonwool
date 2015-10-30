@@ -49,12 +49,7 @@ var wfCivi = (function ($, D) {
   pub.existingInit = function (field, num, nid, path, toHide) {
     var cid, ret = null;
     if (field.length) {
-      if (field.is('select')) {
-        cid = $('option:selected', field).val();
-      }
-      else {
-        cid = field.attr('defaultValue');
-      }
+      cid = field.val();
       if (!cid || cid.charAt(0) !== '-') {
         resetFields(num, nid, false, 'hide', toHide);
       }
@@ -83,7 +78,7 @@ var wfCivi = (function ($, D) {
 
   pub.initFileField = function(field, info) {
     info = info || {};
-    var container = $('div.webform-component.[class$="--' + field.replace(/_/g, '-') + '"] div.civicrm-enabled');
+    var container = $('div.webform-component[class$="--' + field.replace(/_/g, '-') + '"] div.civicrm-enabled');
     if (container.length > 0) {
       if ($('.file', container).length > 0) {
         if ($('.file', container).is(':visible')) {
@@ -98,12 +93,12 @@ var wfCivi = (function ($, D) {
         $(':visible', container).hide();
         container.append('<input type="submit" class="form-submit ajax-processed civicrm-remove-file" value="' + Drupal.t('Change') + '" onclick="wfCivi.clearFileField(\'' + field + '\'); return false;">');
       }
-      container.prepend('<span class="civicrm-file-icon"><img alt="' + Drupal.t('File') + '" src="' + info.icon + '" /> ' + (info.name || '') + '</span>');
+      container.prepend('<span class="civicrm-file-icon"><img alt="' + Drupal.t('File') + '" src="' + info.icon + '" /> ' + (info.name ? ('<a href="'+ info.file_url+ '" target="_blank">'+info.name +'</a>') : '') + '</span>');
     }
   };
 
   pub.clearFileField = function(field) {
-    var container = $('div.webform-component.[class$="--' + field.replace(/_/g, '-') + '"] div.civicrm-enabled');
+    var container = $('div.webform-component[class$="--' + field.replace(/_/g, '-') + '"] div.civicrm-enabled');
     $('.civicrm-remove-file, .civicrm-file-icon', container).remove();
     $('input[type=file], input[type=submit]', container).show();
   };
@@ -128,7 +123,12 @@ var wfCivi = (function ($, D) {
           if (n[5] === 'country') {
             $('select.civicrm-processed', this).val(setting.defaultCountry).trigger('change', 'webform_civicrm:reset');
           } else {
-            $(':input', this).not(':radio, :checkbox, :button, :submit').val('').trigger('change', 'webform_civicrm:reset');
+            $(':input', this).not(':radio, :checkbox, :button, :submit, :file, .form-file').each(function() {
+              if (this.id && $(this).val() != '') {
+                $(this).val('');
+                $(this).trigger('change', 'webform_civicrm:reset');
+              }
+            });
             $('.civicrm-remove-file', this).click();
             $('input:checkbox, input:radio', this).each(function() {
               $(this).removeAttr('checked').trigger('change', 'webform_civicrm:reset');
@@ -137,6 +137,7 @@ var wfCivi = (function ($, D) {
         }
         var type = (n[6] === 'name') ? 'name' : n[4];
         if ($.inArray(type, toHide) >= 0) {
+          $(':input', $el).webformProp('disabled', op === 'hide');
           $el[op](speed, function() {$el[op];});
         }
       }
@@ -162,7 +163,7 @@ var wfCivi = (function ($, D) {
         val = this.val;
       // Handle file fields
       if (this.data_type === 'File') {
-        pub.initFileField(fid, val);
+        pub.initFileField(fid, this);
         return;
       }
       // First try to find a single element - works for textfields and selects
@@ -193,7 +194,7 @@ var wfCivi = (function ($, D) {
           // Checkboxes & radios
           else {
             $.each($.makeArray(val), function(k, v) {
-              $(':input[value="'+v+'"]', $wrapper).attr('checked', 'checked').trigger('change', 'webform_civicrm:autofill');
+              $(':input[value="'+v+'"]', $wrapper).webformProp('checked', true).trigger('change', 'webform_civicrm:autofill');
             });
           }
         }
@@ -212,7 +213,7 @@ var wfCivi = (function ($, D) {
   }
 
   function populateStates(stateSelect, countryId) {
-    $(stateSelect).attr('disabled', 'disabled');
+    $(stateSelect).webformProp('disabled', true);
     if (stateProvinceCache[countryId]) {
       fillOptions(stateSelect, stateProvinceCache[countryId]);
     }
@@ -277,7 +278,7 @@ var wfCivi = (function ($, D) {
     var fields = $(item).parents('form.webform-client-form').find('[name*="['+(name.replace('master_id', ''))+'"]').not('[name*=location_type_id]').not('[name*=master_id]').not('[type="hidden"]');
     if (action === 'hide') {
       fields.parent().hide(speed, function() {$(this).css('display', 'none');});
-      fields.attr('disabled', 'disabled');
+      fields.webformProp('disabled', true);
     }
     else {
       fields.removeAttr('disabled');
@@ -310,12 +311,11 @@ var wfCivi = (function ($, D) {
     var value = $el.val(),
       classes = $el.attr('class').replace('text', 'select'),
       id = $el.attr('id'),
-      $form = $el.closest('form'),
-      disabled = $el.is(':disabled') ? ' disabled="disabled"' : '';
+      $form = $el.closest('form');
     if (value !== '') {
       classes = classes + ' has-default';
     }
-    $el.replaceWith('<select id="'+$el.attr('id')+'" name="'+$el.attr('name')+'"' + disabled + ' class="' + classes + ' civicrm-processed" data-val="' + value + '"></select>');
+    $el.replaceWith('<select id="'+$el.attr('id')+'" name="'+$el.attr('name')+'"' + ' class="' + classes + ' civicrm-processed" data-val="' + value + '"></select>');
     return $('#' + id, $form).change(function() {
       $(this).attr('data-val', '');
     });
@@ -335,20 +335,24 @@ var wfCivi = (function ($, D) {
         var key = parseName($el.attr('name'));
         var countrySelect = $el.parents('form').find('.civicrm-enabled[name*="['+(key.replace('state_province', 'country'))+']"]');
         var $county = $el.parents('form').find('.civicrm-enabled[name*="['+(key.replace('state_province', 'county'))+']"]');
-        $el = makeSelect($el);
-        $county.length && ($county = makeSelect($county));
+        if (!$el.attr('readonly')) {
+          $el = makeSelect($el);
+          if ($county.length && !$county.attr('readonly')) {
+            $county = makeSelect($county);
+            $el.change(populateCounty);
+          }
 
-        var countryVal = 'default';
-        if (countrySelect.length === 1) {
-          countryVal = $(countrySelect).val();
-        }
-        else if (countrySelect.length > 1) {
-          countryVal = $(countrySelect).filter(':checked').val();
-        }
-        countryVal || (countryVal = '');
+          var countryVal = 'default';
+          if (countrySelect.length === 1) {
+            countryVal = $(countrySelect).val();
+          }
+          else if (countrySelect.length > 1) {
+            countryVal = $(countrySelect).filter(':checked').val();
+          }
+          countryVal || (countryVal = '');
 
-        $county.length && $el.change(populateCounty);
-        populateStates($el, countryVal);
+          populateStates($el, countryVal);
+        }
       });
 
       // Add handler to country field to trigger ajax refresh of corresponding state/prov
