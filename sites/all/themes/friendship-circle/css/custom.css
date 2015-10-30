@@ -8368,8 +8368,7 @@ select {
 }
 
 /* line 936, ../scss/custom.scss */
-input[type="email"] {
-  width: 50%;
-  min-width: 262.391px;
+.not-front input[type="email"] {
+  width: 80%;
   border-radius: 4px;
 }

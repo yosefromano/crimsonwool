@@ -931,11 +931,10 @@ select {
 .not-front input[type="text"], input[type="password"]{
     width: 80%;
     border-radius: 4px;
-}
+	}
 
-input[type="email"] {
-    width: 50%;
-    min-width: 262.391px;
+.not-front input[type="email"] {
+    width: 80%;
     border-radius: 4px;
 }
 
