@@ -8207,12 +8207,17 @@ h1.hp-sitename {
 }
 @media all and (max-width: 480px) {
   /* line 801, ../scss/custom.scss */
+  .socialicons {
+    padding-right: 0px;
+  }
+
+  /* line 804, ../scss/custom.scss */
   .social {
     padding-left: 0;
     overflow: visible;
   }
 
-  /* line 805, ../scss/custom.scss */
+  /* line 808, ../scss/custom.scss */
   .newsletter-signup {
     height: 70px;
     border-radius: 0;
@@ -8221,22 +8226,22 @@ h1.hp-sitename {
     max-width: 100%;
   }
 
-  /* line 812, ../scss/custom.scss */
+  /* line 815, ../scss/custom.scss */
   .columns {
     padding-right: 0;
     padding-left: 0;
   }
 }
-/* line 817, ../scss/custom.scss */
+/* line 820, ../scss/custom.scss */
 .bean-social-media-links {
   float: left;
 }
-/* line 819, ../scss/custom.scss */
+/* line 822, ../scss/custom.scss */
 .bean-social-media-links img {
   padding-bottom: 10px;
 }
 
-/* line 823, ../scss/custom.scss */
+/* line 826, ../scss/custom.scss */
 .signup-blurb {
   float: left;
   padding-right: 18px;
@@ -8246,7 +8251,7 @@ h1.hp-sitename {
   font-size: 35px;
 }
 
-/* line 831, ../scss/custom.scss */
+/* line 834, ../scss/custom.scss */
 a.emaillink {
   float: left;
   display: inline;
@@ -8254,7 +8259,7 @@ a.emaillink {
   padding-top: 4px;
 }
 
-/* line 837, ../scss/custom.scss */
+/* line 840, ../scss/custom.scss */
 input.emaillink {
   float: left;
   width: 183px;
@@ -8264,25 +8269,25 @@ input.emaillink {
 }
 
 /*///////////// YOSEF'S TWEAKS AND OVERRIDES //////////////////*/
-/* line 845, ../scss/custom.scss */
+/* line 848, ../scss/custom.scss */
 .page-programs .row {
   background: none;
 }
 
-/* line 848, ../scss/custom.scss */
+/* line 851, ../scss/custom.scss */
 .page-programs .panel {
   background: #ffffff;
   border-radius: 12px;
   border-color: white;
 }
 
-/* line 855, ../scss/custom.scss */
+/* line 858, ../scss/custom.scss */
 .l-triptych.row {
   border-radius: 5px;
 }
 
 @media (min-width: 950px) {
-  /* line 861, ../scss/custom.scss */
+  /* line 864, ../scss/custom.scss */
   .top-bar {
     position: fixed;
     width: 100%;
@@ -8290,7 +8295,7 @@ input.emaillink {
   }
 }
 /*/////////// BH ///////////////*/
-/* line 868, ../scss/custom.scss */
+/* line 871, ../scss/custom.scss */
 .bh {
   text-align: right;
   padding-right: 1em;
@@ -8305,20 +8310,20 @@ input.emaillink {
 }
 
 @media all and (max-width: 480px) {
-  /* line 879, ../scss/custom.scss */
+  /* line 882, ../scss/custom.scss */
   .bh {
     position: absolute;
     top: -30px;
   }
 }
 /*///////// CIVI DONATE PAGE ///////////*/
-/* line 885, ../scss/custom.scss */
+/* line 888, ../scss/custom.scss */
 .crm-container .crm-section .content {
   margin-left: 40%;
 }
 
 /*//////////// MEERKAT STUFF /////////////*/
-/* line 891, ../scss/custom.scss */
+/* line 894, ../scss/custom.scss */
 div#meerkat-wrap {
   background: rgba(255, 255, 255, 0.93);
   padding: 1em;
@@ -8328,46 +8333,46 @@ div#meerkat-wrap {
   color: #2B9C94;
   min-height: 600px;
 }
-/* line 899, ../scss/custom.scss */
+/* line 902, ../scss/custom.scss */
 div#meerkat-wrap h2 {
   color: #983997;
   font-weight: 700;
   font-size: 36px;
 }
-/* line 904, ../scss/custom.scss */
+/* line 907, ../scss/custom.scss */
 div#meerkat-wrap .field-name-field-meerkat-verbiage {
   font-size: 18px;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-/* line 909, ../scss/custom.scss */
+/* line 912, ../scss/custom.scss */
 div#meerkat-wrap a {
   font-size: 23px;
 }
 
 /*//////// MISC TWEAKS ////////////*/
-/* line 915, ../scss/custom.scss */
+/* line 918, ../scss/custom.scss */
 .alert-box.alert {
   margin-top: 50px;
 }
 
-/* line 919, ../scss/custom.scss */
+/* line 922, ../scss/custom.scss */
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img {
   width: 100%;
 }
 
-/* line 927, ../scss/custom.scss */
+/* line 930, ../scss/custom.scss */
 select {
   width: inherit;
 }
 
-/* line 931, ../scss/custom.scss */
+/* line 934, ../scss/custom.scss */
 .not-front input[type="text"], input[type="password"] {
   width: 80%;
   border-radius: 4px;
 }
 
-/* line 936, ../scss/custom.scss */
+/* line 939, ../scss/custom.scss */
 .not-front input[type="email"] {
   width: 80%;
   border-radius: 4px;

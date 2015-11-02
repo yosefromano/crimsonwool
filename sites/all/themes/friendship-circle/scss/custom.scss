@@ -798,7 +798,10 @@ min-height:220px;
   }
 }
 @media all and (max-width:480px){
- .social{
+  .socialicons {
+  padding-right: 0px;
+    }
+  .social{
   padding-left:0;
   overflow:visible;
 	}
