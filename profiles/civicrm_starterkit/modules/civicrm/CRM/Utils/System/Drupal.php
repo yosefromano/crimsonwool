@@ -501,7 +501,7 @@ AND    u.status = 1
     }
     // load drupal bootstrap
     chdir($cmsPath);
-    if(!DRUPAL_ROOT) {
+    if(!defined('DRUPAL_ROOT')) {
       define('DRUPAL_ROOT', $cmsPath);
     }
 	
