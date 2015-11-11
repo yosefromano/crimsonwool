@@ -1,0 +1,21 @@
+My Hacks
+
+
+////////CIVICRM////////
+
+File:civicrm/civicrm.config.php'
+Change: Forgot which changes were made
+
+
+File:crm/utlis/system/drupal.php
+Change: Forgot which changes were made
+
+File:extern/ipn.php
+Change:
+Added this code at the top
+ini_set('session.save_handler', 'files');
+
+
+////////Webform////////
+File:webform.module
+Change: commented out the line "Partial form found"
