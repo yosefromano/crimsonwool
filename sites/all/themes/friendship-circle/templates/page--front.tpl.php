@@ -96,7 +96,7 @@ echo $site_slogan;
       <div class="newsletter-signup">
         <div class="signup-blurb"><i class="fa fa-envelope"></i></div>
         <a href="#" data-reveal-id="myModal2" class="emaillink">
-        <input type="text" value="JOIN OUR NEWSLETTER" size="3" max-length-"3" class="emaillink">
+        <input type="text" value="JOIN OUR NEWSLETTER" size="20" max-length-"20" class="emaillink">
         </a>
       <?php if (!empty($page['social'])): ?>
 	  <div class="socialicons">
