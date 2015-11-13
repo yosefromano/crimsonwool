@@ -927,6 +927,11 @@ div#meerkat-wrap{
 
 ///////webform/////
 
+.form-managed-file .form-submit{
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
 @media all and (min-width:768px){
 select {
     width: inherit;
@@ -934,8 +939,7 @@ select {
 }
 
  
- input[type="text"], 
- input[type="password"], 
+ input[type="text"],  
  input[type="date"], 
  input[type="datetime"], 
  input[type="datetime-local"], 
@@ -954,6 +958,10 @@ select {
 	
  }
  
+  input[type="password"] {
+  width: initial;
+  }
+  
  @media all and (max-width:480px){
 	 input[type="text"], 
 	 input[type="password"], 
@@ -987,3 +995,14 @@ nav.top-bar.expanded {
 .top-bar-section ul li > a {
     background: #9e3b9d;
 }
+
+.crm-container.crm-public .select2-container .select2-choice {
+    padding: 0px 5px 5px 8px !important;
+}
+
+
+
+
+
+
+
