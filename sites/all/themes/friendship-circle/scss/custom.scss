@@ -915,9 +915,15 @@ div#meerkat-wrap{
 }
 
 /*//////// MISC TWEAKS ////////////*/
-.alert-box.alert {
+.alert-box {
     margin-top: 50px;
 }
+
+.reveal-modal .alert-box {
+    margin-top: 0px;
+}
+
+
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block{
  img{
   width:100%;
