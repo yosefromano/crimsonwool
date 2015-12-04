@@ -177,7 +177,7 @@ font-size: 23px;
 }
 a,
 a:visited{
- color:$purple;
+ color:#858585;
 }	
 a:hover{
  color:gray;
@@ -716,10 +716,10 @@ min-height:220px;
 	li{
 	 font-size:14px;
 	  a{
-		 color:#e2e2e2;
+		 color:#333;
 		 }
 		a:visited{
-		 color:#e2e2e2;
+		 color:#858585;
 		 }
 		a:hover{
 		 color:$purple;
@@ -812,10 +812,7 @@ min-height:220px;
   width:100%;
   max-width:100%;
   }
-.columns{
-	  padding-right:0;
-	  padding-left:0;
-  }
+
 }
 .bean-social-media-links {
   float: left;
