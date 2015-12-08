@@ -102,37 +102,6 @@ function fc_homepage_callouts_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-homepage_callout-field_callout_cta'
-  $field_instances['bean-homepage_callout-field_callout_cta'] = array(
-    'bundle' => 'homepage_callout',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'settings' => array(),
-        'type' => 'hidden',
-        'weight' => 6,
-      ),
-    ),
-    'ds_extras_field_template' => '',
-    'entity_type' => 'bean',
-    'field_name' => 'field_callout_cta',
-    'label' => 'Callout CTA',
-    'required' => 0,
-    'settings' => array(
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 0,
-      'module' => 'field_collection',
-      'settings' => array(),
-      'type' => 'field_collection_embed',
-      'weight' => 15,
-    ),
-  );
-
   // Exported field_instance: 'bean-homepage_callout-field_page_path'
   $field_instances['bean-homepage_callout-field_page_path'] = array(
     'bundle' => 'homepage_callout',
@@ -203,83 +172,10 @@ function fc_homepage_callouts_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'field_collection_item-field_callout_cta-field_button_text'
-  $field_instances['field_collection_item-field_callout_cta-field_button_text'] = array(
-    'bundle' => 'field_callout_cta',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 0,
-      ),
-    ),
-    'ds_extras_field_template' => '',
-    'entity_type' => 'field_collection_item',
-    'field_name' => 'field_button_text',
-    'label' => 'Button Text',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 1,
-    ),
-  );
-
-  // Exported field_instance: 'field_collection_item-field_callout_cta-field_button_url'
-  $field_instances['field_collection_item-field_callout_cta-field_button_url'] = array(
-    'bundle' => 'field_callout_cta',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'above',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-    ),
-    'ds_extras_field_template' => '',
-    'entity_type' => 'field_collection_item',
-    'field_name' => 'field_button_url',
-    'label' => 'Button URL',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 2,
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Background Image');
-  t('Button Text');
-  t('Button URL');
   t('Callout Blurb');
-  t('Callout CTA');
   t('Page Path');
   t('Word');
 
