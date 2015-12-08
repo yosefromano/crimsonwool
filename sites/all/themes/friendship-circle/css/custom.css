@@ -7386,7 +7386,6 @@ a.th {
 .light-blue-bg .block-bean-donate h2,
 .light-blue-bg .bean-homepage-callout h2 {
   color: #FFFFFF;
-  text-align: center;
 }
 /* line 111, ../scss/custom.scss */
 .light-blue-bg .callout-blurb {
@@ -7881,11 +7880,11 @@ margin-top: 300px;
 .block-bean-get-involved h2,
 .block-bean-volunteer-0 h2 {
   color: #FFFFFF;
-  margin-left: 10px;
   font-size: 25px;
   margin: 0 10px 8px 0;
   position: relative;
   font-weight: 400;
+  padding-left: 15px;
 }
 /* line 524, ../scss/custom.scss */
 .block-bean-join img,

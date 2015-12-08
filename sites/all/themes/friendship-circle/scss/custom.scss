@@ -105,7 +105,7 @@ background-image: linear-gradient(to top, #1BC9BC 15%, #00A79C 100%);
 		.block-bean-donate h2,
 		.bean-homepage-callout h2{
 		 color:$white;
-		 text-align:center;
+		
 		 
 		 }
 		.callout-blurb{
@@ -514,12 +514,12 @@ margin-top: 300px;
 .block-bean-volunteer-0{
  
 	 h2  {
-	  color:$white;
-    margin-left: 10px;
+	color:$white;
     font-size: 25px;
     margin: 0 10px 8px 0;
-		position:relative;
-		font-weight:400;
+	position:relative;
+	font-weight:400;
+	padding-left:15px;
    }
 	 img{
 	  border:3px solid $white;
