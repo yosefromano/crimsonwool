@@ -17,7 +17,6 @@ function fc_content_types_uuid_features_default_terms() {
     'weight' => 0,
     'uuid' => 'df88574c-7bd1-443b-9747-f0fa255c9080',
     'vocabulary_machine_name' => 'page_type',
-    'url_alias' => array(),
   );
   return $terms;
 }
