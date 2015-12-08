@@ -137,47 +137,11 @@ function fc_homepage_callouts_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-homepage_callout-field_word'
-  $field_instances['bean-homepage_callout-field_word'] = array(
-    'bundle' => 'homepage_callout',
-    'default_value' => NULL,
-    'deleted' => 0,
-    'description' => '',
-    'display' => array(
-      'default' => array(
-        'label' => 'hidden',
-        'module' => 'text',
-        'settings' => array(),
-        'type' => 'text_default',
-        'weight' => 1,
-      ),
-    ),
-    'ds_extras_field_template' => '',
-    'entity_type' => 'bean',
-    'field_name' => 'field_word',
-    'label' => 'Word',
-    'required' => 0,
-    'settings' => array(
-      'text_processing' => 0,
-      'user_register_form' => FALSE,
-    ),
-    'widget' => array(
-      'active' => 1,
-      'module' => 'text',
-      'settings' => array(
-        'size' => 60,
-      ),
-      'type' => 'text_textfield',
-      'weight' => 11,
-    ),
-  );
-
   // Translatables
   // Included for use with string extractors like potx.
   t('Background Image');
   t('Callout Blurb');
   t('Page Path');
-  t('Word');
 
   return $field_instances;
 }
