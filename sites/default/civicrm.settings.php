@@ -100,7 +100,7 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
 	    global $civicrm_setting;
 	     $civicrm_setting['Directory Preferences']['uploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/upload/';
 	     $civicrm_setting['Directory Preferences']['customFileUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/custom/';
-	     $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/persist/contribute/';
+	     $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/';
 	     $civicrm_setting['Directory Preferences']['extensionsDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/all/extensions/';
 		 $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = $base_url . '/profiles/civicrm_starterkit/modules/civicrm/';
 
