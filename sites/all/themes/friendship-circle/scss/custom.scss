@@ -966,6 +966,10 @@ select {
   border-radius: 4px;
   }
   
+  .webform-component-textarea {
+      max-width: 500px;
+  }
+  
  @media all and (max-width:480px){
 	 input[type="text"], 
 	 input[type="password"], 
@@ -985,6 +989,7 @@ select {
 		 width: 100%;
  }
 }
+
 ///// nav top bar/////
 
 nav.top-bar.expanded {
