@@ -1,0 +1,32 @@
+/*Civi edits*/
+
+#branding {
+    background-color: #22B573 !important;
+}
+
+#crm-container .widget-controls {
+    background-color: #22B573 !important;
+	border-radius:2px !important;
+}
+
+#crm-container .widget-header {
+    background: #22B573 none repeat scroll 0 0 !important;
+    color: white !important;
+
+}
+
+#branding h1.page-title {
+    color: white !important;
+}
+
+	
+.crm-container div#alpha-filter  {
+	    background: #22B573 none repeat scroll 0 0 !important;
+	    color: white !important;
+	}
+	
+.crm-container #alpha-filter a {
+	    color: #EBFF00 !important;
+	    font-weight: normal;
+	}
+	

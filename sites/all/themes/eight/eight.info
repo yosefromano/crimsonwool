@@ -7,4 +7,6 @@ engine = phptemplate
 base theme = seven
 
 stylesheets[all][] = css/eight.css
+stylesheets[all][] = css/extra.css
+
 

@@ -1,0 +1,12 @@
+name = Nine
+description = Sub-theme of eight
+
+
+core = 7.x
+engine = phptemplate
+base theme = eight
+
+stylesheets[all][] = css/nine.css
+
+
+

@@ -1,0 +1,632 @@
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700);
+/* line 3, ../scss/custom.scss */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-weight: 300;
+}
+
+/* line 9, ../scss/custom.scss */
+body {
+  font-family: 'Source Sans Pro', sans-serif !important;
+  color: white;
+  font-weight: 300;
+}
+
+/* line 14, ../scss/custom.scss */
+body ::-webkit-input-placeholder {
+  /* WebKit browsers */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-weight: 300;
+}
+
+/* line 20, ../scss/custom.scss */
+body :-moz-placeholder {
+  /* Mozilla Firefox 4 to 18 */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  opacity: 1;
+  font-weight: 300;
+}
+
+/* line 27, ../scss/custom.scss */
+body ::-moz-placeholder {
+  /* Mozilla Firefox 19+ */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  opacity: 1;
+  font-weight: 300;
+}
+
+/* line 34, ../scss/custom.scss */
+body :-ms-input-placeholder {
+  /* Internet Explorer 10+ */
+  font-family: 'Source Sans Pro', sans-serif;
+  color: white;
+  font-weight: 300;
+}
+
+/* background: white;*/
+/* line 42, ../scss/custom.scss */
+a {
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* line 47, ../scss/custom.scss */
+.wrapper {
+  margin: 0;
+  background-image: -webkit-gradient(linear, right bottom, left top, color-stop(0, #097D47), color-stop(1, #24B574));
+  background-image: -o-linear-gradient(left top, #097D47 0%, #24B574 100%);
+  background-image: -moz-linear-gradient(left top, #097D47 0%, #24B574 100%);
+  background-image: -webkit-linear-gradient(left top, #097D47 0%, #24B574 100%);
+  background-image: -ms-linear-gradient(left top, #097D47 0%, #24B574 100%);
+  background-image: linear-gradient(to left top, #097d47 0%, #24b574 100%);
+  position: absolute;
+  top: 9%;
+  left: 0;
+  width: 100%;
+  min-height: 490px;
+  overflow: hidden;
+  padding-bottom: 1em;
+}
+
+/* line 65, ../scss/custom.scss */
+.cloud-logo {
+  background-image: url(../images/csuitelogo.png);
+  background-size: 200px;
+  width: 100%;
+  height: 146px;
+  background-repeat: no-repeat;
+  z-index: 1200;
+  background-position-x: 50%;
+}
+
+/*original .wrapper*/
+/*.wrapper {
+	margin:0;
+    background: #50a3a2;
+    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    margin-top: -200px;
+    overflow: hidden;
+}*/
+/* line 91, ../scss/custom.scss */
+.wrapper.form-success .container h1 {
+  -webkit-transform: translateY(85px);
+  -ms-transform: translateY(85px);
+  transform: translateY(85px);
+}
+
+/* line 97, ../scss/custom.scss */
+.region.region-content {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 0 0 15px 0;
+  text-align: center;
+}
+
+/* line 103, ../scss/custom.scss */
+.region.region-content h1 {
+  font-size: 40px;
+  -webkit-transition-duration: 1s;
+  transition-duration: 1s;
+  -webkit-transition-timing-function: ease-in-put;
+  transition-timing-function: ease-in-put;
+  font-weight: 200;
+}
+
+/* line 112, ../scss/custom.scss */
+.description {
+  display: none;
+}
+
+/* line 116, ../scss/custom.scss */
+form#user-login {
+  padding: 20px 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* line 121, ../scss/custom.scss */
+#user-login label {
+  position: relative;
+  width: 100%;
+  /*top: 36px;*/
+  text-align: center;
+  color: white;
+}
+
+/* line 128, ../scss/custom.scss */
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+  background-color: #ffffff !important;
+  background-image: none !important;
+  color: #45AD84 !important;
+}
+
+/* line 133, ../scss/custom.scss */
+input:-webkit-autofill,
+form#user-login input,
+.form-text {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 250px;
+  border-radius: 3px;
+  padding: 10px 15px;
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 21px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+  font-family: 'Source Sans Pro', sans-serif;
+  font-weight: 400;
+  margin-bottom: 2em;
+}
+
+/* line 157, ../scss/custom.scss */
+.password-strength {
+  width: 17em;
+  float: none;
+  margin-top: 1.4em;
+  text-align: center;
+  width: 100%;
+}
+
+/* line 164, ../scss/custom.scss */
+div#edit-actions input#edit-submit {
+  background-color: #ffffff;
+  color: #45AD84;
+}
+
+/* line 169, ../scss/custom.scss */
+div#edit-actions {
+  margin-top: 4em;
+}
+
+/* line 172, ../scss/custom.scss */
+form#user-login input:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* line 175, ../scss/custom.scss */
+form#user-login input:focus {
+  background-color: white;
+  width: 300px;
+  color: #45AD84;
+}
+
+/* line 180, ../scss/custom.scss */
+form#user-login button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #44AA7C;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+
+/* line 196, ../scss/custom.scss */
+form#user-login button:hover {
+  background-color: #f5f7f9;
+}
+
+/* line 200, ../scss/custom.scss */
+.bg-bubbles {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* line 208, ../scss/custom.scss */
+.bg-bubbles li {
+  position: absolute;
+  list-style: none;
+  display: block;
+  width: 40px;
+  height: 40px;
+  background-color: rgba(255, 255, 255, 0.15);
+  bottom: -160px;
+  -webkit-animation: square 25s infinite;
+  animation: square 25s infinite;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+}
+
+/* line 221, ../scss/custom.scss */
+.bg-bubbles li:nth-child(1) {
+  left: 10%;
+}
+
+/* line 224, ../scss/custom.scss */
+.bg-bubbles li:nth-child(2) {
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+  -webkit-animation-duration: 17s;
+  animation-duration: 17s;
+}
+
+/* line 233, ../scss/custom.scss */
+.bg-bubbles li:nth-child(3) {
+  left: 25%;
+  -webkit-animation-delay: 4s;
+  animation-delay: 4s;
+}
+
+/* line 238, ../scss/custom.scss */
+.bg-bubbles li:nth-child(4) {
+  left: 40%;
+  width: 60px;
+  height: 60px;
+  -webkit-animation-duration: 22s;
+  animation-duration: 22s;
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+/* line 246, ../scss/custom.scss */
+.bg-bubbles li:nth-child(5) {
+  left: 70%;
+}
+
+/* line 249, ../scss/custom.scss */
+.bg-bubbles li:nth-child(6) {
+  left: 80%;
+  width: 120px;
+  height: 120px;
+  -webkit-animation-delay: 3s;
+  animation-delay: 3s;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* line 257, ../scss/custom.scss */
+.bg-bubbles li:nth-child(7) {
+  left: 32%;
+  width: 160px;
+  height: 160px;
+  -webkit-animation-delay: 7s;
+  animation-delay: 7s;
+}
+
+/* line 264, ../scss/custom.scss */
+.bg-bubbles li:nth-child(8) {
+  left: 55%;
+  width: 20px;
+  height: 20px;
+  -webkit-animation-delay: 15s;
+  animation-delay: 15s;
+  -webkit-animation-duration: 40s;
+  animation-duration: 40s;
+}
+
+/* line 273, ../scss/custom.scss */
+.bg-bubbles li:nth-child(9) {
+  left: 25%;
+  width: 10px;
+  height: 10px;
+  -webkit-animation-delay: 2s;
+  animation-delay: 2s;
+  -webkit-animation-duration: 40s;
+  animation-duration: 40s;
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+/* line 283, ../scss/custom.scss */
+.bg-bubbles li:nth-child(10) {
+  left: 90%;
+  width: 160px;
+  height: 160px;
+  -webkit-animation-delay: 11s;
+  animation-delay: 11s;
+}
+
+@-webkit-keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+    transform: translateY(-1000px) rotate(600deg);
+  }
+}
+@keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-1000px) rotate(600deg);
+    transform: translateY(-1000px) rotate(600deg);
+  }
+}
+/********************** test for user password page**********/
+/* line 314, ../scss/custom.scss */
+form#user-pass {
+  padding: 20px 0;
+  position: relative;
+  z-index: 2;
+}
+
+/* line 319, ../scss/custom.scss */
+form#user-pass input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.2);
+  width: 250px;
+  border-radius: 3px;
+  padding: 10px 15px;
+  margin: 0 auto 10px auto;
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: white;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+  font-weight: 700;
+}
+
+/* line 338, ../scss/custom.scss */
+form#user-pass input:hover {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* line 341, ../scss/custom.scss */
+form#user-pass input:focus {
+  background-color: white;
+  width: 300px;
+  color: #45AD84;
+}
+
+/* line 346, ../scss/custom.scss */
+form#user-pass button {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #45AD84;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+
+/* line 362, ../scss/custom.scss */
+form#user-pass button:hover {
+  background-color: #f5f7f9;
+}
+
+/*body {
+  background-image: url(../images/gradient.png);
+  width: 90%;
+  margin: 0 auto;
+  color: whitesmoke;
+}
+
+div#block-system-main {
+  border-style: solid;
+  border-radius: 11px;
+  width: 40%;
+  height: 40%;
+  margin: 30%;
+}
+
+
+label {
+  font-weight:200;
+}
+
+.description {
+  text-align: center;
+}
+
+input#edit-submit {
+  font-size: 30px;
+  background: blue;
+  border: 0;
+  border-radius: 8px;
+  color: whitesmoke;
+  padding: 8px 70px;
+}
+
+body.html.not-front.not-logged-in.no-sidebars.page-user{
+    background: #50a3a2;
+    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
+    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 400px;
+    margin-top: -200px;
+    overflow: hidden;
+	
+} */
+/* line 412, ../scss/custom.scss */
+.actions-box {
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* line 417, ../scss/custom.scss */
+a.u-p {
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  padding: 0 .5em;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.28);
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* line 426, ../scss/custom.scss */
+a.u-p:hover {
+  color: #45AD84;
+  background-color: #ffffff;
+}
+
+/* line 431, ../scss/custom.scss */
+label {
+  font-weight: 200;
+  text-align: center;
+  color: white;
+}
+
+/* line 436, ../scss/custom.scss */
+div.password-confirm {
+  float: right;
+  margin-top: 1.5em;
+  visibility: hidden;
+  width: 100%;
+}
+
+/* line 442, ../scss/custom.scss */
+#user-profile-form label {
+  position: relative;
+  /* top: 33px;*/
+}
+
+/* line 446, ../scss/custom.scss */
+#user-profile-form .form-type-radios label {
+  position: relative;
+  top: 0;
+}
+
+/* line 450, ../scss/custom.scss */
+span#user-page-profile-Nam a,
+span#user-page-contact a,
+span#user-page-dashboard a {
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  padding: 0 .5em;
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.28);
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* line 461, ../scss/custom.scss */
+span.user-page-bullet {
+  display: none;
+}
+
+/* line 464, ../scss/custom.scss */
+span#user-page-contact {
+  display: block;
+}
+
+/* line 467, ../scss/custom.scss */
+.page-user-password .actions-box {
+  display: none;
+}
+
+/* line 470, ../scss/custom.scss */
+.page-user-edit-name-and-address input#edit-submit,
+.page-user-reset- input#edit-submit {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: 0;
+  background-color: white;
+  border: 0;
+  padding: 10px 15px;
+  color: #45AD84;
+  border-radius: 3px;
+  width: 250px;
+  cursor: pointer;
+  font-size: 18px;
+  -webkit-transition-duration: 0.25s;
+  transition-duration: 0.25s;
+}
+
+/* line 487, ../scss/custom.scss */
+.page-user-edit-name-and-address input#last_name,
+.page-user-edit-name-and-address input#first_name {
+  color: #000000;
+}
+
+/* line 491, ../scss/custom.scss */
+.page-user-edit-name-and-address #user-profile-form label {
+  top: 0;
+}
+
+/* line 495, ../scss/custom.scss */
+h1, h2, h3, h4, h5, h6 {
+  color: white;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+/* line 501, ../scss/custom.scss */
+.user-page-link a {
+  display: none;
+}
+
+/* line 506, ../scss/custom.scss */
+ul.button-group.round {
+  max-width: 367px;
+  margin: 0 auto;
+}
+/* line 509, ../scss/custom.scss */
+ul.button-group.round .button.secondary {
+  background-color: #149459;
+}
+/* line 512, ../scss/custom.scss */
+ul.button-group.round a {
+  color: white;
+}
+
+/* line 518, ../scss/custom.scss */
+.crm-container .crm-section .label {
+  float: left;
+  width: auto;
+  text-align: right;
+}
+
+/* line 525, ../scss/custom.scss */
+.page-user .row.front {
+  max-width: 650px;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+/* line 533, ../scss/custom.scss */
+.page-user-edit label.in-field-labels-processed {
+  display: block !important;
+}
+
+/* line 538, ../scss/custom.scss */
+form#user-login {
+  text-align: center;
+}

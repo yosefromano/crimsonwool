@@ -1,0 +1,16 @@
+#branding {
+    display:none !important;
+}
+
+#crm-container.crm-public label {
+	    padding-left: 4px !important;
+	
+	}
+.page-civicrm-user #branding {
+    display:block !important;
+}
+@media print{
+	.breadcrumb a{
+		display:none;
+	}
+}
