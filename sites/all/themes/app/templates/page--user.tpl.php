@@ -8,7 +8,9 @@
 	  
 <?php print render($page['content']);?>
 </div>
-
+<div class="actions-box">
+ <a href="/user/password" class="u-p">Request Password</a>
+</div>
 
 	<ul class="bg-bubbles">
 		<li></li>

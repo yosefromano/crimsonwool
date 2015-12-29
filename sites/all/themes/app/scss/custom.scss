@@ -538,3 +538,11 @@ label.in-field-labels-processed{
 form#user-login {
     text-align: center;
 }
+
+form#user-pass {
+    text-align: center;
+}
+
+.logged-in .actions-box {
+    display: none;
+}

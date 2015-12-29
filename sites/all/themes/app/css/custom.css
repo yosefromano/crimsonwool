@@ -630,3 +630,13 @@ ul.button-group.round a {
 form#user-login {
   text-align: center;
 }
+
+/* line 542, ../scss/custom.scss */
+form#user-pass {
+  text-align: center;
+}
+
+/* line 546, ../scss/custom.scss */
+.logged-in .actions-box {
+  display: none;
+}
