@@ -296,6 +296,14 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_DrupalBase {
   }
 
   /**
+   * @inheritDoc
+   */
+  public function mapConfigToSSL() {
+    global $base_url;
+    $base_url = str_replace('http://', 'https://', $base_url);
+  }
+
+  /**
    * Check if a resource url is within the drupal directory and format appropriately
    *
    * @param url (reference)
@@ -325,14 +333,6 @@ class CRM_Utils_System_Drupal extends CRM_Utils_System_DrupalBase {
       $url = substr($url, 0, $q);
     }
     return $internal;
-  }
-
-  /**
-   * @inheritDoc
-   */
-  public function mapConfigToSSL() {
-    global $base_url;
-    $base_url = str_replace('http://', 'https://', $base_url);
   }
 
   /**
@@ -504,7 +504,7 @@ AND    u.status = 1
     if(!defined('DRUPAL_ROOT')) {
       define('DRUPAL_ROOT', $cmsPath);
     }
-	
+
     // For drupal multi-site CRM-11313
     if ($realPath && strpos($realPath, 'sites/all/modules/') === FALSE) {
       preg_match('@sites/([^/]*)/modules@s', $realPath, $matches);
@@ -669,7 +669,7 @@ AND    u.status = 1
       return $url;
     }
 
-    //CRM-7803 -from d7 onward.
+    ///CRM-7803 -from d7 onward.
     $config = CRM_Core_Config::singleton();
     if (function_exists('variable_get') &&  
       function_exists('language_negotiation_get') &&
@@ -795,7 +795,8 @@ AND    u.status = 1
    */
   public function getTimeZoneString() {
     global $user;
-    if (variable_get('configurable_timezones', 1) && $user->uid && strlen($user->timezone)) {
+    // Note that 0 is a valid timezone (GMT) so we use strlen not empty to check.
+    if (variable_get('configurable_timezones', 1) && $user->uid && isset($user->timezone) && strlen($user->timezone)) {
       $timezone = $user->timezone;
     }
     else {
