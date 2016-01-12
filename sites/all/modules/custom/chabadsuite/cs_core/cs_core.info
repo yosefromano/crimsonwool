@@ -1,0 +1,5 @@
+name = CS Core
+core = 7.x
+package = ChabadSuite
+dependencies[] = menu
+features[features_api][] = api:2
