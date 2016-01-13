@@ -268,19 +268,29 @@ $drupal_hash_salt = '';
  */
 # $base_url = 'http://www.example.com';  // NO trailing slash!
 #$base_url = '';
+
+
 if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
   switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
     case 'dev':
+      $env = 'dev';
 #      $base_url = 'http://dev-yoursite.pantheon.io'; // NO trailing slash!
       break;
     case 'test':
+      $env = 'test';
 #      $base_url = 'http://test-yoursite.pantheon.io'; // NO trailing slash!
       break;
     case 'live':
+      $env = 'live';
 #      $base_url = 'http://live-yoursite.pantheon.io'; // NO trailing slash!
       break;
     }
 }
+else {
+  $env = 'local';
+}
+
+$conf['env'] = $env;
 
 /**
  * PHP settings:
