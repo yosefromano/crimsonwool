@@ -589,9 +589,9 @@ $conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
  */
 # $conf['pressflow_smart_start'] = TRUE;
 $databases = array (
-  'default' => 
+  'default' =>
   array (
-    'default' =>  
+    'default' =>
     array (
       'database' => 'fcbeta',
       'username' => 'root',
@@ -603,4 +603,21 @@ $databases = array (
     ),
   ),
 );
+
 ini_set('max_execution_time', 0);
+
+/**
+ * Include an optional site.settings.php. This file is meant to include settings
+ * specific to the site using this upstream.
+ */
+if (is_file(DRUPAL_ROOT . '/sites/default/site.settings.php')) {
+  include(DRUPAL_ROOT . '/sites/default/site.settings.php');
+}
+
+/**
+ * Include an optional local.settings.php. This file is meant to include settings
+ * specific to the current local environment.
+ */
+if (is_file(DRUPAL_ROOT . '/sites/default/local.settings.php')) {
+  include(DRUPAL_ROOT . '/sites/default/local.settings.php');
+}
