@@ -593,23 +593,30 @@ $databases = array (
 
 ini_set('max_execution_time', 0);
 
-if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
+$env = 'unknown';
+
+// All Pantheon environments
+if (defined('PANTHEON_ENVIRONMENT')) {
+
   // Extract Pantheon environmental configuration, used for Domain Access and
   // other file includes
   extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
 
-  // Set our own per-environment variables
-  switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
-    case 'dev':
-      $env = 'dev';
-      break;
-    case 'test':
-      $env = 'test';
-      break;
-    case 'live':
-      $env = 'live';
-      break;
-    }
+  // Try to set our own per-environment variables
+  if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
+
+    switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
+      case 'dev':
+        $env = 'dev';
+        break;
+      case 'test':
+        $env = 'test';
+        break;
+      case 'live':
+        $env = 'live';
+        break;
+      }
+  }
 }
 else {
   $env = 'local';
