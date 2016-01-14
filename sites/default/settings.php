@@ -269,32 +269,6 @@ $drupal_hash_salt = '';
 # $base_url = 'http://www.example.com';  // NO trailing slash!
 #$base_url = '';
 
-
-if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
-
-  // Extract Pantheon environmental configuration, used for Domain Access and
-  // other file includes
-  extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
-
-  // Set our own per-environment variables
-  switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
-    case 'dev':
-      $env = 'dev';
-      break;
-    case 'test':
-      $env = 'test';
-      break;
-    case 'live':
-      $env = 'live';
-      break;
-    }
-}
-else {
-  $env = 'local';
-}
-
-$conf['env'] = $env;
-
 /**
  * PHP settings:
  *
@@ -618,6 +592,30 @@ $databases = array (
 );
 
 ini_set('max_execution_time', 0);
+
+if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
+  // Extract Pantheon environmental configuration, used for Domain Access and
+  // other file includes
+  extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
+
+  // Set our own per-environment variables
+  switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
+    case 'dev':
+      $env = 'dev';
+      break;
+    case 'test':
+      $env = 'test';
+      break;
+    case 'live':
+      $env = 'live';
+      break;
+    }
+}
+else {
+  $env = 'local';
+}
+
+$conf['env'] = $env;
 
 /**
  * Include an optional site.settings.php. This file is meant to include settings
