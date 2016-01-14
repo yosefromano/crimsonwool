@@ -271,18 +271,21 @@ $drupal_hash_salt = '';
 
 
 if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
+
+  // Extract Pantheon environmental configuration, used for Domain Access and
+  // other file includes
+  extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
+
+  // Set our own per-environment variables
   switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
     case 'dev':
       $env = 'dev';
-#      $base_url = 'http://dev-yoursite.pantheon.io'; // NO trailing slash!
       break;
     case 'test':
       $env = 'test';
-#      $base_url = 'http://test-yoursite.pantheon.io'; // NO trailing slash!
       break;
     case 'live':
       $env = 'live';
-#      $base_url = 'http://live-yoursite.pantheon.io'; // NO trailing slash!
       break;
     }
 }
