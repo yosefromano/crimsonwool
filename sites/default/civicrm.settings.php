@@ -93,8 +93,8 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  			* This will not send any email, so ensure this is commented out in production
  			*/
  			define( 'CIVICRM_MAIL_LOG', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/templates_c/mail.log' );
-			
- 		} 
+
+ 		}
 
  		// Add this line only once above any settings overrides
 	    global $civicrm_setting;
@@ -156,10 +156,10 @@ define( 'CIVICRM_UF_DSN'           , 'mysql://pantheon:4a6b55e3842742c79fb228cf2
  *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
  *
  */
- 
+
 // PANTHEON USERS - These settings are overridden above when running on Pantheon.
 // These settings are ONLY included here to remain compatible all other hosts.
- 
+
 define( 'CIVICRM_DSN'          , 'mysql://pantheon:4a6b55e3842742c79fb228cf2862e7ec@dbserver.dev.41a76d31-5266-4752-a603-ca41ce4d26e4.drush.in:10993/pantheon?new_link=true' );
 
 /**
@@ -241,7 +241,7 @@ define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/50442f874ddb4d8e95d1c6d24a
  *
  */
 // define( 'CIVICRM_UF_BASEURL'      , 'http://dev-yoursite.pantheon.io/profiles/civicrm_starterkit/modules/civicrm/install/index.php/' );
- 
+
 /*
  * If you are using any CiviCRM script in the bin directory that
  * requires authentication, then you also need to set this key.
@@ -394,3 +394,11 @@ if ($memLimit >= 0 and $memLimit < 134217728) {
 
 require_once 'CRM/Core/ClassLoader.php';
 CRM_Core_ClassLoader::singleton()->register();
+
+/**
+ * Include an optional civicrm.site.settings.php. This file is meant to include
+ * settings specific to the site using this upstream.
+ */
+if (is_file(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php')) {
+  include(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php');
+}
