@@ -8420,7 +8420,12 @@ input[type="password"] {
     width: 100%;
   }
 }
-/* line 996, ../scss/custom.scss */
+/* line 994, ../scss/custom.scss */
+.node-type-webform {
+  line-height: 1.6;
+}
+
+/* line 1000, ../scss/custom.scss */
 nav.top-bar.expanded {
   background-image: -webkit-gradient(linear, left left, left bottom, color-stop(0.12, #9E3B9D), color-stop(1, #692468), color-stop(1, #894188), color-stop(1, #A55BA4));
   background-image: -o-linear-gradient(left, #9E3B9D 12%, #692468 100%, #894188 100%, #A55BA4 100%);
@@ -8430,12 +8435,12 @@ nav.top-bar.expanded {
   background-image: linear-gradient(to left, #9e3b9d 12%, #692468 100%, #894188 100%, #a55ba4 100%);
 }
 
-/* line 1005, ../scss/custom.scss */
+/* line 1009, ../scss/custom.scss */
 .top-bar-section ul li > a {
   background: #9e3b9d;
 }
 
-/* line 1009, ../scss/custom.scss */
+/* line 1013, ../scss/custom.scss */
 .crm-container.crm-public .select2-container .select2-choice {
   padding: 0px 5px 5px 8px !important;
 }
