@@ -887,7 +887,12 @@ border-radius: 5px;
  margin-left: 40%;
 }
 
-
+/*///////// CIVI Event PAGE ///////////*/
+@media all and (min-width:939px){
+.page-civicrm-event #page-title {
+    margin-top: 2em;
+}
+}
 /*//////////// MEERKAT STUFF /////////////*/
 div#meerkat-wrap{
  background:rgba(255, 255, 255, 0.93);

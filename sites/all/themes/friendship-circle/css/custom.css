@@ -8316,8 +8316,15 @@ input.emaillink {
   margin-left: 40%;
 }
 
+/*///////// CIVI Event PAGE ///////////*/
+@media all and (min-width: 939px) {
+  /* line 892, ../scss/custom.scss */
+  .page-civicrm-event #page-title {
+    margin-top: 2em;
+  }
+}
 /*//////////// MEERKAT STUFF /////////////*/
-/* line 892, ../scss/custom.scss */
+/* line 897, ../scss/custom.scss */
 div#meerkat-wrap {
   background: rgba(255, 255, 255, 0.93);
   padding: 1em;
@@ -8327,52 +8334,52 @@ div#meerkat-wrap {
   color: #2B9C94;
   min-height: 600px;
 }
-/* line 900, ../scss/custom.scss */
+/* line 905, ../scss/custom.scss */
 div#meerkat-wrap h2 {
   color: #983997;
   font-weight: 700;
   font-size: 36px;
 }
-/* line 905, ../scss/custom.scss */
+/* line 910, ../scss/custom.scss */
 div#meerkat-wrap .field-name-field-meerkat-verbiage {
   font-size: 18px;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-/* line 910, ../scss/custom.scss */
+/* line 915, ../scss/custom.scss */
 div#meerkat-wrap a {
   font-size: 23px;
 }
 
 /*//////// MISC TWEAKS ////////////*/
-/* line 916, ../scss/custom.scss */
+/* line 921, ../scss/custom.scss */
 .alert-box {
   margin-top: 50px;
 }
 
-/* line 920, ../scss/custom.scss */
+/* line 925, ../scss/custom.scss */
 .reveal-modal .alert-box {
   margin-top: 0px;
 }
 
-/* line 926, ../scss/custom.scss */
+/* line 931, ../scss/custom.scss */
 .crm-contribution-page-id-2.crm-block.crm-contribution-main-form-block img {
   width: 100%;
 }
 
-/* line 934, ../scss/custom.scss */
+/* line 939, ../scss/custom.scss */
 .form-managed-file .form-submit {
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
 @media all and (min-width: 768px) {
-  /* line 940, ../scss/custom.scss */
+  /* line 945, ../scss/custom.scss */
   select {
     width: inherit;
   }
 }
-/* line 946, ../scss/custom.scss */
+/* line 951, ../scss/custom.scss */
 input[type="text"],
 input[type="date"],
 input[type="datetime"],
@@ -8390,19 +8397,19 @@ textarea {
   border-radius: 4px;
 }
 
-/* line 965, ../scss/custom.scss */
+/* line 970, ../scss/custom.scss */
 input[type="password"] {
   width: initial;
   border-radius: 4px;
 }
 
-/* line 970, ../scss/custom.scss */
+/* line 975, ../scss/custom.scss */
 .webform-component-textarea {
   max-width: 500px;
 }
 
 @media all and (max-width: 480px) {
-  /* line 975, ../scss/custom.scss */
+  /* line 980, ../scss/custom.scss */
   input[type="text"],
   input[type="password"],
   input[type="date"],
@@ -8420,12 +8427,12 @@ input[type="password"] {
     width: 100%;
   }
 }
-/* line 994, ../scss/custom.scss */
+/* line 999, ../scss/custom.scss */
 .node-type-webform {
   line-height: 1.6;
 }
 
-/* line 1000, ../scss/custom.scss */
+/* line 1005, ../scss/custom.scss */
 nav.top-bar.expanded {
   background-image: -webkit-gradient(linear, left left, left bottom, color-stop(0.12, #9E3B9D), color-stop(1, #692468), color-stop(1, #894188), color-stop(1, #A55BA4));
   background-image: -o-linear-gradient(left, #9E3B9D 12%, #692468 100%, #894188 100%, #A55BA4 100%);
@@ -8435,12 +8442,12 @@ nav.top-bar.expanded {
   background-image: linear-gradient(to left, #9e3b9d 12%, #692468 100%, #894188 100%, #a55ba4 100%);
 }
 
-/* line 1009, ../scss/custom.scss */
+/* line 1014, ../scss/custom.scss */
 .top-bar-section ul li > a {
   background: #9e3b9d;
 }
 
-/* line 1013, ../scss/custom.scss */
+/* line 1018, ../scss/custom.scss */
 .crm-container.crm-public .select2-container .select2-choice {
   padding: 0px 5px 5px 8px !important;
 }
