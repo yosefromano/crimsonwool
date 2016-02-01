@@ -8452,7 +8452,9 @@ nav.top-bar.expanded {
   padding: 0px 5px 5px 8px !important;
 }
 
-/* line 1022, ../scss/custom.scss */
-.not-front img.logo {
-  width: 60px;
+@media all and (min-width: 939px) {
+  /* line 1023, ../scss/custom.scss */
+  .not-front img.logo {
+    width: 60px;
+  }
 }
