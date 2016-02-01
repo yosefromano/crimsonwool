@@ -8451,3 +8451,8 @@ nav.top-bar.expanded {
 .crm-container.crm-public .select2-container .select2-choice {
   padding: 0px 5px 5px 8px !important;
 }
+
+/* line 1022, ../scss/custom.scss */
+.not-front img.logo {
+  width: 60px;
+}
