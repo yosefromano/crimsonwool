@@ -1,0 +1,15 @@
+=== CS PATCHES ===
+
+This file is for keeping track of patches applied in the ChabadSuite
+platform code.
+
+When running updates on core/modules/themes, check this file first to see
+if there are patches that need to be re-applied. If needed, update this file
+to reflect that the patch has been updated or is no longer in use.
+
+
+== civicrm (profiles/civicrm_starterkit/modules/civicrm) ==
+
+Skip config cache
+https://github.com/freeform/civicrm-drupal-pantheon/blob/4.6.x/patches/skip-config-cache.patch
+Version of patch used also in patches/skip-config-cache.patch
