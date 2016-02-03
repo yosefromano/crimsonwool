@@ -1,0 +1,18 @@
+<?php
+
+/**
+ * implements hook_schema().
+ */
+function cs_core_schema() {
+  // Create a custom smarty cache table.
+  $schema['cache_smarty'] = drupal_get_schema_unprocessed('system', 'cache');
+  return $schema;
+}
+
+/**
+ * Create custom smarty cache table.
+ */
+function cs_core_update_7001() {
+  $schema['cache_smarty'] = drupal_get_schema_unprocessed('system', 'cache');
+  db_create_table('cache_smarty', $schema['cache_smarty']);
+}
