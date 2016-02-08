@@ -567,62 +567,67 @@ $conf['404_fast_html'] = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML+RDFa 1.0//EN"
  */
 # $conf['allow_authorize_operations'] = FALSE;
 
-/**
- * Smart start:
- *
- * If you would prefer to be redirected to the installation system when a
- * valid settings.php file is present but no tables are installed, remove
- * the leading hash sign below.
- */
-# $conf['pressflow_smart_start'] = TRUE;
-$databases = array (
-  'default' =>
-  array (
-    'default' =>
-    array (
-      'database' => 'fcbeta',
-      'username' => 'root',
-      'password' => 'root',
-      'host' => 'localhost',
-      'port' => '',
-      'driver' => 'mysql',
-      'prefix' => '',
-    ),
-  ),
-);
-
 ini_set('max_execution_time', 0);
 
-$env = 'unknown';
+/**
+ * Figure out what environment we're on
+ */
+
+$env = 'local';
+$on_pantheon = FALSE;
 
 // All Pantheon environments
 if (defined('PANTHEON_ENVIRONMENT')) {
+
+  $on_pantheon = TRUE;
 
   // Extract Pantheon environmental configuration, used for Domain Access and
   // other file includes
   extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
 
-  // Try to set our own per-environment variables
+  // Set our own environment variable
   if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
-
-    switch ($_SERVER['PANTHEON_ENVIRONMENT']) {
-      case 'dev':
-        $env = 'dev';
-        break;
-      case 'test':
-        $env = 'test';
-        break;
-      case 'live':
-        $env = 'live';
-        break;
-      }
+    $env = $_SERVER['PANTHEON_ENVIRONMENT'];
   }
-}
-else {
-  $env = 'local';
 }
 
 $conf['env'] = $env;
+
+/**
+ * Load the current site's information.
+ */
+if (is_file(DRUPAL_ROOT . '/sites/default/site.info.php')) {
+  include(DRUPAL_ROOT . '/sites/default/site.info.php');
+}
+else {
+  $site_info = array(
+    'short_name' => 'default',
+  );
+}
+
+/**
+ * Default local database configuration
+ */
+
+if ($env == 'local') {
+  $databases = array (
+    'default' =>
+    array (
+      'default' =>
+      array (
+        'database' => 'cs_' . $site_info['short_name'],
+        'username' => 'root',
+        'password' => 'root',
+        'host' => 'localhost',
+        'port' => '',
+        'driver' => 'mysql',
+        'prefix' => '',
+      ),
+    ),
+  );
+}
+
+
 
 /**
  * Include an optional site.settings.php. This file is meant to include settings
