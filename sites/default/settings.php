@@ -605,6 +605,8 @@ else {
   );
 }
 
+$conf['site_info'] = $site_info;
+
 /**
  * Default local database configuration
  */
