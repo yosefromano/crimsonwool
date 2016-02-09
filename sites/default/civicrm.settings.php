@@ -50,7 +50,7 @@
  * to update the CiviCRM Resource URL field to your CiviCRM root directory
  * (Administer::System Settings::Resource URLs).
  */
-define( 'CIVICRM_UF'               , 'Drupal'        );
+define('CIVICRM_UF' , 'Drupal');
 
  /**
  * Pantheon Systems:
@@ -59,8 +59,8 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  * http://www.kalamuna.com/news/civicrm-pantheon
  *
  */
- if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
- 	$env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
+if (defined('PANTHEON_ENVIRONMENT')) {
+  $env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
  	if (!empty($env['conf']['pantheon_binding'])) {
  		$pantheon_db = $env['databases']['default']['default'];
  		$pantheon_conf = $env['conf'];
@@ -97,263 +97,60 @@ define( 'CIVICRM_UF'               , 'Drupal'        );
  		}
 
  		// Add this line only once above any settings overrides
-	    global $civicrm_setting;
-	     $civicrm_setting['Directory Preferences']['uploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/upload/';
-	     $civicrm_setting['Directory Preferences']['customFileUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/custom/';
-	     $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/';
-	     $civicrm_setting['Directory Preferences']['extensionsDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/all/extensions/';
-		 $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = $base_url . '/profiles/civicrm_starterkit/modules/civicrm/';
-		 $civicrm_setting['URL Preferences']['imageUploadURL'] = $base_url . '/sites/default/files/';
-		 $civicrm_setting['URL Preferences']['extensionsURL'] = $base_url . '/sites/all/extensions/';
-		 $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false; //disable community msgs
-
+	  global $civicrm_setting;
+	  $civicrm_setting['Directory Preferences']['uploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/upload/';
+	  $civicrm_setting['Directory Preferences']['customFileUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/custom/';
+	  $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/';
+	  $civicrm_setting['Directory Preferences']['extensionsDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/all/extensions/';
+		$civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = $base_url . '/profiles/civicrm_starterkit/modules/civicrm/';
+		$civicrm_setting['URL Preferences']['imageUploadURL'] = $base_url . '/sites/default/files/';
+		$civicrm_setting['URL Preferences']['extensionsURL'] = $base_url . '/sites/all/extensions/';
+		$civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false; //disable community msgs
  	}
+} else {
+  /**
+   * If we are not on Pantheon, we assume we're running locally.
+   */
+  global $conf;
 
- 	// Kalabox2 settings
- 	elseif (strpos($_SERVER['HTTP_HOST'],'kbox') !== false) {
- 		// Set the DB connection string
- 		$db_string = $env['databases']['default']['default']['driver'] . '://' . $env['databases']['default']['default']['username'] . '@';
- 		$db_string .= $env['databases']['default']['default']['host'] .  '/' . $env['databases']['default']['default']['database'] . '?new_link=true';
- 		define( 'CIVICRM_UF_DSN'           , $db_string);
- 		define( 'CIVICRM_DSN'           , $db_string);
- 		global $civicrm_root;
- 		$civicrm_root = '/code/profiles/civicrm_starterkit/modules/civicrm/';
- 		define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/code/sites/default/files/private/civicrm/templates_c/' );
- 		define( 'CIVICRM_UF_BASEURL'      , 'http://' . $_SERVER['HTTP_HOST'] . '/' );
- 	}
+  $db_name = 'cs_' . $conf['site_info']['short_name'];
+  $site_root = getcwd();
 
- } else {
+  define('CIVICRM_UF_DSN', "mysql://root:root@localhost/$db_name?new_link=true");
 
-/**
- * Content Management System (CMS) Datasource:
- *
- * Update this setting with your CMS (Drupal or Joomla) database username, server and DB name.
- * Datasource (DSN) format:
- *      define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
- */
+  define('CIVICRM_DSN', "mysql://root:root@localhost/$db_name?new_link=true");
 
-// PANTHEON USERS - These settings are overridden above when running on Pantheon.
-// These settings are ONLY included here to remain compatible all other hosts.
+  global $civicrm_root;
+  $civicrm_root = $site_root . '/profiles/civicrm_starterkit/modules/civicrm/';
 
-define( 'CIVICRM_UF_DSN'           , 'mysql://pantheon:4a6b55e3842742c79fb228cf2862e7ec@dbserver.dev.41a76d31-5266-4752-a603-ca41ce4d26e4.drush.in:10993/pantheon?new_link=true' );
+  define('CIVICRM_TEMPLATE_COMPILEDIR', $site_root . '/sites/default/files/private/civicrm/smarty/' );
 
-/**
- * CiviCRM Database Settings
- *
- * Database URL (CIVICRM_DSN) for CiviCRM Data:
- * Database URL format:
- *      define( 'CIVICRM_DSN', 'mysql://crm_db_username:crm_db_password@db_server/crm_database?new_link=true');
- *
- * Drupal and CiviCRM can share the same database, or can be installed into separate databases.
- *
- * EXAMPLE: Drupal and CiviCRM running in the same database...
- *      DB Name = drupal, DB User = drupal
- *      define( 'CIVICRM_DSN'         , 'mysql://drupal:YOUR_PASSWORD@localhost/drupal?new_link=true' );
- *
- * EXAMPLE: Drupal and CiviCRM running in separate databases...
- *      Drupal  DB Name = drupal, DB User = drupal
- *      CiviCRM DB Name = civicrm, CiviCRM DB User = civicrm
- *      define( 'CIVICRM_DSN'         , 'mysql://civicrm:YOUR_PASSWORD@localhost/civicrm?new_link=true' );
- *
- */
+  global $base_url, $base_path;
+  define('CIVICRM_UF_BASEURL', $base_url . '/');
+  define('CIVICRM_SITE_KEY', 'a94ef7c7de538900b3e799e2bdba2a88');
 
-// PANTHEON USERS - These settings are overridden above when running on Pantheon.
-// These settings are ONLY included here to remain compatible all other hosts.
+  global $civicrm_setting;
+  $civicrm_setting['Directory Preferences']['uploadDir'] = $site_root . '/sites/default/files/private/civicrm/upload/';
+  $civicrm_setting['Directory Preferences']['customFileUploadDir'] = $site_root . '/sites/default/files/private/civicrm/custom/';
+  $civicrm_setting['Directory Preferences']['imageUploadDir'] = $site_root . '/sites/default/files/private/civicrm/persist/contribute/';
+  $civicrm_setting['Directory Preferences']['extensionsDir'] = $site_root . '/sites/all/extensions/';
+  $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = $base_url . '/profiles/civicrm_starterkit/modules/civicrm/';
+  $civicrm_setting['URL Preferences']['imageUploadURL'] = $base_url . '/sites/default/files/';
+  $civicrm_setting['URL Preferences']['extensionsURL'] = $base_url . '/sites/all/extensions/';
+  $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false; //disable community msgs
 
-define( 'CIVICRM_DSN'          , 'mysql://pantheon:4a6b55e3842742c79fb228cf2862e7ec@dbserver.dev.41a76d31-5266-4752-a603-ca41ce4d26e4.drush.in:10993/pantheon?new_link=true' );
+  define( 'CIVICRM_DOMAIN_ID'      , 1 );
+  define( 'CIVICRM_DB_CACHE_CLASS', 'ArrayCache' );
+}
 
 /**
- * CiviCRM Logging Database
- *
- * Used to point to a different database to use for logging (if desired). If unset defaults to equal CIVICRM_DSN.
- * The CIVICRM_DSN user needs to have the rights to modify the below database schema and be able to write to it.
+ * Include an optional civicrm.site.settings.php. This file is meant to include
+ * settings specific to the site using this upstream.
  */
-define('CIVICRM_LOGGING_DSN', CIVICRM_DSN);
+if (is_file(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php')) {
+  include(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php');
+}
 
-/**
- * File System Paths:
- *
- * $civicrm_root is the file system path on your server where the civicrm
- * code is installed. Use an ABSOLUTE path (not a RELATIVE path) for this setting.
- *
- * CIVICRM_TEMPLATE_COMPILEDIR is the file system path where compiled templates are stored.
- * These sub-directories and files are temporary caches and will be recreated automatically
- * if deleted.
- *
- * IMPORTANT: The COMPILEDIR directory must exist,
- * and your web server must have read/write access to these directories.
- *
- *
- * EXAMPLE - Drupal:
- * If the path to the Drupal home directory is /var/www/htdocs/drupal
- * the $civicrm_root setting would be:
- *      $civicrm_root = '/var/www/htdocs/drupal/sites/all/modules/civicrm/';
- *
- * the CIVICRM_TEMPLATE_COMPILEDIR would be:
- *      define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/htdocs/drupal/sites/default/files/civicrm/templates_c/' );
- *
- * EXAMPLE - Joomla Installations:
- * If the path to the Joomla home directory is /var/www/htdocs/joomla
- * the $civicrm_root setting would be:
- *      $civicrm_root = '/var/www/htdocs/joomla/administrator/components/com_civicrm/civicrm/';
- *
- * the CIVICRM_TEMPLATE_COMPILEDIR would be:
- *      define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/htdocs/joomla/media/civicrm/templates_c/' );
- *
- * EXAMPLE - WordPress Installations:
- * If the path to the WordPress home directory is /var/www/htdocs/wordpress
- * the $civicrm_root setting would be:
- *      $civicrm_root = '/var/www/htdocs/wordpress/wp-content/plugins/civicrm/civicrm/';
- *
- * the CIVICRM_TEMPLATE_COMPILEDIR would be:
- *      define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/var/www/htdocs/wordpress/wp-content/plugins/files/civicrm/templates_c/' );
- *
- */
-
-global $civicrm_root;
-
-$civicrm_root = '/srv/bindings/50442f874ddb4d8e95d1c6d24a9c4943/code//profiles/civicrm_starterkit/modules/civicrm';
-define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/50442f874ddb4d8e95d1c6d24a9c4943/code/sites/default/files/private/civicrm/templates_c/' );
-
-/**
- * Site URLs:
- *
- * This section defines absolute and relative URLs to access the host CMS (Drupal or Joomla) resources.
- *
- * IMPORTANT: Trailing slashes should be used on all URL settings.
- *
- *
- * EXAMPLE - Drupal Installations:
- * If your site's home url is http://www.example.com/drupal/
- * these variables would be set as below. Modify as needed for your install.
- *
- * CIVICRM_UF_BASEURL - home URL for your site:
- *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/drupal/' );
- *
- * EXAMPLE - Joomla Installations:
- * If your site's home url is http://www.example.com/joomla/
- *
- * CIVICRM_UF_BASEURL - home URL for your site:
- * Administration site:
- *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/joomla/administrator/' );
- * Front-end site:
- *      define( 'CIVICRM_UF_BASEURL' , 'http://www.example.com/joomla/' );
- *
- */
-// define( 'CIVICRM_UF_BASEURL'      , 'http://dev-yoursite.pantheon.io/profiles/civicrm_starterkit/modules/civicrm/install/index.php/' );
-
-/*
- * If you are using any CiviCRM script in the bin directory that
- * requires authentication, then you also need to set this key.
- * We recommend using a 16-32 bit alphanumeric/punctuation key.
- * More info at http://wiki.civicrm.org/confluence/display/CRMDOC/Command-line+Script+Configuration
- */
-define( 'CIVICRM_SITE_KEY', 'a94ef7c7de538900b3e799e2bdba2a88' );
-
-/**
- * Enable this constant, if you want to send your email through the smarty
- * templating engine(allows you to do conditional and more complex logic)
- *
- */
-define( 'CIVICRM_MAIL_SMARTY', 0 );
-
-/**
- * This setting logs all emails to a file. Useful for debugging any mail (or civimail) issues.
- * Enabling this setting will not send any email, ensure this is commented out in production
- * The CIVICRM_MAIL_LOG is a debug option which disables MTA (mail transport agent) interaction.
- * You must disable CIVICRM_MAIL_LOG before CiviCRM will talk to your MTA.
- */
-// define( 'CIVICRM_MAIL_LOG', '/srv/bindings/50442f874ddb4d8e95d1c6d24a9c4943/code/sites/default/files/civicrm/templates_c//mail.log' );
-
-define( 'CIVICRM_DOMAIN_ID'      , 1 );
-
-/**
- * Settings to enable external caching using a Memcache server.  This is an
- * advanced feature, and you should read and understand the documentation
- * before you turn it on. We cannot store these settings in the DB since the
- * config could potentially also be cached and we need to avoid an infinite
- * recursion scenario.
- *
- * @see http://civicrm.org/node/126
- */
-
-/**
- * If you have a memcache server configured and want CiviCRM to make use of it,
- * set the following constant.  You should only set this once you have your memcache
- * server up and working, because CiviCRM will not start up if your server is
- * unavailable on the host and port that you specify. By default CiviCRM will use
- * an in-memory array cache
- *
- * To use the php extension memcache  use a value of 'Memcache'
- * To use the php extension memcached use a value of 'Memcached'
- * To use the php extension apc       use a value of 'APCcache'
- * To not use any caching (not recommended), use a value of 'NoCache'
- *
- */
-define( 'CIVICRM_DB_CACHE_CLASS', 'ArrayCache' );
-
-/**
- * Change this to the IP address of your cache server if it is not on the
- * same machine (Unix).
- */
-define( 'CIVICRM_DB_CACHE_HOST', 'localhost' );
-
-/**
- * Change this if you are not using the standard port for memcache or apccache (11211)
- */
-define( 'CIVICRM_DB_CACHE_PORT', 11211 );
-
-/**
- * Items in cache will expire after the number of seconds specified here.
- * Default value is 3600 (i.e., after an hour)
- */
-define( 'CIVICRM_DB_CACHE_TIMEOUT', 3600 );
-
-/**
- * If you are sharing the same memcache instance with more than one CiviCRM
- * database, you will need to set a different value for the following argument
- * so that each copy of CiviCRM will not interfere with other copies.  If you only
- * have one copy of CiviCRM, you may leave this set to ''.  A good value for
- * this if you have two servers might be 'server1_' for the first server, and
- * 'server2_' for the second server.
- */
-define( 'CIVICRM_MEMCACHE_PREFIX', '' );
-
-} // end Pantheon check
-
-/**
- * If you have multilingual site and you are using the "inherit CMS language"
- * configuration option, but wish to, for example, use fr_CA instead of the
- * default fr_FR (for French), set one or more of the constants below to an
- * appropriate regional value.
- */
-// define('CIVICRM_LANGUAGE_MAPPING_FR', 'fr_CA');
-// define('CIVICRM_LANGUAGE_MAPPING_EN', 'en_CA');
-// define('CIVICRM_LANGUAGE_MAPPING_ES', 'es_MX');
-// define('CIVICRM_LANGUAGE_MAPPING_PT', 'pt_BR');
-// define('CIVICRM_LANGUAGE_MAPPING_ZH', 'zh_TW');
-
-/**
- * Native gettext improves performance of localized CiviCRM installations
- * significantly. However, your host must enable the locale (language).
- * On most GNU/Linux, Unix or MacOSX systems, you may view them with
- * the command line by typing: "locale -a".
- *
- * On Debian or Ubuntu, you may reconfigure locales with:
- * # dpkg-reconfigure locales
- *
- * For more information:
- * http://wiki.civicrm.org/confluence/x/YABFBQ
- */
-// define('CIVICRM_GETTEXT_NATIVE', 1);
-
-/**
- * Configure MySQL to throw more errors when encountering unusual SQL expressions.
- *
- * If undefined, the value is determined automatically. For CiviCRM tarballs, it defaults
- * to FALSE; for SVN checkouts, it defaults to TRUE.
- */
-// define( 'CIVICRM_MYSQL_STRICT', TRUE );
 
 /**
  *
@@ -394,11 +191,3 @@ if ($memLimit >= 0 and $memLimit < 134217728) {
 
 require_once 'CRM/Core/ClassLoader.php';
 CRM_Core_ClassLoader::singleton()->register();
-
-/**
- * Include an optional civicrm.site.settings.php. This file is meant to include
- * settings specific to the site using this upstream.
- */
-if (is_file(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php')) {
-  include(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php');
-}
