@@ -160,7 +160,7 @@
         </div>
         <?php endif; ?>
       </div></div>
-    <div class="row">
+    <div class="hp row">
 		    <h1 class="hp-sitename">
 		      <?php
 		$site_name = variable_get('site_name');
