@@ -22,6 +22,12 @@ function cs_core_roles_user_default_roles() {
     'weight' => 5,
   );
 
+  // Exported role: CRON.
+  $roles['CRON'] = array(
+    'name' => 'CRON',
+    'weight' => 7,
+  );
+
   // Exported role: DRUPAL ADMIN.
   $roles['DRUPAL ADMIN'] = array(
     'name' => 'DRUPAL ADMIN',

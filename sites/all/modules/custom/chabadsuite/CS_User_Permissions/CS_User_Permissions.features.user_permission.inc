@@ -29,6 +29,7 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
@@ -66,6 +67,7 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
@@ -77,6 +79,7 @@ function CS_User_Permissions_user_default_permissions() {
   $permissions['access CiviMail subscribe/unsubscribe pages'] = array(
     'name' => 'access CiviMail subscribe/unsubscribe pages',
     'roles' => array(
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'anonymous user' => 'anonymous user',
@@ -1326,6 +1329,7 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
@@ -2463,6 +2467,7 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
@@ -2821,6 +2826,7 @@ function CS_User_Permissions_user_default_permissions() {
   $permissions['view public CiviMail content'] = array(
     'name' => 'view public CiviMail content',
     'roles' => array(
+      'CRON' => 'CRON',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'anonymous user' => 'anonymous user',
