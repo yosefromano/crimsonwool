@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the CS_VID_EVENT feature.
+ */
+
+include_once 'CS_VID_EVENT.features.inc';
