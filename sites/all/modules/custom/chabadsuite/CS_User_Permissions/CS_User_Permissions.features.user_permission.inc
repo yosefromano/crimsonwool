@@ -16,7 +16,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -30,7 +29,6 @@ function CS_User_Permissions_user_default_permissions() {
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
       'CRON' => 'CRON',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -42,7 +40,6 @@ function CS_User_Permissions_user_default_permissions() {
     'name' => 'access CiviContribute',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -54,7 +51,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -68,7 +64,6 @@ function CS_User_Permissions_user_default_permissions() {
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
       'CRON' => 'CRON',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -94,7 +89,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -106,7 +100,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -132,7 +125,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -167,7 +159,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -235,7 +226,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -288,7 +278,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -372,7 +361,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -430,7 +418,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -442,7 +429,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -454,7 +440,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -466,7 +451,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -551,7 +535,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -712,7 +695,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -731,7 +713,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -743,7 +724,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -755,7 +735,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1031,7 +1010,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1101,7 +1079,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1113,7 +1090,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1294,7 +1270,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1305,7 +1280,6 @@ function CS_User_Permissions_user_default_permissions() {
     'name' => 'delete in CiviContribute',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1317,7 +1291,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1330,7 +1303,6 @@ function CS_User_Permissions_user_default_permissions() {
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
       'CRON' => 'CRON',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1342,7 +1314,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1410,7 +1381,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1598,7 +1568,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1610,7 +1579,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1622,7 +1590,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1817,7 +1784,6 @@ function CS_User_Permissions_user_default_permissions() {
     'name' => 'edit contributions',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1829,7 +1795,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1841,7 +1806,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1853,7 +1817,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1944,7 +1907,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2016,7 +1978,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2055,7 +2016,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2067,7 +2027,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2101,7 +2060,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2113,7 +2071,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2135,7 +2092,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2158,7 +2114,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2170,7 +2125,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2191,7 +2145,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2244,7 +2197,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2256,7 +2208,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2269,7 +2220,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2294,7 +2244,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2315,7 +2264,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2355,7 +2303,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2394,7 +2341,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2454,7 +2400,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2468,7 +2413,6 @@ function CS_User_Permissions_user_default_permissions() {
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
       'CRON' => 'CRON',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2481,7 +2425,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2493,7 +2436,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2654,7 +2596,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
     ),
@@ -2719,7 +2660,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2759,7 +2699,6 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
