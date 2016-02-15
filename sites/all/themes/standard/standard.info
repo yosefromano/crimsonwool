@@ -8,7 +8,7 @@ base theme = zurb_foundation
 
 stylesheets[all][] = css/app.css
 stylesheets[all][] = css/standard.css
-stylesheets[all][] = css/civicrm.css
+stylesheets[all][] = css/civistyle.css
 
 ; Foundation JavaScript.
 ; Foundation framework scripts (minified).
