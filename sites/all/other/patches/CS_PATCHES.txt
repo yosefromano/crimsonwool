@@ -27,3 +27,5 @@ Source diff: https://github.com/ojkelly/civicrm-packages/commit/4e88b13ef5263ac8
 Note: Patch slightly modified to use custom cache table 'cache_smarty' instead of 'smarty'.
 Patch used: patches/ojkelly-civicrm-smarty-drupal-cache-2.diff
 
+= Make sure menu is rebuilt in civicrmtheme =
+Patch used: patches/civicrmtheme-rebuild-menu.patch

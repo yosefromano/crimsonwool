@@ -1,0 +1,16 @@
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/drupal/modules/civicrmtheme/civicrmtheme.module b/profiles/civicrm_starterkit/modules/civicrm/drupal/modules/civicrmtheme/civicrmtheme.module
+index 05190e2..20ef1c2 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/drupal/modules/civicrmtheme/civicrmtheme.module
++++ b/profiles/civicrm_starterkit/modules/civicrm/drupal/modules/civicrmtheme/civicrmtheme.module
+@@ -122,11 +122,6 @@ function civicrmtheme_custom_theme() {
+   // Get the menu for above URL.
+   $item = CRM_Core_Menu::get($path);
+ 
+-  if(empty($item)) {
+-    CRM_Core_Menu::store();
+-    $item = CRM_Core_Menu::get($path);
+-  }
+-
+   // Check for public pages
+   // If public page and civicrm public theme is set, apply civicrm public theme
+   if (CRM_Utils_Array::value('is_public', $item)) {
