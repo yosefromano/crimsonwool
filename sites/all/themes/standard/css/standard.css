@@ -7945,7 +7945,7 @@ margin-top: 300px;
 
 /* line 597, ../scss/standard.scss */
 .field.field-name-field-homepage-image.field-type-image.field-label-hidden.field-wrapper img {
-  margin-top: 75px;
+  margin-top: 70px;
 }
 
 @media (max-width: 480px) {
@@ -8396,7 +8396,7 @@ div#meerkat-wrap a {
 /*//////// MISC TWEAKS ////////////*/
 /* line 991, ../scss/standard.scss */
 .alert-box {
-  margin-top: 50px;
+  margin-top: 75px;
 }
 
 /* line 995, ../scss/standard.scss */
