@@ -18,3 +18,4 @@ features[field_base][] = field_link_url
 features[field_instance][] = bean-social_media_links-field_link_image
 features[field_instance][] = bean-social_media_links-field_link_url
 features[formatters][] = social_media_links
+mtime = 1456268151

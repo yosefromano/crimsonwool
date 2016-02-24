@@ -18,7 +18,7 @@ function fc_social_media_links_custom_formatters_defaults() {
   $formatter->description = '';
   $formatter->mode = 'token';
   $formatter->field_types = 'image';
-  $formatter->code = '<a href="http://[bean:field_link_url]"><img src="[bean:field_link_image]"></a>';
+  $formatter->code = '<a href="http://[bean:field_link_url]" target="_blank"><img src="[bean:field_link_image]"></a>';
   $formatter->fapi = '';
   $export['social_media_links'] = $formatter;
 
