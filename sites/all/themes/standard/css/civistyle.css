@@ -38,3 +38,7 @@
 .page-civicrm input[type="radio"]{
     margin: 0 0 0 0;
 }
+
+#crm-container.crm-public input[type="text"]{
+	display:inline;
+}
