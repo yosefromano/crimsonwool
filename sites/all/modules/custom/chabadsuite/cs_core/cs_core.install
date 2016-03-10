@@ -16,3 +16,10 @@ function cs_core_update_7001() {
   $schema['cache_smarty'] = drupal_get_schema_unprocessed('system', 'cache');
   db_create_table('cache_smarty', $schema['cache_smarty']);
 }
+
+/**
+ * Install the strongarm and diff modules.
+ */
+function cs_core_update_7002() {
+  module_enable(array('strongarm', 'diff'));
+}
