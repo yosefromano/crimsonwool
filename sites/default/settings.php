@@ -586,8 +586,8 @@ if (defined('PANTHEON_ENVIRONMENT')) {
   extract(json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE));
 
   // Set our own environment variable
-  if (isset($_SERVER['PANTHEON_ENVIRONMENT'])) {
-    $env = $_SERVER['PANTHEON_ENVIRONMENT'];
+  if (isset($_ENV['PANTHEON_ENVIRONMENT'])) {
+    $env = $_ENV['PANTHEON_ENVIRONMENT'];
   }
 }
 
