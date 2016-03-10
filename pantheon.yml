@@ -1,0 +1,13 @@
+api_version: 1
+
+workflows:
+  sync_code:
+    after:
+      - type: webphp
+        description: Run deploy commands after pushing code
+        script: private/scripts/quicksilver_after_deploy.php
+  deploy:
+    after:
+      - type: webphp
+        description: Run deploy commands after deploying to test or live
+        script: private/scripts/quicksilver_after_deploy.php
