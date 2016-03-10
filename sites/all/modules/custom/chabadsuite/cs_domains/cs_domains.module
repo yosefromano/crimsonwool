@@ -1,7 +1,9 @@
 <?php
 /**
  * @file
- * Drupal needs this blank file.
+ * Code for the CS Domains feature.
  */
+
+include_once 'cs_domains.features.inc';
 
 include "cs_domains.domain_env.inc";
