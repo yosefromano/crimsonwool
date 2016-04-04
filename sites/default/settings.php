@@ -580,6 +580,7 @@ $on_pantheon = FALSE;
 if (defined('PANTHEON_ENVIRONMENT')) {
 
   $on_pantheon = TRUE;
+  $env = 'pantheon';
 
   // Extract Pantheon environmental configuration, used for Domain Access and
   // other file includes
@@ -610,8 +611,7 @@ $conf['site_info'] = $site_info;
 /**
  * Default local database configuration
  */
-
-if ($env == 'local') {
+if (!$on_pantheon) {
   $databases = array (
     'default' =>
     array (
