@@ -29,3 +29,12 @@ Patch used: patches/ojkelly-civicrm-smarty-drupal-cache-2.diff
 
 = Make sure menu is rebuilt in civicrmtheme =
 Patch used: patches/civicrmtheme-rebuild-menu.patch
+
+= Don’t recall, Change for Pantheon platform =
+Patch used: patches/civcrm-config-1.patch
+
+= Don’t recall, Change for Pantheon platform =
+Patch used: patches/system-drupal.patch
+
+= For PayPal civicrm integration on Pantheon =
+Patch used: patches/externipn.patch
