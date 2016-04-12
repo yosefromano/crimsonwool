@@ -129,6 +129,7 @@ z-index: 1501;
 	
 }
 .background-image{
+ background:url(../images/fcberk.jpg);
  background-repeat:no-repeat;
  min-height:1400px;
  width:100%;
@@ -372,19 +373,11 @@ ul#secondary-menu {
     background: rgba(255, 255, 255, 0.2);
 }
 
-
-.hp {
-    padding-bottom: 5em;
-}
-
-.front{
-	h1{
-		margin-top:0;
-	}
-}
-
 /*///upcomming events and video//*/
 
+.light-blue-bg .l-triptych.row {
+    padding-top: 5em;
+}
 
 .block-views-upcoming-events-block-1 .views-label {
     font-size: 1.3em;
@@ -432,18 +425,6 @@ hr {
 	    border-top-right-radius: 6px;
 	}
 	
-	.views-field {
-	    line-height: 1.2;
-	}
-	.views-row.views-row-first {
-	    padding-bottom: 1em;
-	}
-	
-	.views-row.views-row-last {
-	    padding-top: 1em;
-	}
-
-	
 }
 
 
@@ -464,6 +445,21 @@ footer.l-footer.panel{
  margin-top:2em;
  margin-bottom:0;
  position: relative;
+ 
+ .row{
+	 background:none;
+ }
+ 
+ a{
+	 color:white;
+ }
+ 
+ h2{
+	 color:white;
+ }
+ li a:hover {
+     color: #860F0F;
+ }
  }
  
  .panel {
@@ -595,7 +591,7 @@ margin-top: 300px;
 }
 
 .field.field-name-field-homepage-image.field-type-image.field-label-hidden.field-wrapper img {
-    margin-top: 70px;
+    margin-top: 75px;
 }
 
 @media (max-width: 480px){
@@ -753,7 +749,6 @@ h1.hp-slogan{
 	background-image: -ms-linear-gradient(top, #860F0F 0%, #C24646 100%, #E96262 100%);
 	background-image: linear-gradient(to top, #860F0F 0%, #C24646 100%, #E96262 100%);
 	padding-bottom:30px;
-	padding-top: 2em;
 }
 .icon_ctas {
  div.contextual-links-wrapper	{
@@ -989,7 +984,7 @@ div#meerkat-wrap{
 
 /*//////// MISC TWEAKS ////////////*/
 .alert-box {
-    margin-top: 75px;
+    margin-top: 50px;
 }
 
 .reveal-modal .alert-box {
