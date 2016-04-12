@@ -377,6 +377,10 @@ footer.l-footer.panel{
  margin-top:2em;
  margin-bottom:0;
  position: relative;
+ 
+ .row{
+	 background:none;
+ }
  }
 @media all and (max-width:480px){
 	footer.l-footer.panel{

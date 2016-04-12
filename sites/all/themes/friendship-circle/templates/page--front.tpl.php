@@ -170,7 +170,7 @@ echo $site_slogan;
   </main>
   <!--/.main-->
   
-  <?php if (!empty($page['triptych_first']) || !empty($page['triptych_middle']) || !empty($page['triptych_last'] ) || !empty($page['triptych_first_2']) || !empty($page['triptych_middle_2']) || !empty($page['triptych_last_2']) || !empty($page['triptych_header'])): ?>
+  <?php if (!empty($page['triptych_first']) || !empty($page['triptych_middle']) || !empty($page['triptych_last'] )): ?>
   
   <!--.triptych-->
   <div class="light-blue-bg">
@@ -183,6 +183,8 @@ echo $site_slogan;
       <div class="triptych-last large-4 columns"> <?php print render($page['triptych_last']); ?> </div>
     </section>
   </div>
+     <?php endif; ?>
+  <?php if (!empty($page['triptych_icon1']) || !empty($page['triptych_icon2']) || !empty($page['triptych_icon3'] )): ?>
   <div class="icon_ctas">
     <section class="l-triptych row">
       <div class="triptych-first large-4 columns small-4"> <?php print render($page['triptych_icon1']); ?> </div>
@@ -190,6 +192,9 @@ echo $site_slogan;
       <div class="triptych-last large-4 columns small-4"> <?php print render($page['triptych_icon3']); ?> </div>
     </section>
   </div>
+     <?php endif; ?>
+  <?php if (!empty($page['triptych_first_2']) || !empty($page['triptych_middle_2']) || !empty($page['triptych_last_2'])): ?>
+  
   <!--/.triptych -->
   <div class="third-row-ctas">
     <div class="row">
@@ -201,34 +206,37 @@ echo $site_slogan;
       <div class="triptych-last large-4 columns"> <?php print render($page['triptych_last_2']); ?> </div>
     </section>
   </div>
-  </div>
-  <?php endif; ?>
-  <?php if (!empty($page['footer_firstcolumn']) || !empty($page['footer_secondcolumn']) || !empty($page['footer_thirdcolumn']) || !empty($page['footer_fourthcolumn'])): ?>
-  <!--.footer-columns -->
-  <section class="row l-footer-columns">
-    <?php if (!empty($page['footer_firstcolumn'])): ?>
-    <div class="footer-first large-3 columns"> <?php print render($page['footer_firstcolumn']); ?> </div>
     <?php endif; ?>
-    <?php if (!empty($page['footer_secondcolumn'])): ?>
-    <div class="footer-second large-3 columns"> <?php print render($page['footer_secondcolumn']); ?> </div>
-    <?php endif; ?>
-    <?php if (!empty($page['footer_thirdcolumn'])): ?>
-    <div class="footer-third large-3 columns"> <?php print render($page['footer_thirdcolumn']); ?> </div>
-    <?php endif; ?>
-    <?php if (!empty($page['footer_fourthcolumn'])): ?>
-    <div class="footer-fourth large-3 columns"> <?php print render($page['footer_fourthcolumn']); ?> </div>
-    <?php endif; ?>
-  </section>
-  <!--/.footer-columns-->
-  <?php endif; ?>
+<!--removed a suspicious looking </div> from here -->
+
+ 
   
   <!--.l-footer-->
-  <footer class="l-footer panel " role="contentinfo">
+  <footer class="l-footer panel" role="contentinfo">
     <?php if (!empty($page['footer'])): ?>
     <div class="footer large-12 columns"> <?php print render($page['footer']); ?> </div>
     <?php endif; ?>
+	
+    <?php if (!empty($page['footer_firstcolumn']) || !empty($page['footer_secondcolumn']) || !empty($page['footer_thirdcolumn']) || !empty($page['footer_fourthcolumn'])): ?>
+    <!--.footer-columns -->
+    <section class="row l-footer-columns">
+      <?php if (!empty($page['footer_firstcolumn'])): ?>
+      <div class="footer-first large-3 columns"> <?php print render($page['footer_firstcolumn']); ?> </div>
+      <?php endif; ?>
+      <?php if (!empty($page['footer_secondcolumn'])): ?>
+      <div class="footer-second large-3 columns"> <?php print render($page['footer_secondcolumn']); ?> </div>
+      <?php endif; ?>
+      <?php if (!empty($page['footer_thirdcolumn'])): ?>
+      <div class="footer-third large-3 columns"> <?php print render($page['footer_thirdcolumn']); ?> </div>
+      <?php endif; ?>
+      <?php if (!empty($page['footer_fourthcolumn'])): ?>
+      <div class="footer-fourth large-3 columns"> <?php print render($page['footer_fourthcolumn']); ?> </div>
+      <?php endif; ?>
+    </section>
+    <!--/.footer-columns-->
+    <?php endif; ?>
     <?php if ($site_name) :?>
-    <div class="copyright"> &copy; <?php print date('Y') . ' ' . check_plain($site_name) . ' ' . t('All rights reserved.'); ?> </div>
+    <div class="copyright row"> &copy; <?php print date('Y') . ' ' . check_plain($site_name) . ' ' . t('All rights reserved.'); ?> </div>
     <?php endif; ?>
   </footer>
   <!--/.footer-->
