@@ -39,3 +39,7 @@ Patch used: patches/system-drupal.patch
 
 = For PayPal civicrm integration on Pantheon =
 Patch used: patches/externipn.patch
+
+= Creates 2 new options when grouping contribution data in donation receipts =
+Patch used: patches/new-grouping-option.patch
+

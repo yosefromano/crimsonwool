@@ -1,0 +1,45 @@
+From dffcc7b6ce1adab7b318407dfd5f19930b3afdad Mon Sep 17 00:00:00 2001
+From: Yosef Romano <yosefromano@gmail.com>
+Date: Tue, 14 Jun 2016 22:12:47 -0700
+Subject: [PATCH] new grouping options
+
+---
+ .../modules/civicrm/CRM/Contribute/Form/Task/PDFLetter.php        | 2 +-
+ .../modules/civicrm/CRM/Contribute/Form/Task/PDFLetterCommon.php  | 8 +++++++-
+ 2 files changed, 8 insertions(+), 2 deletions(-)
+
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetter.php b/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetter.php
+index 5c05b70..65c7d0e 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetter.php
++++ b/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetter.php
+@@ -132,7 +132,7 @@ class CRM_Contribute_Form_Task_PDFLetter extends CRM_Contribute_Form_Task {
+     );
+     $this->addElement('select', 'group_by', ts('Group contributions by'), $options, array(), "<br/>", FALSE);
+     // this was going to be free-text but I opted for radio options in case there was a script injection risk
+-    $separatorOptions = array('comma' => 'Comma', 'td' => 'Table Cell');
++    $separatorOptions = array('comma' => 'Comma', 'td' => 'Horizontal Table Cell', 'tr' => 'Vertical Table Cell', 'br' => 'Line Break');
+     $this->addElement('select', 'group_by_separator', ts('Separator (grouped contributions)'), $separatorOptions);
+     $emailOptions = array(
+       '' => ts('Generate PDFs for printing (only)'),
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetterCommon.php b/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetterCommon.php
+index d95aed8..80c3ee8 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetterCommon.php
++++ b/profiles/civicrm_starterkit/modules/civicrm/CRM/Contribute/Form/Task/PDFLetterCommon.php
+@@ -43,7 +43,13 @@ class CRM_Contribute_Form_Task_PDFLetterCommon extends CRM_Contact_Form_Task_PDF
+       if ($formValues['group_by_separator'] == 'td') {
+         $realSeparator = "</td><td>";
+       }
+-    }
++	  elseif ($formValues['group_by_separator'] == 'tr') {
++        $realSeparator = "</td></tr><tr><td>";
++      }
++	  elseif ($formValues['group_by_separator'] == 'br') {
++        $realSeparator = "<br />";
++      }
++	}
+     $separator = '****~~~~';// a placeholder in case the separator is common in the string - e.g ', '
+     $validated = FALSE;
+ 
+-- 
+1.9.5 (Apple Git-50.3)
+
