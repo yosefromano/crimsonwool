@@ -671,9 +671,9 @@ AND    u.status = 1
 
     ///CRM-7803 -from d7 onward.
     $config = CRM_Core_Config::singleton();
-    if (function_exists('variable_get') &&  
+    if (function_exists('variable_get') &&
       function_exists('language_negotiation_get') &&
-      module_exists('locale') 
+      module_exists('locale')
     ) {
       global $language;
 

@@ -28,14 +28,8 @@ Source diff: https://github.com/ojkelly/civicrm-packages/commit/4e88b13ef5263ac8
 Note: Patch slightly modified to use custom cache table 'cache_smarty' instead of 'smarty'.
 Patch used: patches/ojkelly-civicrm-smarty-drupal-cache-2.diff
 
-= Make sure menu is rebuilt in civicrmtheme =
-Patch used: patches/civicrmtheme-rebuild-menu.patch
-
 = Don’t recall, Change for Pantheon platform =
-Patch used: patches/civcrm-config-1.patch
-
-= Don’t recall, Change for Pantheon platform =
-Patch used: patches/system-drupal.patch
+Patch used: patches/civicrm-config-1.patch
 
 = For PayPal civicrm integration on Pantheon =
 Patch used: patches/externipn.patch
@@ -43,3 +37,8 @@ Patch used: patches/externipn.patch
 = Creates 2 new options when grouping contribution data in donation receipts =
 Patch used: patches/new-grouping-option.patch
 
+= Civicrmtheme: Make sure menu is rebuilt after cache clear =
+Patch used: patches/civicrmtheme-rebuild-menu.patch
+
+= Patch to Drupal.php from the CiviCRM StarterKit =
+Patch used: patches/civicrm-starterkit-drupalphp.patch
