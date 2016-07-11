@@ -406,11 +406,14 @@ hr {
     margin: 0 auto;
 }
 
+.single {
+    padding-bottom: 1em;
+}
+
 .block-views-upcoming-events-block-1 {
     background: white;
     padding: 5px;
     border-radius: 6px;
-    margin-top: 21px;
 	
 
 	h2.block-title {
@@ -426,7 +429,15 @@ hr {
 	}
 	
 }
+section.l-triptych2.row {
+    margin-top: 21px;
+}
 
+.not-front {
+	h2.block-title {
+	    color: #860F0F;
+	 }
+ }
 
 
 /*section.block.block-views.contextual-links-region.block-views-upcoming-events-block-1 */
@@ -650,6 +661,10 @@ margin-top: 300px;
 	.callout-blurb{
 	 width:100%;
 	 }
+	 .block-fb-likebox{
+	 	text-align:center;
+	 }
+
 }
 
 .callout-blurb {
