@@ -10,7 +10,7 @@
 function fc_popout_promo_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'bean-meerkat-field_image_link_address'
+  // Exported field_instance: 'bean-meerkat-field_image_link_address'.
   $field_instances['bean-meerkat-field_image_link_address'] = array(
     'bundle' => 'meerkat',
     'default_value' => NULL,
@@ -45,7 +45,7 @@ For an external URL, use this format: http://www.google.com',
     ),
   );
 
-  // Exported field_instance: 'bean-meerkat-field_meerkat_image'
+  // Exported field_instance: 'bean-meerkat-field_meerkat_image'.
   $field_instances['bean-meerkat-field_meerkat_image'] = array(
     'bundle' => 'meerkat',
     'deleted' => 0,
@@ -105,7 +105,7 @@ For an external URL, use this format: http://www.google.com',
     ),
   );
 
-  // Exported field_instance: 'bean-meerkat-field_meerkat_verbiage'
+  // Exported field_instance: 'bean-meerkat-field_meerkat_verbiage'.
   $field_instances['bean-meerkat-field_meerkat_verbiage'] = array(
     'bundle' => 'meerkat',
     'default_value' => NULL,
