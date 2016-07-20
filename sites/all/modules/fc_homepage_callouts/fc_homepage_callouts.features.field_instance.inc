@@ -10,7 +10,7 @@
 function fc_homepage_callouts_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'bean-homepage_callout-field_background_image'
+  // Exported field_instance: 'bean-homepage_callout-field_background_image'.
   $field_instances['bean-homepage_callout-field_background_image'] = array(
     'bundle' => 'homepage_callout',
     'deleted' => 0,
@@ -67,7 +67,7 @@ function fc_homepage_callouts_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-homepage_callout-field_callout_blurb'
+  // Exported field_instance: 'bean-homepage_callout-field_callout_blurb'.
   $field_instances['bean-homepage_callout-field_callout_blurb'] = array(
     'bundle' => 'homepage_callout',
     'default_value' => NULL,
@@ -102,7 +102,7 @@ function fc_homepage_callouts_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-homepage_callout-field_page_path'
+  // Exported field_instance: 'bean-homepage_callout-field_page_path'.
   $field_instances['bean-homepage_callout-field_page_path'] = array(
     'bundle' => 'homepage_callout',
     'default_value' => NULL,
