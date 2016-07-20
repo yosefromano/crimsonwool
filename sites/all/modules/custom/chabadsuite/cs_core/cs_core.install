@@ -23,3 +23,10 @@ function cs_core_update_7001() {
 function cs_core_update_7002() {
   module_enable(array('strongarm', 'diff'));
 }
+
+/**
+ * Disable plupload and bulk media upload
+ */
+function cs_core_update_7003() {
+  module_disable(array('bulk_media_upload', 'plupload', 'plup'));
+}
