@@ -10,7 +10,7 @@
 function fc_social_media_links_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'bean-social_media_links-field_link_image'
+  // Exported field_instance: 'bean-social_media_links-field_link_image'.
   $field_instances['bean-social_media_links-field_link_image'] = array(
     'bundle' => 'social_media_links',
     'deleted' => 0,
@@ -52,7 +52,7 @@ function fc_social_media_links_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-social_media_links-field_link_url'
+  // Exported field_instance: 'bean-social_media_links-field_link_url'.
   $field_instances['bean-social_media_links-field_link_url'] = array(
     'bundle' => 'social_media_links',
     'default_value' => NULL,

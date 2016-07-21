@@ -10,7 +10,7 @@
 function fc_large_icon_cta_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'bean-large_icon_cta-field_icon_image'
+  // Exported field_instance: 'bean-large_icon_cta-field_icon_image'.
   $field_instances['bean-large_icon_cta-field_icon_image'] = array(
     'bundle' => 'large_icon_cta',
     'deleted' => 0,
@@ -52,7 +52,7 @@ function fc_large_icon_cta_field_default_field_instances() {
     ),
   );
 
-  // Exported field_instance: 'bean-large_icon_cta-field_icon_link_path'
+  // Exported field_instance: 'bean-large_icon_cta-field_icon_link_path'.
   $field_instances['bean-large_icon_cta-field_icon_link_path'] = array(
     'bundle' => 'large_icon_cta',
     'default_value' => NULL,

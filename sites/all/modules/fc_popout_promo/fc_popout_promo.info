@@ -21,4 +21,3 @@ features[field_instance][] = bean-meerkat-field_image_link_address
 features[field_instance][] = bean-meerkat-field_meerkat_image
 features[field_instance][] = bean-meerkat-field_meerkat_verbiage
 features[formatters][] = popouturl
-mtime = 1436465056

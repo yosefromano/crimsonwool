@@ -10,7 +10,7 @@
 function fc_homepage_image_field_default_field_instances() {
   $field_instances = array();
 
-  // Exported field_instance: 'bean-homepage_image-field_homepage_image'
+  // Exported field_instance: 'bean-homepage_image-field_homepage_image'.
   $field_instances['bean-homepage_image-field_homepage_image'] = array(
     'bundle' => 'homepage_image',
     'deleted' => 0,

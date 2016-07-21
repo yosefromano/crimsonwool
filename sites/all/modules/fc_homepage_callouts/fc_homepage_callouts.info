@@ -30,4 +30,3 @@ features[field_instance][] = bean-homepage_callout-field_callout_blurb
 features[field_instance][] = bean-homepage_callout-field_page_path
 features[formatters][] = callout_image
 features[formatters][] = image_link
-mtime = 1449603844
