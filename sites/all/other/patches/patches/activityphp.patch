@@ -1,0 +1,48 @@
+From 8eb71090661c5e97c22b374040d1ccde1fe80226 Mon Sep 17 00:00:00 2001
+From: Yosef Romano <yosefromano@gmail.com>
+Date: Fri, 22 Jul 2016 10:10:17 -0700
+Subject: [PATCH] bug fix for activity update
+
+---
+ .../modules/civicrm/api/v3/Activity.php            | 25 +++++++++++++++++++++-
+ 1 file changed, 24 insertions(+), 1 deletion(-)
+
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/api/v3/Activity.php b/profiles/civicrm_starterkit/modules/civicrm/api/v3/Activity.php
+index bbdeca3..fa57f39 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/api/v3/Activity.php
++++ b/profiles/civicrm_starterkit/modules/civicrm/api/v3/Activity.php
+@@ -241,7 +241,30 @@ function civicrm_api3_activity_get($params) {
+     }
+   }
+   else {
+-    $activities = _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE);
++	     $sql = CRM_Utils_SQL_Select::fragment();
++	       $options = civicrm_api3('ActivityContact', 'getoptions', array('field' => 'record_type_id'));
++	       $options = $options['values'];
++	       $activityContactOptions = array(
++	         'target_contact_id' => array_search('Activity Targets', $options),
++	         'source_contact_id' => array_search('Activity Source', $options),
++	         'assignee_contact_id' => array_search('Activity Assignees', $options),
++	       );
++	       foreach ($activityContactOptions as $activityContactName => $activityContactValue) {
++	         if (!empty($params[$activityContactName])) {
++	           // If the intent is to have multiple joins -- one for each relation -- then you would
++	           // need different table aliases. Consider replacing 'ac' and passing in a '!alias' param,
++	           // with a different value for each relation.
++	           $sql->join(
++	            'activity_' . $activityContactName,
++	             'LEFT JOIN civicrm_activity_contact ac ON a.id = ac.activity_id AND ac.record_type_id = #typeId',
++	             array('typeId' => $activityContactValue)
++	           );
++	           $sql->where('ac.contact_id IN (#cid)', array(
++	             'cid' => $params[$activityContactName],
++	           ));
++	        }
++	     }
++	      $activities = _civicrm_api3_basic_get(_civicrm_api3_get_BAO(__FUNCTION__), $params, FALSE, 'Activity', $sql);
+   }
+   $options = _civicrm_api3_get_options_from_params($params, FALSE, 'Activity', 'get');
+   if ($options['is_count']) {
+-- 
+1.9.5 (Apple Git-50.3)
+
