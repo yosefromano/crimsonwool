@@ -1,7 +1,0 @@
-<?php
-/**
- * @file
- * Code for the FC PopOut Promo feature.
- */
-
-include_once 'fc_popout_promo.features.inc';
