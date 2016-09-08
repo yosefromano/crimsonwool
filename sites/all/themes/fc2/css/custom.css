@@ -8158,125 +8158,114 @@ h1.hp-sitename {
 .newsletter-signup {
   font-size: 20px;
   line-height: 2;
-  height: 90px;
   border-radius: 8px 8px 0 0;
   background: #2D3B62;
   text-align: center;
-  padding-top: 20px;
+  padding: 18px 0 0 1em;
   float: left;
 }
-/* line 768, ../scss/custom.scss */
+/* line 767, ../scss/custom.scss */
 .newsletter-signup input {
   color: #999999;
 }
-/* line 771, ../scss/custom.scss */
+/* line 770, ../scss/custom.scss */
 .newsletter-signup section {
   float: left;
 }
-/* line 774, ../scss/custom.scss */
+/* line 773, ../scss/custom.scss */
 .newsletter-signup section.block.block-bean {
   max-width: 40px;
   padding-right: 4px;
 }
 
-/* line 780, ../scss/custom.scss */
+/* line 779, ../scss/custom.scss */
 .emaillink {
   font-size: 17px;
   text-align: left;
 }
 
-/* line 788, ../scss/custom.scss */
+/* line 787, ../scss/custom.scss */
 .socialicons {
   padding-right: 18px;
   float: left;
 }
 
-/* line 793, ../scss/custom.scss */
+/* line 792, ../scss/custom.scss */
 .social {
-  /* text-align: right; */
   width: 100%;
-  height: 90px;
   margin-top: 2em;
-  max-height: 70px;
   overflow: hidden;
 }
 
-/* line 802, ../scss/custom.scss */
+/* line 798, ../scss/custom.scss */
 .social {
   padding-left: 70%;
 }
 
 @media all and (max-width: 1326px) {
-  /* line 807, ../scss/custom.scss */
+  /* line 803, ../scss/custom.scss */
   .social {
     padding-left: 60%;
   }
 }
 @media all and (max-width: 1065px) {
-  /* line 812, ../scss/custom.scss */
+  /* line 808, ../scss/custom.scss */
   .social {
     padding-left: 50%;
   }
 }
 @media all and (max-width: 893px) {
-  /* line 817, ../scss/custom.scss */
+  /* line 813, ../scss/custom.scss */
   .social {
     padding-left: 40%;
   }
 }
 @media all and (max-width: 768px) {
-  /* line 822, ../scss/custom.scss */
+  /* line 818, ../scss/custom.scss */
   .social {
     padding-left: 0;
     overflow: visible;
   }
-
-  /* line 826, ../scss/custom.scss */
-  .newsletter-signup {
-    height: 70px;
-  }
 }
 @media all and (max-width: 480px) {
-  /* line 831, ../scss/custom.scss */
+  /* line 824, ../scss/custom.scss */
   .socialicons {
     padding-right: 0px;
   }
 
-  /* line 834, ../scss/custom.scss */
+  /* line 827, ../scss/custom.scss */
   .social {
     padding-left: 0;
     overflow: visible;
   }
 
-  /* line 838, ../scss/custom.scss */
+  /* line 831, ../scss/custom.scss */
   .newsletter-signup {
-    height: 70px;
     border-radius: 0;
     margin: 0;
     width: 100%;
     max-width: 100%;
   }
 }
-/* line 847, ../scss/custom.scss */
+/* line 839, ../scss/custom.scss */
 .bean-social-media-links {
   float: left;
 }
-/* line 849, ../scss/custom.scss */
+/* line 841, ../scss/custom.scss */
 .bean-social-media-links img {
   padding-bottom: 10px;
 }
 
-/* line 853, ../scss/custom.scss */
+/* line 845, ../scss/custom.scss */
 .signup-blurb {
   float: left;
   padding-right: 18px;
-  padding-left: 18px;
   line-height: 34px;
   color: #FFFFFF;
   font-size: 35px;
 }
 
-/* line 861, ../scss/custom.scss */
+/* line 852, ../scss/custom.scss */
 a.emaillink {
   float: left;
   display: inline;
@@ -8284,7 +8273,7 @@ a.emaillink {
   padding-top: 4px;
 }
 
-/* line 867, ../scss/custom.scss */
+/* line 858, ../scss/custom.scss */
 input.emaillink {
   float: left;
   width: 183px;
@@ -8294,25 +8283,25 @@ input.emaillink {
 }
 
 /*///////////// YOSEF'S TWEAKS AND OVERRIDES //////////////////*/
-/* line 875, ../scss/custom.scss */
+/* line 866, ../scss/custom.scss */
 .page-programs .row {
   background: none;
 }
 
-/* line 878, ../scss/custom.scss */
+/* line 869, ../scss/custom.scss */
 .page-programs .panel {
   background: #ffffff;
   border-radius: 12px;
   border-color: white;
 }
 
-/* line 885, ../scss/custom.scss */
+/* line 876, ../scss/custom.scss */
 .l-triptych.row {
   border-radius: 5px;
 }
 
 @media (min-width: 950px) {
-  /* line 891, ../scss/custom.scss */
+  /* line 882, ../scss/custom.scss */
   .top-bar {
     position: fixed;
     width: 100%;
@@ -8320,7 +8309,7 @@ input.emaillink {
   }
 }
 /*/////////// BH ///////////////*/
-/* line 898, ../scss/custom.scss */
+/* line 889, ../scss/custom.scss */
 .bh {
   text-align: right;
   padding-right: 1em;
@@ -8335,38 +8324,38 @@ input.emaillink {
 }
 
 @media all and (max-width: 480px) {
-  /* line 909, ../scss/custom.scss */
+  /* line 900, ../scss/custom.scss */
   .bh {
     position: absolute;
     top: -30px;
   }
 }
 /*///////// CIVI DONATE PAGE ///////////*/
-/* line 915, ../scss/custom.scss */
+/* line 906, ../scss/custom.scss */
 .crm-container .crm-section .content {
   margin-left: 40%;
 }
 
-/* line 919, ../scss/custom.scss */
+/* line 910, ../scss/custom.scss */
 .crm-container .status {
   background-color: #ef7e06;
   border: 1px solid #ef7e06;
   color: #fff;
 }
-/* line 923, ../scss/custom.scss */
+/* line 914, ../scss/custom.scss */
 .crm-container .status a {
   color: #1000d4;
 }
 
 /*///////// CIVI Event PAGE ///////////*/
 @media all and (min-width: 939px) {
-  /* line 929, ../scss/custom.scss */
+  /* line 920, ../scss/custom.scss */
   .page-civicrm-event #page-title {
     margin-top: 2em;
   }
 }
 /*//////////// MEERKAT STUFF /////////////*/
-/* line 934, ../scss/custom.scss */
+/* line 925, ../scss/custom.scss */
 div#meerkat-wrap {
   background: rgba(255, 255, 255, 0.93);
   padding: 1em;
@@ -8376,52 +8365,52 @@ div#meerkat-wrap {
   color: #2B9C94;
   min-height: 600px;
 }
-/* line 942, ../scss/custom.scss */
+/* line 933, ../scss/custom.scss */
 div#meerkat-wrap h2 {
   color: #983997;
   font-weight: 700;
   font-size: 36px;
 }
-/* line 947, ../scss/custom.scss */
+/* line 938, ../scss/custom.scss */
 div#meerkat-wrap .field-name-field-meerkat-verbiage {
   font-size: 18px;
   margin-top: 1em;
   margin-bottom: 1em;
 }
-/* line 952, ../scss/custom.scss */
+/* line 943, ../scss/custom.scss */
 div#meerkat-wrap a {
   font-size: 23px;
 }
 
 /*//////// MISC TWEAKS ////////////*/
-/* line 958, ../scss/custom.scss */
+/* line 949, ../scss/custom.scss */
 .alert-box {
   margin-top: 50px;
 }
 
-/* line 962, ../scss/custom.scss */
+/* line 953, ../scss/custom.scss */
 .reveal-modal .alert-box {
   margin-top: 0px;
 }
 
-/* line 967, ../scss/custom.scss */
+/* line 958, ../scss/custom.scss */
 .crm-contribution-main-form-block img {
   width: 100%;
 }
 
-/* line 975, ../scss/custom.scss */
+/* line 966, ../scss/custom.scss */
 .form-managed-file .form-submit {
   margin-top: 10px;
   margin-bottom: 5px;
 }
 
 @media all and (min-width: 768px) {
-  /* line 981, ../scss/custom.scss */
+  /* line 972, ../scss/custom.scss */
   select {
     width: inherit;
   }
 }
-/* line 987, ../scss/custom.scss */
+/* line 978, ../scss/custom.scss */
 input[type="text"],
 input[type="date"],
 input[type="datetime"],
@@ -8439,19 +8428,19 @@ textarea {
   border-radius: 4px;
 }
 
-/* line 1006, ../scss/custom.scss */
+/* line 997, ../scss/custom.scss */
 input[type="password"] {
   width: initial;
   border-radius: 4px;
 }
 
-/* line 1011, ../scss/custom.scss */
+/* line 1002, ../scss/custom.scss */
 .webform-component-textarea {
   max-width: 500px;
 }
 
 @media all and (max-width: 480px) {
-  /* line 1016, ../scss/custom.scss */
+  /* line 1007, ../scss/custom.scss */
   input[type="text"],
   input[type="password"],
   input[type="date"],
@@ -8469,64 +8458,64 @@ input[type="password"] {
     width: 100%;
   }
 }
-/* line 1035, ../scss/custom.scss */
+/* line 1026, ../scss/custom.scss */
 .node-type-webform {
   line-height: 1.6;
 }
 
-/* line 1041, ../scss/custom.scss */
+/* line 1032, ../scss/custom.scss */
 nav.top-bar.expanded {
   background-color: #2D3B62;
 }
 
-/* line 1045, ../scss/custom.scss */
+/* line 1036, ../scss/custom.scss */
 .top-bar-section ul li > a {
   background: #2D3B62;
 }
 
-/* line 1049, ../scss/custom.scss */
+/* line 1040, ../scss/custom.scss */
 .crm-container.crm-public .select2-container .select2-choice {
   padding: 0px 5px 5px 8px !important;
 }
 
 @media all and (min-width: 939px) {
-  /* line 1054, ../scss/custom.scss */
+  /* line 1045, ../scss/custom.scss */
   .not-front img.logo {
     width: 60px;
   }
 }
 /*///upcomming events and video//*/
-/* line 1063, ../scss/custom.scss */
+/* line 1054, ../scss/custom.scss */
 .block-views-upcoming-events-block-1 .views-label {
   font-size: 1.3em;
   line-height: 1.1em;
 }
 
-/* line 1068, ../scss/custom.scss */
+/* line 1059, ../scss/custom.scss */
 .block-views-upcoming-events-block-1 a {
   color: #65749A;
   font-size: 1.3em;
 }
 
-/* line 1072, ../scss/custom.scss */
+/* line 1063, ../scss/custom.scss */
 section.block.block-views.block-views-upcoming-events-block-1 {
   background: white;
   border-radius: 8px;
   padding: 5px 5px 10px 5px;
   margin-top: 26px;
 }
-/* line 1077, ../scss/custom.scss */
+/* line 1068, ../scss/custom.scss */
 section.block.block-views.block-views-upcoming-events-block-1 h2.block-title {
   text-align: center;
   font-weight: bold;
 }
 
-/* line 1082, ../scss/custom.scss */
+/* line 1073, ../scss/custom.scss */
 section.block.block-fb-likebox.block-fb-likebox-0 {
   margin-top: 47px;
 }
 
-/* line 1086, ../scss/custom.scss */
+/* line 1077, ../scss/custom.scss */
 .white-block {
   padding: 5px;
   background-color: #fff;
@@ -8534,64 +8523,64 @@ section.block.block-fb-likebox.block-fb-likebox-0 {
   border-radius: 6px;
 }
 
-/* line 1093, ../scss/custom.scss */
+/* line 1084, ../scss/custom.scss */
 .double .flex-video {
   margin-bottom: 0;
   padding-top: 0;
 }
 
-/* line 1100, ../scss/custom.scss */
+/* line 1091, ../scss/custom.scss */
 .page-user-register div.crm-container fieldset label {
   float: left;
 }
-/* line 1102, ../scss/custom.scss */
+/* line 1093, ../scss/custom.scss */
 .page-user-register .crm-container .crm-section .content {
   margin-left: 0;
 }
-/* line 1104, ../scss/custom.scss */
+/* line 1095, ../scss/custom.scss */
 .page-user-register .crm-container input.crm-form-text {
   border: 1px solid #cccccc;
   height: 2.3125em;
 }
-/* line 1108, ../scss/custom.scss */
+/* line 1099, ../scss/custom.scss */
 .page-user-register .crm-container.crm-public .select2-container .select2-choice {
   padding: 5px 5px 5px 8px !important;
 }
 
-/* line 1112, ../scss/custom.scss */
+/* line 1103, ../scss/custom.scss */
 footer.l-footer.panel {
   background: #333333;
   color: white;
   border: none;
 }
-/* line 1116, ../scss/custom.scss */
+/* line 1107, ../scss/custom.scss */
 footer.l-footer.panel a {
   color: white;
 }
-/* line 1119, ../scss/custom.scss */
+/* line 1110, ../scss/custom.scss */
 footer.l-footer.panel h2 {
   color: #ffffff;
 }
-/* line 1124, ../scss/custom.scss */
+/* line 1115, ../scss/custom.scss */
 footer.l-footer.panel .row {
   background: none;
 }
 
-/* line 1129, ../scss/custom.scss */
+/* line 1120, ../scss/custom.scss */
 .crm-container .help, .crm-container #help {
   border-color: #2D3B62;
   background-color: #B5BCCE;
 }
 
-/* line 1135, ../scss/custom.scss */
+/* line 1126, ../scss/custom.scss */
 .page-user-register ul.button-group {
   display: none;
 }
-/* line 1138, ../scss/custom.scss */
+/* line 1129, ../scss/custom.scss */
 .page-user-register .password-strength {
   display: none;
 }
-/* line 1141, ../scss/custom.scss */
+/* line 1132, ../scss/custom.scss */
 .page-user-register div.form-item div.password-suggestions {
   border: none;
 }
