@@ -1,13 +1,13 @@
 <?php
 /**
  * @file
- * CS_User_Permissions.features.user_permission.inc
+ * cs_user_permission.features.user_permission.inc
  */
 
 /**
  * Implements hook_user_default_permissions().
  */
-function CS_User_Permissions_user_default_permissions() {
+function cs_user_permission_user_default_permissions() {
   $permissions = array();
 
   // Exported permission: 'access AJAX API'.
@@ -33,6 +33,15 @@ function CS_User_Permissions_user_default_permissions() {
       'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'civicrm',
+  );
+
+  // Exported permission: 'access CiviCRM activity iCalendar feed'.
+  $permissions['access CiviCRM activity iCalendar feed'] = array(
+    'name' => 'access CiviCRM activity iCalendar feed',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm_activity_ical',
   );
 
   // Exported permission: 'access CiviContribute'.
@@ -147,8 +156,8 @@ function CS_User_Permissions_user_default_permissions() {
   $permissions['access administration pages'] = array(
     'name' => 'access administration pages',
     'roles' => array(
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
-      'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'system',
   );
@@ -160,6 +169,8 @@ function CS_User_Permissions_user_default_permissions() {
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'civicrm',
   );
@@ -200,6 +211,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm_group_roles',
+  );
+
+  // Exported permission: 'access civicrm member role setting'.
+  $permissions['access civicrm member role setting'] = array(
+    'name' => 'access civicrm member role setting',
+    'roles' => array(),
+    'module' => 'civicrm_member_roles',
   );
 
   // Exported permission: 'access civicrm rules settings'.
@@ -353,6 +371,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'user',
+  );
+
+  // Exported permission: 'add JS snippets for google analytics'.
+  $permissions['add JS snippets for google analytics'] = array(
+    'name' => 'add JS snippets for google analytics',
+    'roles' => array(),
+    'module' => 'googleanalytics',
   );
 
   // Exported permission: 'add contacts'.
@@ -595,6 +620,13 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'filter',
   );
 
+  // Exported permission: 'administer google analytics'.
+  $permissions['administer google analytics'] = array(
+    'name' => 'administer google analytics',
+    'roles' => array(),
+    'module' => 'googleanalytics',
+  );
+
   // Exported permission: 'administer image styles'.
   $permissions['administer image styles'] = array(
     'name' => 'administer image styles',
@@ -611,6 +643,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'imce',
+  );
+
+  // Exported permission: 'administer mailsystem'.
+  $permissions['administer mailsystem'] = array(
+    'name' => 'administer mailsystem',
+    'roles' => array(),
+    'module' => 'mailsystem',
   );
 
   // Exported permission: 'administer media browser'.
@@ -707,6 +746,13 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: 'administer redirects'.
+  $permissions['administer redirects'] = array(
+    'name' => 'administer redirects',
+    'roles' => array(),
+    'module' => 'redirect',
+  );
+
   // Exported permission: 'administer reserved groups'.
   $permissions['administer reserved groups'] = array(
     'name' => 'administer reserved groups',
@@ -775,6 +821,15 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
+  );
+
+  // Exported permission: 'administer smtp module'.
+  $permissions['administer smtp module'] = array(
+    'name' => 'administer smtp module',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'smtp',
   );
 
   // Exported permission: 'administer software updates'.
@@ -945,15 +1000,6 @@ function CS_User_Permissions_user_default_permissions() {
   // Exported permission: 'create any large_icon_cta bean'.
   $permissions['create any large_icon_cta bean'] = array(
     'name' => 'create any large_icon_cta bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'create any meerkat bean'.
-  $permissions['create any meerkat bean'] = array(
-    'name' => 'create any meerkat bean',
     'roles' => array(
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
@@ -1182,15 +1228,6 @@ function CS_User_Permissions_user_default_permissions() {
   // Exported permission: 'delete any large_icon_cta bean'.
   $permissions['delete any large_icon_cta bean'] = array(
     'name' => 'delete any large_icon_cta bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'delete any meerkat bean'.
-  $permissions['delete any meerkat bean'] = array(
-    'name' => 'delete any meerkat bean',
     'roles' => array(
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
@@ -1691,15 +1728,6 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'bean',
   );
 
-  // Exported permission: 'edit any meerkat bean'.
-  $permissions['edit any meerkat bean'] = array(
-    'name' => 'edit any meerkat bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'edit any page content'.
   $permissions['edit any page content'] = array(
     'name' => 'edit any page content',
@@ -1768,6 +1796,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: 'edit api keys'.
+  $permissions['edit api keys'] = array(
+    'name' => 'edit api keys',
+    'roles' => array(),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'edit bean view mode'.
@@ -1844,6 +1879,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
+  );
+
+  // Exported permission: 'edit own api keys'.
+  $permissions['edit own api keys'] = array(
+    'name' => 'edit own api keys',
+    'roles' => array(),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'edit own article content'.
@@ -2160,6 +2202,13 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'pathauto',
   );
 
+  // Exported permission: 'opt-in or out of tracking'.
+  $permissions['opt-in or out of tracking'] = array(
+    'name' => 'opt-in or out of tracking',
+    'roles' => array(),
+    'module' => 'googleanalytics',
+  );
+
   // Exported permission: 'post comments'.
   $permissions['post comments'] = array(
     'name' => 'post comments',
@@ -2346,6 +2395,13 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'use PHP for tracking visibility'.
+  $permissions['use PHP for tracking visibility'] = array(
+    'name' => 'use PHP for tracking visibility',
+    'roles' => array(),
+    'module' => 'googleanalytics',
+  );
+
   // Exported permission: 'use advanced search'.
   $permissions['use advanced search'] = array(
     'name' => 'use advanced search',
@@ -2353,6 +2409,13 @@ function CS_User_Permissions_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'search',
+  );
+
+  // Exported permission: 'use ctools import'.
+  $permissions['use ctools import'] = array(
+    'name' => 'use ctools import',
+    'roles' => array(),
+    'module' => 'ctools',
   );
 
   // Exported permission: 'use text format ds_code'.
@@ -2474,16 +2537,6 @@ function CS_User_Permissions_user_default_permissions() {
     'module' => 'bean',
   );
 
-  // Exported permission: 'view any meerkat bean'.
-  $permissions['view any meerkat bean'] = array(
-    'name' => 'view any meerkat bean',
-    'roles' => array(
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'view any promo_video bean'.
   $permissions['view any promo_video bean'] = array(
     'name' => 'view any promo_video bean',
@@ -2575,6 +2628,27 @@ function CS_User_Permissions_user_default_permissions() {
     'roles' => array(
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
+    'module' => 'ds_extras',
+  );
+
+  // Exported permission: 'view ds_user_picture on comment'.
+  $permissions['view ds_user_picture on comment'] = array(
+    'name' => 'view ds_user_picture on comment',
+    'roles' => array(),
+    'module' => 'ds_extras',
+  );
+
+  // Exported permission: 'view ds_user_picture on node'.
+  $permissions['view ds_user_picture on node'] = array(
+    'name' => 'view ds_user_picture on node',
+    'roles' => array(),
+    'module' => 'ds_extras',
+  );
+
+  // Exported permission: 'view ds_user_picture on user'.
+  $permissions['view ds_user_picture on user'] = array(
+    'name' => 'view ds_user_picture on user',
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
