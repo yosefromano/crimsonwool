@@ -78,17 +78,19 @@ function fancytokens_civicrm_tokens( &$tokens ){
 		   	$p_type = "";  
 		   	if( isset( $cur['group_type'])){
 		   		$p_type = $cur['group_type']; 
+          // Some group_types are arrays, if the profile is used on an event form
+          $p_type = is_array($p_type) ? $p_type[0] : $p_type;
+
+  		   	$type_array = explode( "," , $p_type); // Contributions Activity
+		     	if ( false == ( in_array("Participant", $type_array ) || in_array("Membership", $type_array ) || in_array("Household", $type_array ) || in_array("Contributions", $type_array )  || in_array("Activity", $type_array )  )) {
 		   	
-		   	}
-		   	$type_array = explode( "," , $p_type); // Contributions Activity
-		   	if ( false == ( in_array("Participant", $type_array ) || in_array("Membership", $type_array ) || in_array("Household", $type_array ) || in_array("Contributions", $type_array )  || in_array("Activity", $type_array )  )) {
-		   	
-		   		$key = 'communitynews.standaloneprofile___'.$cur['id'] ;
-			    $label = $cur['title'].' (id: '.$cur['id'].') :: Forms'; 
+		     		$key = 'communitynews.standaloneprofile___'.$cur['id'] ;
+			      $label = $cur['title'].' (id: '.$cur['id'].') :: Forms'; 
 			   
-			   $tokens['communitynews'][$key] = $label; 
+			      $tokens['communitynews'][$key] = $label; 
 		   	
 		   	
+		   	  }
 		   	}
 		   }
 	
@@ -100,31 +102,73 @@ function fancytokens_civicrm_tokens( &$tokens ){
 	//print "<br><br>";
 	//print_r($config);
 	if ($config->userSystem->is_drupal){
-		if( module_exists( "webform_civicrm") && module_exists( "webform_civicrm")){
+		if (function_exists("module_exists") && module_exists("webform_civicrm")) {
 
-			$drupal_db = getUserFrameworkDatabaseName(); 
-			$sql = "SELECT cforms.nid, node.title FROM $drupal_db.webform_civicrm_forms cforms
-				JOIN $drupal_db.node ON cforms.nid = node.nid AND node.status = 1 ";
+			//$drupal_db = getUserFrameworkDatabaseName(); 
+			//$sql = "SELECT cforms.nid, node.title FROM $drupal_db.webform_civicrm_forms cforms
+			//	JOIN $drupal_db.node ON cforms.nid = node.nid AND node.status = 1 ";
 			
+			$dsql =  "SELECT cforms.nid, node.title FROM {webform_civicrm_forms} cforms
+				JOIN {node} node ON cforms.nid = node.nid AND node.status = 1 ";
 				
-				// LEFT JOIN url_alias ua ON cforms.nid = substr( ua.source)  AND ua.source LIKE 'node/%'
-			$dao =& CRM_Core_DAO::executeQuery( $sql,   CRM_Core_DAO::$_nullArray ) ;
-	
-  			while($dao->fetch()){
-				$nid = $dao->nid;
-				$title = $dao->title; 
-				//$url_alias = $dao->alias;
+			$dq_result = db_query( $dsql ); 
+			
+			foreach ($dq_result as $record) {
+			        $nid = $record->nid;
+				$title = $record->title; 
+				
 				$key = 'communitynews.dwform___'.$nid ;
 			    	$label = "$title (nid: $nid) :: Forms"; 
 			   
 			   	$tokens['communitynews'][$key] = $label; 
-			} 
-			$dao->free();
+			
+			
+			}	
+				
+			
 		}
 	
 	}	
 	
+	
+	$tok_category_label = " :: Greetings"; 
+	
+	$tokens['greetings'] = array(
+			'greetings.joint_casual' => 'Casual: Mike and Judy Kline (Uses nickname if available) '.$tok_category_label,
+			'greetings.solo_casual' => 'Casual: Mike Kline (Uses nickname if available, does not show spouse) '.$tok_category_label,
+			'greetings.joint_casual_firstname_lastname' => 'Casual first name and last name: Michael and Judith Kline'.$tok_category_label,
+			'greetings.joint_casual_nickname_only' => 'Casual nickname only: Mike and Judy (Uses nickname if available)'.$tok_category_label,
+			'greetings.solo_casual_nickname_only' => 'Casual nickname only: Mike(Uses nickname if available, does not show spouse)'.$tok_category_label,
+			'greetings.joint_casual_firstname_only' => 'Casual first name only: Michael and Judith'.$tok_category_label,
+			'greetings.joint_formal' => 'Formal: Mr. and Mrs. Kline'.$tok_category_label,
+			'greetings.joint_formal_firstname' => 'Formal with first name: Mr. and Mrs. Michael Kline'.$tok_category_label,
+			 
+	);
+	
+	
+	$tok_category_label = " :: Dates";
+	
+	$tokens['dates'] = array(
+			'dates.today' => 'Today (m/d/yyyy)'.$tok_category_label,
+			'dates.today___j_F_yyyy' => 'Today (d monthname yyyy)'.$tok_category_label,
+			'dates.today___F_j_yyyy' => 'Today (monthname d, yyyy)'.$tok_category_label,
+			'dates.birth_date___F_j' => 'Birth Date (monthname d)'.$tok_category_label,
+	);
+	
+	$tok_category_label = " :: Communication";
+	$tokens['communication'] = array(
+			'communication.phone_all' => 'All Phone Numbers'.$tok_category_label,
+			'communication.email_all' => 'All Email Addresses'.$tok_category_label,
+	
+	);
+	
+	
+	
  }
+  
+ 
+ 	
+ 	
 	
   function getUserFrameworkDatabaseName(){
   	// ['userFrameworkDSN'] => mysql://dev1_username:mypassword@localhost/dev1_main?new_link=true
@@ -145,10 +189,128 @@ function fancytokens_civicrm_tokens( &$tokens ){
   }	
 	
   function fancytokens_civicrm_tokenValues( &$values, &$contactIDs, $job = null, $tokens = array(), $context = null) {
+  
+  
+
+  	if(!empty($tokens['dates'])){
+  		// deal with tokens for 'today', birth_date', and similar.
   	
+  		$today = date_create();
+ 
+  		foreach ( $contactIDs as $cid ) {
+  			$values[$cid]['dates.today'] =  date("n/j/Y");
+  			$values[$cid]['dates.today___j_F_yyyy'] = date("j F Y");
+  			$values[$cid]['dates.today___F_j_yyyy'] =  date("F j, Y");
+  	
+  	
+  		}
+  		$birthday_token = 'dates.birth_date___F_j' ;
+  		 
+  		
+  		while( $cur_token_raw = current( $tokens['dates'] )){
+  			
+  			$tmp_key = key($tokens['dates']);
+  			$cur_token = '';
+  			if(  is_numeric( $tmp_key)){
+  				$cur_token = $cur_token_raw;
+  			}else{
+  				// Its being used by CiviMail.
+  				$cur_token = $tmp_key;
+  			}
+  			 
+  			$token_to_fill = 'dates.'.$cur_token;
+  			 
+  			if($token_to_fill == $birthday_token ){
+  			
+				  		$sql_cids = implode( ",", $contactIDs);
+				  		
+				  		if( strlen( $sql_cids) > 0 ){
+				  			$sql = "select c.id as contact_id, date_format( c.birth_date, '%M %e')  as birth_date
+							FROM civicrm_contact c
+							WHERE c.id IN ( ".$sql_cids." )
+							ORDER BY c.id" ;
+				  			$dao =& CRM_Core_DAO::executeQuery( $sql,   CRM_Core_DAO::$_nullArray ) ;
+				  		
+				  		
+				  				
+				  			while($dao->fetch()){
+				  				$cid = $dao->contact_id ;
+				  				$birth_date_formatted = $dao->birth_date;
+				  		
+				  				$values[$cid][$birthday_token] = $birth_date_formatted ;  				 
+				  			}
+				  			 
+				  			$dao->free();
+				  		}
+  			}
+  		
+	  		next($tokens['dates']);
+	  		}
+  	}
+  	
+  	if(!empty($tokens['communication'] )){
+  		$phone_token = 'communication.phone_all' ;
+  		 
+  		$email_token = 'communication.email_all' ;
+  	
+  		require_once( 'utils/CommunicationTokenHelper.php');
+  		$commUtils = new CommunicationTokenHelper();
+  	
+  		$commUtils->getTableOfPhones($contactIDs, $values, $phone_token );
+  		$commUtils->getTableOfEmails($contactIDs, $values, $email_token );
+  		 
+  	}
+  	
+  	
+  	if (!empty($tokens['greetings'])) {
+  	
+  		$greetings_token_names = array(
+  				'greetings.joint_casual' => 'greetings.joint_casual',
+  				'greetings.joint_casual_firstname_lastname' => 'greetings.joint_casual_firstname_lastname',
+  				'greetings.joint_casual_nickname_only' => 'greetings.joint_casual_nickname_only',
+  				'greetings.joint_casual_firstname_only' => 'greetings.joint_casual_firstname_only',
+  				'greetings.solo_casual'  => 'greetings.solo_casual',
+  				'greetings.solo_casual_nickname_only' => 'greetings.solo_casual_nickname_only',
+  	
+  				'greetings.joint_formal' => 'greetings.joint_formal',
+  				'greetings.joint_formal_firstname' => 'greetings.joint_formal_firstname',
+  	
+  		);
+  		if ( is_array( $contactIDs ) ) {
+  	
+  			require_once ('utils/GreetingHelper.php');
+  			
+  			$tmpGreetingHelper = new GreetingHelper();
+  			$prefixes = $tmpGreetingHelper->get_all_prefixes();
+  			$suffixes = $tmpGreetingHelper->get_all_suffixes();
+  	
+  			$tmp_contactIds = $contactIDs ;
+  			// process all spouses using 'Spouse of' relationships.
+  			$household_id  = '';
+  			$tmpGreetingHelper->process_spouses( $suffixes, $prefixes, $values, $contactIDs , $greetings_token_names, $household_id );
+  			$tmpGreetingHelper->process_households( $suffixes, $prefixes, $values, $contactIDs , $greetings_token_names);
+  			// process people not in households and without spouses.
+  			$tmpGreetingHelper->process_singles( $suffixes, $prefixes, $values, $greetings_token_names);
+  	
+  			// process organizations
+  			$tmpGreetingHelper->process_organizations( $suffixes, $prefixes, $values, $greetings_token_names);
+  			
+  			// Deal with 'solo' type greetings, no need to worry about relationships.
+  			$tmpGreetingHelper->process_solo_greetings( $suffixes, $prefixes, $values, $contactIDs , $greetings_token_names);
+  			
+  			
+  			// if any token is empty, use display_name of contact.
+  		//	$tmpGreetingHelper->avoid_empty_tokens(  $values, $contactIDs , $greetings_token_names);
+  	
+  		}
+  		
+  	}
 	    
   if(!empty($tokens['communitynews'])){
-        $website_host_name = $_SERVER['SERVER_NAME']; 
+       
+       $civi_url =  CRM_Utils_System::url('civicrm/example', NULL, TRUE, NULL, FALSE);
+      $website_host_name = parse_url( $civi_url, PHP_URL_HOST );
+      
         $ssl_in_use = $_SERVER['HTTPS'];
 	if( strlen($ssl_in_use) > 0){
 		$protocol = "https://"; 
@@ -389,10 +551,33 @@ function fancytokens_civicrm_tokens( &$tokens ){
                  	$token_node_id = $token_as_array[1];
 	           
 	            
-	           $drupal_db = getUserFrameworkDatabaseName(); 
+	           // $drupal_db = getUserFrameworkDatabaseName(); 
 	            
 	            if( is_numeric( $token_node_id) ){ 
 	            // get Drupal WebForm data for this node id.
+	            $dsql = "SELECT cforms.nid, node.title, ua.alias 
+	            		FROM {webform_civicrm_forms} cforms
+				JOIN {node} node ON cforms.nid = node.nid AND node.status = 1 
+				LEFT JOIN {url_alias} ua ON cforms.nid = SUBSTRING( ua.source, 6 )
+				  AND ua.source LIKE 'node/%'
+				WHERE node.nid = $token_node_id";
+				
+		    $dq_result = db_query( $dsql ); 
+		    foreach ($dq_result as $record) {
+		    	$tmp_title = $record->title;
+  		     	$tmp_alias = $record->alias; 
+  		     	$tmp_nid = $record->nid; 
+  		     	if( strlen( $tmp_alias) > 0){
+  		     		$partial_webform_link_url = $protocol.$website_host_name."/".$tmp_alias; 
+  		     	}else{
+  		     		$partial_webform_link_url = $protocol.$website_host_name."/node/".$tmp_nid; 
+  		     	}
+  		     	$link_label = $tmp_title; 
+  		     	
+		    
+		    }
+	            
+	            /*
 	            $sql = "SELECT cforms.nid, node.title, ua.alias 
 	            		FROM $drupal_db.webform_civicrm_forms cforms
 				JOIN $drupal_db.node ON cforms.nid = node.nid AND node.status = 1 
@@ -413,6 +598,7 @@ function fancytokens_civicrm_tokens( &$tokens ){
   		     
   		     }
   		     $dao->free(); 
+  		     */
   		     
   		     foreach ( $contactIDs as $cid ) {
 	                   
