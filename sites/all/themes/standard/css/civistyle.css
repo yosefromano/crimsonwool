@@ -42,3 +42,6 @@
 #crm-container.crm-public input[type="text"]{
 	display:inline;
 }
+a.select2-choice.select2-default {
+    min-height: 20px;
+}

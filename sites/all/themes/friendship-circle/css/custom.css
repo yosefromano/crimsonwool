@@ -8462,3 +8462,7 @@ nav.top-bar.expanded {
     width: 60px;
   }
 }
+/* line 1032, ../scss/custom.scss */
+a.select2-choice.select2-default {
+  min-height: 20px;
+}

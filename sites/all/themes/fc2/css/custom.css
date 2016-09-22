@@ -8584,3 +8584,8 @@ footer.l-footer.panel .row {
 .page-user-register div.form-item div.password-suggestions {
   border: none;
 }
+
+/* line 1137, ../scss/custom.scss */
+a.select2-choice.select2-default {
+  min-height: 20px;
+}
