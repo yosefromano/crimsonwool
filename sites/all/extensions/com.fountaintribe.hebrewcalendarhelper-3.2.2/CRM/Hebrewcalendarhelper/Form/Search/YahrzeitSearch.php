@@ -52,10 +52,20 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   			ts('City') => 'city',
   			ts('State/Province') => 'abbreviation',
   			ts('Postal Code') => 'postal_code',
+  			ts('Holiday for Shabbat Before') => 'shabbat_before_holiday',
+  			ts('Holiday for Shabbat Before (Hebrew)') => 'shabbat_before_holiday_hebrew',
+  			ts('Parashat for Shabbat Before') => 'shabbat_before_parashat',
+  			ts('Parashat for Shabbat Before (Hebrew)') => 'shabbat_before_parashat_hebrew',
+  			ts('Shabbat Before Yahrzeit') => 'shabbat_before_hebrew_date_format_english',
   			ts('Friday Night Before Yahrzeit') => 'yah_erev_shabbat_before',
   			ts('Saturday Morning Before Yahrzeit ' ) => 'yah_shabbat_morning_before',
   			ts('Friday Night After Yahrzeit') => 'yah_erev_shabbat_after',
   			ts('Saturday Morning After Yahrzeit ' ) => 'yah_shabbat_morning_after',
+  			ts('Shabbat After Yahrzeit') => 'shabbat_after_hebrew_date_format_english',
+  			ts('Holiday for Shabbat After') => 'shabbat_after_holiday',
+  			ts('Holiday for Shabbat After (Hebrew)') => 'shabbat_after_holiday_hebrew',
+  			ts('Parashat for Shabbat After') => 'shabbat_after_parashat',
+  			ts('Parashat for Shabbat After (Hebrew)') => 'shabbat_after_parashat_hebrew',
   			ts('Mourner Display Name' ) => 'mourner_display_name',
   			ts('Mourner First Name' ) => 'mourner_first_name',
   			ts('Mourner Last Name' ) => 'mourner_last_name',
@@ -93,11 +103,6 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   	 */
   	$this->setTitle('Yahrzeit Search');
   
-  	 
-  	//require_once('utils/Entitlement.php');
-  	//$tmpEntitlement = new Entitlement();
-  
-  
   	$date_options = array(
   			'language'  => 'en',
   			'formatType'    => 'dMY',
@@ -124,61 +129,12 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   
   	
   	
-  	$group_ids = array();
-  	 
-  	$result = civicrm_api3('Group', 'get', array(
-  			'sequential' => 1,
-  			'is_active' => 1,
-  			'is_hidden' => 0,
-  			'options' => array('limit' => 0, 'sort' => "title"),
-  	));
-  	 
-  	if($result['is_error'] == 0 && $result['count'] > 0 ){
-  		 
-  		$values = $result['values'];
-  		foreach($values as $cur){
-  			$grp_id = $cur['id'];
-  			$grp_title = $cur['title'];
-  				
-  			$group_ids[$grp_id] = $grp_title;
-  				
-  		}
-  		 
-  	}
-  	
+  	$group_ids =    CRM_Core_PseudoConstant::nestedGroup();
         
   	$mem_ids = array();
   	$org_ids = array();
   	
-  	$result = civicrm_api3('MembershipType', 'get', array(
-  			'sequential' => 1,
-  			'is_active' => 1,
-  			'options' => array('limit' => 0, 'sort' => "name"),
-  	));
-  	
-  	if($result['is_error'] == 0 && $result['count'] > 0 ){
-  		
-  		$values = $result['values'];
-  		foreach($values as $cur){
-  			$memtype_id = $cur['id'];
-  			$memtype_name = $cur['name'];
-  			$memtype_orgid = $cur['member_of_contact_id'];
-  			
-  			$mem_ids[$memtype_id] = $memtype_name; 
-  			
-  			$result_org = civicrm_api3('Contact', 'getsingle', array(
-  					'sequential' => 1,
-  					'return' => array("display_name"),
-  					'id' => $memtype_orgid,
-  			));
-  			
-  			$org_name = $result_org['display_name'];
-  			
-  			$org_ids[$memtype_orgid] = $org_name; 
-  			
-  		} 		
-  		
-  	}
+  	$this->fillMembershipTypeArrays($mem_ids, $org_ids);
  	
   
   	//  $tmp_in_out_group = array( '' =>  '-- select --', 'IN' => 'In Group(s)', 'NOT IN' => 'Not In Group(s)');
@@ -228,9 +184,40 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   
   
   	// $form->add('select', 'membership_type_in_notin' , ts('Mourner Has or Not') ,  $tmp_in_out_mem, FALSE, array('id' => 'membership_type_in_notin' , 'title' => ts('-- select --')) ) ;
+  	
+  	require_once('utils/HebrewCalendar.php');
+  	$tmpHebCal = new HebrewCalendar();
+  	$h_format_str = 'yy' ;
+  	$cur_hebrew_year = 	$tmpHebCal->util_convert_today2hebrew_date($h_format_str);
+    $next_heb_year = $cur_hebrew_year + 1;
+    $prev_heb_year = $cur_hebrew_year - 1 ;
+  	
+    
+  	$hebrew_years = array('' => '-- select --',  $prev_heb_year =>  $prev_heb_year, $cur_hebrew_year => $cur_hebrew_year." (current year)",  $next_heb_year =>  $next_heb_year   );
+  	$tmp_hebrew_year_select = $form->add  ('select', 'hebrew_year_choice', ts('Hebrew Year'),
+  			$hebrew_years,
+  			false);
   
-  
-  
+  	
+  	$tmp = "";
+  	$hebrew_months_to_show = array('' => '-- select --');
+  	$heb_month_numbers = array(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13);
+  	foreach($heb_month_numbers as $cur ){
+  		
+  		$tmp_hebrew_date = $cur."/1/5776";
+  		$tmp_month_name = $tmpHebCal->util_get_hebrew_month_name( $tmp, $tmp_hebrew_date);
+  		if( $cur == 6){
+  			$tmp_month_name = "Adar or Adar I";
+  		}
+  		$hebrew_months_to_show[$cur] = $tmp_month_name;
+  	}
+  	
+  	
+  	$tmp_hebrew_month_select = $form->add  ('select', 'hebrew_month_choice', ts('Hebrew Month'),
+  			$hebrew_months_to_show,
+  			false);
+  	
+  	
   	$tmp_yes_no =  array('all' => '-- select --',   'yes' => 'Deceased has Plaque', 'no' => 'Deceased does not have Plaque');
   	$tmp_has_plaque_select = $form->add  ('select', 'deceased_has_plaque', ts('Plaque Filter Choice'),
   			$tmp_yes_no,
@@ -272,10 +259,10 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   		 
   		$values = $result['values'];
   		foreach($values as $cur){
-  			$gen_id = $cur['id'];
+  			$gen_value_id = $cur['value'];
   			$gen_label = $cur['label'];
   				
-  			$gender_options[$gen_id] = $gen_label;
+  			$gender_options[$gen_value_id] = $gen_label;
   		}
   	
   	}
@@ -320,9 +307,59 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   	 * for the search form.
   	 */
   	$form->assign( 'elements', array(  'group_of_contact',  'membership_org_of_contact',  'membership_type_of_contact',
-  			'relative_time' , 'start_date', 'end_date' , 'date_to_filter' ,  'deceased_has_plaque' ,
+  			'relative_time' , 'start_date', 'end_date' , 'hebrew_year_choice' , 'hebrew_month_choice' , 'date_to_filter' ,  'deceased_has_plaque' ,
   			'yahrzeit_type_selection', 'living_mourners', 'gender_choice',  'comm_prefs' ) );
   
+  
+  }
+  
+  function fillMembershipTypeArrays(&$mem_ids,  &$org_ids){
+  
+  	$cur_domain_id = "";
+  		
+  	$result = civicrm_api3('Domain', 'get', array(
+  			'sequential' => 1,
+  			'current_domain' => array('IS NOT NULL' => 1),
+  	));
+  
+  
+  	if( $result['is_error'] == 0 && $result['count'] == 1){
+  		if(isset( $result['id'] )){
+  			$cur_domain_id = $result['id'];
+  		}
+  	}
+  		
+  	// get membership ids and org contact ids.
+  	if( strlen(  $cur_domain_id ) > 0 ){
+  		$api_result = civicrm_api3('MembershipType', 'get', array(
+  				'sequential' => 1,
+  				'is_active' => 1,
+  				'domain_id' =>  $cur_domain_id ,
+  				'options' => array('sort' => "name"),
+  		));
+  
+  
+  
+  		if( $api_result['is_error'] == 0 ){
+  			$tmp_api_values = $api_result['values'];
+  			foreach($tmp_api_values as $cur){
+  
+  				$tmp_id = $cur['id'];
+  				$mem_ids[$tmp_id] = $cur['name'];
+  
+  				$org_id = $cur['member_of_contact_id'];
+  				// get display name of org
+  				$result = civicrm_api3('Contact', 'getsingle', array(
+  						'sequential' => 1,
+  						'id' => $org_id ,
+  				));
+  				$org_ids[$org_id] = $result['display_name'];
+  
+  
+  			}
+  
+  		}
+  	}
   
   }
   
@@ -341,31 +378,7 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   function all( $offset = 0, $rowcount = 0, $sort = null,
   		$includeContactIDs = false, $onlyIDs = false ) {
   
-  			// SELECT clause must include contact_id as an alias for civicrm_contact.id
-  			//require_once('utils/util_custom_fields.php');
-  
-  			/*
-  			$custom_field_group_label = "Extended Date Information";
-  			$custom_field_birthdate_sunset_label = "Birth Date Before Sunset";
-  			$custom_field_deathdate_sunset_label = "Death Date Before Sunset" ;
-  
-  
-  			$customFieldLabels = array($custom_field_birthdate_sunset_label   , $custom_field_deathdate_sunset_label );
-  			$extended_date_table = "";
-  			$outCustomColumnNames = array();
-  
-  
-  			$error_msg = getCustomTableFieldNames($custom_field_group_label, $customFieldLabels, $extended_date_table, $outCustomColumnNames ) ;
-  
-  			$extended_birth_date  =  $outCustomColumnNames[$custom_field_birthdate_sunset_label];
-  			$extended_death_date  =  $outCustomColumnNames[$custom_field_deathdate_sunset_label];
-  
-  			if($error_msg <> ''){
-  
-  				print "<br><h2>Configuration Problem: ".$error_msg."</h2>" ;
-  				return '';
-  			}
-  			*/
+  			
   			$extended_date_table = "";
   			$extended_birth_date  = "";
   			$extended_death_date  = "";
@@ -477,45 +490,7 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   			
   			}
   			
-  			/*
-  			// Get SQL table info for table with Hebrew name.
-  			$custom_religious_field_group_label = "Religious";
-  			$custom_hebrewname_field_label = "Hebrew Name";
-  			$customFieldLabels = array($custom_hebrewname_field_label );
-  			$extended_religious_table = "";
-  			$outCustomColumnNames = array();
-  			$error_msg = getCustomTableFieldNames($custom_religious_field_group_label , $customFieldLabels, $extended_religious_table, $outCustomColumnNames ) ;
-  
-  			$extended_hebrewname  =  $outCustomColumnNames[$custom_hebrewname_field_label];
-  			if($error_msg <> ''){
-  
-  				print "<br><h2>Configuration Problem: ".$error_msg."</h2>" ;
-  				return '';
-  			}
-  			*/
   			
-  
-  			
-  			/*
-  			// Get SQL table info for plaque table.
-  			$custom_plaque_field_group_label = "Memorial Plaque Info";
-  			$custom_plaque_location_field_label = "Plaque Location";
-  			$custom_has_plaque_field_label = "Has Plaque";
-  			$customFieldLabels = array($custom_plaque_location_field_label, $custom_has_plaque_field_label );
-  			$extended_plaque_table = "";
-  			$outCustomColumnNames = array();
-  			$error_msg = getCustomTableFieldNames($custom_plaque_field_group_label , $customFieldLabels, $extended_plaque_table, $outCustomColumnNames ) ;
-  
-  			$extended_plaque_location  =  $outCustomColumnNames[$custom_plaque_location_field_label];
-  			$extended_has_plaque =  $outCustomColumnNames[$custom_has_plaque_field_label];
-  
-  			if($error_msg <> ''){
-  
-  				print "<br><h2>Configuration Problem: ".$error_msg."</h2>" ;
-  				return '';
-  			}
-  			
-  			*/
   			/******************************************************************************/
   			// Get data for contacts
   
@@ -603,7 +578,12 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
 		  group_concat(distinct hh.display_name) as household_display_name,
 		  group_concat(distinct hh.id) as household_id,
 		  rd.description as relationship_description,
-		  rnote.note as relationship_note
+		  rnote.note as relationship_note,
+		 		shabbat_before_parashat, shabbat_before_parashat_hebrew,
+		 		shabbat_after_parashat, shabbat_after_parashat_hebrew,
+		 		shabbat_before_hebrew_date_format_english, shabbat_after_hebrew_date_format_english,
+		 		shabbat_before_holiday, shabbat_before_holiday_hebrew,
+		 		shabbat_after_holiday, shabbat_after_holiday_hebrew
 		  ";
   
   
@@ -948,7 +928,62 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   		$clauses[] = "contact_a.gender_id = $gender_choice";
   
   	}
+  	/*
+  	 *  	$tmp_date_options = array('' => '-- select --',
+  			'yahrzeit_date' => 'Yahrzeit Date - Evening (default)',
+  			'yahrzeit_date_morning' => 'Yahrzeit Date - Morning',
+  		
+  	);
+  	 */ 
+  	
+  	
+  	if(isset( $this->_formValues['date_to_filter'] )){
+  		$date_to_filter = $this->_formValues['date_to_filter'];
+  	}else{
+  		$date_to_filter = "";
+  	}
+  	
+  	// Determine correct SQL field names for filtering on  dates. 
+  	$date_sql_field_name = "";
+  	if(  strlen($date_to_filter) > 0 ){
+  		$date_sql_field_name = $date_to_filter;  // English-based date field.
+  		
+  		if( $date_to_filter == "yahrzeit_erev_shabbat_before"  || $date_to_filter == "yahrzeit_shabbat_morning_before" ){
+  			$hebrew_year_sql_field_name = "shabbat_before_hebrew_year_num";
+  			$hebrew_month_sql_field_name = "shabbat_before_hebrew_month_num";
+  		}else if($date_to_filter == "yahrzeit_erev_shabbat_after"  || $date_to_filter == "yahrzeit_shabbat_morning_after" ){
+  			$hebrew_year_sql_field_name = "shabbat_after_hebrew_year_num";
+  			$hebrew_month_sql_field_name = "shabbat_after_hebrew_month_num";
+  		}else{
+  			
+  			$hebrew_year_sql_field_name = "yahrzeit_hebrew_year";
+  			$hebrew_month_sql_field_name = "yahrzeit_hebrew_month";
+  		}
+  	
+  	}else{
+  		$date_sql_field_name = "yahrzeit_date" ; // English-based date field.
+  		$hebrew_year_sql_field_name = "yahrzeit_hebrew_year";
+  		$hebrew_month_sql_field_name = "yahrzeit_hebrew_month";
+  	}
+  	
+  	
+  	
+  	// 'hebrew_year_choice'
+  	$hebrew_year_choice = $this->_formValues['hebrew_year_choice'];
+  	
+  	if( strlen($hebrew_year_choice) > 0){
+  		$clauses[] =  $hebrew_year_sql_field_name."  =  ".$hebrew_year_choice; 
+  	}
+  	
+  	
+  	// 'hebrew_month_choice'
+  	$hebrew_month_choice = $this->_formValues['hebrew_month_choice'];
   	 
+  	if( strlen($hebrew_month_choice) > 0){
+  		$clauses[] =  $hebrew_month_sql_field_name." =  ".$hebrew_month_choice;
+  	}
+  	
+  	
   	//  $clauses[] = "contact_b.created_date >= DATE_SUB(CURDATE(), INTERVAL 10  MINUTE)";
   	 
   
@@ -963,12 +998,8 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
    		$startDate = "";
    }
   
-   if(isset( $this->_formValues['date_to_filter'] )){
-  		$date_to_filter = $this->_formValues['date_to_filter'];
-   }else{
-   		$date_to_filter = ""; 
-   }
-   
+  
+   /*
   	$date_sql_field_name = "";
   	if( strlen($date_to_filter) > 0 ){
   		$date_sql_field_name = $date_to_filter;
@@ -976,7 +1007,7 @@ CRM_Contact_Form_Search_Custom_Base implements CRM_Contact_Form_Search_Interface
   	}else{
   		$date_sql_field_name = "yahrzeit_date" ;
   	}
-  
+  */
   
   	if ( strlen($startDate) > 0  ) {
   		$clauses[] = $date_sql_field_name." >= $startDate";
