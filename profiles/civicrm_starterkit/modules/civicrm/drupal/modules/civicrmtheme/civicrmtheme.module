@@ -122,11 +122,6 @@ function civicrmtheme_custom_theme() {
   // Get the menu for above URL.
   $item = CRM_Core_Menu::get($path);
 
-  if(empty($item)) {
-     CRM_Core_Menu::store();
-     $item = CRM_Core_Menu::get($path);
-   }
-  
   // Check for public pages
   // If public page and civicrm public theme is set, apply civicrm public theme
   if (CRM_Utils_Array::value('is_public', $item)) {
