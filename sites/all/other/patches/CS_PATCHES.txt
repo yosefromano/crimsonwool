@@ -42,7 +42,3 @@ Patch used: patches/civicrmtheme-rebuild-menu.patch
 
 = Patch to Drupal.php from the CiviCRM StarterKit =
 Patch used: patches/civicrm-starterkit-drupalphp.patch
-
-= Patch to api/v3/acitivty.php from https://github.com/civicrm/civicrm-core/commit/e5f15ce2225c2a969e3c4b42dddcca1fd890e354 =
-note: this patch is to correct activity update feature with webform civicrm. This should be in core in 4.6.20
-Patch used: patches/activityphp.patch
