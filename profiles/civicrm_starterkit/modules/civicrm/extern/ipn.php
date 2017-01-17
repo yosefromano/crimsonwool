@@ -30,7 +30,7 @@
  * @copyright CiviCRM LLC (c) 2004-2015
  * $Id$
  */
-
+ini_set('session.save_handler', 'files');
 session_start();
 
 require_once '../civicrm.config.php';
