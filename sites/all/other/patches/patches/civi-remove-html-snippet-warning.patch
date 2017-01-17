@@ -1,0 +1,22 @@
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check/Security.php b/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check/Security.php
+index d18363a..1a083c4 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check/Security.php
++++ b/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check/Security.php
+@@ -74,15 +74,8 @@ class CRM_Utils_Check_Security {
+   public function checkRemoteProfile() {
+     $messages = array();
+ 
+-    if (CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'remote_profile_submissions')) {
+-      $messages[] = new CRM_Utils_Check_Message(
+-        __FUNCTION__,
+-        ts('Warning: External profile support (aka "HTML Snippet" support) is enabled in <a href="%1">system settings</a>. This setting may be prone to abuse. If you must retain it, consider HTTP throttling or other protections.',
+-          array(1 => CRM_Utils_System::url('civicrm/admin/setting/misc', 'reset=1'))
+-        ),
+-        ts('Remote Profiles Enabled')
+-      );
+-    }
++    // We've removed this code to disable this message, since we are using this
++    // feature and don't want users to see this message all the time.
+ 
+     return $messages;
+   }
