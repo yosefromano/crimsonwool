@@ -1751,10 +1751,12 @@ ORDER BY   civicrm_email.is_bulkmail DESC
         $job->save();
       }
 
-      // Populate the recipients.
-      if (empty($params['_skip_evil_bao_auto_recipients_'])) {
-        self::getRecipients($job->id, $mailing->id, NULL, NULL, TRUE, $mailing->dedupe_email);
-      }
+	   // Populate the recipients.
+	   if (empty($params['_skip_evil_bao_auto_recipients_'])) {
+	     // check if it's an sms
+	     $mode = $mailing->sms_provider_id ? 'sms' : NULL;
+	     self::getRecipients($job->id, $mailing->id, NULL, NULL, TRUE, $mailing->dedupe_email, $mode);
+	   }
       // Schedule the job now that it has recipients.
       $job->scheduled_date = $params['scheduled_date'];
       $job->save();
