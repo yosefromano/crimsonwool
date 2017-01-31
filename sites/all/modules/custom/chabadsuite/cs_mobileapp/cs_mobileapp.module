@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the cs_mobileapp feature.
+ */
+
+include_once 'cs_mobileapp.features.inc';
