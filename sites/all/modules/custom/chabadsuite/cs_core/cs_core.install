@@ -23,3 +23,12 @@ function cs_core_update_7001() {
 function cs_core_update_7002() {
   module_enable(array('strongarm', 'diff'));
 }
+
+/**
+ * Disable and uninstall the module.
+ */
+function cs_core_update_7003() {
+	 module_enable(array('cs_mobileapp'));
+    module_disable(array('fc_popout_promo', 'mandrill', 'mandrill_activity', 'in_field_labels'));
+    drupal_uninstall_modules(array('fc_popout_promo', 'mandrill', 'mandrill_activity', 'in_field_labels'));
+}
