@@ -79,7 +79,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -313,7 +313,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -745,7 +745,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -815,7 +815,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
