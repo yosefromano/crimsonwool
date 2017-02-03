@@ -531,11 +531,8 @@ color:#22B573 !important
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'full';
-  $handler->display->display_options['pager']['options']['items_per_page'] = '50';
-  $handler->display->display_options['pager']['options']['offset'] = '0';
-  $handler->display->display_options['pager']['options']['id'] = '0';
-  $handler->display->display_options['pager']['options']['quantity'] = '9';
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '1';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['grouping'] = array(
     0 => array(
@@ -860,6 +857,7 @@ i {color:#fff;}
   $handler->display->display_options['filters']['contact_id']['id'] = 'contact_id';
   $handler->display->display_options['filters']['contact_id']['table'] = 'civicrm_address';
   $handler->display->display_options['filters']['contact_id']['field'] = 'contact_id';
+  $handler->display->display_options['filters']['contact_id']['operator'] = '>=';
   $handler->display->display_options['filters']['contact_id']['value']['value'] = '2';
   $handler->display->display_options['path'] = 'mobileapp';
   $export['contacts'] = $view;
