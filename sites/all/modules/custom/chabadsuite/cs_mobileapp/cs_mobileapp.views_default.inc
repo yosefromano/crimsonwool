@@ -531,7 +531,8 @@ color:#22B573 !important
   $handler->display->display_options['cache']['type'] = 'none';
   $handler->display->display_options['query']['type'] = 'views_query';
   $handler->display->display_options['exposed_form']['type'] = 'basic';
-  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '250';
   $handler->display->display_options['pager']['options']['offset'] = '1';
   $handler->display->display_options['style_plugin'] = 'table';
   $handler->display->display_options['style_options']['grouping'] = array(
@@ -734,9 +735,25 @@ text-align:center;
     6 => 0,
     8 => 0,
   );
+  /* Filter criterion: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['filters']['display_name_1']['id'] = 'display_name_1';
+  $handler->display->display_options['filters']['display_name_1']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['display_name_1']['field'] = 'display_name';
+  $handler->display->display_options['filters']['display_name_1']['expose']['operator_id'] = 'display_name_1_op';
+  $handler->display->display_options['filters']['display_name_1']['expose']['label'] = 'Display Name';
+  $handler->display->display_options['filters']['display_name_1']['expose']['operator'] = 'display_name_1_op';
+  $handler->display->display_options['filters']['display_name_1']['expose']['identifier'] = 'display_name_1';
+  /* Filter criterion: CiviCRM Contacts: Is Deleted */
+  $handler->display->display_options['filters']['is_deleted']['id'] = 'is_deleted';
+  $handler->display->display_options['filters']['is_deleted']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['is_deleted']['field'] = 'is_deleted';
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['options']['items_per_page'] = '250';
+  $handler->display->display_options['pager']['options']['offset'] = '';
   $handler->display->display_options['defaults']['header'] = FALSE;
   /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
@@ -745,6 +762,12 @@ text-align:center;
   $handler->display->display_options['header']['area']['content'] = '<style>
 .logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
     display:none;
+}
+form#views-exposed-form-contacts-page-1 {
+    padding: 6px;
+}
+div#edit-title-wrapper label {
+    color: #2ba6cb;
 }
 #admin-menu, #admin-menu .dropdown {
     display: none;
@@ -790,6 +813,69 @@ text-align:center;
 
 <br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> APP HOME</a></div>';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  /* Filter criterion: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['filters']['display_name']['id'] = 'display_name';
+  $handler->display->display_options['filters']['display_name']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['display_name']['field'] = 'display_name';
+  $handler->display->display_options['filters']['display_name']['operator'] = 'contains';
+  $handler->display->display_options['filters']['display_name']['group'] = 1;
+  $handler->display->display_options['filters']['display_name']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['display_name']['expose']['operator_id'] = 'display_name_op';
+  $handler->display->display_options['filters']['display_name']['expose']['label'] = 'Search Contact List';
+  $handler->display->display_options['filters']['display_name']['expose']['operator'] = 'display_name_op';
+  $handler->display->display_options['filters']['display_name']['expose']['identifier'] = 'display_name';
+  $handler->display->display_options['filters']['display_name']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    7 => 0,
+    4 => 0,
+    5 => 0,
+    6 => 0,
+    8 => 0,
+  );
+  /* Filter criterion: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['filters']['display_name_1']['id'] = 'display_name_1';
+  $handler->display->display_options['filters']['display_name_1']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['display_name_1']['field'] = 'display_name';
+  $handler->display->display_options['filters']['display_name_1']['operator'] = 'not empty';
+  $handler->display->display_options['filters']['display_name_1']['group'] = 1;
+  $handler->display->display_options['filters']['display_name_1']['expose']['operator_id'] = 'display_name_1_op';
+  $handler->display->display_options['filters']['display_name_1']['expose']['label'] = 'Display Name';
+  $handler->display->display_options['filters']['display_name_1']['expose']['operator'] = 'display_name_1_op';
+  $handler->display->display_options['filters']['display_name_1']['expose']['identifier'] = 'display_name_1';
+  /* Filter criterion: CiviCRM Contacts: Is Deleted */
+  $handler->display->display_options['filters']['is_deleted']['id'] = 'is_deleted';
+  $handler->display->display_options['filters']['is_deleted']['table'] = 'civicrm_contact';
+  $handler->display->display_options['filters']['is_deleted']['field'] = 'is_deleted';
+  $handler->display->display_options['filters']['is_deleted']['value'] = '0';
+  $handler->display->display_options['filters']['is_deleted']['group'] = 1;
+  /* Filter criterion: CiviCRM Groups: Title */
+  $handler->display->display_options['filters']['title']['id'] = 'title';
+  $handler->display->display_options['filters']['title']['table'] = 'civicrm_group';
+  $handler->display->display_options['filters']['title']['field'] = 'title';
+  $handler->display->display_options['filters']['title']['group'] = 1;
+  $handler->display->display_options['filters']['title']['exposed'] = TRUE;
+  $handler->display->display_options['filters']['title']['expose']['operator_id'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['label'] = 'Only Show Contacts in Group';
+  $handler->display->display_options['filters']['title']['expose']['operator'] = 'title_op';
+  $handler->display->display_options['filters']['title']['expose']['identifier'] = 'title';
+  $handler->display->display_options['filters']['title']['expose']['remember_roles'] = array(
+    2 => '2',
+    1 => 0,
+    3 => 0,
+    11 => 0,
+    10 => 0,
+    5 => 0,
+    8 => 0,
+    6 => 0,
+    9 => 0,
+    4 => 0,
+    12 => 0,
+    7 => 0,
+  );
   $handler->display->display_options['path'] = 'mobileapp/contacts';
 
   /* Display: Page 2 */
