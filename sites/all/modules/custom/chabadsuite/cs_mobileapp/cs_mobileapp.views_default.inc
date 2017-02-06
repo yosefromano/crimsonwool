@@ -80,7 +80,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -314,7 +314,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -751,18 +751,21 @@ text-align:center;
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
   $handler->display->display_options['defaults']['pager'] = FALSE;
-  $handler->display->display_options['pager']['type'] = 'some';
+  $handler->display->display_options['pager']['type'] = 'full';
   $handler->display->display_options['pager']['options']['items_per_page'] = '250';
   $handler->display->display_options['pager']['options']['offset'] = '';
+  $handler->display->display_options['pager']['options']['id'] = '0';
+  $handler->display->display_options['pager']['options']['quantity'] = '9';
   $handler->display->display_options['defaults']['header'] = FALSE;
   /* Header: Global: Text area */
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
     display:none;
 }
+
 form#views-exposed-form-contacts-page-1 {
     padding: 6px;
 }
@@ -899,7 +902,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
   $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2 {
+.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
     display:none;
 }
 #admin-menu, #admin-menu .dropdown {
@@ -944,7 +947,9 @@ i {color:#fff;}
   $handler->display->display_options['filters']['contact_id']['table'] = 'civicrm_address';
   $handler->display->display_options['filters']['contact_id']['field'] = 'contact_id';
   $handler->display->display_options['filters']['contact_id']['operator'] = '>=';
-  $handler->display->display_options['filters']['contact_id']['value']['value'] = '2';
+  $handler->display->display_options['filters']['contact_id']['value'] = array(
+    'value' => '2',
+  );
   $handler->display->display_options['path'] = 'mobileapp';
   $export['contacts'] = $view;
 
