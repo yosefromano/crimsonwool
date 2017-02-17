@@ -30,7 +30,7 @@ function bulk_media_upload_menu() {
     'title' => 'Bulk Media Upload Settings',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('bulk_media_upload_admin'),
-    'access arguments' => array('access administration pages'),
+    'access arguments' => array('administer bulk media upload'),
     'type' => MENU_NORMAL_ITEM,
     'file' => 'bulk_media_upload.admin.inc',
   );
@@ -42,6 +42,10 @@ function bulk_media_upload_menu() {
  */
 function bulk_media_upload_permission() {
   return array(
+    'administer bulk media upload' => array(
+      'title' => t('Administer bulk media upload'),
+      'description' => t('Allows users to access the admin pages for bulk_media_upload.'),
+    ),
     'bulk upload media' => array(
       'title' => t('Bulk upload media'),
       'description' => t('Allows users to bulk upload media files.'),

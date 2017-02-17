@@ -117,6 +117,15 @@ function bulk_media_upload_admin($form, &$form_state) {
     }
   }
 
+  $form['bulk_media_upload_redirect_path'] = array(
+    '#type' => 'textfield',
+    '#title' => t('Redirect path'),
+    '#default_value' => variable_get('bulk_media_upload_redirect_path', 'admin/content/file/bulk_upload/summary'),
+    '#description' => t('Where to redirect after bulk media upload is finished'),
+    '#required' => TRUE,
+    '#size' => 50,
+  );
+
   return system_settings_form($form);
 }
 

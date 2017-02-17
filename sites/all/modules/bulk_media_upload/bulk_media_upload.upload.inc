@@ -233,7 +233,7 @@ function _bulk_media_upload_generate_entity($tmpfile, $form, $form_state, &$cont
   entity_save($entity_type, $entity);
 
   // Replace tokens in title - this has to be done after entity_save.
-  $label = token_replace($form_state['values']['title'], array($entity_type => $entity, 'file' => $file));
+  $label = token_replace($form_state['values']['title'], array($entity_type => $entity, 'file' => $file), array('clear' => TRUE));
 
   $entity->$label_field = $label;
 
@@ -253,6 +253,6 @@ function _bulk_media_upload_batch_finished($success, $results, $operations) {
   $_SESSION['bulk_media_upload_batch_result'] = $results;
   // TODO: do landing pages for other entity types?
   if ($entity_type == 'node') {
-    drupal_goto('admin/content/media/bulk_upload/summary');
+    drupal_goto(variable_get('bulk_media_upload_redirect_path', 'admin/content/file/bulk_upload/summary'));
   }
 }
