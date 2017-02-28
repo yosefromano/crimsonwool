@@ -32,3 +32,17 @@ function cs_core_update_7003() {
     module_disable(array('fc_popout_promo', 'mandrill', 'mandrill_activity', 'in_field_labels'));
     drupal_uninstall_modules(array('fc_popout_promo', 'mandrill', 'mandrill_activity', 'in_field_labels'));
 }
+
+/**
+ * Fix Facebook preferred communication type issue
+ */
+function cs_core_update_7004() {
+  db_query("update civicrm_option_value cov
+            set value=8
+            where cov.option_group_id=1 and cov.label='Facebook'"
+          );
+  db_query("update civicrm_contact cc
+            set cc.preferred_communication_method=8
+            where cc.preferred_communication_method='1Facebook'"
+          );
+}
