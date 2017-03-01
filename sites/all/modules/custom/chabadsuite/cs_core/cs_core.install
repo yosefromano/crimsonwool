@@ -46,3 +46,13 @@ function cs_core_update_7004() {
             where cc.preferred_communication_method='1Facebook'"
           );
 }
+
+/**
+ * Fix Facebook preferred communication type issue, part 2
+ */
+function cs_core_update_7005() {
+  db_query("update civicrm_contact cc
+            set cc.preferred_communication_method=8
+            where cc.preferred_communication_method='Facebook'"
+          );
+}
