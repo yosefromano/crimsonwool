@@ -1,6 +1,0 @@
-name = CiviCRM Cache Clear
-description = Automatically clear CiviCRM cache when document root change, such as on Pantheon hosting environment when site changes server(s)
-dependencies[] = civicrm
-package = CiviCRM
-core = 7.x
-version = 4.3
