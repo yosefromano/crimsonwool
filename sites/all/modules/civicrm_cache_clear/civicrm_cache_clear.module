@@ -1,0 +1,86 @@
+<?php
+
+function civicrm_cache_clear_civicrm_config( &$config ) {
+
+    // 1. Get document root from the server
+    // 2. Compare to a set path in the Drupal cache
+    // If 2. doesn't = 1., then regenerate cache and update DB
+    // This means the file path has changed
+
+    $cid = 'civicrm_cache_clear:currentpath';
+    $cached_path = cache_get($cid);
+
+
+   if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
+        $env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
+       if (!empty($env['conf']['pantheon_binding'])) {
+           $pantheon_conf = $env['conf'];
+           $document_root = '/srv/bindings/' . $pantheon_conf['pantheon_binding'];
+       } else {
+           $document_root = $_SERVER['DOCUMENT_ROOT'];
+       }
+    } else {
+        $document_root = $_SERVER['DOCUMENT_ROOT'];
+    }
+
+
+    // If a cached entry exists, use it, else set new one
+    if (!isset($cached_path->data) && (strlen($cached_path->data) > 0)) {
+
+        $cached_path = $cached_path->data;
+
+    } else {
+
+        // Get current path from DB
+        $result = civicrm_cache_clear_get_path();
+
+        // No DB record set
+        if (empty($result)) {
+            $cached_path = $document_root;
+            civicrm_cache_clear_insert_path($cached_path);
+        } else {
+            $cached_path = $result->currentpath;
+            cache_set($cid, $cached_path, 'cache', CACHE_TEMPORARY);
+        }
+
+    }
+
+
+    if ($cached_path != $document_root) {
+        error_log("Path changed from: " . $cached_path . " to " . $document_root . ". Clearing CiviCRM cache." );
+
+        // Update new path
+        civicrm_cache_clear_update_path($document_root);
+        cache_set($cid, $document_root, 'cache', CACHE_TEMPORARY);
+
+        // Clear database cache and also clean up smarty templates
+        CRM_Core_Config::clearDBCache();
+        $config->cleanupCaches();
+    }
+
+}
+
+function civicrm_cache_clear_insert_path($path)
+{
+    $values = array('currentpath' => $path);
+    drupal_write_record('civicrm_cache_clear', $values);
+}
+
+
+function civicrm_cache_clear_update_path($path)
+{
+    $values = array('currentpath' => $path, 'pid' => 1);
+    $params = array('pid');
+
+    drupal_write_record('civicrm_cache_clear', $values, $params);
+}
+
+
+function civicrm_cache_clear_get_path()
+{
+    return db_select('civicrm_cache_clear', 'n')
+        ->fields('n', array('pid', 'currentpath'))
+        ->orderBy('pid', 'DESC')
+        ->execute()->fetch();
+}
+
