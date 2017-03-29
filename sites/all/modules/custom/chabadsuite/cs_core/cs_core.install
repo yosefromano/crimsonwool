@@ -56,3 +56,11 @@ function cs_core_update_7005() {
             where cc.preferred_communication_method='Facebook'"
           );
 }
+
+/**
+ * Replace old 'civicrm_clear_all_caches' module with new 'civicrm_cache_clear'
+ */
+function cs_core_update_7006() {
+  module_disable(array('civicrm_clear_all_caches'));
+  module_enable(array('civicrm_cache_clear'));
+}
