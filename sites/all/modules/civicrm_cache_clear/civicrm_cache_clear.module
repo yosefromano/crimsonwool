@@ -2,6 +2,10 @@
 
 function civicrm_cache_clear_civicrm_config( &$config ) {
 
+    // Make sure this module has been fully installed. This is necessary because
+    // this hook can get invoked during the schema installation
+    if (!db_table_exists('civicrm_cache_clear')) return;
+
     // 1. Get document root from the server
     // 2. Compare to a set path in the Drupal cache
     // If 2. doesn't = 1., then regenerate cache and update DB
@@ -83,4 +87,3 @@ function civicrm_cache_clear_get_path()
         ->orderBy('pid', 'DESC')
         ->execute()->fetch();
 }
-

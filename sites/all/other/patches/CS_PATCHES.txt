@@ -51,3 +51,6 @@ see more about this issue here: https://issues.civicrm.org/jira/browse/CRM-17331
 Patch used: patches/sms.patch
 Applied in site's root directory
 
+
+== civicrm_cache_clear ==
+Patch used: patches/civicrm-cache-clear-schema.patch
