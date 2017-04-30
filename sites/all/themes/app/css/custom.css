@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700);
+@import url(http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700);
 /* line 3, ../scss/custom.scss */
 * {
   box-sizing: border-box;
@@ -48,13 +48,12 @@ body :-ms-input-placeholder {
   font-weight: 300;
 }
 
-/* background: white;*/
-/* line 42, ../scss/custom.scss */
+/* line 41, ../scss/custom.scss */
 a {
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-/* line 47, ../scss/custom.scss */
+/* line 46, ../scss/custom.scss */
 .wrapper {
   margin: 0;
   background-image: -webkit-gradient(linear, right bottom, left top, color-stop(0, #097D47), color-stop(1, #24B574));
@@ -72,7 +71,7 @@ a {
   padding-bottom: 1em;
 }
 
-/* line 65, ../scss/custom.scss */
+/* line 64, ../scss/custom.scss */
 .cloud-logo {
   background-image: url(../images/csuitelogo.png);
   background-size: 200px;
@@ -98,14 +97,14 @@ a {
     margin-top: -200px;
     overflow: hidden;
 }*/
-/* line 92, ../scss/custom.scss */
+/* line 91, ../scss/custom.scss */
 .wrapper.form-success .container h1 {
   -webkit-transform: translateY(85px);
   -ms-transform: translateY(85px);
   transform: translateY(85px);
 }
 
-/* line 98, ../scss/custom.scss */
+/* line 97, ../scss/custom.scss */
 .region.region-content {
   max-width: 600px;
   margin: 0 auto;
@@ -113,7 +112,7 @@ a {
   text-align: center;
 }
 
-/* line 104, ../scss/custom.scss */
+/* line 103, ../scss/custom.scss */
 .region.region-content h1 {
   font-size: 40px;
   -webkit-transition-duration: 1s;
@@ -123,19 +122,19 @@ a {
   font-weight: 200;
 }
 
-/* line 113, ../scss/custom.scss */
+/* line 112, ../scss/custom.scss */
 .description {
   display: none;
 }
 
-/* line 117, ../scss/custom.scss */
+/* line 116, ../scss/custom.scss */
 form#user-login {
   padding: 20px 0;
   position: relative;
   z-index: 2;
 }
 
-/* line 122, ../scss/custom.scss */
+/* line 121, ../scss/custom.scss */
 #user-login label {
   position: relative;
   width: 100%;
@@ -144,14 +143,14 @@ form#user-login {
   color: white;
 }
 
-/* line 129, ../scss/custom.scss */
+/* line 128, ../scss/custom.scss */
 input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
   background-color: #ffffff !important;
   background-image: none !important;
   color: #45AD84 !important;
 }
 
-/* line 134, ../scss/custom.scss */
+/* line 133, ../scss/custom.scss */
 input:-webkit-autofill,
 form#user-login input,
 .form-text {
@@ -176,7 +175,7 @@ form#user-login input,
   margin-bottom: 2em;
 }
 
-/* line 158, ../scss/custom.scss */
+/* line 157, ../scss/custom.scss */
 .password-strength {
   width: 17em;
   float: none;
@@ -185,30 +184,30 @@ form#user-login input,
   width: 100%;
 }
 
-/* line 165, ../scss/custom.scss */
+/* line 164, ../scss/custom.scss */
 div#edit-actions input#edit-submit {
   background-color: #ffffff;
   color: #45AD84;
 }
 
-/* line 170, ../scss/custom.scss */
+/* line 169, ../scss/custom.scss */
 div#edit-actions {
   margin-top: 4em;
 }
 
-/* line 173, ../scss/custom.scss */
+/* line 172, ../scss/custom.scss */
 form#user-login input:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* line 176, ../scss/custom.scss */
+/* line 175, ../scss/custom.scss */
 form#user-login input:focus {
   background-color: white;
   width: 300px;
   color: #45AD84;
 }
 
-/* line 181, ../scss/custom.scss */
+/* line 180, ../scss/custom.scss */
 form#user-login button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -226,12 +225,12 @@ form#user-login button {
   transition-duration: 0.25s;
 }
 
-/* line 197, ../scss/custom.scss */
+/* line 196, ../scss/custom.scss */
 form#user-login button:hover {
   background-color: #f5f7f9;
 }
 
-/* line 201, ../scss/custom.scss */
+/* line 200, ../scss/custom.scss */
 .bg-bubbles {
   top: 0;
   left: 0;
@@ -240,7 +239,7 @@ form#user-login button:hover {
   z-index: 1;
 }
 
-/* line 209, ../scss/custom.scss */
+/* line 208, ../scss/custom.scss */
 .bg-bubbles li {
   position: absolute;
   list-style: none;
@@ -255,12 +254,12 @@ form#user-login button:hover {
   transition-timing-function: linear;
 }
 
-/* line 222, ../scss/custom.scss */
+/* line 221, ../scss/custom.scss */
 .bg-bubbles li:nth-child(1) {
   left: 10%;
 }
 
-/* line 225, ../scss/custom.scss */
+/* line 224, ../scss/custom.scss */
 .bg-bubbles li:nth-child(2) {
   left: 20%;
   width: 80px;
@@ -271,14 +270,14 @@ form#user-login button:hover {
   animation-duration: 17s;
 }
 
-/* line 234, ../scss/custom.scss */
+/* line 233, ../scss/custom.scss */
 .bg-bubbles li:nth-child(3) {
   left: 25%;
   -webkit-animation-delay: 4s;
   animation-delay: 4s;
 }
 
-/* line 239, ../scss/custom.scss */
+/* line 238, ../scss/custom.scss */
 .bg-bubbles li:nth-child(4) {
   left: 40%;
   width: 60px;
@@ -288,12 +287,12 @@ form#user-login button:hover {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-/* line 247, ../scss/custom.scss */
+/* line 246, ../scss/custom.scss */
 .bg-bubbles li:nth-child(5) {
   left: 70%;
 }
 
-/* line 250, ../scss/custom.scss */
+/* line 249, ../scss/custom.scss */
 .bg-bubbles li:nth-child(6) {
   left: 80%;
   width: 120px;
@@ -303,7 +302,7 @@ form#user-login button:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* line 258, ../scss/custom.scss */
+/* line 257, ../scss/custom.scss */
 .bg-bubbles li:nth-child(7) {
   left: 32%;
   width: 160px;
@@ -312,7 +311,7 @@ form#user-login button:hover {
   animation-delay: 7s;
 }
 
-/* line 265, ../scss/custom.scss */
+/* line 264, ../scss/custom.scss */
 .bg-bubbles li:nth-child(8) {
   left: 55%;
   width: 20px;
@@ -323,7 +322,7 @@ form#user-login button:hover {
   animation-duration: 40s;
 }
 
-/* line 274, ../scss/custom.scss */
+/* line 273, ../scss/custom.scss */
 .bg-bubbles li:nth-child(9) {
   left: 25%;
   width: 10px;
@@ -335,7 +334,7 @@ form#user-login button:hover {
   background-color: rgba(255, 255, 255, 0.3);
 }
 
-/* line 284, ../scss/custom.scss */
+/* line 283, ../scss/custom.scss */
 .bg-bubbles li:nth-child(10) {
   left: 90%;
   width: 160px;
@@ -365,14 +364,14 @@ form#user-login button:hover {
   }
 }
 /********************** test for user password page**********/
-/* line 315, ../scss/custom.scss */
+/* line 314, ../scss/custom.scss */
 form#user-pass {
   padding: 20px 0;
   position: relative;
   z-index: 2;
 }
 
-/* line 320, ../scss/custom.scss */
+/* line 319, ../scss/custom.scss */
 form#user-pass input {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -393,19 +392,19 @@ form#user-pass input {
   font-weight: 700;
 }
 
-/* line 339, ../scss/custom.scss */
+/* line 338, ../scss/custom.scss */
 form#user-pass input:hover {
   background-color: rgba(255, 255, 255, 0.4);
 }
 
-/* line 342, ../scss/custom.scss */
+/* line 341, ../scss/custom.scss */
 form#user-pass input:focus {
   background-color: white;
   width: 300px;
   color: #45AD84;
 }
 
-/* line 347, ../scss/custom.scss */
+/* line 346, ../scss/custom.scss */
 form#user-pass button {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -423,65 +422,19 @@ form#user-pass button {
   transition-duration: 0.25s;
 }
 
-/* line 363, ../scss/custom.scss */
+/* line 362, ../scss/custom.scss */
 form#user-pass button:hover {
   background-color: #f5f7f9;
 }
 
-/*body {
-  background-image: url(../images/gradient.png);
-  width: 90%;
-  margin: 0 auto;
-  color: whitesmoke;
-}
-
-div#block-system-main {
-  border-style: solid;
-  border-radius: 11px;
-  width: 40%;
-  height: 40%;
-  margin: 30%;
-}
-
-
-label {
-  font-weight:200;
-}
-
-.description {
-  text-align: center;
-}
-
-input#edit-submit {
-  font-size: 30px;
-  background: blue;
-  border: 0;
-  border-radius: 8px;
-  color: whitesmoke;
-  padding: 8px 70px;
-}
-
-body.html.not-front.not-logged-in.no-sidebars.page-user{
-    background: #50a3a2;
-    background: -webkit-linear-gradient(top left, #50a3a2 0%, #53e3a6 100%);
-    background: linear-gradient(to bottom right, #50a3a2 0%, #53e3a6 100%);
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 400px;
-    margin-top: -200px;
-    overflow: hidden;
-	
-} */
-/* line 413, ../scss/custom.scss */
+/* line 367, ../scss/custom.scss */
 .actions-box {
   max-width: 600px;
   margin: 0 auto;
   text-align: center;
 }
 
-/* line 418, ../scss/custom.scss */
+/* line 372, ../scss/custom.scss */
 a.u-p {
   border: 1px solid rgba(255, 255, 255, 0.54);
   padding: 0 .5em;
@@ -492,20 +445,20 @@ a.u-p {
   font-size: 18px;
 }
 
-/* line 427, ../scss/custom.scss */
+/* line 381, ../scss/custom.scss */
 a.u-p:hover {
   color: #45AD84;
   background-color: #ffffff;
 }
 
-/* line 432, ../scss/custom.scss */
+/* line 386, ../scss/custom.scss */
 label {
   font-weight: 200;
   text-align: center;
   color: white;
 }
 
-/* line 437, ../scss/custom.scss */
+/* line 391, ../scss/custom.scss */
 div.password-confirm {
   float: right;
   margin-top: 1.5em;
@@ -513,19 +466,19 @@ div.password-confirm {
   width: 100%;
 }
 
-/* line 443, ../scss/custom.scss */
+/* line 397, ../scss/custom.scss */
 #user-profile-form label {
   position: relative;
   /* top: 33px;*/
 }
 
-/* line 447, ../scss/custom.scss */
+/* line 401, ../scss/custom.scss */
 #user-profile-form .form-type-radios label {
   position: relative;
   top: 0;
 }
 
-/* line 451, ../scss/custom.scss */
+/* line 405, ../scss/custom.scss */
 span#user-page-profile-Nam a,
 span#user-page-contact a,
 span#user-page-dashboard a {
@@ -538,22 +491,22 @@ span#user-page-dashboard a {
   font-size: 18px;
 }
 
-/* line 462, ../scss/custom.scss */
+/* line 416, ../scss/custom.scss */
 span.user-page-bullet {
   display: none;
 }
 
-/* line 465, ../scss/custom.scss */
+/* line 419, ../scss/custom.scss */
 span#user-page-contact {
   display: block;
 }
 
-/* line 468, ../scss/custom.scss */
+/* line 422, ../scss/custom.scss */
 .page-user-password .actions-box {
   display: none;
 }
 
-/* line 471, ../scss/custom.scss */
+/* line 425, ../scss/custom.scss */
 .page-user-edit-name-and-address input#edit-submit,
 .page-user-reset- input#edit-submit {
   -webkit-appearance: none;
@@ -572,77 +525,77 @@ span#user-page-contact {
   transition-duration: 0.25s;
 }
 
-/* line 488, ../scss/custom.scss */
+/* line 442, ../scss/custom.scss */
 .page-user-edit-name-and-address input#last_name,
 .page-user-edit-name-and-address input#first_name {
   color: #000000;
 }
 
-/* line 492, ../scss/custom.scss */
+/* line 446, ../scss/custom.scss */
 .page-user-edit-name-and-address #user-profile-form label {
   top: 0;
 }
 
-/* line 496, ../scss/custom.scss */
+/* line 450, ../scss/custom.scss */
 h1, h2, h3, h4, h5, h6 {
   color: white;
   font-family: 'Source Sans Pro', sans-serif;
 }
 
-/* line 502, ../scss/custom.scss */
+/* line 456, ../scss/custom.scss */
 .user-page-link a {
   display: none;
 }
 
-/* line 507, ../scss/custom.scss */
+/* line 461, ../scss/custom.scss */
 ul.button-group.round {
   max-width: 367px;
   margin: 0 auto;
 }
-/* line 510, ../scss/custom.scss */
+/* line 464, ../scss/custom.scss */
 ul.button-group.round .button.secondary {
   background-color: #149459;
 }
-/* line 513, ../scss/custom.scss */
+/* line 467, ../scss/custom.scss */
 ul.button-group.round a {
   color: white;
 }
 
-/* line 519, ../scss/custom.scss */
+/* line 473, ../scss/custom.scss */
 .crm-container .crm-section .label {
   float: left;
   width: auto;
   text-align: right;
 }
 
-/* line 526, ../scss/custom.scss */
+/* line 480, ../scss/custom.scss */
 .page-user .row.front {
   max-width: 650px;
   padding-left: 10px;
   padding-right: 10px;
 }
 
-/* line 534, ../scss/custom.scss */
+/* line 488, ../scss/custom.scss */
 .page-user-edit label.in-field-labels-processed {
   display: block !important;
 }
 
-/* line 539, ../scss/custom.scss */
+/* line 493, ../scss/custom.scss */
 form#user-login {
   text-align: center;
 }
 
-/* line 543, ../scss/custom.scss */
+/* line 497, ../scss/custom.scss */
 form#user-pass {
   text-align: center;
 }
 
-/* line 547, ../scss/custom.scss */
+/* line 501, ../scss/custom.scss */
 .logged-in .actions-box {
   display: none;
 }
 
-/* line 551, ../scss/custom.scss */
+/* line 505, ../scss/custom.scss */
 input[type="text"], input[type="password"], input[type="date"], input[type="datetime"], input[type="datetime-local"], input[type="month"], input[type="week"], input[type="email"], input[type="number"], input[type="search"], input[type="tel"], input[type="time"], input[type="url"], textarea {
   background-color: #FFF;
   font-family: Arial;
@@ -661,4 +614,98 @@ input[type="text"], input[type="password"], input[type="date"], input[type="date
   width: 100%;
   box-sizing: border-box;
   transition: box-shadow 0.45s ease 0s, border-color 0.45s ease-in-out 0s;
+}
+
+/* line 529, ../scss/custom.scss */
+.page-mobileapp #admin-menu, .page-mobileapp #admin-menu .dropdown, .page-mobileapp .logo, .page-mobileapp .fcrm-footer, .page-mobileapp .main-nav, .page-mobileapp .l-footer, .page-mobileapp .l-triptych, .page-mobileapp .top-bar, .page-mobileapp .block-views-menubar-block-2, .page-mobileapp .breadcrumbs, .page-mobileapp-contacts #admin-menu, .page-mobileapp-contacts #admin-menu .dropdown, .page-mobileapp-contacts .logo, .page-mobileapp-contacts .fcrm-footer, .page-mobileapp-contacts .main-nav, .page-mobileapp-contacts .l-footer, .page-mobileapp-contacts .l-triptych, .page-mobileapp-contacts .top-bar, .page-mobileapp-contacts .block-views-menubar-block-2, .page-mobileapp-contacts .breadcrumbs, .section-mobileapp #admin-menu, .section-mobileapp #admin-menu .dropdown, .section-mobileapp .logo, .section-mobileapp .fcrm-footer, .section-mobileapp .main-nav, .section-mobileapp .l-footer, .section-mobileapp .l-triptych, .section-mobileapp .top-bar, .section-mobileapp .block-views-menubar-block-2, .section-mobileapp .breadcrumbs {
+  display: none;
+}
+/* line 533, ../scss/custom.scss */
+.page-mobileapp td.views-field.views-field-display-name, .page-mobileapp-contacts td.views-field.views-field-display-name, .section-mobileapp td.views-field.views-field-display-name {
+  font-size: 1.2em;
+}
+/* line 537, ../scss/custom.scss */
+.page-mobileapp i.fa.fa, .page-mobileapp-contacts i.fa.fa, .section-mobileapp i.fa.fa {
+  font-size: 1em;
+}
+/* line 541, ../scss/custom.scss */
+.page-mobileapp table td, .page-mobileapp-contacts table td, .section-mobileapp table td {
+  padding: 20px 10px !important;
+}
+/* line 545, ../scss/custom.scss */
+.page-mobileapp form#views-exposed-form-contacts-page-1, .page-mobileapp-contacts form#views-exposed-form-contacts-page-1, .section-mobileapp form#views-exposed-form-contacts-page-1 {
+  padding: 6px;
+}
+/* line 550, ../scss/custom.scss */
+.page-mobileapp div#edit-title-wrapper label, .page-mobileapp-contacts div#edit-title-wrapper label, .section-mobileapp div#edit-title-wrapper label {
+  color: #2ba6cb;
+}
+/* line 555, ../scss/custom.scss */
+.page-mobileapp table.views-table, .page-mobileapp-contacts table.views-table, .section-mobileapp table.views-table {
+  width: 100%;
+}
+/* line 558, ../scss/custom.scss */
+.page-mobileapp table, .page-mobileapp-contacts table, .section-mobileapp table {
+  width: 100%;
+}
+/* line 562, ../scss/custom.scss */
+.page-mobileapp .views-exposed-form .views-exposed-widget .form-submit, .page-mobileapp-contacts .views-exposed-form .views-exposed-widget .form-submit, .section-mobileapp .views-exposed-form .views-exposed-widget .form-submit {
+  margin-top: 1em;
+}
+/* line 566, ../scss/custom.scss */
+.page-mobileapp .appbar, .page-mobileapp-contacts .appbar, .section-mobileapp .appbar {
+  background: #21A367;
+  text-align: center;
+  font-color: #fff;
+  padding: 1em 0;
+  margin-top: -20px !important;
+}
+/* line 574, ../scss/custom.scss */
+.page-mobileapp .appbar a, .page-mobileapp-contacts .appbar a, .section-mobileapp .appbar a {
+  font-size: 1.2em;
+  color: #fff;
+  font-weight: bold;
+}
+/* line 579, ../scss/custom.scss */
+.page-mobileapp th.views-field, .page-mobileapp-contacts th.views-field, .section-mobileapp th.views-field {
+  font-size: 1.2em;
+  font-weight: bold;
+}
+/* line 583, ../scss/custom.scss */
+.page-mobileapp td.views-field, .page-mobileapp-contacts td.views-field, .section-mobileapp td.views-field {
+  font-size: 1em;
+}
+/* line 587, ../scss/custom.scss */
+.page-mobileapp h1, .page-mobileapp h2, .page-mobileapp h3, .page-mobileapp-contacts h1, .page-mobileapp-contacts h2, .page-mobileapp-contacts h3, .section-mobileapp h1, .section-mobileapp h2, .section-mobileapp h3 {
+  color: #21A367;
+  text-align: center;
+}
+/* line 594, ../scss/custom.scss */
+.page-mobileapp .apphome #admin-menu, .page-mobileapp .apphome #admin-menu .dropdown, .page-mobileapp .apphome .logo, .page-mobileapp .apphome .fcrm-footer, .page-mobileapp .apphome .main-nav, .page-mobileapp .apphome .l-footer, .page-mobileapp .apphome .l-triptych, .page-mobileapp .apphome .top-bar, .page-mobileapp .apphome .block-views-menubar-block-2, .page-mobileapp .apphome .breadcrumbs, .page-mobileapp-contacts .apphome #admin-menu, .page-mobileapp-contacts .apphome #admin-menu .dropdown, .page-mobileapp-contacts .apphome .logo, .page-mobileapp-contacts .apphome .fcrm-footer, .page-mobileapp-contacts .apphome .main-nav, .page-mobileapp-contacts .apphome .l-footer, .page-mobileapp-contacts .apphome .l-triptych, .page-mobileapp-contacts .apphome .top-bar, .page-mobileapp-contacts .apphome .block-views-menubar-block-2, .page-mobileapp-contacts .apphome .breadcrumbs, .section-mobileapp .apphome #admin-menu, .section-mobileapp .apphome #admin-menu .dropdown, .section-mobileapp .apphome .logo, .section-mobileapp .apphome .fcrm-footer, .section-mobileapp .apphome .main-nav, .section-mobileapp .apphome .l-footer, .section-mobileapp .apphome .l-triptych, .section-mobileapp .apphome .top-bar, .section-mobileapp .apphome .block-views-menubar-block-2, .section-mobileapp .apphome .breadcrumbs {
+  display: none;
+}
+/* line 598, ../scss/custom.scss */
+.page-mobileapp .apphome i, .page-mobileapp-contacts .apphome i, .section-mobileapp .apphome i {
+  color: #fff;
+}
+/* line 601, ../scss/custom.scss */
+.page-mobileapp .qklinks, .page-mobileapp-contacts .qklinks, .section-mobileapp .qklinks {
+  margin-bottom: .5em;
+}
+/* line 602, ../scss/custom.scss */
+.page-mobileapp .qklinks .fa, .page-mobileapp-contacts .qklinks .fa, .section-mobileapp .qklinks .fa {
+  font-size: 2em !important;
+  margin-left: 8px;
+  color: #21a367;
+}
+/* line 610, ../scss/custom.scss */
+.page-mobileapp .qk2 .fa, .page-mobileapp-contacts .qk2 .fa, .section-mobileapp .qk2 .fa {
+  font-size: 1.5em !important;
+  margin-left: 6px;
+  color: #21a367;
+}
+
+/* line 618, ../scss/custom.scss */
+.center {
+  text-align: center;
 }

@@ -79,47 +79,18 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
-</style>
-
-<br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> APP HOME</a></div>';
+  $handler->display->display_options['header']['area']['content'] = '<div class="large-12 appbar"><a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i> APP HOME</a></div>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   /* No results behavior: Global: Text area */
   $handler->display->display_options['empty']['area']['id'] = 'area';
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
+  $handler->display->display_options['empty']['area']['content'] = '<div class="large-12 appbar" ><a href= "/mobileapp/activities"><i class="fa fa-arrow-left" aria-hidden="true"></i>  Back</a>      |      <a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i>  APP HOME</a></div>
 
-h1{
-color: #21A367;
-text-align:center;
-}
-
-</style>
 <div>
 <h1> No Data To Display </h1>
-</div>
-
-<br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> APP HOME</a></div>';
+</div>';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Relationship: CiviCRM Activity Contacts: Activity Contact ID */
   $handler->display->display_options['relationships']['contact_id']['id'] = 'contact_id';
@@ -228,7 +199,27 @@ text-align:center;
 
   /* Display: Page */
   $handler = $view->new_display('page', 'Page', 'page_1');
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<div class="large-12 appbar" ><a href= "/mobileapp/activities"><i class="fa fa-arrow-left" aria-hidden="true"></i>  APP HOME</a></div>
+
+<div>
+<h1> No Data To Display </h1>
+</div>';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id_1']['id'] = 'id_1';
+  $handler->display->display_options['fields']['id_1']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id_1']['field'] = 'id';
+  $handler->display->display_options['fields']['id_1']['relationship'] = 'contact_id_1';
+  $handler->display->display_options['fields']['id_1']['label'] = '';
+  $handler->display->display_options['fields']['id_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['id_1']['element_label_colon'] = FALSE;
   /* Field: CiviCRM Email: Email Address */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
@@ -241,7 +232,7 @@ text-align:center;
   $handler->display->display_options['fields']['email']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['email']['location_type'] = '0';
   $handler->display->display_options['fields']['email']['location_op'] = '0';
-  $handler->display->display_options['fields']['email']['is_primary'] = 0;
+  $handler->display->display_options['fields']['email']['is_primary'] = 1;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
   /* Field: CiviCRM Phone Details: Phone Number */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
@@ -271,8 +262,8 @@ text-align:center;
   $handler->display->display_options['fields']['display_name_1']['relationship'] = 'contact_id_1';
   $handler->display->display_options['fields']['display_name_1']['label'] = 'To Do';
   $handler->display->display_options['fields']['display_name_1']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['display_name_1']['alter']['text'] = '[activity_type] with [display_name_1] <br /> [phone]  [email]';
-  $handler->display->display_options['fields']['display_name_1']['link_to_civicrm_contact'] = 1;
+  $handler->display->display_options['fields']['display_name_1']['alter']['text'] = '<div class="qk2">[activity_type] with <a href="/mobileapp/contacts/[id_1] ">[display_name_1]</a>  [phone]  [email]</div>';
+  $handler->display->display_options['fields']['display_name_1']['link_to_civicrm_contact'] = 0;
   /* Field: CiviCRM Activities: Subject */
   $handler->display->display_options['fields']['subject']['id'] = 'subject';
   $handler->display->display_options['fields']['subject']['table'] = 'civicrm_activity';
@@ -313,31 +304,19 @@ text-align:center;
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
-
-table {
-    margin: 0 auto;
-}
-h2{
-text-align:center;
-color:#22B573 !important
-}
-</style>
-
-<br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp/activities" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> All My Activities</a></div>
+  $handler->display->display_options['header']['area']['content'] = '<div class="large-12 appbar" ><a href= "/mobileapp/activities"><i class="fa fa-arrow-left" aria-hidden="true"></i>  Back</a>      |      <a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i>  APP HOME</a></div>
 ';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['header']['area']['tokenize'] = TRUE;
   $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id_1']['id'] = 'id_1';
+  $handler->display->display_options['fields']['id_1']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id_1']['field'] = 'id';
+  $handler->display->display_options['fields']['id_1']['relationship'] = 'contact_id_1';
+  $handler->display->display_options['fields']['id_1']['label'] = '';
+  $handler->display->display_options['fields']['id_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['id_1']['element_label_colon'] = FALSE;
   /* Field: CiviCRM Email: Email Address */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
@@ -380,8 +359,8 @@ color:#22B573 !important
   $handler->display->display_options['fields']['display_name_1']['relationship'] = 'contact_id_1';
   $handler->display->display_options['fields']['display_name_1']['label'] = '';
   $handler->display->display_options['fields']['display_name_1']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['display_name_1']['alter']['text'] = '<center><h2>[activity_type] with [display_name_1] <br /></h2></center>
-<div class="center"> [phone]  [email]</div';
+  $handler->display->display_options['fields']['display_name_1']['alter']['text'] = '<center><h2>[activity_type] with <a href="/mobileapp/contacts/[id_1] ">[display_name_1]</a> <br /></h2></center>
+<div class="center qklinks"> [phone]  [email]</div';
   $handler->display->display_options['fields']['display_name_1']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['display_name_1']['link_to_civicrm_contact'] = 1;
   /* Field: CiviCRM Contacts: Display Name */
@@ -464,7 +443,7 @@ color:#22B573 !important
   $handler->display->display_options['fields']['nothing']['table'] = 'views';
   $handler->display->display_options['fields']['nothing']['field'] = 'nothing';
   $handler->display->display_options['fields']['nothing']['label'] = '';
-  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<table>
+  $handler->display->display_options['fields']['nothing']['alter']['text'] = '<table width="100%">
 <tbody>
 <tr>
 <td><label>Assigned to</label></td>
@@ -535,14 +514,7 @@ color:#22B573 !important
   $handler->display->display_options['pager']['options']['items_per_page'] = '250';
   $handler->display->display_options['pager']['options']['offset'] = '1';
   $handler->display->display_options['style_plugin'] = 'table';
-  $handler->display->display_options['style_options']['grouping'] = array(
-    0 => array(
-      'field' => 'display_name',
-      'rendered' => 1,
-      'rendered_strip' => 0,
-    ),
-  );
-  $handler->display->display_options['style_options']['row_class'] = 'large-12 columns app-table';
+  $handler->display->display_options['style_options']['row_class'] = 'app-table';
   $handler->display->display_options['style_options']['columns'] = array(
     'display_name' => 'display_name',
     'street_address' => 'street_address',
@@ -551,10 +523,10 @@ color:#22B573 !important
     'phone' => 'phone',
     'email' => 'email',
   );
-  $handler->display->display_options['style_options']['default'] = 'display_name';
+  $handler->display->display_options['style_options']['default'] = '-1';
   $handler->display->display_options['style_options']['info'] = array(
     'display_name' => array(
-      'sortable' => 0,
+      'sortable' => 1,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
@@ -565,28 +537,28 @@ color:#22B573 !important
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
     'postal_code' => array(
       'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
     'state_province' => array(
       'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
     'phone' => array(
       'sortable' => 0,
       'default_sort_order' => 'asc',
       'align' => '',
       'separator' => '',
-      'empty_column' => 1,
+      'empty_column' => 0,
     ),
     'email' => array(
       'sortable' => 0,
@@ -619,26 +591,13 @@ table.views-table {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
-
-h1{
-color: #21A367;
-text-align:center;
-}
-
-</style>
+  $handler->display->display_options['empty']['area']['content'] = '<div class="large-12 appbar">
+<a href= "/mobileapp/contacts"> <i class="fa fa-arrow-left" aria-hidden="true"></i>  All Contacts</a>      |      <a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i>  APP HOME</a>
+</div>
 <div>
 <h1> No Data To Display </h1>
-</div>';
+</div>
+';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
   /* Field: CiviCRM Contacts: Display Name */
   $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
@@ -662,7 +621,7 @@ text-align:center;
   $handler->display->display_options['fields']['street_address']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['street_address']['location_type'] = '0';
   $handler->display->display_options['fields']['street_address']['location_op'] = '0';
-  $handler->display->display_options['fields']['street_address']['is_primary'] = 0;
+  $handler->display->display_options['fields']['street_address']['is_primary'] = 1;
   $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
   /* Field: CiviCRM Address: ZIP / Postal Code */
   $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
@@ -715,6 +674,12 @@ text-align:center;
   $handler->display->display_options['fields']['email']['location_op'] = '0';
   $handler->display->display_options['fields']['email']['is_primary'] = 1;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
+  /* Contextual filter: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['arguments']['contact_id']['id'] = 'contact_id';
+  $handler->display->display_options['arguments']['contact_id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['arguments']['contact_id']['field'] = 'contact_id';
+  $handler->display->display_options['arguments']['contact_id']['default_argument_type'] = 'fixed';
+  $handler->display->display_options['arguments']['contact_id']['summary']['format'] = 'default_summary';
   /* Filter criterion: CiviCRM Contacts: Display Name */
   $handler->display->display_options['filters']['display_name']['id'] = 'display_name';
   $handler->display->display_options['filters']['display_name']['table'] = 'civicrm_contact';
@@ -761,31 +726,7 @@ text-align:center;
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
-    display:none;
-}
-
-form#views-exposed-form-contacts-page-1 {
-    padding: 6px;
-}
-div#edit-title-wrapper label {
-    color: #2ba6cb;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
-
-.views-exposed-form .views-exposed-widget .form-submit {
-    margin-top: 1em;
-}
-
-</style>
-
-<br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> APP HOME</a></div>';
+  $handler->display->display_options['header']['area']['content'] = '<br /><div class="large-12 appbar"><a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i> APP HOME</a></div>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
   $handler->display->display_options['defaults']['empty'] = FALSE;
   /* No results behavior: Global: Text area */
@@ -793,29 +734,94 @@ table.views-table {
   $handler->display->display_options['empty']['area']['table'] = 'views';
   $handler->display->display_options['empty']['area']['field'] = 'area';
   $handler->display->display_options['empty']['area']['empty'] = TRUE;
-  $handler->display->display_options['empty']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-table.views-table {
-    width: 100%;
-}
-
-h1{
-color: #21A367;
-text-align:center;
-}
-
-</style>
+  $handler->display->display_options['empty']['area']['content'] = '<div class="large-12 appbar"><a href= "/mobileapp" "><i class="fa fa-home" aria-hidden="true"></i> APP HOME</a></div>
 <div>
 <h1> No Data To Display </h1>
 </div>
-
-<br /><div class="large-12" style="background:#888; text-align:center; font-color:#fff;"><a href= "/mobileapp" style="font-size=1.2em; color:#fff; font-weight:bold;"><i class="fa fa-arrow-left" aria-hidden="true"></i> APP HOME</a></div>';
+';
   $handler->display->display_options['empty']['area']['format'] = 'full_html';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id']['id'] = 'id';
+  $handler->display->display_options['fields']['id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id']['field'] = 'id';
+  $handler->display->display_options['fields']['id']['label'] = '';
+  $handler->display->display_options['fields']['id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['id']['element_label_colon'] = FALSE;
+  /* Field: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
+  $handler->display->display_options['fields']['display_name']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['display_name']['field'] = 'display_name';
+  $handler->display->display_options['fields']['display_name']['label'] = 'Contact Name';
+  $handler->display->display_options['fields']['display_name']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['display_name']['alter']['text'] = '<div class="large-6 left"><a href="/mobileapp/contacts/[id]">[display_name]</a></div>';
+  $handler->display->display_options['fields']['display_name']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['display_name']['link_to_civicrm_contact'] = 0;
+  /* Field: CiviCRM Address: Full Street Address */
+  $handler->display->display_options['fields']['street_address']['id'] = 'street_address';
+  $handler->display->display_options['fields']['street_address']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['street_address']['field'] = 'street_address';
+  $handler->display->display_options['fields']['street_address']['label'] = '';
+  $handler->display->display_options['fields']['street_address']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['street_address']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['street_address']['alter']['text'] = '[street_address],';
+  $handler->display->display_options['fields']['street_address']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['street_address']['location_type'] = '0';
+  $handler->display->display_options['fields']['street_address']['location_op'] = '0';
+  $handler->display->display_options['fields']['street_address']['is_primary'] = 1;
+  $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
+  /* Field: CiviCRM Address: ZIP / Postal Code */
+  $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
+  $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['postal_code']['field'] = 'postal_code';
+  $handler->display->display_options['fields']['postal_code']['label'] = '';
+  $handler->display->display_options['fields']['postal_code']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['postal_code']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['postal_code']['location_type'] = '0';
+  $handler->display->display_options['fields']['postal_code']['location_op'] = '0';
+  $handler->display->display_options['fields']['postal_code']['is_primary'] = 1;
+  $handler->display->display_options['fields']['postal_code']['is_billing'] = 0;
+  /* Field: CiviCRM Address: State/Province */
+  $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['state_province']['field'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['label'] = 'Click to open in maps';
+  $handler->display->display_options['fields']['state_province']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['state_province']['alter']['text'] = '<div large-2 left><a href="http://maps.google.com/?q=[street_address] [state_province] [postal_code]"><i class="fa fa-map-marker" aria-hidden="true" style="color:#6d6a6a;"></i></a></div>';
+  $handler->display->display_options['fields']['state_province']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['state_province']['empty'] = '<i class="fa fa-map-marker" aria-hidden="true"></i>';
+  $handler->display->display_options['fields']['state_province']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['state_province']['location_type'] = '0';
+  $handler->display->display_options['fields']['state_province']['location_op'] = '0';
+  $handler->display->display_options['fields']['state_province']['is_primary'] = 1;
+  $handler->display->display_options['fields']['state_province']['is_billing'] = 0;
+  $handler->display->display_options['fields']['state_province']['prov_display'] = '1';
+  /* Field: CiviCRM Phone Details: Phone Number */
+  $handler->display->display_options['fields']['phone']['id'] = 'phone';
+  $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
+  $handler->display->display_options['fields']['phone']['field'] = 'phone';
+  $handler->display->display_options['fields']['phone']['label'] = 'Click to call';
+  $handler->display->display_options['fields']['phone']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['phone']['alter']['text'] = '<div large-2 left><a href="tel:[phone]" style="color:#6d6a6a;"><i class="fa fa-phone" aria-hidden="true" style="color:#6d6a6a;"></i></a></div>';
+  $handler->display->display_options['fields']['phone']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['phone']['empty'] = '<i class="fa fa-phone" aria-hidden="true"></i>';
+  $handler->display->display_options['fields']['phone']['location_type'] = '0';
+  $handler->display->display_options['fields']['phone']['location_op'] = '0';
+  $handler->display->display_options['fields']['phone']['is_primary'] = 1;
+  $handler->display->display_options['fields']['phone']['phone_type'] = '0';
+  /* Field: CiviCRM Email: Email Address */
+  $handler->display->display_options['fields']['email']['id'] = 'email';
+  $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['email']['field'] = 'email';
+  $handler->display->display_options['fields']['email']['label'] = 'Click to email';
+  $handler->display->display_options['fields']['email']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['email']['alter']['text'] = '<div large-2 left><a href="mailto:[email]" target="_top" style="color:#6d6a6a;"><i class="fa fa-envelope" aria-hidden="true" style="color:#6d6a6a;"></i></a></div>';
+  $handler->display->display_options['fields']['email']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['email']['empty'] = '<i class="fa fa-envelope" aria-hidden="true" style="color:#6d6a6a;"></i>';
+  $handler->display->display_options['fields']['email']['location_type'] = '0';
+  $handler->display->display_options['fields']['email']['location_op'] = '0';
+  $handler->display->display_options['fields']['email']['is_primary'] = 1;
+  $handler->display->display_options['fields']['email']['link_to_user'] = '0';
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: CiviCRM Contacts: Display Name */
@@ -883,6 +889,9 @@ text-align:center;
 
   /* Display: Page 2 */
   $handler = $view->new_display('page', 'Page 2', 'page_2');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
   $handler->display->display_options['defaults']['style_plugin'] = FALSE;
   $handler->display->display_options['style_plugin'] = 'default';
   $handler->display->display_options['style_options']['grouping'] = array(
@@ -901,22 +910,11 @@ text-align:center;
   $handler->display->display_options['header']['area']['id'] = 'area';
   $handler->display->display_options['header']['area']['table'] = 'views';
   $handler->display->display_options['header']['area']['field'] = 'area';
-  $handler->display->display_options['header']['area']['content'] = '<style>
-.logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
-    display:none;
-}
-#admin-menu, #admin-menu .dropdown {
-    display: none;
-}
-i {color:#fff;}
-</style>
-
+  $handler->display->display_options['header']['area']['content'] = '
 <div class="cloud-logo">
 		
 	</div>
-
-
-<div class="large-12">
+<div class="large-12 apphome">
 <div class="large-6 columns" style="height:100px">
 <div class="large-12" style="background:#21A367; text-align:center; color:#fff;">
 <div class="small-4 small-centered columns" style="text-align:center">
@@ -931,26 +929,196 @@ i {color:#fff;}
 
 </div>';
   $handler->display->display_options['header']['area']['format'] = 'full_html';
+  $handler->display->display_options['defaults']['empty'] = FALSE;
+  /* No results behavior: Global: Text area */
+  $handler->display->display_options['empty']['area']['id'] = 'area';
+  $handler->display->display_options['empty']['area']['table'] = 'views';
+  $handler->display->display_options['empty']['area']['field'] = 'area';
+  $handler->display->display_options['empty']['area']['empty'] = TRUE;
+  $handler->display->display_options['empty']['area']['content'] = '<div class="cloud-logo">
+		
+	</div>
+<div class="large-12 apphome">
+<div class="large-6 columns" style="height:100px">
+<div class="large-12" style="background:#21A367; text-align:center; color:#fff;">
+<div class="small-4 small-centered columns" style="text-align:center">
+<a href="/mobileapp/contacts"><i class="fa fa-user" aria-hidden="true" style="font-size:4em; text-align:center"></i><h6 style="text-align:center; font-size:20px; color:#fff;">CONTACTS</h6></a>
+</div></div></div>
+<div class="large-6 columns" style="height:100px">
+<div class="large-12" style="background:#21A367; text-align:center color:#fff;">
+<div class="small-4 small-centered columns" style="text-align:center">
+<a href="/mobileapp/activities"><i class="fa fa-list-alt" aria-hidden="true" style="font-size:4em; text-align:center;"></i>
+<h6 style="text-align:center; font-size:20px; color:#fff;">Activities</h6></a>
+</div></div></div>
+
+</div>';
+  $handler->display->display_options['empty']['area']['format'] = 'full_html';
   $handler->display->display_options['defaults']['fields'] = FALSE;
-  /* Field: CiviCRM Address: Contact ID */
-  $handler->display->display_options['fields']['contact_id']['id'] = 'contact_id';
-  $handler->display->display_options['fields']['contact_id']['table'] = 'civicrm_address';
-  $handler->display->display_options['fields']['contact_id']['field'] = 'contact_id';
-  $handler->display->display_options['fields']['contact_id']['label'] = '';
-  $handler->display->display_options['fields']['contact_id']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['contact_id']['alter']['text'] = '<p> </p>';
-  $handler->display->display_options['fields']['contact_id']['element_label_colon'] = FALSE;
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id']['id'] = 'id';
+  $handler->display->display_options['fields']['id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id']['field'] = 'id';
+  $handler->display->display_options['fields']['id']['label'] = '';
+  $handler->display->display_options['fields']['id']['element_label_colon'] = FALSE;
   $handler->display->display_options['defaults']['filter_groups'] = FALSE;
   $handler->display->display_options['defaults']['filters'] = FALSE;
   /* Filter criterion: CiviCRM Address: Contact ID */
   $handler->display->display_options['filters']['contact_id']['id'] = 'contact_id';
   $handler->display->display_options['filters']['contact_id']['table'] = 'civicrm_address';
   $handler->display->display_options['filters']['contact_id']['field'] = 'contact_id';
-  $handler->display->display_options['filters']['contact_id']['operator'] = '>=';
-  $handler->display->display_options['filters']['contact_id']['value'] = array(
-    'value' => '2',
-  );
+  $handler->display->display_options['filters']['contact_id']['operator'] = '<';
+  $handler->display->display_options['filters']['contact_id']['value']['value'] = '1';
   $handler->display->display_options['path'] = 'mobileapp';
+
+  /* Display: Page 3 */
+  $handler = $view->new_display('page', 'Page 3', 'page_3');
+  $handler->display->display_options['defaults']['pager'] = FALSE;
+  $handler->display->display_options['pager']['type'] = 'none';
+  $handler->display->display_options['pager']['options']['offset'] = '0';
+  $handler->display->display_options['defaults']['style_plugin'] = FALSE;
+  $handler->display->display_options['style_plugin'] = 'default';
+  $handler->display->display_options['style_options']['grouping'] = array(
+    0 => array(
+      'field' => 'display_name',
+      'rendered' => 1,
+      'rendered_strip' => 0,
+    ),
+  );
+  $handler->display->display_options['style_options']['row_class'] = 'small-12 large-6 large-centered columns panel';
+  $handler->display->display_options['defaults']['style_options'] = FALSE;
+  $handler->display->display_options['defaults']['row_plugin'] = FALSE;
+  $handler->display->display_options['row_plugin'] = 'fields';
+  $handler->display->display_options['defaults']['row_options'] = FALSE;
+  $handler->display->display_options['defaults']['header'] = FALSE;
+  /* Header: Global: Text area */
+  $handler->display->display_options['header']['area']['id'] = 'area';
+  $handler->display->display_options['header']['area']['table'] = 'views';
+  $handler->display->display_options['header']['area']['field'] = 'area';
+  $handler->display->display_options['header']['area']['content'] = '<div class="large-12 appbar">
+<a href= "/mobileapp/contacts"> <i class="fa fa-arrow-left" aria-hidden="true"></i>  All Contacts</a>      |      <a href= "/mobileapp"><i class="fa fa-home" aria-hidden="true"></i>  APP HOME</a>
+</div>';
+  $handler->display->display_options['header']['area']['format'] = 'full_html';
+  $handler->display->display_options['defaults']['fields'] = FALSE;
+  /* Field: CiviCRM Phone Details: Location Type */
+  $handler->display->display_options['fields']['location_type_2']['id'] = 'location_type_2';
+  $handler->display->display_options['fields']['location_type_2']['table'] = 'civicrm_phone';
+  $handler->display->display_options['fields']['location_type_2']['field'] = 'location_type';
+  $handler->display->display_options['fields']['location_type_2']['label'] = '';
+  $handler->display->display_options['fields']['location_type_2']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['location_type_2']['element_label_colon'] = FALSE;
+  /* Field: CiviCRM Email: Location Type */
+  $handler->display->display_options['fields']['location_type_1']['id'] = 'location_type_1';
+  $handler->display->display_options['fields']['location_type_1']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['location_type_1']['field'] = 'location_type';
+  $handler->display->display_options['fields']['location_type_1']['label'] = '';
+  $handler->display->display_options['fields']['location_type_1']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['location_type_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['location_type_1']['empty'] = 'Email';
+  /* Field: CiviCRM Address: Location Type */
+  $handler->display->display_options['fields']['location_type']['id'] = 'location_type';
+  $handler->display->display_options['fields']['location_type']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['location_type']['field'] = 'location_type';
+  $handler->display->display_options['fields']['location_type']['label'] = '';
+  $handler->display->display_options['fields']['location_type']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['location_type']['element_label_colon'] = FALSE;
+  /* Field: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['fields']['id']['id'] = 'id';
+  $handler->display->display_options['fields']['id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['id']['field'] = 'id';
+  $handler->display->display_options['fields']['id']['label'] = '';
+  $handler->display->display_options['fields']['id']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['id']['element_label_colon'] = FALSE;
+  /* Field: CiviCRM Contacts: Display Name */
+  $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
+  $handler->display->display_options['fields']['display_name']['table'] = 'civicrm_contact';
+  $handler->display->display_options['fields']['display_name']['field'] = 'display_name';
+  $handler->display->display_options['fields']['display_name']['label'] = '';
+  $handler->display->display_options['fields']['display_name']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['display_name']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['display_name']['alter']['text'] = '[display_name]';
+  $handler->display->display_options['fields']['display_name']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['display_name']['link_to_civicrm_contact'] = 1;
+  /* Field: CiviCRM Address: Full Street Address */
+  $handler->display->display_options['fields']['street_address']['id'] = 'street_address';
+  $handler->display->display_options['fields']['street_address']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['street_address']['field'] = 'street_address';
+  $handler->display->display_options['fields']['street_address']['label'] = '';
+  $handler->display->display_options['fields']['street_address']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['street_address']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['street_address']['alter']['text'] = '[street_address],';
+  $handler->display->display_options['fields']['street_address']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['street_address']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['street_address']['location_type'] = '0';
+  $handler->display->display_options['fields']['street_address']['location_op'] = '1';
+  $handler->display->display_options['fields']['street_address']['is_primary'] = 0;
+  $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
+  /* Field: CiviCRM Address: ZIP / Postal Code */
+  $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
+  $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['postal_code']['field'] = 'postal_code';
+  $handler->display->display_options['fields']['postal_code']['label'] = '';
+  $handler->display->display_options['fields']['postal_code']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['postal_code']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['postal_code']['location_type'] = '0';
+  $handler->display->display_options['fields']['postal_code']['location_op'] = '1';
+  $handler->display->display_options['fields']['postal_code']['is_primary'] = 0;
+  $handler->display->display_options['fields']['postal_code']['is_billing'] = 0;
+  /* Field: CiviCRM Address: State/Province */
+  $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['state_province']['field'] = 'state_province';
+  $handler->display->display_options['fields']['state_province']['label'] = '';
+  $handler->display->display_options['fields']['state_province']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['state_province']['alter']['text'] = '<a href="http://maps.google.com/?q=[street_address] [state_province] [postal_code]"><i class="fa fa-map-marker" aria-hidden="true" style="color:#6d6a6a;"></i>   <strong>[location_type]:</strong>  [street_address] [state_province] [postal_code]</a>';
+  $handler->display->display_options['fields']['state_province']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['state_province']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['state_province']['location_type'] = '0';
+  $handler->display->display_options['fields']['state_province']['location_op'] = '1';
+  $handler->display->display_options['fields']['state_province']['is_primary'] = 0;
+  $handler->display->display_options['fields']['state_province']['is_billing'] = 0;
+  $handler->display->display_options['fields']['state_province']['prov_display'] = '2';
+  /* Field: CiviCRM Phone Details: Phone Number */
+  $handler->display->display_options['fields']['phone']['id'] = 'phone';
+  $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
+  $handler->display->display_options['fields']['phone']['field'] = 'phone';
+  $handler->display->display_options['fields']['phone']['label'] = '';
+  $handler->display->display_options['fields']['phone']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['phone']['alter']['text'] = '<a href="tel:[phone]" style="color:#6d6a6a;"><i class="fa fa-phone" aria-hidden="true" style="color:#6d6a6a;"></i>  <strong>[location_type_2]:</strong> [phone]</a>';
+  $handler->display->display_options['fields']['phone']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['phone']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['phone']['location_type'] = '0';
+  $handler->display->display_options['fields']['phone']['location_op'] = '0';
+  $handler->display->display_options['fields']['phone']['is_primary'] = 0;
+  $handler->display->display_options['fields']['phone']['phone_type'] = '0';
+  /* Field: CiviCRM Email: Email Address */
+  $handler->display->display_options['fields']['email']['id'] = 'email';
+  $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
+  $handler->display->display_options['fields']['email']['field'] = 'email';
+  $handler->display->display_options['fields']['email']['label'] = '';
+  $handler->display->display_options['fields']['email']['alter']['alter_text'] = TRUE;
+  $handler->display->display_options['fields']['email']['alter']['text'] = '<a href="mailto:[email]" target="_top" style="color:#6d6a6a;"><i class="fa fa-envelope" aria-hidden="true" style="color:#6d6a6a;"></i> <strong>[location_type_1]: </strong>  [email]</a>';
+  $handler->display->display_options['fields']['email']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['email']['hide_empty'] = TRUE;
+  $handler->display->display_options['fields']['email']['location_type'] = '0';
+  $handler->display->display_options['fields']['email']['location_op'] = '0';
+  $handler->display->display_options['fields']['email']['is_primary'] = 0;
+  $handler->display->display_options['fields']['email']['link_to_user'] = '0';
+  $handler->display->display_options['defaults']['arguments'] = FALSE;
+  /* Contextual filter: CiviCRM Contacts: Contact ID */
+  $handler->display->display_options['arguments']['id']['id'] = 'id';
+  $handler->display->display_options['arguments']['id']['table'] = 'civicrm_contact';
+  $handler->display->display_options['arguments']['id']['field'] = 'id';
+  $handler->display->display_options['arguments']['id']['default_action'] = 'default';
+  $handler->display->display_options['arguments']['id']['default_argument_type'] = 'raw';
+  $handler->display->display_options['arguments']['id']['default_argument_options']['index'] = '2';
+  $handler->display->display_options['arguments']['id']['default_argument_options']['use_alias'] = TRUE;
+  $handler->display->display_options['arguments']['id']['default_argument_skip_url'] = TRUE;
+  $handler->display->display_options['arguments']['id']['summary']['number_of_records'] = '0';
+  $handler->display->display_options['arguments']['id']['summary']['format'] = 'default_summary';
+  $handler->display->display_options['arguments']['id']['summary_options']['items_per_page'] = '25';
+  $handler->display->display_options['defaults']['filter_groups'] = FALSE;
+  $handler->display->display_options['defaults']['filters'] = FALSE;
+  $handler->display->display_options['path'] = 'mobileapp/contacts/%';
   $export['contacts'] = $view;
 
   return $export;
