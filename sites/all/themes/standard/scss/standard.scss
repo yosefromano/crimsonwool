@@ -1085,3 +1085,104 @@ select {
 li a:hover {
     color: #860F0F;
 }
+
+
+
+
+///* MOBILE views *///
+
+.page-mobileapp, .page-mobileapp-contacts, .section-mobileapp{
+	
+#admin-menu, #admin-menu .dropdown, .logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
+    display:none;
+}
+
+td.views-field.views-field-display-name {
+    font-size: 1.2em;
+}
+
+i.fa.fa {
+    font-size: 1em;
+}
+
+table td{
+padding: 20px 10px !important;
+}
+
+form#views-exposed-form-contacts-page-1 {
+    padding: 6px;
+}
+
+
+div#edit-title-wrapper label {
+    color: #2ba6cb;
+}
+
+
+table.views-table {
+    width: 100%;
+}
+table{
+    width: 100%;
+}
+
+.views-exposed-form .views-exposed-widget .form-submit {
+    margin-top: 1em;
+}
+
+.appbar{
+	background:#21A367;
+	text-align:center;
+	font-color:#fff;
+	padding:1em 0;
+   margin-top: -20px !important;
+	
+	
+	a{
+		font-size:1.2em; color:#fff; font-weight:bold;
+	}
+}
+
+th.views-field {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+td.views-field {
+    font-size: 1em;
+}
+
+h1, h2, h3{
+color: #21A367;
+text-align:center;
+}
+
+.apphome{
+
+	#admin-menu, #admin-menu .dropdown, .logo, .fcrm-footer, .main-nav, .l-footer, .l-triptych, .top-bar, .block-views-menubar-block-2, .breadcrumbs  {
+	    display:none;
+	}
+	
+	i {color:#fff;}
+	
+}
+.qklinks{
+	.fa {
+	    font-size: 2em !important;
+	    margin-left: 8px;
+	    color: #21a367;
+	}
+	margin-bottom:.5em;
+}
+.qk2{
+	.fa{
+	font-size: 1.5em !important;
+	margin-left: 6px;
+	color: #21a367;
+   }
+}
+
+.center {
+    text-align: center;
+}
+
+}
