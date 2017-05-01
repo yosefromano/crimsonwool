@@ -220,6 +220,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['fields']['id_1']['label'] = '';
   $handler->display->display_options['fields']['id_1']['exclude'] = TRUE;
   $handler->display->display_options['fields']['id_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['id_1']['separator'] = '';
   /* Field: CiviCRM Email: Email Address */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
@@ -317,6 +318,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['fields']['id_1']['label'] = '';
   $handler->display->display_options['fields']['id_1']['exclude'] = TRUE;
   $handler->display->display_options['fields']['id_1']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['id_1']['separator'] = '';
   /* Field: CiviCRM Email: Email Address */
   $handler->display->display_options['fields']['email']['id'] = 'email';
   $handler->display->display_options['fields']['email']['table'] = 'civicrm_email';
@@ -748,6 +750,7 @@ table.views-table {
   $handler->display->display_options['fields']['id']['label'] = '';
   $handler->display->display_options['fields']['id']['exclude'] = TRUE;
   $handler->display->display_options['fields']['id']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['id']['separator'] = '';
   /* Field: CiviCRM Contacts: Display Name */
   $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
   $handler->display->display_options['fields']['display_name']['table'] = 'civicrm_contact';
@@ -1028,6 +1031,7 @@ table.views-table {
   $handler->display->display_options['fields']['id']['label'] = '';
   $handler->display->display_options['fields']['id']['exclude'] = TRUE;
   $handler->display->display_options['fields']['id']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['id']['separator'] = '';
   /* Field: CiviCRM Contacts: Display Name */
   $handler->display->display_options['fields']['display_name']['id'] = 'display_name';
   $handler->display->display_options['fields']['display_name']['table'] = 'civicrm_contact';
