@@ -156,6 +156,18 @@ class CRM_Mailing_DAO_Mailing extends CRM_Core_DAO {
    */
   public $replyto_email;
   /**
+   * The language/processing system used for email templates.
+   *
+   * @var string
+   */
+  public $template_type;
+  /**
+   * Advanced options used by the email templating system. (JSON encoded)
+   *
+   * @var longtext
+   */
+  public $template_options;
+  /**
    * Subject of mailing
    *
    * @var string
@@ -468,6 +480,25 @@ class CRM_Mailing_DAO_Mailing extends CRM_Core_DAO {
             'type' => 'Text',
           ) ,
         ) ,
+        'template_type' => array(
+          'name' => 'template_type',
+          'type' => CRM_Utils_Type::T_STRING,
+          'title' => ts('Template Type') ,
+          'description' => 'The language/processing system used for email templates.',
+          'required' => true,
+          'maxlength' => 64,
+          'size' => CRM_Utils_Type::BIG,
+          'default' => 'traditional',
+          'pseudoconstant' => array(
+            'callback' => 'CRM_Mailing_BAO_Mailing::getTemplateTypeNames',
+          )
+        ) ,
+        'template_options' => array(
+          'name' => 'template_options',
+          'type' => CRM_Utils_Type::T_LONGTEXT,
+          'title' => ts('Template Options (JSON)') ,
+          'description' => 'Advanced options used by the email templating system. (JSON encoded)',
+        ) ,
         'subject' => array(
           'name' => 'subject',
           'type' => CRM_Utils_Type::T_STRING,
@@ -728,6 +759,8 @@ class CRM_Mailing_DAO_Mailing extends CRM_Core_DAO {
         'from_name' => 'from_name',
         'from_email' => 'from_email',
         'replyto_email' => 'replyto_email',
+        'template_type' => 'template_type',
+        'template_options' => 'template_options',
         'subject' => 'subject',
         'body_text' => 'body_text',
         'body_html' => 'body_html',

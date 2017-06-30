@@ -2808,6 +2808,8 @@ CREATE TABLE `civicrm_mailing` (
      `from_name` varchar(128)    COMMENT 'From Header of mailing',
      `from_email` varchar(128)    COMMENT 'From Email of mailing',
      `replyto_email` varchar(128)    COMMENT 'Reply-To Email of mailing',
+     `template_type` varchar(64) NOT NULL  DEFAULT 'traditional' COMMENT 'The language/processing system used for email templates.',
+     `template_options` longtext    COMMENT 'Advanced options used by the email templating system. (JSON encoded)',
      `subject` varchar(128)    COMMENT 'Subject of mailing',
      `body_text` longtext    COMMENT 'Body of the mailing in text format.',
      `body_html` longtext    COMMENT 'Body of the mailing in html format.',
