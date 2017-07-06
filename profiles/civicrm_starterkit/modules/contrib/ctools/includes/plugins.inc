@@ -79,9 +79,7 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
       }
 
       // Only process if version is between minimum and current, inclusive.
-      if (($version == $minimum_version) || ($version == $current_version)
-        || (version_compare($version, $minimum_version, '>=')
-        && version_compare($version, $current_version, '<='))) {
+      if (version_compare($version, $minimum_version, '>=') && version_compare($version, $current_version, '<=')) {
         if (!isset($info['path'])) {
           $info['path'] = drupal_get_path('module', $module);
         }
@@ -112,7 +110,7 @@ function ctools_plugin_api_info($owner, $api, $minimum_version, $current_version
     }
 
     // Allow other modules to hook in.
-    drupal_alter($hook, $cache[$owner][$api], $owner, $api);
+    drupal_alter($hook, $cache[$owner][$api]);
   }
 
   return $cache[$owner][$api];
@@ -215,13 +213,8 @@ function ctools_plugin_api_get_hook($owner, $api) {
  */
 function ctools_get_plugins($module, $type, $id = NULL) {
   // Store local caches of plugins and plugin info so we don't have to do full
-  // lookups every time.
-  static $drupal_static_fast;
-  if (!isset($drupal_static_fast)) {
-    $drupal_static_fast['plugins'] = &drupal_static('ctools_plugins', array());
-  }
-  $plugins = &$drupal_static_fast['plugins'];
-
+  // lookups everytime.
+  $plugins = &drupal_static('ctools_plugins', array());
   $info = ctools_plugin_get_plugin_type_info();
 
   // Bail out noisily if an invalid module/type combination is requested.
@@ -430,15 +423,25 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
   // store static of plugin arrays for reference because they can't be reincluded.
   static $plugin_arrays = array();
 
+  // If we're being asked for all plugins of a type, skip any caching
+  // we may have done because this is an admin task and it's ok to
+  // spend the extra time.
+  if (!isset($filename)) {
+    $all_files[$info['module']][$info['type']] = NULL;
+  }
+
   if (!isset($all_files[$info['module']][$info['type']])) {
-    $cache = cache_get("ctools_plugin_files:$info[module]:$info[type]");
-    if ($cache) {
-      $all_files[$info['module']][$info['type']] = $cache->data;
+    // If a filename was set, we will try to load our list of files from
+    // cache. This is considered normal operation and we try to reduce
+    // the time spent finding files.
+    if (isset($filename)) {
+      $cache = cache_get("ctools_plugin_files:$info[module]:$info[type]");
+      if ($cache) {
+        $all_files[$info['module']][$info['type']] = $cache->data;
+      }
     }
-    // Do not attempt any file scan even if the cached entry was empty.
-    // A NULL entry here would mean the plugin just does not exists, and we
-    // cannot afford to run file scan on production sites normal run.
-    elseif (!isset($all_files[$info['module']][$info['type']])) {
+
+    if (!isset($all_files[$info['module']][$info['type']])) {
       $all_files[$info['module']][$info['type']] = array();
       // Load all our plugins.
       $directories = ctools_plugin_get_directories($info);
@@ -474,7 +477,7 @@ function ctools_plugin_load_includes($info, $filename = NULL) {
         }
         else {
 
-          include_once DRUPAL_ROOT . '/' . $file->uri;
+          require_once DRUPAL_ROOT . '/' . $file->uri;
           // .inc files have a special format for the hook identifier.
           // For example, 'foo.inc' in the module 'mogul' using the plugin
           // whose hook is named 'borg_type' should have a function named (deep breath)
@@ -680,7 +683,7 @@ function ctools_plugin_process($info, $module, $identifier, $path, $file = NULL,
     if (!function_exists($function)) {
       return NULL;
     }
-    $result = $function($info);
+    $result = $function();
     if (!isset($result) || !is_array($result)) {
       return NULL;
     }

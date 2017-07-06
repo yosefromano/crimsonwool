@@ -121,7 +121,7 @@ class ctools_export_ui {
 
     switch ($op) {
       case 'import':
-        return user_access('use ctools import');
+        return user_access('use PHP for settings');
       case 'revert':
         return ($item->export_type & EXPORT_IN_DATABASE) && ($item->export_type & EXPORT_IN_CODE);
       case 'delete':
@@ -639,7 +639,7 @@ class ctools_export_ui {
   }
 
   function add_page($js, $input, $step = NULL) {
-    drupal_set_title($this->get_page_title('add'), PASS_THROUGH);
+    drupal_set_title($this->get_page_title('add'));
 
     // If a step not set, they are trying to create a new item. If a step
     // is set, they're in the process of creating an item.
@@ -676,7 +676,7 @@ class ctools_export_ui {
    * Main entry point to edit an item.
    */
   function edit_page($js, $input, $item, $step = NULL) {
-    drupal_set_title($this->get_page_title('edit', $item), PASS_THROUGH);
+    drupal_set_title($this->get_page_title('edit', $item));
 
     // Check to see if there is a cached item to get if we're using the wizard.
     if (!empty($this->plugin['use wizard'])) {
@@ -712,7 +712,7 @@ class ctools_export_ui {
    * Main entry point to clone an item.
    */
   function clone_page($js, $input, $original, $step = NULL) {
-    drupal_set_title($this->get_page_title('clone', $original), PASS_THROUGH);
+    drupal_set_title($this->get_page_title('clone', $original));
 
     // If a step not set, they are trying to create a new clone. If a step
     // is set, they're in the process of cloning an item.
@@ -724,13 +724,7 @@ class ctools_export_ui {
       // Export the handler, which is a fantastic way to clean database IDs out of it.
       $export = ctools_export_crud_export($this->plugin['schema'], $original);
       $item = ctools_export_crud_import($this->plugin['schema'], $export);
-
-      if (!empty($input[$this->plugin['export']['key']])) {
-        $item->{$this->plugin['export']['key']} = $input[$this->plugin['export']['key']];
-      }
-      else {
-        $item->{$this->plugin['export']['key']} = 'clone_of_' . $item->{$this->plugin['export']['key']};
-      }
+      $item->{$this->plugin['export']['key']} = 'clone_of_' . $item->{$this->plugin['export']['key']};
     }
 
     // Tabs and breadcrumb disappearing, this helps alleviate through cheating.
@@ -1224,7 +1218,7 @@ class ctools_export_ui {
    * Page callback to display export information for an exportable item.
    */
   function export_page($js, $input, $item) {
-    drupal_set_title($this->get_page_title('export', $item), PASS_THROUGH);
+    drupal_set_title($this->get_page_title('export', $item));
     return drupal_get_form('ctools_export_form', ctools_export_crud_export($this->plugin['schema'], $item), t('Export'));
   }
 
@@ -1232,7 +1226,7 @@ class ctools_export_ui {
    * Page callback to import information for an exportable item.
    */
   function import_page($js, $input, $step = NULL) {
-    drupal_set_title($this->get_page_title('import'), PASS_THROUGH);
+    drupal_set_title($this->get_page_title('import'));
     // Import is basically a multi step wizard form, so let's go ahead and
     // use CTools' wizard.inc for it.
 
@@ -1345,7 +1339,7 @@ function _ctools_export_ui_add_form_files($form, &$form_state) {
  *
  * This simply loads the object defined in the plugin and hands it off.
  */
-function ctools_export_ui_list_form($form, &$form_state) {
+function ctools_export_ui_list_form($form, $form_state) {
   $form_state['object']->list_form($form, $form_state);
   return $form;
 }
@@ -1447,7 +1441,7 @@ function ctools_export_ui_delete_confirm_form($form, &$form_state) {
 
   $export_key = $plugin['export']['key'];
   $question = str_replace('%title', check_plain($item->{$export_key}), $plugin['strings']['confirmation'][$form_state['op']]['question']);
-  $path = (!empty($_REQUEST['cancel_path']) && !url_is_external($_REQUEST['cancel_path'])) ? $_REQUEST['cancel_path'] : ctools_export_ui_plugin_base_path($plugin);
+  $path = empty($_REQUEST['cancel_path']) ? ctools_export_ui_plugin_base_path($plugin) : $_REQUEST['cancel_path'];
 
   $form = confirm_form($form,
     $question,

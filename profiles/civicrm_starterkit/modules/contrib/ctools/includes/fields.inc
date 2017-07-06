@@ -79,19 +79,6 @@ function ctools_fields_get_field_formatter_settings_form($field, $formatter_type
     $instance = ctools_fields_fake_field_instance($field['field_name'], $view_mode, $formatter_type, $conf['formatter_settings']);
     $settings_form = $function($field, $instance, $view_mode, $form, $form_state);
     if ($settings_form) {
-      // Allow other modules to alter the formatter settings form.
-      $context = array(
-        'module' => $formatter['module'],
-        'formatter' => $formatter,
-        'field' => $field,
-        'instance' => $instance,
-        'view_mode' => $view_mode,
-        'form' => $form,
-        'form_state' => $form_state,
-      );
-      drupal_alter('field_formatter_settings_form', $settings_form, $context);
-
-      $settings_form['#tree'] = TRUE;
       $form['ctools_field_list']['#value'][] = $field;
       $form += $settings_form;
     }
@@ -137,7 +124,7 @@ function ctools_fields_get_field_formatter_settings_form($field, $formatter_type
  */
 function ctools_fields_get_field_formatter_info($fields) {
   $info = array();
-  $field_info = field_info_formatter_types();
+  $field_info = module_invoke_all('field_formatter_info');
   foreach ($fields as $field) {
     foreach ($field_info as $format_name => $formatter_info) {
       if (in_array($field['type'], $formatter_info['field types'])) {
@@ -145,6 +132,7 @@ function ctools_fields_get_field_formatter_info($fields) {
       }
     }
   }
+  drupal_alter('field_formatter_info', $info);
   return $info;
 }
 

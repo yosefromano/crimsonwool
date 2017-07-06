@@ -65,7 +65,7 @@ libraries[cache][patch][1980088] = https://drupal.org/files/1980088-create-exten
 ; ====== POPULAR CONTRIB MODULES =========
 
 projects[backup_migrate][subdir] = "contrib"
-projects[backup_migrate][version] = "2.8"
+projects[backup_migrate][version] = "3.1"
 
 projects[civicrm_clear_all_caches][subdir] = "contrib"
 projects[civicrm_clear_all_caches][version] = "1.0-beta1"
@@ -74,10 +74,10 @@ projects[civicrm_cron][subdir] = "contrib"
 projects[civicrm_cron][version] = "2.0-beta2"
 
 projects[ctools][subdir] = "contrib"
-projects[ctools][version] = "1.10"
+projects[ctools][version] = "1.4"
 
 projects[captcha][subdir] = "contrib"
-projects[captcha][version] = "1.3"
+projects[captcha][version] = "1.4"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = "2.10"
@@ -86,7 +86,7 @@ projects[fontyourface][subdir] = "contrib"
 projects[fontyourface][version] = "2.8"
 
 projects[imce][subdir] = "contrib"
-projects[imce][version] = "1.10"
+projects[imce][version] = "1.9"
 
 projects[imce_wysiwyg][subdir] = "contrib"
 projects[imce_wysiwyg][version] = "1.0"
@@ -101,35 +101,36 @@ projects[options_element][subdir] = "contrib"
 projects[options_element][version] = "1.12"
 
 projects[profile_status_check][subdir] = "contrib"
-projects[profile_status_check][version] = "1.0-beta3"
+projects[profile_status_check][version] = "1.0-beta2"
 
 projects[profile_switcher][subdir] = "contrib"
-projects[profile_switcher][version] = "1.0-beta2"
+projects[profile_switcher][version] = "1.0-beta1"
 
 projects[recaptcha][subdir] = "contrib"
 projects[recaptcha][version] = "2.2"
 
 projects[views][subdir] = "contrib"
-projects[views][version] = "3.14"
+projects[views][version] = "3.16"
 
 projects[webform][subdir] = "contrib"
-projects[webform][version] = "4.14"
+projects[webform][version] = "4.1"
 
 projects[webform_civicrm][subdir] = "contrib"
-projects[webform_civicrm][version] = "4.16"
+projects[webform_civicrm][version] = "4.9"
 
 projects[wysiwyg][subdir] = "contrib"
-projects[wysiwyg][version] = "2.2"
+projects[wysiwyg][version] = "2.4"
 
 
 ; ====== DRUPAL LIBRARIES =========
 
 libraries[ckeditor][download][type] = get
-libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%203.6.2/ckeditor_3.6.2.tar.gz"
+libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.6.2/ckeditor_4.6.2_standard.tar.gz"
 libraries[ckeditor][destination] = libraries
 libraries[ckeditor][directory_name] = ckeditor
 
 libraries[tinymce][download][type] = get
-libraries[tinymce][download][url] = "http://download.moxiecode.com/tinymce/tinymce_3.5.11.zip"
+libraries[tinymce][download][url] = "http://download.ephox.com/tinymce/community/tinymce_4.5.7.zip"
 libraries[tinymce][destination] = libraries
 libraries[tinymce][directory_name] = tinymce
+

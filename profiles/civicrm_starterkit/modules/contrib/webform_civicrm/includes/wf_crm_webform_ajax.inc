@@ -8,7 +8,7 @@
 module_load_include('inc', 'webform_civicrm', 'includes/wf_crm_webform_base');
 
 class wf_crm_webform_ajax extends wf_crm_webform_base {
-
+  
   function __construct() {
     civicrm_initialize();
   }
@@ -53,7 +53,6 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
     }
     list($nid, $fid) = explode('-', $key, 2);
     $this->node = node_load($nid);
-    $this->settings = $this->node->webform_civicrm;
     if (!$this->autocompleteAccess($fid)) {
       drupal_access_denied();
     }
@@ -78,7 +77,7 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
       if ($_GET['load'] == 'name') {
         if ($_GET['cid'][0] === '-') {
           // HTML hack to get prompt to show up different than search results
-          $data = '<em><i>' . filter_xss($component['extra']['none_prompt']) . '</i></em>';
+          $data = '<em><i>' . $component['extra']['none_prompt'] . '</i></em>';
         }
         else {
           $data = $name;
@@ -92,13 +91,11 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
         // Populate other contact ids for related data
         foreach ($_GET as $k => $v) {
           if (substr($k, 0, 3) == 'cid' && $v && is_numeric($v)) {
-            $this->ent['contact'][substr($k, 3)]['id'] = (int) $v;
+            $this->id['cid'][substr($k, 3)] = (int) $v;
           }
-          $this->ent['contact'][$c]['id'] = (int) $_GET['cid'];
+          $this->id['cid'][$c] = (int) $_GET['cid'];
         }
-        // Redact fields if they are to be hidden unconditionally, otherwise they are needed on the client side
-        $to_hide = (wf_crm_aval($component['extra'], 'hide_method', 'hide') == 'hide' && !wf_crm_aval($component['extra'], 'no_hide_blank')) ? $component['extra']['hide_fields'] : array();
-        $contact = $this->loadContact($c, $to_hide);
+        $contact = $this->loadContact($c, $component['extra']['hide_fields']);
         $states = $countries = array();
         // Format as json array
         foreach ($this->enabled as $fid => $f) {
@@ -106,12 +103,12 @@ class wf_crm_webform_ajax extends wf_crm_webform_base {
           if ($i == $c && $ent == 'contact' && isset($contact[$table][$n][$field])) {
             $type = ($table == 'contact' && strpos($field, 'name')) ? 'name' : $table;
             // Exclude blank and hidden fields
-            if ($contact[$table][$n][$field] !== '' && $contact[$table][$n][$field] !== array() && !in_array($type, $to_hide)) {
+            if ($contact[$table][$n][$field] !== '' && $contact[$table][$n][$field] !== array() && !in_array($type, $component['extra']['hide_fields'])) {
               $dataType = wf_crm_aval(wf_crm_get_field("{$table}_$field"), 'data_type');
               $val = array('val' => $contact[$table][$n][$field]);
               // Retrieve file info
               if ($dataType === 'File') {
-                $val = $this->getFileInfo($field, $val['val'], $ent, $n);
+                $val = $this->getFileInfo($field, $val['val']);
               }
               // Explode multivalue strings
               elseif (is_string($val['val']) && strpos($val['val'], $sp) !== FALSE) {
