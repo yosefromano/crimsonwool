@@ -14,7 +14,8 @@ return array(
     'Svg\\' => array($vendorDir . '/phenx/php-svg-lib/src'),
     'Psr\\Log\\' => array($vendorDir . '/psr/log'),
     'PHPUnit_' => array($baseDir . '/packages'),
-    'Net' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
+    'PEAR' => array($vendorDir . '/pear/pear_exception'),
+    'Net' => array($vendorDir . '/pear/net_socket', $vendorDir . '/pear/net_smtp', $vendorDir . '/phpseclib/phpseclib/phpseclib'),
     'Math' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
     'FontLib\\' => array($vendorDir . '/phenx/php-font-lib/src'),
     'File' => array($vendorDir . '/phpseclib/phpseclib/phpseclib'),
@@ -22,4 +23,5 @@ return array(
     'Civi\\' => array($baseDir . '/', $baseDir . '/tests/phpunit'),
     'Civi' => array($baseDir . '/'),
     'CA_Config' => array($vendorDir . '/totten/ca-config/src'),
+    'Auth' => array($vendorDir . '/pear/auth_sasl'),
 );

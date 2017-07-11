@@ -240,24 +240,240 @@
         ]
     },
     {
-        "name": "totten/ca-config",
-        "version": "v13.02.0",
-        "version_normalized": "13.02.0.0",
+        "name": "pear/pear_exception",
+        "version": "v1.0.0",
+        "version_normalized": "1.0.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/totten/ca_config.git",
-            "reference": "7a51033f4e18c1ac846a16c6de16050e735b01cf"
+            "url": "https://github.com/pear/PEAR_Exception.git",
+            "reference": "8c18719fdae000b690e3912be401c76e406dd13b"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/totten/ca_config/zipball/7a51033f4e18c1ac846a16c6de16050e735b01cf",
-            "reference": "7a51033f4e18c1ac846a16c6de16050e735b01cf",
+            "url": "https://api.github.com/repos/pear/PEAR_Exception/zipball/8c18719fdae000b690e3912be401c76e406dd13b",
+            "reference": "8c18719fdae000b690e3912be401c76e406dd13b",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=4.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2015-02-10 20:07:52",
+        "type": "class",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "PEAR": ""
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "."
+        ],
+        "license": [
+            "BSD-2-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Helgi Thormar",
+                "email": "dufuz@php.net"
+            },
+            {
+                "name": "Greg Beaver",
+                "email": "cellog@php.net"
+            }
+        ],
+        "description": "The PEAR Exception base class.",
+        "homepage": "https://github.com/pear/PEAR_Exception",
+        "keywords": [
+            "exception"
+        ]
+    },
+    {
+        "name": "pear/net_socket",
+        "version": "1.0.14",
+        "version_normalized": "1.0.14.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/Net_Socket.git",
+            "reference": "fcd33efd77e4b35ce85489141ab9145343579fe8"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/Net_Socket/zipball/fcd33efd77e4b35ce85489141ab9145343579fe8",
+            "reference": "fcd33efd77e4b35ce85489141ab9145343579fe8",
+            "shasum": ""
+        },
+        "require": {
+            "pear/pear_exception": "*"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "time": "2014-02-20 19:27:06",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Net": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "./"
+        ],
+        "license": [
+            "PHP License"
+        ],
+        "authors": [
+            {
+                "name": "Chuck Hagenbuch",
+                "email": "chuck@horde.org",
+                "role": "Lead"
+            },
+            {
+                "name": "Aleksander Machniak",
+                "email": "alec@php.net",
+                "role": "Lead"
+            },
+            {
+                "name": "Stig Bakken",
+                "email": "stig@php.net",
+                "role": "Lead"
+            }
+        ],
+        "description": "More info available on: http://pear.php.net/package/Net_Socket"
+    },
+    {
+        "name": "pear/net_smtp",
+        "version": "1.6.3",
+        "version_normalized": "1.6.3.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/pear/Net_SMTP.git",
+            "reference": "7b6240761adf6ee245098e238a25d5c35650d82c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/pear/Net_SMTP/zipball/7b6240761adf6ee245098e238a25d5c35650d82c",
+            "reference": "7b6240761adf6ee245098e238a25d5c35650d82c",
+            "shasum": ""
+        },
+        "require": {
+            "pear/net_socket": "*",
+            "pear/pear_exception": "*",
+            "php": ">=4.0.5"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "*"
+        },
+        "suggest": {
+            "pear/auth_sasl": "Install optionally via your project's composer.json"
+        },
+        "time": "2015-08-02 17:20:17",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Net": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "./"
+        ],
+        "license": [
+            "PHP License"
+        ],
+        "authors": [
+            {
+                "name": "Jon Parise",
+                "email": "jon@php.net",
+                "homepage": "http://www.indelible.org",
+                "role": "Lead"
+            },
+            {
+                "name": "Chuck Hagenbuch",
+                "email": "chuck@horde.org",
+                "role": "Lead"
+            }
+        ],
+        "description": "An implementation of the SMTP protocol",
+        "homepage": "http://pear.github.io/Net_SMTP/",
+        "keywords": [
+            "email",
+            "mail",
+            "smtp"
+        ]
+    },
+    {
+        "name": "civicrm/civicrm-cxn-rpc",
+        "version": "v0.16.12.05",
+        "version_normalized": "0.16.12.05",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/civicrm/civicrm-cxn-rpc.git",
+            "reference": "e88e78dc491b7e8739a40231f46c2d4459347b12"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/civicrm/civicrm-cxn-rpc/zipball/e88e78dc491b7e8739a40231f46c2d4459347b12",
+            "reference": "e88e78dc491b7e8739a40231f46c2d4459347b12",
+            "shasum": ""
+        },
+        "require": {
+            "phpseclib/phpseclib": "1.0.*",
+            "psr/log": "1.0.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "3.7.*"
+        },
+        "time": "2016-12-06 04:32:51",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "Civi\\Cxn\\Rpc\\": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Tim Otten",
+                "email": "totten@civicrm.org"
+            }
+        ],
+        "description": "RPC library for CiviConnect"
+    },
+    {
+        "name": "totten/ca-config",
+        "version": "v17.05.0",
+        "version_normalized": "17.05.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/totten/ca_config.git",
+            "reference": "461cf05f932897c37ca87e9a85283d4963b49f09"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/totten/ca_config/zipball/461cf05f932897c37ca87e9a85283d4963b49f09",
+            "reference": "461cf05f932897c37ca87e9a85283d4963b49f09",
             "shasum": ""
         },
         "require": {
             "php": ">=5.2"
         },
-        "time": "2013-02-13 03:40:18",
+        "time": "2017-05-10 20:08:17",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -279,18 +495,73 @@
         "homepage": "https://github.com/totten/ca_config"
     },
     {
-        "name": "phpseclib/phpseclib",
-        "version": "0.3.10",
-        "version_normalized": "0.3.10.0",
+        "name": "pear/auth_sasl",
+        "version": "v1.1.0",
+        "version_normalized": "1.1.0.0",
         "source": {
             "type": "git",
-            "url": "https://github.com/phpseclib/phpseclib.git",
-            "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4"
+            "url": "https://github.com/pear/Auth_SASL.git",
+            "reference": "db1ead3dc0bf986d2bab0dbc04d114800cf91dee"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
-            "reference": "d15bba1edcc7c89e09cc74c5d961317a8b947bf4",
+            "url": "https://api.github.com/repos/pear/Auth_SASL/zipball/db1ead3dc0bf986d2bab0dbc04d114800cf91dee",
+            "reference": "db1ead3dc0bf986d2bab0dbc04d114800cf91dee",
+            "shasum": ""
+        },
+        "require": {
+            "pear/pear_exception": "@stable"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "@stable"
+        },
+        "time": "2017-03-07 14:37:05",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "Auth": "./"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "include-path": [
+            "./"
+        ],
+        "license": [
+            "BSD"
+        ],
+        "authors": [
+            {
+                "name": "Anish Mistry",
+                "email": "amistry@am-productions.biz",
+                "role": "Lead"
+            },
+            {
+                "name": "Richard Heyes",
+                "email": "richard@php.net",
+                "role": "Lead"
+            },
+            {
+                "name": "Michael Bretterklieber",
+                "email": "michael@bretterklieber.com",
+                "role": "Lead"
+            }
+        ],
+        "description": "Abstraction of various SASL mechanism responses"
+    },
+    {
+        "name": "phpseclib/phpseclib",
+        "version": "1.0.7",
+        "version_normalized": "1.0.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/phpseclib/phpseclib.git",
+            "reference": "0bb6c9b974cada100cad40f72ef186a199274f9b"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/0bb6c9b974cada100cad40f72ef186a199274f9b",
+            "reference": "0bb6c9b974cada100cad40f72ef186a199274f9b",
             "shasum": ""
         },
         "require": {
@@ -300,20 +571,15 @@
             "phing/phing": "~2.7",
             "phpunit/phpunit": "~4.0",
             "sami/sami": "~2.0",
-            "squizlabs/php_codesniffer": "~1.5"
+            "squizlabs/php_codesniffer": "~2.0"
         },
         "suggest": {
             "ext-gmp": "Install the GMP (GNU Multiple Precision) extension in order to speed up arbitrary precision integer arithmetic operations.",
             "ext-mcrypt": "Install the Mcrypt extension in order to speed up a wide variety of cryptographic operations.",
-            "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP < 4.3.3."
+            "pear-pear/PHP_Compat": "Install PHP_Compat to get phpseclib working on PHP < 5.0.0."
         },
-        "time": "2015-01-28 21:50:33",
+        "time": "2017-06-05 06:30:30",
         "type": "library",
-        "extra": {
-            "branch-alias": {
-                "dev-master": "0.3-dev"
-            }
-        },
         "installation-source": "dist",
         "autoload": {
             "psr-0": {
@@ -324,6 +590,7 @@
                 "System": "phpseclib/"
             },
             "files": [
+                "phpseclib/bootstrap.php",
                 "phpseclib/Crypt/Random.php"
             ]
         },
@@ -354,6 +621,11 @@
                 "name": "Hans-Jürgen Petrich",
                 "email": "petrich@tronic-media.com",
                 "role": "Developer"
+            },
+            {
+                "name": "Graham Campbell",
+                "email": "graham@alt-three.com",
+                "role": "Developer"
             }
         ],
         "description": "PHP Secure Communications Library - Pure-PHP implementations of RSA, AES, SSH2, SFTP, X.509 etc.",
@@ -377,48 +649,6 @@
             "x.509",
             "x509"
         ]
-    },
-    {
-        "name": "civicrm/civicrm-cxn-rpc",
-        "version": "v0.15.12.04",
-        "version_normalized": "0.15.12.04",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/civicrm/civicrm-cxn-rpc.git",
-            "reference": "6e3a0f956860908a240758ab8c80a020549a6f03"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/civicrm/civicrm-cxn-rpc/zipball/6e3a0f956860908a240758ab8c80a020549a6f03",
-            "reference": "6e3a0f956860908a240758ab8c80a020549a6f03",
-            "shasum": ""
-        },
-        "require": {
-            "phpseclib/phpseclib": "0.3.*",
-            "psr/log": "1.0.0"
-        },
-        "require-dev": {
-            "phpunit/phpunit": "3.7.*"
-        },
-        "time": "2015-12-05 04:41:02",
-        "type": "library",
-        "installation-source": "dist",
-        "autoload": {
-            "psr-4": {
-                "Civi\\Cxn\\Rpc\\": "src/"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "license": [
-            "MIT"
-        ],
-        "authors": [
-            {
-                "name": "Tim Otten",
-                "email": "totten@civicrm.org"
-            }
-        ],
-        "description": "RPC library for CiviConnect"
     },
     {
         "name": "symfony/dependency-injection",
