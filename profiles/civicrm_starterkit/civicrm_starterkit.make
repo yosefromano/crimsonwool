@@ -13,7 +13,7 @@ projects[drupal][version] = "7.51"
 ; ====== CIVICRM RELATED =========
 
 libraries[civicrm][download][type] = get
-libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.6.29-drupal.tar.gz"
+libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.6.31-drupal.tar.gz"
 libraries[civicrm][destination] = modules
 libraries[civicrm][directory_name] = civicrm
 
