@@ -113,7 +113,7 @@ projects[recaptcha][subdir] = "contrib"
 projects[recaptcha][version] = "2.2"
 
 projects[views][subdir] = "contrib"
-projects[views][version] = "3.16"
+projects[views][version] = "3.17"
 
 projects[webform][subdir] = "contrib"
 projects[webform][version] = "4.1"
