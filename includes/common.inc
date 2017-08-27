@@ -487,7 +487,7 @@ function drupal_http_build_query(array $query, $parent = '') {
   $params = array();
 
   foreach ($query as $key => $value) {
-    $key = ($parent ? $parent . '[' . rawurlencode($key) . ']' : rawurlencode($key));
+    $key = $parent ? $parent . rawurlencode('[' . $key . ']') : rawurlencode($key);
 
     // Recurse into children.
     if (is_array($value)) {
@@ -3648,7 +3648,7 @@ function drupal_build_css_cache($css) {
     $uri = $map[$key];
   }
 
-  if (empty($uri) || !drupal_aggregated_file_exists($uri)) {
+  if (empty($uri) || !file_exists($uri)) {
     // Build aggregate CSS file.
     foreach ($css as $stylesheet) {
       // Only 'file' stylesheets can be aggregated.
@@ -3986,7 +3986,11 @@ function drupal_html_id($id) {
   // be merged with content already on the base page. The HTML IDs must be
   // unique for the fully merged content. Therefore, initialize $seen_ids to
   // take into account IDs that are already in use on the base page.
-  $seen_ids_init = &drupal_static(__FUNCTION__ . ':init');
+  static $drupal_static_fast;
+  if (!isset($drupal_static_fast['seen_ids_init'])) {
+    $drupal_static_fast['seen_ids_init'] = &drupal_static(__FUNCTION__ . ':init');
+  }
+  $seen_ids_init = &$drupal_static_fast['seen_ids_init'];
   if (!isset($seen_ids_init)) {
     // Ideally, Drupal would provide an API to persist state information about
     // prior page requests in the database, and we'd be able to add this
@@ -4031,7 +4035,10 @@ function drupal_html_id($id) {
       }
     }
   }
-  $seen_ids = &drupal_static(__FUNCTION__, $seen_ids_init);
+  if (!isset($drupal_static_fast['seen_ids'])) {
+    $drupal_static_fast['seen_ids'] = &drupal_static(__FUNCTION__, $seen_ids_init);
+  }
+  $seen_ids = &$drupal_static_fast['seen_ids'];
 
   $id = strtr(drupal_strtolower($id), array(' ' => '-', '_' => '-', '[' => '-', ']' => ''));
 
@@ -5044,19 +5051,6 @@ function drupal_add_tabledrag($table_id, $action, $relationship, $group, $subgro
   drupal_add_js($settings, 'setting');
 }
 
-function drupal_aggregated_file_exists($uri) {
-  if (function_exists('apc_exists')) {
-    $exists = apc_exists('file_exists_' . $uri);
-    if (!$exists && file_exists($uri)) {
-      $exists = TRUE;
-      apc_store('file_exists_' . $uri, TRUE, 86400);
-    }
-    return $exists;
-  }
-  // If no APC available, fall back to default.
-  return file_exists($uri);
-}
-
 /**
  * Aggregates JavaScript files into a cache file in the files directory.
  *
@@ -5096,7 +5090,7 @@ function drupal_build_js_cache($files) {
     $uri = $map[$key];
   }
 
-  if (empty($uri) || !drupal_aggregated_file_exists($uri)) {
+  if (empty($uri) || !file_exists($uri)) {
     // Build aggregate JS file.
     foreach ($files as $path => $info) {
       if ($info['preprocess']) {
@@ -5104,10 +5098,6 @@ function drupal_build_js_cache($files) {
         $contents .= file_get_contents($path) . ";\n";
       }
     }
-
-    // Allow modules to act on the js_cache before writing to disk.
-    drupal_alter('js_cache', $contents);
-
     // Prefix filename to prevent blocking by firewalls which reject files
     // starting with "ad*".
     $filename = 'js_' . drupal_hash_base64($contents) . '.js';
