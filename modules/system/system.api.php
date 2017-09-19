@@ -749,6 +749,26 @@ function hook_js_alter(&$javascript) {
 }
 
 /**
+ * Perform necessary alterations to the concatenated JavaScript before it is
+ * presented on the page.
+ *
+ * @param $contents
+ *   A string of the concatenated JavaScript.
+ *
+ * @see drupal_build_js_cache()
+ */
+function hook_js_cache_alter(&$contents) {
+  $header = <<<HEADER
+/**
+ * Powered by Pressflow
+ * http://pressflow.org
+ */
+HEADER;
+
+  $contents = $header . "\n" . $contents;
+}
+
+/**
  * Registers JavaScript/CSS libraries associated with a module.
  *
  * Modules implementing this return an array of arrays. The key to each
@@ -2048,22 +2068,6 @@ function hook_module_implements_alter(&$implementations, $hook) {
 function hook_system_theme_info() {
   $themes['mymodule_test_theme'] = drupal_get_path('module', 'mymodule') . '/mymodule_test_theme/mymodule_test_theme.info';
   return $themes;
-}
-
-/**
- * Return additional theme engines provided by modules.
- *
- * This hook is invoked from _system_rebuild_theme_data() and allows modules to
- * register additional theme engines outside of the regular 'themes/engines'
- * directories of a Drupal installation.
- *
- * @return
- *   An associative array. Each key is the system name of a theme engine and
- *   each value is the corresponding path to the theme engine's .engine file.
- */
-function hook_system_theme_engine_info() {
-  $theme_engines['izumi'] = drupal_get_path('module', 'mymodule') . '/izumi/izumi.engine';
-  return $theme_engines;
 }
 
 /**
