@@ -10,6 +10,10 @@ sites/default/local.settings.php
 /sites/default/**/files
 /sites/default/**/private
 
+# Avoid accidental modification of pantheon.upstream.yml in sites
+# created from this upstream
+pantheon.upstream.yml
+
 # Packages #
 ############
 *.7z
@@ -32,7 +36,6 @@ sites/default/local.settings.php
 .DS_Store*
 ehthumbs.db
 Icon
-
 
 Thumbs.db
 ._*
