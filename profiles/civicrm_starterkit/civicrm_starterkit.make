@@ -126,10 +126,10 @@ projects[views][subdir] = "contrib"
 projects[views][version] = "3.17"
 
 projects[webform][subdir] = "contrib"
-projects[webform][version] = "4.1"
+projects[webform][version] = "4.15"
 
 projects[webform_civicrm][subdir] = "contrib"
-projects[webform_civicrm][version] = "4.9"
+projects[webform_civicrm][version] = "4.19"
 
 projects[wysiwyg][subdir] = "contrib"
 projects[wysiwyg][version] = "2.4"
