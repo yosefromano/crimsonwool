@@ -209,7 +209,7 @@ foreach ($langs as $locale => $_) {
   }
 }
 
-// Set the locale (required by CRM_Core_Config)
+// Set the CMS
 // This is mostly sympbolic, since nothing we do during the install
 // really requires CIVICRM_UF to be defined.
 $installTypeToUF = array(
@@ -221,6 +221,7 @@ $installTypeToUF = array(
 $uf = (isset($installTypeToUF[$installType]) ? $installTypeToUF[$installType] : 'Drupal');
 define('CIVICRM_UF', $uf);
 
+// Set the Locale (required by CRM_Core_Config)
 global $tsLocale;
 
 $tsLocale = 'en_US';
@@ -734,6 +735,13 @@ class InstallRequirements {
       ts("PHP Configuration"),
       ts("MySQL support"),
       ts("MySQL support not included in PHP."),
+    ));
+
+    // Check for XML support
+    $this->requireFunction('simplexml_load_file', array(
+      ts("PHP Configuration"),
+      ts("SimpleXML support"),
+      ts("SimpleXML support not included in PHP."),
     ));
 
     // Check for JSON support
@@ -1491,7 +1499,7 @@ class Installer extends InstallRequirements {
       ) {
         // Send back to the install with profile and locale variables.
         // This allows the user to pick up where they left off in the install.
-        $URL_to_continue_Drupal_install = civicrm_cms_base() . 'install.php?profile=' . $_GET['profile'] . '&locale=' . $_GET['locale'];;
+        $URL_to_continue_Drupal_install = civicrm_cms_base() . 'install.php?profile=' . $_GET['profile'] . '&locale=' . $_GET['locale'];
         header('Location: '. $URL_to_continue_Drupal_install);
       }
       elseif (

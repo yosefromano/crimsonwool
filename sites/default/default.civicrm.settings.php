@@ -28,6 +28,7 @@
 /**
  * CiviCRM Configuration File.
  */
+global $civicrm_setting;
 
 /**
  * Content Management System (CMS) Host:
@@ -285,11 +286,9 @@ if (isset($pantheon_conf)) {
  * Uncomment and edit the below as appropriate.
  */
 
-global $civicrm_setting;
-
 /**
-* Override File directories and URLs.
-*/
+ * Override File directories and URLs.
+ */
 if (isset($pantheon_conf)) {
   // Override the Temporary Files directory.
   $civicrm_setting['Directory Preferences']['uploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/private/civicrm/upload/';
@@ -381,18 +380,18 @@ if (isset($pantheon_conf)) {
 // Disable display of Community Messages on home dashboard (OPTIONAL).
 // $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false;
 
- // set triggers to be managed offline per CRM-18212 (OPTIONAL).
- // $civicrm_setting['CiviCRM Preferences']['logging_no_trigger_permission'] = 1;
+// set triggers to be managed offline per CRM-18212 (OPTIONAL).
+// $civicrm_setting['CiviCRM Preferences']['logging_no_trigger_permission'] = 1;
 
- // Override the CMS root path defined by cmsRootPath.
- // define('CIVICRM_CMSDIR', '/path/to/install/root/');
+// Override the CMS root path defined by cmsRootPath.
+// define('CIVICRM_CMSDIR', '/path/to/install/root/');
 
- // Opt-out of announcements by the CiviCRM core team for releases, paid services, events, etc. Separate each preferred optout category with a comma:
- //   "offers": paid service offers
- //   "asks": requests for donations or membership signup/renewal to CiviCRM
- //   "releases": major release announcements
- //   "events": announcements of local/national upcoming events
- // $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = 'https://alert.civicrm.org/alert?prot=1&ver={ver}&uf={uf}&sid={sid}&lang={lang}&co={co}&optout=offers,asks';
+// Opt-out of announcements by the CiviCRM core team for releases, paid services, events, etc. Separate each preferred optout category with a comma:
+//   "offers": paid service offers
+//   "asks": requests for donations or membership signup/renewal to CiviCRM
+//   "releases": major release announcements
+//   "events": announcements of local/national upcoming events
+// $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = 'https://alert.civicrm.org/alert?prot=1&ver={ver}&uf={uf}&sid={sid}&lang={lang}&co={co}&optout=offers,asks';
 
 
 /**
@@ -427,13 +426,23 @@ if (isset($pantheon_conf) && $pantheon_conf['pantheon_environment'] != 'live') {
 }
 
 // if (!isset($pantheon_conf) && !defined('CIVICRM_MAIL_LOG')) {
-// define( 'CIVICRM_MAIL_LOG', '/full/path/to/files/civicrm/ConfigAndLog/mail.log');
+//   define( 'CIVICRM_MAIL_LOG', '/full/path/to/files/civicrm/ConfigAndLog/mail.log');
 // }
 
 
 if (!defined('CIVICRM_DOMAIN_ID')) {
   define( 'CIVICRM_DOMAIN_ID', 1);
 }
+
+/**
+ * Setting to define the environment in which this CiviCRM instance is running.
+ * Note the setting here must be value from the option group 'Environment',
+ * (see Administration > System Settings > Option Groups, Options beside Environment)
+ * which by default has three option values: 'Production', 'Staging', 'Development'.
+ * NB: defining a value for environment here prevents it from being set
+ * via the browser.
+ */
+// $civicrm_setting['domain']['environment'] = 'Production';
 
 /**
  * Settings to enable external caching using a cache server.  This is an

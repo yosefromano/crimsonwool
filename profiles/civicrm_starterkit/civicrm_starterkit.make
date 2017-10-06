@@ -13,7 +13,7 @@ projects[drupal][version] = "7.51"
 ; ====== CIVICRM RELATED =========
 
 libraries[civicrm][download][type] = get
-libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.22-drupal.tar.gz"
+libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.25-drupal.tar.gz"
 libraries[civicrm][destination] = modules
 libraries[civicrm][directory_name] = civicrm
 
@@ -59,7 +59,7 @@ libraries[civicrm][patch][2130213] = ./patches/ignore-timezone-on-install-47-213
 libraries[civicrm][patch][1844558] = ./patches/settings_location-for-profiles.patch
 
 ;Improving profile install UX when installing from a profile
-libraries[civicrm][patch][1849424-use] = ./patches/1849424-use-vars-in-link.patch
+libraries[civicrm][patch][1849424-use] = ./patches/1849424-use-vars-in-link-2.patch
 libraries[civicrm][patch][1849424-pass] = ./patches/1849424-pass-vars-in-link-2.patch
 
 ; Cached Symfony container

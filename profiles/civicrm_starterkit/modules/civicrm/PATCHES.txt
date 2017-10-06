@@ -11,7 +11,7 @@ The following patches have been applied to this project:
 - installer-baseurl.patch
 - ignore-timezone-on-install-47-2130213.patch
 - settings_location-for-profiles.patch
-- 1849424-use-vars-in-link.patch
+- 1849424-use-vars-in-link-2.patch
 - 1849424-pass-vars-in-link-2.patch
 - smtp-disable-peer-verification.patch
 

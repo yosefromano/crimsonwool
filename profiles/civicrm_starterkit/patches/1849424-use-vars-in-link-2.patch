@@ -1,8 +1,8 @@
 diff --git a/install/index.php b/install/index.php
-index f1fb08c..019b154 100644
+index b743e86..b2cd436 100644
 --- a/install/index.php
 +++ b/install/index.php
-@@ -1489,86 +1489,10 @@ class Installer extends InstallRequirements {
+@@ -1490,84 +1490,10 @@ class Installer extends InstallRequirements {
          $installType == 'drupal' &&
          version_compare(VERSION, '7.0-rc1') >= 0
        ) {
@@ -62,6 +62,13 @@ index f1fb08c..019b154 100644
 -        // now enable civicrm module.
 -        module_enable(array('civicrm', 'civicrmtheme'));
 -
+-        // SystemInstallEvent will be called from here with the first call of CRM_Core_Config,
+-        // which calls Core_BAO_ConfigSetting::applyLocale(), who will default to calling
+-        // Civi::settings()->get('lcMessages');
+-        // Therefore, we need to pass the seedLanguage before that.
+-        global $civicrm_setting;
+-        $civicrm_setting['domain']['lcMessages'] = $config['seedLanguage'];
+-
 -        // clear block, page, theme, and hook caches
 -        drupal_flush_all_caches();
 -
@@ -72,15 +79,6 @@ index f1fb08c..019b154 100644
 -        $GLOBALS['user'] = $original_user;
 -        drupal_save_session(TRUE);
 -
--        //change the default language to one chosen
--        if (isset($config['seedLanguage']) && $config['seedLanguage'] != 'en_US') {
--          civicrm_api3('Setting', 'create', array(
--              'domain_id' => 'current_domain',
--              'lcMessages' => $config['seedLanguage'],
--            )
--          );
--        }
--
 -        $output .= '</ul>';
 -        $output .= '</div>';
 -        $output .= '</body>';
@@ -88,7 +86,7 @@ index f1fb08c..019b154 100644
 -        echo $output;
 +        // Send back to the install with profile and locale variables.
 +        // This allows the user to pick up where they left off in the install.
-+        $URL_to_continue_Drupal_install = civicrm_cms_base() . 'install.php?profile=' . $_GET['profile'] . '&locale=' . $_GET['locale'];;
++        $URL_to_continue_Drupal_install = civicrm_cms_base() . 'install.php?profile=' . $_GET['profile'] . '&locale=' . $_GET['locale'];
 +        header('Location: '. $URL_to_continue_Drupal_install);
        }
        elseif (

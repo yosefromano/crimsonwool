@@ -982,7 +982,7 @@ WHERE  id = %1";
           $autoRenewMembershipTypes[] = $membershiptTypeValue['id'];
         }
       }
-      foreach ($form->_priceSet['fields'] as &$field) {
+      foreach ($form->_priceSet['fields'] as $field) {
         if (array_key_exists('options', $field) && is_array($field['options'])) {
           foreach ($field['options'] as $option) {
             if (!empty($option['membership_type_id'])) {
@@ -1240,23 +1240,25 @@ WHERE  id = %1";
    */
   public static function copy($id) {
     $maxId = CRM_Core_DAO::singleValueQuery("SELECT max(id) FROM civicrm_price_set");
+    $priceSet = civicrm_api3('PriceSet', 'getsingle', array('id' => $id));
 
+    $newTitle = preg_replace('/\[Copy id \d+\]$/', "", $priceSet['title']);
     $title = ts('[Copy id %1]', array(1 => $maxId + 1));
     $fieldsFix = array(
-      'suffix' => array(
-        'title' => ' ' . $title,
-        'name' => '__Copy_id_' . ($maxId + 1) . '_',
+      'replace' => array(
+        'title' => trim($newTitle) . ' ' . $title,
+        'name' => substr($priceSet['name'], 0, 20) . 'price_set_' . ($maxId + 1),
       ),
     );
 
-    $copy = &CRM_Core_DAO::copyGeneric('CRM_Price_DAO_PriceSet',
+    $copy = CRM_Core_DAO::copyGeneric('CRM_Price_DAO_PriceSet',
       array('id' => $id),
       NULL,
       $fieldsFix
     );
 
     //copying all the blocks pertaining to the price set
-    $copyPriceField = &CRM_Core_DAO::copyGeneric('CRM_Price_DAO_PriceField',
+    $copyPriceField = CRM_Core_DAO::copyGeneric('CRM_Price_DAO_PriceField',
       array('price_set_id' => $id),
       array('price_set_id' => $copy->id)
     );
@@ -1341,11 +1343,11 @@ INNER JOIN  civicrm_price_set pset    ON ( pset.id = field.price_set_id )
    */
   public static function getMembershipCount($ids) {
     $queryString = "
-SELECT       count( pfv.id ) AS count, pfv.id AS id
+SELECT       count( pfv.id ) AS count, mt.member_of_contact_id AS id
 FROM         civicrm_price_field_value pfv
 INNER JOIN    civicrm_membership_type mt ON mt.id = pfv.membership_type_id
 WHERE        pfv.id IN ( $ids )
-GROUP BY     mt.member_of_contact_id";
+GROUP BY     mt.member_of_contact_id ";
 
     $crmDAO = CRM_Core_DAO::executeQuery($queryString);
     $count = array();
