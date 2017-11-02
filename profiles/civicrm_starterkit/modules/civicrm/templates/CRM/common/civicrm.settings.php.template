@@ -28,7 +28,7 @@
 /**
  * CiviCRM Configuration File.
  */
-global $civicrm_setting;
+global $civicrm_root, $civicrm_setting, $civicrm_paths;
 
 /**
  * Content Management System (CMS) Host:
@@ -98,6 +98,8 @@ if (!defined('CIVICRM_UF_DSN') && CIVICRM_UF !== 'UnitTests') {
     define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
   }
 }
+
+// %%extraSettings%%
 
 /**
  * CiviCRM Database Settings
