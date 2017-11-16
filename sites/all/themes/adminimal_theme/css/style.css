@@ -3099,32 +3099,32 @@ a.select2-choice.select2-default {
     min-height: 20px;
 }
 
-.not-logged-in div#branding {
-
+.page-civicrm-contribute-transact, .page-civicrm-event-register, .page-civicrm-profile-create div#branding {
 display: none;
-
 }
 
-.crm-container .crm-section .label {
-    width: 100%;
-    float: left;
-    text-align: left;
-}
+@media screen and (max-width: 480px) {
+	.crm-container .crm-section .label {
+	    width: 100%;
+	    float: left;
+	    text-align: left;
+	}
 
+	.crm-container .crm-section .label {
+	    width: 100%;
+	    float: left;
+	    text-align: left;
+	    font-family: "Open Sans", "Segoe UI", "Helvetica", sans-serif;
+	    font-size: 20px !important;
+	    font-weight: 300;
+	    margin: 0px 0px 4px;
+	    line-height: 1.4;
+	}
+
+}
 
 .crm-container .crm-section .content {
     margin-left: 0;
     margin-top: 0.8em;
 }
 
-
-.crm-container .crm-section .label {
-    width: 100%;
-    float: left;
-    text-align: left;
-    font-family: "Open Sans", "Segoe UI", "Helvetica", sans-serif;
-    font-size: 20px !important;
-    font-weight: 300;
-    margin: 0px 0px 4px;
-    line-height: 1.4;
-}
