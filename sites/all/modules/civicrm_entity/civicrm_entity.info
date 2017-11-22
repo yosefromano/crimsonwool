@@ -1,18 +1,19 @@
 name = CiviCRM Entities
-description = "Declare CiviCRM entities as Drupal entities"
+description = "Expose CiviCRM entities as Drupal entities.  Provides Rules integration, native Drupal forms, and more."
 dependencies[] = civicrm
 dependencies[] = entity
-package = CiviCRM
+package = CiviCRM Entity
 core = 7.x
-files[] =  civicrm_entity.inc
-files[] =  civicrm_entity_controller.inc
-files[] =  civicrm_entity_ui_controller.inc
-files[] =  civicrm_entity_metadata_controller.inc
-files[] =  civicrm_entity_default_views_controller.inc
+files[] = civicrm_entity.inc
+files[] = civicrm_entity_controller.inc
+files[] = civicrm_entity_ui_controller.inc
+files[] = civicrm_entity_metadata_controller.inc
+files[] = civicrm_entity_default_views_controller.inc
 
-; Information added by Drupal.org packaging script on 2016-08-22
-version = "7.x-2.0-beta2"
+
+; Information added by Drupal.org packaging script on 2017-11-13
+version = "7.x-2.0-beta11"
 core = "7.x"
 project = "civicrm_entity"
-datestamp = "1471830842"
+datestamp = "1510596279"
 
