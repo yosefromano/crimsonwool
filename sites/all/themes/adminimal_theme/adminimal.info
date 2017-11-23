@@ -1,5 +1,5 @@
 name = Adminimal
-description = Hacked version of Adminimal theme with changes for civicrm. Changes in bottom of css/style.css
+description = Minimalist administration theme.
 core = 7.x
 scripts[] = js/jRespond.js
 scripts[] = js/adminimal_theme.js
