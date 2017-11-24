@@ -31,13 +31,6 @@ function cs_core_roles_user_default_roles() {
     'machine_name' => 'cron',
   );
 
-  // Exported role: Civi Contact.
-  $roles['Civi Contact'] = array(
-    'name' => 'Civi Contact',
-    'weight' => 4,
-    'machine_name' => 'civi_contact',
-  );
-
   // Exported role: DRUPAL ADMIN.
   $roles['DRUPAL ADMIN'] = array(
     'name' => 'DRUPAL ADMIN',

@@ -35,9 +35,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'access CiviCRM activity iCalendar feed'.
   $permissions['access CiviCRM activity iCalendar feed'] = array(
     'name' => 'access CiviCRM activity iCalendar feed',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'civicrm_activity_ical',
   );
 
@@ -152,8 +150,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access administration pages'] = array(
     'name' => 'access administration pages',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
@@ -205,7 +201,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access civicrm group role setting'] = array(
     'name' => 'access civicrm group role setting',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm_group_roles',
@@ -215,7 +210,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access civicrm member role setting'] = array(
     'name' => 'access civicrm member role setting',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm_member_roles',
@@ -285,9 +279,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'access dashboard'.
   $permissions['access dashboard'] = array(
     'name' => 'access dashboard',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'dashboard',
   );
 
@@ -359,7 +351,7 @@ function cs_user_permission_user_default_permissions() {
       'CIVI EDITOR' => 'CIVI EDITOR',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
-      'authenticated user' => 'authenticated user',
+      'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'civicrm',
   );
@@ -415,9 +407,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'admin_display_suite'.
   $permissions['admin_display_suite'] = array(
     'name' => 'admin_display_suite',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds',
   );
 
@@ -550,9 +540,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'administer custom formatters'.
   $permissions['administer custom formatters'] = array(
     'name' => 'administer custom formatters',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'custom_formatters',
   );
 
@@ -888,8 +876,8 @@ function cs_user_permission_user_default_permissions() {
   $permissions['assign CIVI ADMIN role'] = array(
     'name' => 'assign CIVI ADMIN role',
     'roles' => array(
-      'Assign Permission' => 'Assign Permission',
       'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'role_delegation',
   );
@@ -898,16 +886,9 @@ function cs_user_permission_user_default_permissions() {
   $permissions['assign CIVI EDITOR role'] = array(
     'name' => 'assign CIVI EDITOR role',
     'roles' => array(
-      'Assign Permission' => 'Assign Permission',
       'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
     ),
-    'module' => 'role_delegation',
-  );
-
-  // Exported permission: 'assign Civi Contact role'.
-  $permissions['assign Civi Contact role'] = array(
-    'name' => 'assign Civi Contact role',
-    'roles' => array(),
     'module' => 'role_delegation',
   );
 
@@ -915,8 +896,8 @@ function cs_user_permission_user_default_permissions() {
   $permissions['assign VIEW CIVI role'] = array(
     'name' => 'assign VIEW CIVI role',
     'roles' => array(
-      'Assign Permission' => 'Assign Permission',
       'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'role_delegation',
   );
@@ -2380,18 +2361,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view author on comment'.
   $permissions['view author on comment'] = array(
     'name' => 'view author on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view author on node'.
   $permissions['view author on node'] = array(
     'name' => 'view author on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2417,18 +2394,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view changed_date on node'.
   $permissions['view changed_date on node'] = array(
     'name' => 'view changed_date on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view comments on node'.
   $permissions['view comments on node'] = array(
     'name' => 'view comments on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2444,9 +2417,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view ds_switch_field on node'.
   $permissions['view ds_switch_field on node'] = array(
     'name' => 'view ds_switch_field on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2509,27 +2480,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view links on comment'.
   $permissions['view links on comment'] = array(
     'name' => 'view links on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view links on node'.
   $permissions['view links on node'] = array(
     'name' => 'view links on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view more_link on taxonomy_term'.
   $permissions['view more_link on taxonomy_term'] = array(
     'name' => 'view more_link on taxonomy_term',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2561,18 +2526,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view name on user'.
   $permissions['view name on user'] = array(
     'name' => 'view name on user',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view node_link on node'.
   $permissions['view node_link on node'] = array(
     'name' => 'view node_link on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2619,27 +2580,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view permalink on comment'.
   $permissions['view permalink on comment'] = array(
     'name' => 'view permalink on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view post_date on comment'.
   $permissions['view post_date on comment'] = array(
     'name' => 'view post_date on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view post_date on node'.
   $permissions['view post_date on node'] = array(
     'name' => 'view post_date on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2678,18 +2633,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view submitted on comment'.
   $permissions['view submitted on comment'] = array(
     'name' => 'view submitted on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view submitted_by on node'.
   $permissions['view submitted_by on node'] = array(
     'name' => 'view submitted_by on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2709,27 +2660,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view title on comment'.
   $permissions['view title on comment'] = array(
     'name' => 'view title on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view title on node'.
   $permissions['view title on node'] = array(
     'name' => 'view title on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view title on taxonomy_term'.
   $permissions['view title on taxonomy_term'] = array(
     'name' => 'view title on taxonomy_term',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 

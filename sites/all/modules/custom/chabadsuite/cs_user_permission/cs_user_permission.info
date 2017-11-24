@@ -141,7 +141,6 @@ features[user_permission][] = administer views
 features[user_permission][] = allow plupload
 features[user_permission][] = assign CIVI ADMIN role
 features[user_permission][] = assign CIVI EDITOR role
-features[user_permission][] = assign Civi Contact role
 features[user_permission][] = assign VIEW CIVI role
 features[user_permission][] = assign all roles
 features[user_permission][] = block IP addresses
