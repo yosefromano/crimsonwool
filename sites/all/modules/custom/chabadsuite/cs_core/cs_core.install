@@ -65,8 +65,8 @@ function cs_core_update_7006() {
 }
 
 /**
- * Enable cs_civi
+ * Enable new features
  */
 function cs_core_update_7007() {
-  module_enable(array('cs_civi'));
+  module_enable(array('cs_core_roles', 'cs_user_permission', 'cs_civi', 'cs_civi_drupal_user'));
 }
