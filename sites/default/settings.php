@@ -609,7 +609,7 @@ else {
 $conf['site_info'] = $site_info;
 
 /**
- * Default local database configuration
+ * Default local configuration
  */
 if (!$on_pantheon) {
   $databases = array (
@@ -627,6 +627,10 @@ if (!$on_pantheon) {
       ),
     ),
   );
+
+  error_reporting(E_ALL);
+  ini_set('display_errors', TRUE);
+  ini_set('display_startup_errors', TRUE);
 }
 
 
