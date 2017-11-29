@@ -720,7 +720,9 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'administer permissions'.
   $permissions['administer permissions'] = array(
     'name' => 'administer permissions',
-    'roles' => array(),
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
     'module' => 'user',
   );
 
