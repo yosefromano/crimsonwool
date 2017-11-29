@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the cs_theme feature.
+ */
+
+include_once 'cs_theme.features.inc';
