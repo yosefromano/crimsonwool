@@ -63,3 +63,10 @@ function cs_core_update_7005() {
 function cs_core_update_7006() {
   module_enable(array('civicrm_cache_clear'));
 }
+
+/**
+ * Enable cs_civi
+ */
+function cs_core_update_7007() {
+  module_enable(array('cs_civi'));
+}
