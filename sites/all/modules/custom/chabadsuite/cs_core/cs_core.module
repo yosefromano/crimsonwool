@@ -1,5 +1,20 @@
 <?php
-/**
- * @file
- * Drupal needs this blank file.
- */
+
+ /**
+  * Implements hook_init().
+  */
+ function cs_core_init() {
+   // Register our shutdown function
+   drupal_register_shutdown_function('cs_core_shutdown');
+ }
+
+ /**
+  * Custom shutdown function (registered in hook_init above)
+  */
+ function cs_core_shutdown() {
+   // Track peak memory usage in NewRelic
+   if (extension_loaded('newrelic')) {
+     $memory_in_mb = (float)memory_get_peak_usage(TRUE) / 1048576;
+     newrelic_add_custom_parameter('memoryUsedMB', $memory_in_mb);
+   }
+ }
