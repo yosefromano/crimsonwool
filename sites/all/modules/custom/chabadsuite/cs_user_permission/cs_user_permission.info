@@ -1,7 +1,7 @@
-name = cs_user_permission
+name = CS User Permission
 description = preset user permissions
 core = 7.x
-package = Features
+package = ChabadSuite
 dependencies[] = admin_menu
 dependencies[] = bean
 dependencies[] = block

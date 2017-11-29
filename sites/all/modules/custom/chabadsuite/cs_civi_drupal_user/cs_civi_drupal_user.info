@@ -1,6 +1,6 @@
-name = cs_civi_drupal_user
+name = CS Civi Drupal User
 core = 7.x
-package = Features
+package = ChabadSuite
 dependencies[] = civicrm
 dependencies[] = entity
 dependencies[] = rules

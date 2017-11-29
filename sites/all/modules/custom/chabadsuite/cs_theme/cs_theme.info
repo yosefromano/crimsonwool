@@ -1,6 +1,6 @@
-name = cs_theme
+name = CS Theme
 core = 7.x
-package = Features
+package = ChabadSuite
 dependencies[] = ctools
 dependencies[] = strongarm
 features[ctools][] = strongarm:strongarm:1
