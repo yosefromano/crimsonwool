@@ -68,12 +68,6 @@ function cs_core_update_7006() {
  * Enable new features and adminimal theme
  */
 function cs_core_update_7007() {
-  // Enable these on all sites
-  module_enable(array('cs_core_roles', 'cs_civi', 'cs_civi_drupal_user', 'cs_theme'));
+  module_enable(array('cs_core_roles', 'cs_user_permission', 'cs_civi', 'cs_civi_drupal_user', 'cs_theme'));
   theme_enable(array('adminimal'));
-
-  // Enable only on app sites
-  if (variable_get('theme_default') == 'app') {
-    module_enable(array('cs_user_permission'));
-  }
 }
