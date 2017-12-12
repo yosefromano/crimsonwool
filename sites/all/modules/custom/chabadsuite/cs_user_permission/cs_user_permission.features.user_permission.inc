@@ -32,13 +32,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
-  // Exported permission: 'access CiviCRM activity iCalendar feed'.
-  $permissions['access CiviCRM activity iCalendar feed'] = array(
-    'name' => 'access CiviCRM activity iCalendar feed',
-    'roles' => array(),
-    'module' => 'civicrm_activity_ical',
-  );
-
   // Exported permission: 'access CiviContribute'.
   $permissions['access CiviContribute'] = array(
     'name' => 'access CiviContribute',
