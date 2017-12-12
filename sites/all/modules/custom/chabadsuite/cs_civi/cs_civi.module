@@ -1,0 +1,7 @@
+<?php
+/**
+ * @file
+ * Code for the cs_civi feature.
+ */
+
+include_once 'cs_civi.features.inc';

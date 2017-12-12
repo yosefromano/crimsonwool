@@ -14,10 +14,7 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access AJAX API'] = array(
     'name' => 'access AJAX API',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
-      'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'civicrm',
   );
@@ -38,9 +35,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'access CiviCRM activity iCalendar feed'.
   $permissions['access CiviCRM activity iCalendar feed'] = array(
     'name' => 'access CiviCRM activity iCalendar feed',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'civicrm_activity_ical',
   );
 
@@ -97,7 +92,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'access CiviPledge',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -156,7 +150,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access administration pages'] = array(
     'name' => 'access administration pages',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
@@ -216,7 +209,9 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'access civicrm member role setting'.
   $permissions['access civicrm member role setting'] = array(
     'name' => 'access civicrm member role setting',
-    'roles' => array(),
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
     'module' => 'civicrm_member_roles',
   );
 
@@ -284,9 +279,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'access dashboard'.
   $permissions['access dashboard'] = array(
     'name' => 'access dashboard',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'dashboard',
   );
 
@@ -358,7 +351,7 @@ function cs_user_permission_user_default_permissions() {
       'CIVI EDITOR' => 'CIVI EDITOR',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
-      'authenticated user' => 'authenticated user',
+      'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'civicrm',
   );
@@ -367,6 +360,7 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access user profiles'] = array(
     'name' => 'access user profiles',
     'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
@@ -413,9 +407,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'admin_display_suite'.
   $permissions['admin_display_suite'] = array(
     'name' => 'admin_display_suite',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds',
   );
 
@@ -548,9 +540,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'administer custom formatters'.
   $permissions['administer custom formatters'] = array(
     'name' => 'administer custom formatters',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'custom_formatters',
   );
 
@@ -559,7 +549,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'administer dedupe rules',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -661,16 +650,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'media',
   );
 
-  // Exported permission: 'administer media wysiwyg view mode'.
-  $permissions['administer media wysiwyg view mode'] = array(
-    'name' => 'administer media wysiwyg view mode',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'media_wysiwyg_view_mode',
-  );
-
   // Exported permission: 'administer menu'.
   $permissions['administer menu'] = array(
     'name' => 'administer menu',
@@ -733,7 +712,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'administer payment processors',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -742,7 +720,9 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'administer permissions'.
   $permissions['administer permissions'] = array(
     'name' => 'administer permissions',
-    'roles' => array(),
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
     'module' => 'user',
   );
 
@@ -758,7 +738,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'administer reserved groups',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -780,19 +759,9 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'administer reserved tags',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
-  );
-
-  // Exported permission: 'administer rules'.
-  $permissions['administer rules'] = array(
-    'name' => 'administer rules',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'rules',
   );
 
   // Exported permission: 'administer search'.
@@ -871,6 +840,7 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer users'] = array(
     'name' => 'administer users',
     'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
@@ -902,6 +872,45 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'plup',
+  );
+
+  // Exported permission: 'assign CIVI ADMIN role'.
+  $permissions['assign CIVI ADMIN role'] = array(
+    'name' => 'assign CIVI ADMIN role',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'role_delegation',
+  );
+
+  // Exported permission: 'assign CIVI EDITOR role'.
+  $permissions['assign CIVI EDITOR role'] = array(
+    'name' => 'assign CIVI EDITOR role',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'role_delegation',
+  );
+
+  // Exported permission: 'assign VIEW CIVI role'.
+  $permissions['assign VIEW CIVI role'] = array(
+    'name' => 'assign VIEW CIVI role',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'role_delegation',
+  );
+
+  // Exported permission: 'assign all roles'.
+  $permissions['assign all roles'] = array(
+    'name' => 'assign all roles',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'role_delegation',
   );
 
   // Exported permission: 'block IP addresses'.
@@ -979,51 +988,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'node',
   );
 
-  // Exported permission: 'create any homepage_callout bean'.
-  $permissions['create any homepage_callout bean'] = array(
-    'name' => 'create any homepage_callout bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'create any homepage_image bean'.
-  $permissions['create any homepage_image bean'] = array(
-    'name' => 'create any homepage_image bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'create any large_icon_cta bean'.
-  $permissions['create any large_icon_cta bean'] = array(
-    'name' => 'create any large_icon_cta bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'create any promo_video bean'.
-  $permissions['create any promo_video bean'] = array(
-    'name' => 'create any promo_video bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'create any social_media_links bean'.
-  $permissions['create any social_media_links bean'] = array(
-    'name' => 'create any social_media_links bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'create article content'.
   $permissions['create article content'] = array(
     'name' => 'create article content',
@@ -1055,7 +1019,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'create manual batch',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1135,7 +1098,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'delete all manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1188,24 +1150,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'file_entity',
   );
 
-  // Exported permission: 'delete any homepage_callout bean'.
-  $permissions['delete any homepage_callout bean'] = array(
-    'name' => 'delete any homepage_callout bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'delete any homepage_image bean'.
-  $permissions['delete any homepage_image bean'] = array(
-    'name' => 'delete any homepage_image bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'delete any homepage_slideshow content'.
   $permissions['delete any homepage_slideshow content'] = array(
     'name' => 'delete any homepage_slideshow content',
@@ -1223,15 +1167,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
-  );
-
-  // Exported permission: 'delete any large_icon_cta bean'.
-  $permissions['delete any large_icon_cta bean'] = array(
-    'name' => 'delete any large_icon_cta bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
   );
 
   // Exported permission: 'delete any page content'.
@@ -1252,24 +1187,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
-  );
-
-  // Exported permission: 'delete any promo_video bean'.
-  $permissions['delete any promo_video bean'] = array(
-    'name' => 'delete any promo_video bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'delete any social_media_links bean'.
-  $permissions['delete any social_media_links bean'] = array(
-    'name' => 'delete any social_media_links bean',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
   );
 
   // Exported permission: 'delete any team content'.
@@ -1350,7 +1267,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'delete in CiviPledge',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1417,7 +1333,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'delete own manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1626,7 +1541,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'edit all manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -1679,26 +1593,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'file_entity',
   );
 
-  // Exported permission: 'edit any homepage_callout bean'.
-  $permissions['edit any homepage_callout bean'] = array(
-    'name' => 'edit any homepage_callout bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'edit any homepage_image bean'.
-  $permissions['edit any homepage_image bean'] = array(
-    'name' => 'edit any homepage_image bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'edit any homepage_slideshow content'.
   $permissions['edit any homepage_slideshow content'] = array(
     'name' => 'edit any homepage_slideshow content',
@@ -1716,16 +1610,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
-  );
-
-  // Exported permission: 'edit any large_icon_cta bean'.
-  $permissions['edit any large_icon_cta bean'] = array(
-    'name' => 'edit any large_icon_cta bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
   );
 
   // Exported permission: 'edit any page content'.
@@ -1746,26 +1630,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
-  );
-
-  // Exported permission: 'edit any promo_video bean'.
-  $permissions['edit any promo_video bean'] = array(
-    'name' => 'edit any promo_video bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'edit any social_media_links bean'.
-  $permissions['edit any social_media_links bean'] = array(
-    'name' => 'edit any social_media_links bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'bean',
   );
 
   // Exported permission: 'edit any team content'.
@@ -1801,7 +1665,9 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'edit api keys'.
   $permissions['edit api keys'] = array(
     'name' => 'edit api keys',
-    'roles' => array(),
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
     'module' => 'civicrm',
   );
 
@@ -1884,7 +1750,9 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'edit own api keys'.
   $permissions['edit own api keys'] = array(
     'name' => 'edit own api keys',
-    'roles' => array(),
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
     'module' => 'civicrm',
   );
 
@@ -1948,7 +1816,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'edit own manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2019,7 +1886,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'edit pledges',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2057,7 +1923,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'export all manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2068,7 +1933,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'export own manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2116,16 +1980,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
-  );
-
-  // Exported permission: 'import media'.
-  $permissions['import media'] = array(
-    'name' => 'import media',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'media',
   );
 
   // Exported permission: 'interview campaign contacts'.
@@ -2259,6 +2113,8 @@ function cs_user_permission_user_default_permissions() {
       'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'civicrm',
   );
@@ -2361,6 +2217,8 @@ function cs_user_permission_user_default_permissions() {
   $permissions['skip IDS check'] = array(
     'name' => 'skip IDS check',
     'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2388,8 +2246,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['translate CiviCRM'] = array(
     'name' => 'translate CiviCRM',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2487,7 +2343,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'view all manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2505,74 +2360,17 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
-  // Exported permission: 'view any homepage_callout bean'.
-  $permissions['view any homepage_callout bean'] = array(
-    'name' => 'view any homepage_callout bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'view any homepage_image bean'.
-  $permissions['view any homepage_image bean'] = array(
-    'name' => 'view any homepage_image bean',
-    'roles' => array(
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'view any large_icon_cta bean'.
-  $permissions['view any large_icon_cta bean'] = array(
-    'name' => 'view any large_icon_cta bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'view any promo_video bean'.
-  $permissions['view any promo_video bean'] = array(
-    'name' => 'view any promo_video bean',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
-  // Exported permission: 'view any social_media_links bean'.
-  $permissions['view any social_media_links bean'] = array(
-    'name' => 'view any social_media_links bean',
-    'roles' => array(
-      'anonymous user' => 'anonymous user',
-      'authenticated user' => 'authenticated user',
-    ),
-    'module' => 'bean',
-  );
-
   // Exported permission: 'view author on comment'.
   $permissions['view author on comment'] = array(
     'name' => 'view author on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view author on node'.
   $permissions['view author on node'] = array(
     'name' => 'view author on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2598,18 +2396,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view changed_date on node'.
   $permissions['view changed_date on node'] = array(
     'name' => 'view changed_date on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view comments on node'.
   $permissions['view comments on node'] = array(
     'name' => 'view comments on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2625,9 +2419,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view ds_switch_field on node'.
   $permissions['view ds_switch_field on node'] = array(
     'name' => 'view ds_switch_field on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2690,27 +2482,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view links on comment'.
   $permissions['view links on comment'] = array(
     'name' => 'view links on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view links on node'.
   $permissions['view links on node'] = array(
     'name' => 'view links on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view more_link on taxonomy_term'.
   $permissions['view more_link on taxonomy_term'] = array(
     'name' => 'view more_link on taxonomy_term',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2742,18 +2528,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view name on user'.
   $permissions['view name on user'] = array(
     'name' => 'view name on user',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view node_link on node'.
   $permissions['view node_link on node'] = array(
     'name' => 'view node_link on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2772,7 +2554,6 @@ function cs_user_permission_user_default_permissions() {
     'name' => 'view own manual batches',
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2801,27 +2582,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view permalink on comment'.
   $permissions['view permalink on comment'] = array(
     'name' => 'view permalink on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view post_date on comment'.
   $permissions['view post_date on comment'] = array(
     'name' => 'view post_date on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view post_date on node'.
   $permissions['view post_date on node'] = array(
     'name' => 'view post_date on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2860,18 +2635,14 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view submitted on comment'.
   $permissions['view submitted on comment'] = array(
     'name' => 'view submitted on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view submitted_by on node'.
   $permissions['view submitted_by on node'] = array(
     'name' => 'view submitted_by on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
@@ -2891,27 +2662,21 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view title on comment'.
   $permissions['view title on comment'] = array(
     'name' => 'view title on comment',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view title on node'.
   $permissions['view title on node'] = array(
     'name' => 'view title on node',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 
   // Exported permission: 'view title on taxonomy_term'.
   $permissions['view title on taxonomy_term'] = array(
     'name' => 'view title on taxonomy_term',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'ds_extras',
   );
 

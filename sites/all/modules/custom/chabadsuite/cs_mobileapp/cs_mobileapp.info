@@ -1,7 +1,7 @@
-name = cs_mobileapp
+name = CS Mobile App
 description = Mobile tool for Chabad Suite
 core = 7.x
-package = Features
+package = ChabadSuite
 dependencies[] = civicrm
 dependencies[] = ctools
 dependencies[] = views

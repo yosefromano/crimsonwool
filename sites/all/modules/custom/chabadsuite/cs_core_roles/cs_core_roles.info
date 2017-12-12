@@ -1,7 +1,8 @@
-name = cs_core_roles
+name = CS Core Roles
 core = 7.x
-package = Features
+package = ChabadSuite
 dependencies[] = features
+dependencies[] = role_export
 features[features_api][] = api:2
 features[user_role][] = CIVI ADMIN
 features[user_role][] = CIVI EDITOR
@@ -9,4 +10,3 @@ features[user_role][] = CRON
 features[user_role][] = DRUPAL ADMIN
 features[user_role][] = SUPER ADMIN
 features[user_role][] = VIEW CIVI
-mtime = 1455232848
