@@ -79,3 +79,12 @@ function cs_core_update_7008() {
   module_disable(array('civicrm_activity_ical'));
   drupal_uninstall_modules(array('civicrm_activity_ical'));
 }
+
+/**
+ * Install civicrm extensions
+ */
+function cs_core_update_7009() {
+  module_load_include('inc', 'cs_core', 'inc/cs_core.util');
+  cs_util_civicrm_extension_install('com.joineryhq.activityical');
+  cs_util_civicrm_extension_install('uk.co.vedaconsulting.mosaico');
+}
