@@ -88,3 +88,10 @@ function cs_core_update_7009() {
   cs_util_civicrm_extension_install('com.joineryhq.activityical');
   cs_util_civicrm_extension_install('uk.co.vedaconsulting.mosaico');
 }
+
+/**
+ * Remove custom ical menu item
+ */
+function cs_core_update_7013() {
+  cs_util_civicrm_menu_item_delete_by_path('civicrm_activity_ical/settings/user', TRUE);
+}

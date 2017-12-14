@@ -1,6 +1,6 @@
 <?php
 
-include_once 'inc/cs_core.util.inc';
+include_once 'inc/util/cs_core.util.inc';
 
  /**
   * Implements hook_init().
