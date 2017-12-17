@@ -54,3 +54,8 @@ Applied in site's root directory
 
 == civicrm_cache_clear ==
 Patch used: patches/civicrm-cache-clear-schema.patch
+
+
+= Fix webform partial form error message =
+Patch used: patches/webform.patch
+Applied in site's root directory
