@@ -345,6 +345,8 @@ function cs_user_permission_user_default_permissions() {
       'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
+      'anonymous user' => 'anonymous user',
+      'authenticated user' => 'authenticated user',
     ),
     'module' => 'civicrm',
   );
@@ -657,7 +659,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer menu attributes'] = array(
     'name' => 'administer menu attributes',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'menu_attributes',
@@ -694,7 +695,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer pathauto'] = array(
     'name' => 'administer pathauto',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'pathauto',
@@ -861,9 +861,7 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'allow plupload'.
   $permissions['allow plupload'] = array(
     'name' => 'allow plupload',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
+    'roles' => array(),
     'module' => 'plup',
   );
 
@@ -1127,7 +1125,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete any audio files'] = array(
     'name' => 'delete any audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1286,7 +1283,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete own audio files'] = array(
     'name' => 'delete own audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1431,7 +1427,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['download any audio files'] = array(
     'name' => 'download any audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1471,7 +1466,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['download own audio files'] = array(
     'name' => 'download own audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1570,7 +1564,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit any audio files'] = array(
     'name' => 'edit any audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1629,7 +1622,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit any team content'] = array(
     'name' => 'edit any team content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1760,7 +1752,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit own audio files'] = array(
     'name' => 'edit own audio files',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'file_entity',
@@ -1838,7 +1829,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit own team content'] = array(
     'name' => 'edit own team content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -2043,7 +2033,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['notify of path changes'] = array(
     'name' => 'notify of path changes',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'pathauto',
@@ -2296,16 +2285,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'filter',
   );
 
-  // Exported permission: 'use text format wysiwyg_'.
-  $permissions['use text format wysiwyg_'] = array(
-    'name' => 'use text format wysiwyg_',
-    'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'filter',
-  );
-
   // Exported permission: 'view all activities'.
   $permissions['view all activities'] = array(
     'name' => 'view all activities',
@@ -2412,27 +2391,6 @@ function cs_user_permission_user_default_permissions() {
   // Exported permission: 'view ds_switch_field on node'.
   $permissions['view ds_switch_field on node'] = array(
     'name' => 'view ds_switch_field on node',
-    'roles' => array(),
-    'module' => 'ds_extras',
-  );
-
-  // Exported permission: 'view ds_user_picture on comment'.
-  $permissions['view ds_user_picture on comment'] = array(
-    'name' => 'view ds_user_picture on comment',
-    'roles' => array(),
-    'module' => 'ds_extras',
-  );
-
-  // Exported permission: 'view ds_user_picture on node'.
-  $permissions['view ds_user_picture on node'] = array(
-    'name' => 'view ds_user_picture on node',
-    'roles' => array(),
-    'module' => 'ds_extras',
-  );
-
-  // Exported permission: 'view ds_user_picture on user'.
-  $permissions['view ds_user_picture on user'] = array(
-    'name' => 'view ds_user_picture on user',
     'roles' => array(),
     'module' => 'ds_extras',
   );
