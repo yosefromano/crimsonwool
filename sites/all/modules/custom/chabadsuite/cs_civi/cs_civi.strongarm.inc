@@ -15,7 +15,7 @@ function cs_civi_strongarm() {
   $strongarm->api_version = 1;
   $strongarm->name = 'civicrm_entity_admin_enabled_entities';
   $strongarm->value = array(
-    'civicrm_activity' => 0,
+    'civicrm_activity' => 'civicrm_activity',
     'civicrm_action_schedule' => 0,
     'civicrm_address' => 0,
     'civicrm_campaign' => 0,
