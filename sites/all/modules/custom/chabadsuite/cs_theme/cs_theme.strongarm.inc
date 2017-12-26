@@ -21,7 +21,7 @@ function cs_theme_strongarm() {
   $strongarm->disabled = FALSE; /* Edit this to true to make a default strongarm disabled initially */
   $strongarm->api_version = 1;
   $strongarm->name = 'civicrmtheme_theme_admin';
-  $strongarm->value = 'seven';
+  $strongarm->value = 'adminimal';
   $export['civicrmtheme_theme_admin'] = $strongarm;
 
   $strongarm = new stdClass();
