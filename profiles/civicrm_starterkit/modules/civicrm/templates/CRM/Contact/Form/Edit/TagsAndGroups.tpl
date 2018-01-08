@@ -1,8 +1,8 @@
 {*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -89,19 +89,34 @@
 {/if}
     <table class="form-layout-compressed{if $context EQ 'profile'} crm-profile-tagsandgroups{/if}">
       <tr>
+        {if !$type || $type eq 'tag'}
+          <td>
+            <div class="crm-section tag-section">
+              {if $title}{$form.tag.label}{/if}
+              {$form.tag.html}
+            </div>
+            {if $context NEQ 'profile'}
+              {include file="CRM/common/Tagset.tpl"}
+            {/if}
+          </td>
+        {/if}
         {if !$type || $type eq 'group'}
           <td>
             {if $groupElementType eq 'select'}
-              <span class="label">{if $title}{$form.group.label}{/if}</span>
-            {/if}
-            {$form.group.html}
-          </td>
-        {/if}
-        {if !$type || $type eq 'tag'}
-          <td width="70%">{if $title}<span class="label">{$form.tag.label}</span>{/if}
-            <div id="tagtree">
-              {include file="CRM/Contact/Form/Edit/Tagtree.tpl" level=1}
+              <div class="crm-section group-section">
+              {if $title}{$form.group.label}{/if}
+              {$form.group.html}
             </div>
+            {else}
+              {foreach key=key item=item from=$tagGroup.group}
+                <div class="group-wrapper">
+                  {$form.group.$key.html}
+                  {if $item.description}
+                    <div class="description">{$item.description}</div>
+                  {/if}
+                </div>
+              {/foreach}
+            {/if}
           </td>
           <tr><td>{include file="CRM/common/Tagset.tpl"}</td></tr>
         {/if}

@@ -2,9 +2,9 @@
 (function ($) {
   'use strict';
   var
-    setting,
-    $contributionAmount,
-    $processorFields;
+    setting = Drupal.settings.webform_civicrm,
+    $contributionAmount = $('.civicrm-enabled[name*="[civicrm_1_contribution_1_contribution_total_amount]"]'),
+    $processorFields = $('.civicrm-enabled[name$="civicrm_1_contribution_1_contribution_payment_processor_id]"]');
 
   function getPaymentProcessor() {
     if (!$processorFields.length) {
@@ -16,7 +16,7 @@
   function loadBillingBlock() {
     var type = getPaymentProcessor();
     if (type && type != '0') {
-      $('#billing-payment-block').load(setting.contributionCallback + '&type=' + type, function() {
+      $('#billing-payment-block').load(setting.contributionCallback + '&' + setting.processor_id_key + '=' + type, function() {
         $('#billing-payment-block').trigger('crmLoad').trigger('crmFormLoad');
         if (setting.billingSubmission) {
           $.each(setting.billingSubmission, function(key, val) {
@@ -75,7 +75,7 @@
 
   function getFieldAmount(fid) {
     var amount, total = 0;
-    $('input[name*="' + fid + '"], select.civicrm-enabled[name*="' + fid +'"] option')
+    $('input.civicrm-enabled[name*="' + fid + '"], select.civicrm-enabled[name*="' + fid +'"] option')
       .filter('option:selected, [type=hidden], [type=number], [type=text], :checked')
       .each(function() {
         amount = parseFloat($(this).val());
@@ -94,30 +94,13 @@
     updateLineItem('civicrm_1_contribution_1', amount, label);
   }
 
-  Drupal.behaviors.webform_civicrm_payment = {
-    attach: function (context, settings) {
-      setting = settings.webform_civicrm;
-      $contributionAmount = $('[name*="[civicrm_1_contribution_1_contribution_total_amount]"]', context);
-      $processorFields = $('.civicrm-enabled[name$="civicrm_1_contribution_1_contribution_payment_processor_id]"]', context);
-
-      $processorFields.on('change', function () {
-        setting.billingSubmission || (setting.billingSubmission = {});
-        $('input:visible, select', '#billing-payment-block').each(function () {
-          var name = $(this).attr('name');
-          name && (setting.billingSubmission[name] = $(this).val());
-        });
-        loadBillingBlock();
-      });
-      if ($processorFields.length) {
-        loadBillingBlock();
-      }
-
-      if ($contributionAmount.length) {
-        calculateContributionAmount();
-        $contributionAmount.on('change keyup', calculateContributionAmount);
-      } else {
-        tally();
-      }
-    }
-  };
-})(CRM.$);
+  if ($contributionAmount.length) {
+    calculateContributionAmount();
+    $contributionAmount.on('change keyup', calculateContributionAmount);
+    // Also use Drupal's jQuery to listen to this event, for compatibility with other modules
+    jQuery($contributionAmount[0]).change(calculateContributionAmount);
+  }
+  else {
+    tally();
+  }
+});

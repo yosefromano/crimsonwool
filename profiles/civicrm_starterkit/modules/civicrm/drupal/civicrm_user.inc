@@ -42,9 +42,6 @@
 
 /**
  * Implements hook_user_login().
- *
- * @param $edit
- * @param $user
  */
 function civicrm_user_login(&$edit, $user) {
   if (!civicrm_initialize()) {
@@ -57,10 +54,6 @@ function civicrm_user_login(&$edit, $user) {
 
 /**
  * Implements hook_user_insert().
- *
- * @param $edit
- * @param $user
- * @param null $category
  */
 function civicrm_user_insert(&$edit, &$user, $category = NULL) {
   if (!civicrm_initialize()) {
@@ -85,9 +78,6 @@ function civicrm_user_insert(&$edit, &$user, $category = NULL) {
 
 /**
  * Implements hook_user_update().
- * @param $edit
- * @param $user
- * @param $category
  */
 function civicrm_user_update(&$edit, &$user, $category) {
   if (!civicrm_initialize()) {
@@ -120,7 +110,6 @@ function civicrm_user_update(&$edit, &$user, $category) {
 
 /**
  * Implements hook_user_delete().
- * @param $account
  */
 function civicrm_user_delete($account) {
   if (!civicrm_initialize()) {
@@ -151,7 +140,7 @@ function civicrm_user_categories() {
     if ($value['is_active']) {
       $name = $value['name'];
       foreach (array_reverse($urlParts) as $urlPart) {
-        if($urlPart == $name) {
+        if ($urlPart == $name) {
           continue;
         }
         elseif ($urlPart == $value['title']) {
@@ -272,7 +261,6 @@ function civicrm_user_view($user, $view_mode) {
 
 /**
  * Implements hook_user_logout().
- * @param $account
  */
 function civicrm_user_logout($account) {
   if (!civicrm_initialize()) {
