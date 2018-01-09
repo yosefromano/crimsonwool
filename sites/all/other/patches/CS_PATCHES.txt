@@ -11,9 +11,6 @@ to reflect that the patch has been updated or is no longer in use.
 
 == civicrm (profiles/civicrm_starterkit/modules/civicrm) ==
 
-= Civicrmtheme: Make sure menu is rebuilt after cache clear =
-Patch used: patches/civicrmtheme-rebuild-menu.patch
-
 = Remove remote html (snippet) warning =
 Patch used: patches/civi-remove-html-snippet-warning.patch
 
