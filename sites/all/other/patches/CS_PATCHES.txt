@@ -11,10 +11,6 @@ to reflect that the patch has been updated or is no longer in use.
 
 == civicrm (profiles/civicrm_starterkit/modules/civicrm) ==
 
-
-= Don’t recall, Change for Pantheon platform =
-Patch used: patches/civicrm-config-1.patch
-
 = For PayPal civicrm integration on Pantheon =
 Patch used: patches/externipn.patch
 
