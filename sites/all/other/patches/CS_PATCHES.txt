@@ -14,9 +14,6 @@ to reflect that the patch has been updated or is no longer in use.
 = Civicrmtheme: Make sure menu is rebuilt after cache clear =
 Patch used: patches/civicrmtheme-rebuild-menu.patch
 
-= Patch to Drupal.php from the CiviCRM StarterKit =
-Patch used: patches/civicrm-starterkit-drupalphp.patch
-
 = Remove remote html (snippet) warning =
 Patch used: patches/civi-remove-html-snippet-warning.patch
 
