@@ -793,9 +793,6 @@ LIKE %1
   /**
    * Scans all the tables using a slow query and table name.
    *
-   * @param int $maxTablesToCheck
-   * @param string $fieldName
-   *
    * @return array
    */
   public static function getTableNames() {
@@ -2068,30 +2065,6 @@ SELECT contact_id
    */
   public static function createTriggers(&$info, $onlyTableName = NULL) {
     Civi::service('sql_triggers')->createTriggers($info, $onlyTableName);
-  }
-
-  /**
-   * Given a list of fields, create a list of references.
-   *
-   * @param string $className
-   *   BAO/DAO class name.
-   * @return array<CRM_Core_Reference_Interface>
-   */
-  public static function createReferenceColumns($className) {
-    $result = array();
-    $fields = $className::fields();
-    foreach ($fields as $field) {
-      if (isset($field['pseudoconstant'], $field['pseudoconstant']['optionGroupName'])) {
-        $result[] = new CRM_Core_Reference_OptionValue(
-          $className::getTableName(),
-          $field['name'],
-          'civicrm_option_value',
-          CRM_Utils_Array::value('keyColumn', $field['pseudoconstant'], 'value'),
-          $field['pseudoconstant']['optionGroupName']
-        );
-      }
-    }
-    return $result;
   }
 
   /**
