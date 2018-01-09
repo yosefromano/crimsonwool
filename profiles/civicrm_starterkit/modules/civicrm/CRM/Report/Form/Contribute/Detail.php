@@ -573,16 +573,6 @@ GROUP BY {$this->_aliases['civicrm_contribution']}.currency";
       }
     }
 
-    if (CRM_Utils_Array::value('contribution_or_soft_value', $this->_params) ==
-      'contributions_only' &&
-      !empty($this->_params['fields']['soft_credit_type_id'])
-    ) {
-      unset($this->_params['fields']['soft_credit_type_id']);
-      if (!empty($this->_params['soft_credit_type_id_value'])) {
-        $this->_params['soft_credit_type_id_value'] = array();
-      }
-    }
-
     // 1. use main contribution query to build temp table 1
     $sql = $this->buildQuery();
     $tempQuery = "CREATE TEMPORARY TABLE civireport_contribution_detail_temp1 {$this->_databaseAttributes} AS {$sql}";

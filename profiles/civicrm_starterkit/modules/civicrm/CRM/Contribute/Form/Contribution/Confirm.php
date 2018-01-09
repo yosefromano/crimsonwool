@@ -1078,15 +1078,6 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     if (empty($params['is_recur'])) {
       return NULL;
     }
-    $contactID = CRM_Contact_BAO_Contact::createProfileContact(
-      $params,
-      $fields,
-      $contactID,
-      $addToGroups,
-      NULL,
-      $contactType,
-      TRUE
-    );
 
     $recurParams = array('contact_id' => $contactID);
     $recurParams['amount'] = CRM_Utils_Array::value('amount', $params);
@@ -1257,7 +1248,6 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
       ) {
         $isNotCurrentEmployer = FALSE;
       }
-      $financialTypeID = $this->wrangleFinancialTypeID($contributionTypeId);
 
       if (!$isNotCurrentEmployer && $orgID) {
         //build current employer params
@@ -1518,7 +1508,6 @@ class CRM_Contribute_Form_Contribution_Confirm extends CRM_Contribute_Form_Contr
     if (!empty($membershipContribution) && !is_a($membershipContribution, 'CRM_Core_Error')) {
       $membershipContributionID = $membershipContribution->id;
     }
-    $recurringContributionID = self::processRecurringContribution($form, $params, $contactID, $financialType, $online);
 
     //@todo - why is this nested so deep? it seems like it could be just set on the calling function on the form layer
     if (isset($membershipParams['onbehalf']) && !empty($membershipParams['onbehalf']['member_campaign_id'])) {

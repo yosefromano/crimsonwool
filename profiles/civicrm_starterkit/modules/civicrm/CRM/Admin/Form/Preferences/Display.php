@@ -104,11 +104,6 @@ class CRM_Admin_Form_Preferences_Display extends CRM_Admin_Form_Preferences {
           'title' => ts('Enable Popup Forms'),
           'weight' => 13,
         ),
-        'ajaxPopupsEnabled' => array(
-          'html_type' => 'checkbox',
-          'title' => ts('Enable Popup Forms'),
-          'weight' => 12,
-        ),
       ),
     );
 

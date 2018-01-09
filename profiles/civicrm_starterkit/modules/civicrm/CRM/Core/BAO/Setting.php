@@ -544,9 +544,6 @@ class CRM_Core_BAO_Setting extends CRM_Core_DAO_Setting {
       Civi::settings()->set('mailing_backend', array('outBound_option' => CRM_Mailing_Config::OUTBOUND_OPTION_DISABLED));
       CRM_Core_Session::setStatus(ts('Outbound emails have been disabled. Scheduled jobs will not run unless runInNonProductionEnvironment=TRUE is added as a parameter for a specific job'), ts("Non-production environment set"), "success");
     }
-    elseif ($group && !isset($name) && isset($civicrm_setting[$group])) {
-      return $civicrm_setting[$group];
-    }
     else {
       $mailing = Civi::settings()->get('mailing_backend_store');
       if ($mailing) {

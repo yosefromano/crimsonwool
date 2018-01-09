@@ -85,12 +85,6 @@
             <p class="description">{ts}If enabled, CiviCRM will allow users to submit profiles from external sites. This is disabled by default to limit abuse.{/ts}</p>
           </td>
         </tr>
-        <tr class="crm-miscellaneous-form-block-remote_profile_submissions_allowed">
-          <td class="label">{$form.remote_profile_submissions.label}</td>
-          <td>{$form.remote_profile_submissions.html}<br />
-            <p class="description">{ts}If enabled, CiviCRM will allow users to submit profiles from external sites. This is disabled by default to limit abuse.{/ts}</p>
-          </td>
-        </tr>
     </table>
 
     <h3>{ts}reCAPTCHA Keys{/ts}</h3>
@@ -120,27 +114,3 @@
         </table>
            <div class="crm-submit-buttons">{include file="CRM/common/formButtons.tpl" location="bottom"}</div>
 </div>
-{literal}
-<script type="text/javascript">
-  CRM.$(function($) {
-    'use strict';
-    $('input[name=versionCheck][value=0]').change(function() {
-      if ($(this).is(':checked')) {
-        CRM.confirm({message: {/literal}"{ts escape='js'}Disabling this option will prevent CiviCRM from checking for important security updates. Are you sure?{/ts}"{literal}})
-          .on('crmConfirm:no', function() {
-            $('input[name=versionCheck][value=0]').prop('checked', false);
-            $('input[name=versionCheck][value=1]').prop('checked', true);
-          })
-      }
-    });
-    $('select[name=securityUpdateAlert]').change(function() {
-      if ($(this).val() == '0') {
-        CRM.confirm({message: {/literal}"{ts escape='js'}Disabling this option will prevent CiviCRM from checking for important security updates. Are you sure?{/ts}"{literal}})
-          .on('crmConfirm:no', function() {
-            $('select[name=securityUpdateAlert]').val('3');
-          })
-      }
-    });
-  });
-</script>
-{/literal}

@@ -1,4 +1,5 @@
 <?php
+
 /*
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
@@ -64,6 +65,7 @@ class CRM_Core_DAO_AllCoreTables {
         isset($entityType['links_callback']) ? $entityType['links_callback'] : NULL
       );
     }
+
     $init = TRUE;
   }
 
@@ -258,6 +260,7 @@ class CRM_Core_DAO_AllCoreTables {
   public static function getBriefName($className) {
     return CRM_Utils_Array::value($className, array_flip(self::daoToClass()));
   }
+
   /**
    * @param string $className DAO or BAO name
    * @return string|FALSE SQL table name

@@ -1883,64 +1883,6 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
   }
 
   /**
-   * Create a single or multiple entity ref field.
-   * @param string $name
-   * @param string $label
-   * @param array $props
-   *   Mix of html and widget properties, including:.
-   *   - select - params to give to select2 widget
-   *   - entity - defaults to contact
-   *   - create - can the user create a new entity on-the-fly?
-   *             Set to TRUE if entity is contact and you want the default profiles,
-   *             or pass in your own set of links. @see CRM_Core_BAO_UFGroup::getCreateLinks for format
-   *             note that permissions are checked automatically
-   *   - api - array of settings for the getlist api wrapper
-   *          note that it accepts a 'params' setting which will be passed to the underlying api
-   *   - placeholder - string
-   *   - multiple - bool
-   *   - class, etc. - other html properties
-   * @param bool $required
-   *
-   * @return HTML_QuickForm_Element
-   */
-  public function addEntityRef($name, $label = '', $props = array(), $required = FALSE) {
-    require_once "api/api.php";
-    $config = CRM_Core_Config::singleton();
-    // Default properties
-    $props['api'] = CRM_Utils_Array::value('api', $props, array());
-    $props['entity'] = _civicrm_api_get_entity_name_from_camel(CRM_Utils_Array::value('entity', $props, 'contact'));
-    $props['class'] = ltrim(CRM_Utils_Array::value('class', $props, '') . ' crm-form-entityref');
-
-    if ($props['entity'] == 'contact' && isset($props['create']) && !(CRM_Core_Permission::check('edit all contacts') || CRM_Core_Permission::check('add contacts'))) {
-      unset($props['create']);
-    }
-
-    $props['placeholder'] = CRM_Utils_Array::value('placeholder', $props, $required ? ts('- select %1 -', array(1 => ts(str_replace('_', ' ', $props['entity'])))) : ts('- none -'));
-
-    $defaults = array();
-    if (!empty($props['multiple'])) {
-      $defaults['multiple'] = TRUE;
-    }
-    $props['select'] = CRM_Utils_Array::value('select', $props, array()) + $defaults;
-
-    $this->formatReferenceFieldAttributes($props);
-    return $this->add('text', $name, $label, $props, $required);
-  }
-
-  /**
-   * @param $props
-   */
-  private function formatReferenceFieldAttributes(&$props) {
-    $props['data-select-params'] = json_encode($props['select']);
-    $props['data-api-params'] = $props['api'] ? json_encode($props['api']) : NULL;
-    $props['data-api-entity'] = $props['entity'];
-    if (!empty($props['create'])) {
-      $props['data-create-links'] = json_encode($props['create']);
-    }
-    CRM_Utils_Array::remove($props, 'multiple', 'select', 'api', 'entity', 'create');
-  }
-
-  /**
    * Convert all date fields within the params to mysql date ready for the
    * BAO layer. In this case fields are checked against the $_datefields defined for the form
    * and if time is defined it is incorporated

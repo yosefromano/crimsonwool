@@ -2142,13 +2142,6 @@ AND    ( entity_id IS NULL OR entity_id <= 0 )
           '' => ts('- select -'),
         ) + $contributionStatuses, $required
       );
-      //CRM-15350: choose SCT field default value as 'Gift' for membership use
-      //else (for contribution), use configured SCT default value
-      $SCTDefaultValue = CRM_Core_OptionGroup::getDefaultValue("soft_credit_type");
-      if ($field['field_type'] == 'Membership') {
-        $SCTDefaultValue = CRM_Core_OptionGroup::getValue('soft_credit_type', 'Gift', 'name');
-      }
-      $form->addElement('hidden', 'sct_default_id', $SCTDefaultValue, array('id' => 'sct_default_id'));
     }
     elseif ($fieldName == 'soft_credit_type') {
       $name = "soft_credit_type[$rowNumber]";

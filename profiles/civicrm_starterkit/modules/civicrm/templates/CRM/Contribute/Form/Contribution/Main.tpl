@@ -165,19 +165,8 @@
           {$recurringHelpText}
         </div>
       </div>
-        {else}
-      <div class="crm-public-form-item crm-section {$form.is_pledge.name}-section">
-        <div class="label">&nbsp;</div>
-        <div class="content">
-          {$form.is_pledge.html}&nbsp;
-          {if $is_pledge_interval}
-            {$form.pledge_frequency_interval.html}&nbsp;
-          {/if}
-          {$form.pledge_frequency_unit.html}<span id="pledge_installments_num">&nbsp;{ts}for{/ts}&nbsp;{$form.pledge_installments.html}&nbsp;{ts}installments.{/ts}</span>
-        </div>
-        <div class="clear"></div>
-      </div>
-      {/if}
+      <div class="clear"></div>
+    </div>
     {/if}
     {if $pcpSupporterText}
     <div class="crm-public-form-item crm-section pcpSupporterText-section">

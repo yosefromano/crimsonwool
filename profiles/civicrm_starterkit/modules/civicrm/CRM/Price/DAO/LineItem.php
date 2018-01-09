@@ -213,13 +213,6 @@ class CRM_Price_DAO_LineItem extends CRM_Core_DAO {
           'localizable' => 0,
           'FKClassName' => 'CRM_Contribute_DAO_Contribution',
         ) ,
-        'contribution_id' => array(
-          'name' => 'contribution_id',
-          'type' => CRM_Utils_Type::T_INT,
-          'title' => ts('Line Item Contribution') ,
-          'description' => 'FK to civicrm_contribution',
-          'FKClassName' => 'CRM_Contribute_DAO_Contribution',
-        ) ,
         'price_field_id' => array(
           'name' => 'price_field_id',
           'type' => CRM_Utils_Type::T_INT,

@@ -132,12 +132,6 @@ class CRM_Contribute_Task {
         unset(self::$_tasks[9]);
       }
 
-      // remove action "Print or Email Contribution Invoices"
-      $invoiceSettings = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::CONTRIBUTE_PREFERENCES_NAME, 'contribution_invoice_settings');
-      $invoicing = CRM_Utils_Array::value('invoicing', $invoiceSettings);
-      if (!$invoicing) {
-        unset(self::$_tasks[9]);
-      }
       CRM_Utils_Hook::searchTasks('contribution', self::$_tasks);
       asort(self::$_tasks);
     }

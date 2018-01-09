@@ -69,8 +69,7 @@ class CRM_Event_DAO_Participant extends CRM_Core_DAO {
    */
   public $event_id;
   /**
-   * Participant status ID. FK to civicrm_participant_status_type. Default of 1 should map to status =
-   Registered.
+   * Participant status ID. FK to civicrm_participant_status_type. Default of 1 should map to status = Registered.
    *
    * @var int unsigned
    */

@@ -1855,9 +1855,6 @@ input.crm-form-entityref {
 }
 
 .crm-container a.button,
-.crm-container a.crm-invoiceButton,
-.crm-container a.crm-invoiceButton:link,
-.crm-container a.crm-invoiceButton:visited,
 .crm-container a.button:link,
 .crm-container a.button:visited,
 .crm-container input.crm-form-submit,
@@ -1907,9 +1904,6 @@ input.crm-form-entityref {
 }
 
 .crm-container a.button,
-.crm-container a.crm-invoiceButton,
-.crm-container a.crm-invoiceButton:link,
-.crm-container a.crm-invoiceButton:visited,
 .crm-container a.button:link,
 .crm-container a.button:visited {
   display: block;
@@ -1924,8 +1918,6 @@ input.crm-form-entityref {
 .crm-container .ui-dialog-buttonset .ui-button:hover,
 .crm-container .ui-dialog-buttonset .ui-button:focus,
 .crm-container a.button:hover,
-.crm-container a.crm-invoiceButton:hover,
-.crm-container a.crm-invoiceButton:focus,
 .crm-container a.button:focus {
   background-position: 0 -25px;
 }
@@ -2905,8 +2897,6 @@ tbody.scrollContent tr.alternateRow {
 /* rounded corners */
 .crm-container .crm-button,
 .crm-container a.button,
-.crm-container a.crm-invoiceButton,
-.crm-container a.crm-invoiceButton:link,
 .crm-container a.button:link,
 .crm-container input.crm-form-submit,
 .crm-container input[type=button] {

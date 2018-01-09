@@ -165,12 +165,6 @@
               })
           });
       });
-      $('#new-menu-item a.button')
-        .on('click', CRM.popup)
-        .on('crmPopupFormSuccess', function() {
-          $("#navigation-tree").jstree('refresh');
-          $("#reset-menu").show();
-        });
     });
 </script>
 {/literal}

@@ -363,36 +363,6 @@ class CRM_Contact_Form_Search_Advanced extends CRM_Contact_Form_Search {
     );
     CRM_Contact_BAO_Query::processSpecialFormValue($this->_formValues, $specialParams, $changeNames);
 
-    $specialParams = array(
-      'financial_type_id',
-      'contribution_soft_credit_type_id',
-      'contribution_status',
-      'contribution_status_id',
-      'contribution_source',
-      'membership_type_id',
-      'membership_status_id',
-      'participant_status_id',
-      'contribution_trxn_id',
-      'activity_type_id',
-      'status_id',
-      'activity_subject',
-    );
-    foreach ($specialParams as $element) {
-      $value = CRM_Utils_Array::value($element, $this->_formValues);
-      if ($value) {
-        if (is_array($value)) {
-          if ($element == 'status_id') {
-            unset($this->_formValues[$element]);
-            $element = 'activity_' . $element;
-          }
-          $this->_formValues[$element] = array('IN' => $value);
-        }
-        else {
-          $this->_formValues[$element] = array('LIKE' => "%$value%");
-        }
-      }
-    }
-
     $taglist = CRM_Utils_Array::value('contact_taglist', $this->_formValues);
 
     if ($taglist && is_array($taglist)) {

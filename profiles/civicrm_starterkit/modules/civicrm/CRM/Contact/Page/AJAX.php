@@ -263,13 +263,6 @@ class CRM_Contact_Page_AJAX {
       if ($i == 0 && empty($result['is_error'])) {
         CRM_Case_BAO_Case::createCaseRoleActivity($caseID, $result['id'], $relContactID);
       }
-      else {
-        $ret = array(
-          'is_error' => 1,
-          'error_message' => ts('The relationship type definition for the case role is not valid for the client and / or staff contact types. You can review and edit relationship types at <a href="%1">Administer >> Option Lists >> Relationship Types</a>.',
-            array(1 => CRM_Utils_System::url('civicrm/admin/reltype', 'reset=1'))),
-        );
-      }
     }
 
     CRM_Utils_JSON::output($ret);

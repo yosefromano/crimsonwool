@@ -290,17 +290,6 @@ class CRM_Contribute_DAO_ContributionSoft extends CRM_Core_DAO {
             'optionEditPath' => 'civicrm/admin/options/soft_credit_type',
           )
         ) ,
-        'soft_credit_type_id' => array(
-          'name' => 'soft_credit_type_id',
-          'type' => CRM_Utils_Type::T_INT,
-          'title' => ts('Soft Credit Type') ,
-          'description' => 'Soft Credit Type ID.Implicit FK to civicrm_option_value where option_group = soft_credit_type.',
-          'default' => 'NULL',
-          'pseudoconstant' => array(
-            'optionGroupName' => 'soft_credit_type',
-            'optionEditPath' => 'civicrm/admin/options/soft_credit_type',
-          )
-        ) ,
       );
       CRM_Core_DAO_AllCoreTables::invoke(__CLASS__, 'fields_callback', Civi::$statics[__CLASS__]['fields']);
     }

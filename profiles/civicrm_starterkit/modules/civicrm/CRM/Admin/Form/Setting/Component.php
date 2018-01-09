@@ -131,13 +131,6 @@ class CRM_Admin_Form_Setting_Component extends CRM_Admin_Form_Setting {
     $smarty->assign('multilingual', $multiLingual);
     $smarty->assign('locales', explode(CRM_Core_DAO::VALUE_SEPARATOR, $domain->locales));
 
-    $domain = new CRM_Core_DAO_Domain();
-    $domain->find(TRUE);
-    $multiLingual = (bool) $domain->locales;
-    $smarty = CRM_Core_Smarty::singleton();
-    $smarty->assign('multilingual', $multiLingual);
-    $smarty->assign('locales', explode(CRM_Core_DAO::VALUE_SEPARATOR, $domain->locales));
-
     if (!$lineMode) {
 
       $string = $smarty->fetch($fileName);

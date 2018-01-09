@@ -669,12 +669,6 @@ class CRM_Core_DAO_ActionSchedule extends CRM_Core_DAO {
           'localizable' => 0,
           'FKClassName' => 'CRM_Core_DAO_MessageTemplate',
         ) ,
-        'sms_template_id' => array(
-          'name' => 'sms_template_id',
-          'type' => CRM_Utils_Type::T_INT,
-          'title' => ts('SMS Reminder Template') ,
-          'description' => 'FK to the message template.',
-        ) ,
         'absolute_date' => array(
           'name' => 'absolute_date',
           'type' => CRM_Utils_Type::T_DATE,

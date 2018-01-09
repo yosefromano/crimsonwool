@@ -901,12 +901,6 @@ class CRM_Contribute_DAO_ContributionPage extends CRM_Core_DAO {
           'bao' => 'CRM_Contribute_BAO_ContributionPage',
           'localizable' => 0,
         ) ,
-        'is_billing_required' => array(
-          'name' => 'is_billing_required',
-          'type' => CRM_Utils_Type::T_BOOLEAN,
-          'title' => ts('Is billing block required') ,
-          'description' => 'if true - billing block is required for online contribution page',
-        ) ,
       );
       CRM_Core_DAO_AllCoreTables::invoke(__CLASS__, 'fields_callback', Civi::$statics[__CLASS__]['fields']);
     }

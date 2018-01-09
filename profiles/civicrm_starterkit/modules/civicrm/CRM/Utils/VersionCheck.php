@@ -73,20 +73,6 @@ class CRM_Utils_VersionCheck {
   public $pingbackUrl = 'https://latest.civicrm.org/stable.php?format=json';
 
   /**
-   * User setting to skip updates prior to a certain date
-   *
-   * @var array
-   */
-  public $ignoreDate;
-
-  /**
-   * Info about available versions
-   *
-   * @var array
-   */
-  public $versionInfo = array();
-
-  /**
    * Pingback params
    *
    * @var array
@@ -159,10 +145,6 @@ class CRM_Utils_VersionCheck {
           return $info;
         }
       }
-      $this->ignoreDate = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME, 'versionCheckIgnoreDate');
-
-      // Sort version info in ascending order for easier comparisons
-      ksort($this->versionInfo, SORT_NUMERIC);
     }
     return NULL;
   }
@@ -179,76 +161,6 @@ class CRM_Utils_VersionCheck {
     return "$a.$b";
   }
 
-
-  /**
-   * Finds the release info for a minor version.
-   * @param string $version
-   * @return array|null
-   */
-  public function getReleaseInfo($version) {
-    $majorVersion = $this->getMajorVersion($version);
-    if (isset($this->versionInfo[$majorVersion])) {
-      foreach ($this->versionInfo[$majorVersion]['releases'] as $info) {
-        if ($info['version'] == $version) {
-          return $info;
-        }
-      }
-    }
-    return NULL;
-  }
-
-  /**
-   * @param $minorVersion
-   * @return string
-   */
-  public function getMajorVersion($minorVersion) {
-    if (!$minorVersion) {
-      return NULL;
-    }
-    list($a, $b) = explode('.', $minorVersion);
-    return "$a.$b";
-  }
-
-  /**
-   * @return bool
-   */
-  public function isSecurityUpdateAvailable() {
-    $thisVersion = $this->getReleaseInfo($this->localVersion);
-    $localVersionDate = CRM_Utils_Array::value('date', $thisVersion, 0);
-
-    foreach ($this->versionInfo as $majorVersionNumber => $majorVersion) {
-      foreach ($majorVersion['releases'] as $release) {
-        if (!empty($release['security']) && $release['date'] > $localVersionDate
-          && version_compare($this->localVersion, $release['version']) < 0
-        ) {
-          if ((!$this->ignoreDate || $this->ignoreDate < $release['date'])
-            && (!$this->isThisReleaseTheLTS() || $majorVersionNumber === $this->localMajorVersion)
-          ) {
-            return TRUE;
-          }
-        }
-      }
-    }
-  }
-
-  /**
-   * Is this the LTS release.
-   *
-   * This function is only really being used in 4.6 & is a bit heavy on the enotice
-   * handling for test reasons
-   */
-  public function isThisReleaseTheLTS() {
-    if (empty($this->versionInfo)) {
-      return FALSE;
-    }
-    if (empty($this->versionInfo[$this->localMajorVersion])) {
-      return FALSE;
-    }
-    if ($this->versionInfo[$this->localMajorVersion]['status'] === 'lts') {
-      return TRUE;
-    }
-    return FALSE;
-  }
 
   /**
    * Get the latest version number if it's newer than the local one
@@ -558,38 +470,6 @@ class CRM_Utils_VersionCheck {
       'api_entity' => "job",
     ));
     $this->cronJob = CRM_Utils_Array::value(0, $jobs['values'], array());
-  }
-
-  /**
-   * @return bool
-   */
-  private function readCacheFile() {
-    $expiryTime = time() - self::CACHEFILE_EXPIRE;
-
-    // if there's a cachefile and it's not stale, use it
-    if (file_exists($this->cacheFile) && (filemtime($this->cacheFile) > $expiryTime)) {
-      $this->versionInfo = (array) json_decode(file_get_contents($this->cacheFile), TRUE);
-      return TRUE;
-    }
-    return FALSE;
-  }
-
-  /**
-   * Save version info to file.
-   * @param string $contents
-   */
-  private function writeCacheFile($contents) {
-    $fp = @fopen($this->cacheFile, 'w');
-    if (!$fp) {
-      if (CRM_Core_Permission::check('administer CiviCRM')) {
-        CRM_Core_Session::setStatus(
-          ts('Unable to write file') . ": $this->cacheFile<br />" . ts('Please check your system file permissions.'),
-          ts('File Error'), 'error');
-      }
-      return;
-    }
-    fwrite($fp, $contents);
-    fclose($fp);
   }
 
 }

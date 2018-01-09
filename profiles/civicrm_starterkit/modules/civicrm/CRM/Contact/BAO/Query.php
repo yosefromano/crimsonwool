@@ -670,10 +670,7 @@ class CRM_Contact_BAO_Query {
       if (
         (substr($name, 0, 12) == 'participant_') ||
         (substr($name, 0, 7) == 'pledge_') ||
-        (substr($name, 0, 5) == 'case_') ||
-        (substr($name, 0, 13) == 'contribution_' &&
-          (strpos($name, 'source') !== FALSE && strpos($name, 'recur') !== FALSE)) ||
-        (substr($name, 0, 8) == 'payment_')
+        (substr($name, 0, 5) == 'case_')
       ) {
         continue;
       }
@@ -1711,8 +1708,6 @@ class CRM_Contact_BAO_Query {
     static $skipWhere = NULL;
     static $likeNames = NULL;
     $result = NULL;
-    // Change camelCase EntityName to lowercase with underscores
-    $apiEntity = _civicrm_api_get_entity_name_from_camel($apiEntity);
 
     // Change camelCase EntityName to lowercase with underscores
     $apiEntity = _civicrm_api_get_entity_name_from_camel($apiEntity);
@@ -1764,11 +1759,6 @@ class CRM_Contact_BAO_Query {
     }
     elseif (is_string($values) && strpos($values, '%') !== FALSE) {
       $result = array($id, 'LIKE', $values, 0, 0);
-    }
-    elseif ($id == 'contact_type' ||
-      (!empty($values) && is_array($values) && !in_array(key($values), CRM_Core_DAO::acceptedSQLOperators(), TRUE))
-    ) {
-      $result = array($id, 'IN', $values, 0, $wildcard);
     }
     elseif ($id == 'contact_type' ||
       (!empty($values) && is_array($values) && !in_array(key($values), CRM_Core_DAO::acceptedSQLOperators(), TRUE))
@@ -2185,7 +2175,6 @@ class CRM_Contact_BAO_Query {
       $this->_qill[$grouping][] = ts("%1 %2 %3", array(1 => $field['title'], 2 => $qillop, 3 => $qillVal));
     }
     elseif ($name === 'world_region') {
-      $field['where'] = 'civicrm_worldregion.id';
       $this->optionValueQuery(
         $name, $op, $value, $grouping,
         NULL,
@@ -2198,14 +2187,6 @@ class CRM_Contact_BAO_Query {
     elseif ($name === 'is_deceased') {
       $this->setQillAndWhere($name, $op, $value, $grouping, $field);
       self::$_openedPanes[ts('Demographics')] = TRUE;
-    }
-    elseif ($name === 'created_date' || $name === 'modified_date' || $name === 'deceased_date' || $name === 'birth_date') {
-      $appendDateTime = TRUE;
-      if ($name === 'deceased_date' || $name === 'birth_date') {
-        $appendDateTime = FALSE;
-        self::$_openedPanes[ts('Demographics')] = TRUE;
-      }
-      $this->dateQueryBuilder($values, 'contact_a', $name, $name, $field['title'], $appendDateTime);
     }
     elseif ($name === 'created_date' || $name === 'modified_date' || $name === 'deceased_date' || $name === 'birth_date') {
       $appendDateTime = TRUE;
@@ -5076,32 +5057,6 @@ SELECT COUNT( conts.total_amount ) as total_count,
     }
     else {
       $summary['total']['amount'] = $summary['total']['avg'] = $summary['total']['median'] = 0;
-    }
-
-    // soft credit summary
-    if (CRM_Contribute_BAO_Query::isSoftCreditOptionEnabled()) {
-      $softCreditWhere = "{$completedWhere} AND civicrm_contribution_soft.id IS NOT NULL";
-      $query = "
-        $select FROM (
-          SELECT civicrm_contribution_soft.amount as total_amount, civicrm_contribution_soft.currency $from $softCreditWhere
-          GROUP BY civicrm_contribution_soft.id
-        ) as conts
-        GROUP BY currency";
-      $dao = CRM_Core_DAO::executeQuery($query);
-      $summary['soft_credit']['count'] = 0;
-      $summary['soft_credit']['amount'] = $summary['soft_credit']['avg'] = array();
-      while ($dao->fetch()) {
-        $summary['soft_credit']['count'] += $dao->total_count;
-        $summary['soft_credit']['amount'][] = CRM_Utils_Money::format($dao->total_amount, $dao->currency);
-        $summary['soft_credit']['avg'][] = CRM_Utils_Money::format($dao->total_avg, $dao->currency);
-      }
-      if (!empty($summary['soft_credit']['amount'])) {
-        $summary['soft_credit']['amount'] = implode(',&nbsp;', $summary['soft_credit']['amount']);
-        $summary['soft_credit']['avg'] = implode(',&nbsp;', $summary['soft_credit']['avg']);
-      }
-      else {
-        $summary['soft_credit']['amount'] = $summary['soft_credit']['avg'] = 0;
-      }
     }
 
     // soft credit summary

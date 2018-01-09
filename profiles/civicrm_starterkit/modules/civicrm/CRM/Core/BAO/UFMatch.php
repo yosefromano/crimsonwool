@@ -548,7 +548,6 @@ AND    domain_id    = %4
   /**
    * See if this user exists, and if so, if they're allowed to login
    *
-   * @param int $openId
    *
    * @param int $openId
    *

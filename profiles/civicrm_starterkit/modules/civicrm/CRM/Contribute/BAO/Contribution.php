@@ -582,22 +582,6 @@ class CRM_Contribute_BAO_Contribution extends CRM_Contribute_DAO_Contribution {
     }
     CRM_Activity_BAO_Activity::addActivity($contribution, 'Contribution');
 
-    // check if activity record exist for this contribution, if
-    // not add activity
-    $activity = new CRM_Activity_DAO_Activity();
-    $activity->source_record_id = $contribution->id;
-    $activity->activity_type_id = CRM_Core_OptionGroup::getValue('activity_type',
-      'Contribution',
-      'name'
-    );
-    if (!$activity->find(TRUE)) {
-      CRM_Activity_BAO_Activity::addActivity($contribution, 'Offline');
-    }
-    else {
-      // CRM-13237 : if activity record found, update it with campaign id of contribution
-      CRM_Core_DAO::setFieldValue('CRM_Activity_BAO_Activity', $activity->id, 'campaign_id', $contribution->campaign_id);
-    }
-
     // do not add to recent items for import, CRM-4399
     if (empty($params['skipRecentView'])) {
       $url = CRM_Utils_System::url('civicrm/contact/view/contribution',
@@ -3272,7 +3256,6 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
       if (!isset($totalAmount) && !empty($params['prevContribution'])) {
         $totalAmount = $params['total_amount'] = $params['prevContribution']->total_amount;
       }
-
       //build financial transaction params
       $trxnParams = array(
         'contribution_id' => $params['contribution']->id,
@@ -3577,13 +3560,6 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
         $entityParams = array(
           'entity_table' => 'civicrm_financial_item',
         );
-        if (empty($params['line_item'])) {
-          //CRM-15296
-          //@todo - check with Joe regarding this situation - payment processors create pending transactions with no line items
-          // when creating recurring membership payment - there are 2 lines to comment out in contributonPageTest if fixed
-          // & this can be removed
-          return;
-        }
         foreach ($params['line_item'] as $fieldId => $fields) {
           foreach ($fields as $fieldValueId => $lineItemDetails) {
             $fparams = array(
@@ -3698,7 +3674,6 @@ INNER JOIN civicrm_activity ON civicrm_activity_contact.activity_id = civicrm_ac
     $reversalStatuses = array('Cancelled', 'Chargeback', 'Refunded');
     return in_array(CRM_Contribute_PseudoConstant::contributionStatus($status_id, 'name'), $reversalStatuses);
   }
-
 
   /**
    * Check status validation on update of a contribution.

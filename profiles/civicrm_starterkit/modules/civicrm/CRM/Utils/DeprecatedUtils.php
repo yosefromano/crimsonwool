@@ -86,7 +86,12 @@ function _civicrm_api3_deprecated_formatted_param($params, &$values, $create = F
             if ((strtolower($customLabel['label']) == strtolower(trim($v1))) ||
               (strtolower($customValue) == strtolower(trim($v1)))
             ) {
-              $values[$key][] = $customValue;
+              if ($type == 'CheckBox') {
+                $values[$key][$customValue] = 1;
+              }
+              else {
+                $values[$key][] = $customValue;
+              }
             }
           }
         }
@@ -565,7 +570,12 @@ function _civicrm_api3_deprecated_activity_formatted_param(&$params, &$values, $
             if ((strtolower(trim($customLabel['label'])) == strtolower(trim($v1))) ||
               (strtolower(trim($customValue)) == strtolower(trim($v1)))
             ) {
-              $values[$key][] = $customValue;
+              if ($type == 'CheckBox') {
+                $values[$key][$customValue] = 1;
+              }
+              else {
+                $values[$key][] = $customValue;
+              }
             }
           }
         }

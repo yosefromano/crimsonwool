@@ -218,10 +218,6 @@ AND    {$this->_componentClause}";
 
       // reset template values before processing next transactions
       $template->clearTemplateVars();
-      if (!empty($params['receipt_update'])) {
-        $objects['contribution']->receipt_date = date('Y-m-d H-i-s');
-        $objects['contribution']->save();
-      }
     }
 
     if ($elements['createPdf']) {

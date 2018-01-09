@@ -169,8 +169,6 @@ function civicrm_user_categories() {
  *
  * @todo I suspect that some of the stuff done in the old form_alter handler
  *       should live here instead under D7
- * @param $user
- * @param $view_mode
  */
 function civicrm_user_view($user, $view_mode) {
   if (!civicrm_initialize()) {

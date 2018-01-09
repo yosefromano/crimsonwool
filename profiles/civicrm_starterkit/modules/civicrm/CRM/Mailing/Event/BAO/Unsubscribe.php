@@ -258,10 +258,6 @@ WHERE  email = %2
     if ($groupIds || $baseGroupIds) {
       $groupIdClause = "AND $group.id IN (" . implode(', ', array_merge($groupIds, $baseGroupIds)) . ")";
     }
-    $groupIdClause = '';
-    if ($group_ids || $base_group_ids) {
-      $groupIdClause = "AND $group.id IN (" . implode(', ', array_merge($group_ids, $base_group_ids)) . ")";
-    }
     $do->query("
             SELECT      $group.id as group_id,
                         $group.title as title,

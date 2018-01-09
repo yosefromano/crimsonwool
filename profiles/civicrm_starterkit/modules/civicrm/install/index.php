@@ -303,18 +303,6 @@ if ($installType == 'backdrop') {
   }
 }
 
-if ($installType == 'drupal') {
-  // Lets check only /modules/.
-  $pattern = '/' . preg_quote(CIVICRM_DIRECTORY_SEPARATOR . 'modules', CIVICRM_DIRECTORY_SEPARATOR) . '/';
-
-  if (!preg_match($pattern, str_replace("\\", "/", $_SERVER['SCRIPT_FILENAME']))) {
-    $directory = implode(CIVICRM_DIRECTORY_SEPARATOR, array('sites', 'all', 'modules'));
-    $errorTitle = ts("Oops! Please correct your install location");
-    $errorMsg = ts("Please untar (uncompress) your downloaded copy of CiviCRM in the <strong>%1</strong> directory below your Drupal root directory.", array(1 => $directory));
-    errorDisplayPage($errorTitle, $errorMsg);
-  }
-}
-
 // Exit with error if CiviCRM has already been installed.
 if ($alreadyInstalled) {
   $errorTitle = ts("Oops! CiviCRM is already installed");

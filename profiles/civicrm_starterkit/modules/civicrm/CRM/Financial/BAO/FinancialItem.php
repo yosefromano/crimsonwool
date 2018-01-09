@@ -182,12 +182,6 @@ class CRM_Financial_BAO_FinancialItem extends CRM_Financial_DAO_FinancialItem {
     else {
       CRM_Utils_Hook::post('create', 'FinancialItem', $financialItem->id, $financialItem);
     }
-    if (!empty($ids['id'])) {
-      CRM_Utils_Hook::post('edit', 'FinancialItem', $financialItem->id, $financialItem);
-    }
-    else {
-      CRM_Utils_Hook::post('create', 'FinancialItem', $financialItem->id, $financialItem);
-    }
     return $financialItem;
   }
 

@@ -476,9 +476,6 @@ FROM civicrm_navigation WHERE domain_id = $domainID {$whereClause} ORDER BY pare
       elseif (strpos($url, '&amp;') === FALSE) {
         $url = htmlspecialchars($url);
       }
-      elseif (strpos($url, '&amp;') === FALSE) {
-        $url = htmlspecialchars($url);
-      }
       $makeLink = TRUE;
     }
 

@@ -1241,7 +1241,6 @@ abstract class CRM_Core_Payment {
         'processor_name' => @$_GET['processor_name'],
         'processor_id' => @$_GET['processor_id'],
         'mode' => @$_GET['mode'],
-        'q' => @$_GET['q'],
       )
     );
     CRM_Utils_System::civiExit();

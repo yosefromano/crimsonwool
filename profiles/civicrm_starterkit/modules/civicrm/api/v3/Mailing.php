@@ -324,64 +324,6 @@ function civicrm_api3_mailing_submit($params) {
 }
 
 /**
- * Adjust metadata for mailing submit api function.
- *
- * @param array $spec
- */
-function _civicrm_api3_mailing_submit_spec(&$spec) {
-  $mailingFields = CRM_Mailing_DAO_Mailing::fields();
-  $spec['id'] = $mailingFields['id'];
-  $spec['scheduled_date'] = $mailingFields['scheduled_date'];
-  $spec['approval_date'] = $mailingFields['approval_date'];
-  $spec['approval_status_id'] = $mailingFields['approval_status_id'];
-  $spec['approval_note'] = $mailingFields['approval_note'];
-  // _skip_evil_bao_auto_recipients_: bool
-}
-
-/**
- * Mailing submit.
- *
- * @param array $params
- *
- * @return array
- * @throws API_Exception
- */
-function civicrm_api3_mailing_submit($params) {
-  civicrm_api3_verify_mandatory($params, 'CRM_Mailing_DAO_Mailing', array('id'));
-
-  if (!isset($params['scheduled_date']) && !isset($updateParams['approval_date'])) {
-    throw new API_Exception("Missing parameter scheduled_date and/or approval_date");
-  }
-  if (!is_numeric(CRM_Core_Session::getLoggedInContactID())) {
-    throw new API_Exception("Failed to determine current user");
-  }
-
-  $updateParams = array();
-  $updateParams['id'] = $params['id'];
-
-  // Note: we'll pass along scheduling/approval fields, but they may get ignored
-  // if we don't have permission.
-  if (isset($params['scheduled_date'])) {
-    $updateParams['scheduled_date'] = $params['scheduled_date'];
-    $updateParams['scheduled_id'] = CRM_Core_Session::getLoggedInContactID();
-  }
-  if (isset($params['approval_date'])) {
-    $updateParams['approval_date'] = $params['approval_date'];
-    $updateParams['approver_id'] = CRM_Core_Session::getLoggedInContactID();
-    $updateParams['approval_status_id'] = CRM_Utils_Array::value('approval_status_id', $updateParams, CRM_Core_OptionGroup::getDefaultValue('mail_approval_status'));
-  }
-  if (isset($params['approval_note'])) {
-    $updateParams['approval_note'] = $params['approval_note'];
-  }
-  if (isset($params['_skip_evil_bao_auto_recipients_'])) {
-    $updateParams['_skip_evil_bao_auto_recipients_'] = $params['_skip_evil_bao_auto_recipients_'];
-  }
-
-  $updateParams['options']['reload'] = 1;
-  return civicrm_api3('Mailing', 'create', $updateParams);
-}
-
-/**
  * Process a bounce event by passing through to the BAOs.
  *
  * @param array $params

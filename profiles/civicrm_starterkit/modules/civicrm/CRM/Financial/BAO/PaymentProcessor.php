@@ -418,8 +418,6 @@ class CRM_Financial_BAO_PaymentProcessor extends CRM_Financial_DAO_PaymentProces
         }
       }
     }
-    return ($p1 > $p2) ? -1 : 1;
-  }
 
     return $processors;
   }

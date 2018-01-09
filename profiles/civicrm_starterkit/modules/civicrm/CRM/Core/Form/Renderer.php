@@ -212,20 +212,6 @@ class CRM_Core_Form_Renderer extends HTML_QuickForm_Renderer_ArraySmarty {
       }
     }
 
-    if ($type == 'select' && $element->getAttribute('multiple')) {
-      $type = 'multiselect';
-    }
-    // Add widget-specific class
-    if (!$class || strpos($class, 'crm-form-') === FALSE) {
-      $class = ($class ? "$class " : '') . 'crm-form-' . $type;
-    }
-    elseif (strpos($class, 'crm-form-entityref') !== FALSE) {
-      self::preProcessEntityRef($element);
-    }
-    elseif (strpos($class, 'crm-form-contact-reference') !== FALSE) {
-      self::preprocessContactReference($element);
-    }
-
     if ($required) {
       $class .= ' required';
     }

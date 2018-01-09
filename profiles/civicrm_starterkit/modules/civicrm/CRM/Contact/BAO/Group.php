@@ -891,7 +891,6 @@ class CRM_Contact_BAO_Group extends CRM_Contact_DAO_Group {
           ON createdBy.id = groups.created_id
         {$from}
         WHERE $whereClause {$where}
-        GROUP BY groups.id
         {$orderBy}
         {$limit}";
 
@@ -911,9 +910,7 @@ class CRM_Contact_BAO_Group extends CRM_Contact_DAO_Group {
     $links = self::actionLinks();
 
     $allTypes = CRM_Core_OptionGroup::values('group_type');
-    $values = $groupsToCount = array();
-
-    $visibility = CRM_Core_SelectValues::ufVisibility();
+    $values = array();
 
     $visibility = CRM_Core_SelectValues::ufVisibility();
 
@@ -1028,31 +1025,6 @@ class CRM_Contact_BAO_Group extends CRM_Contact_DAO_Group {
       }
       else {
         $values[$object->id]['count'] = civicrm_api3('Contact', 'getcount', array('group' => $object->id));
-      }
-    }
-
-    // CRM-16905 - Sort by count cannot be done with sql
-    if (!empty($params['sort']) && strpos($params['sort'], 'count') === 0) {
-      usort($values, function($a, $b) {
-        return $a['count'] - $b['count'];
-      });
-      if (strpos($params['sort'], 'desc')) {
-        $values = array_reverse($values, TRUE);
-      }
-      return array_slice($values, $params['offset'], $params['rowCount']);
-    }
-
-    // Get group counts - executes one query for regular groups and another for smart groups
-    foreach ($groupsToCount as $table => $groups) {
-      $where = "g.group_id IN (" . implode(',', $groups) . ")";
-      if ($table == 'civicrm_group_contact') {
-        $where .= " AND g.status = 'Added'";
-      }
-      // Exclude deleted contacts
-      $where .= " and c.id = g.contact_id AND c.is_deleted = 0";
-      $dao = CRM_Core_DAO::executeQuery("SELECT g.group_id, COUNT(g.id) as `count` FROM $table g, civicrm_contact c WHERE $where GROUP BY g.group_id");
-      while ($dao->fetch()) {
-        $values[$dao->group_id]['count'] = $dao->count;
       }
     }
 

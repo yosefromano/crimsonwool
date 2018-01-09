@@ -36,8 +36,6 @@ class CRM_Contribute_BAO_Query extends CRM_Core_BAO_Query {
 
   static $_contribRecurPayment = NULL;
 
-  static $_contribOrSoftCredit = "only_contribs";
-
   /**
    * Function get the searchable fields for contribution.
    *
@@ -564,14 +562,6 @@ class CRM_Contribute_BAO_Query extends CRM_Core_BAO_Query {
       case 'civicrm_product':
         $from = " $side  JOIN civicrm_contribution_product ON civicrm_contribution_product.contribution_id = civicrm_contribution.id";
         $from .= " $side  JOIN civicrm_product ON civicrm_contribution_product.product_id =civicrm_product.id ";
-        break;
-
-      case 'contribution_softcredit_type':
-        $from = " $side JOIN civicrm_option_group option_group_contribution_softcredit_type ON
-          (option_group_contribution_softcredit_type.name = 'soft_credit_type')";
-        $from .= " $side JOIN civicrm_option_value contribution_softcredit_type ON
-          ( civicrm_contribution_soft.soft_credit_type_id = contribution_softcredit_type.value
-          AND option_group_contribution_softcredit_type.id = contribution_softcredit_type.option_group_id )";
         break;
 
       case 'contribution_softcredit_type':

@@ -352,7 +352,7 @@ class CRM_Core_Payment_PayPalIPN extends CRM_Core_Payment_BaseIPN {
       $paymentProcessorID = $processorInfo['id'];
     }
 
-    if (!$this->validateData($input, $ids, $objects, TRUE, $processorInfo['id'])) {
+    if (!$this->validateData($input, $ids, $objects, TRUE, $paymentProcessorID)) {
       return FALSE;
     }
 

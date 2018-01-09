@@ -55,10 +55,6 @@
                   <span class="crm-multivalue-search-op" for="{$element_name}">{$form.$operator_name.html}</span>
                   {assign var="add_multivalue_js" value=true}
                 {/if}
-                {if !empty($form.$operator_name)}
-                  <span class="crm-multivalue-search-op" for="{$element_name}">{$form.$operator_name.html}</span>
-                  {assign var="add_multivalue_js" value=true}
-                {/if}
             {/if}
             {if $element.html_type eq 'Autocomplete-Select'}
                 {if $element.data_type eq 'ContactReference'}

@@ -450,13 +450,6 @@ class CRM_Contribute_DAO_ContributionRecur extends CRM_Core_DAO {
           'localizable' => 0,
           'FKClassName' => 'CRM_Financial_DAO_PaymentToken',
         ) ,
-        'payment_token_id' => array(
-          'name' => 'payment_token_id',
-          'type' => CRM_Utils_Type::T_INT,
-          'title' => ts('Payment Token ID') ,
-          'description' => 'Optionally used to store a link to a payment token used for this recurring contribution.',
-          'FKClassName' => 'CRM_Financial_DAO_PaymentToken',
-        ) ,
         'trxn_id' => array(
           'name' => 'trxn_id',
           'type' => CRM_Utils_Type::T_STRING,

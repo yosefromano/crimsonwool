@@ -94,27 +94,6 @@ class CRM_Contribute_Form_ContributionPage_Settings extends CRM_Contribute_Form_
           }
         }
       }
-
-      $ufJoinDAO = new CRM_Core_DAO_UFJoin();
-      $ufJoinDAO->module = 'soft_credit';
-      $ufJoinDAO->entity_id = $this->_id;
-      if ($ufJoinDAO->find(TRUE)) {
-        $defaults['honoree_profile'] = $ufJoinDAO->uf_group_id;
-        $jsonData = CRM_Contribute_BAO_ContributionPage::formatMultilingualHonorParams($ufJoinDAO->module_data, TRUE);
-        $defaults = array_merge($defaults, $jsonData);
-        $defaults['honor_block_is_active'] = $ufJoinDAO->is_active;
-      }
-      else {
-        $ufGroupDAO = new CRM_Core_DAO_UFGroup();
-        $ufGroupDAO->name = 'honoree_individual';
-        if ($ufGroupDAO->find(TRUE)) {
-          $defaults['honoree_profile'] = $ufGroupDAO->id;
-        }
-        $defaults['soft_credit_types'] = array(
-          CRM_Utils_Array::value('in_honor_of', $soft_credit_types),
-          CRM_Utils_Array::value('in_memory_of', $soft_credit_types),
-        );
-      }
     }
     else {
       $ufGroupDAO = new CRM_Core_DAO_UFGroup();
@@ -158,9 +137,6 @@ class CRM_Contribute_Form_ContributionPage_Settings extends CRM_Contribute_Form_
     $this->add('wysiwyg', 'intro_text', ts('Introductory Message'), $attributes['intro_text']);
 
     $this->add('wysiwyg', 'footer_text', ts('Footer Message'), $attributes['footer_text']);
-
-    //Register schema which will be used for OnBehalOf and HonorOf profile Selector
-    CRM_UF_Page_ProfileEditor::registerSchemas(array('OrganizationModel', 'HouseholdModel'));
 
     //Register schema which will be used for OnBehalOf and HonorOf profile Selector
     CRM_UF_Page_ProfileEditor::registerSchemas(array('OrganizationModel', 'HouseholdModel'));
@@ -367,9 +343,6 @@ class CRM_Contribute_Form_ContributionPage_Settings extends CRM_Contribute_Form_
     if (!$params['honor_block_is_active']) {
       $params['honor_block_title'] = NULL;
       $params['honor_block_text'] = NULL;
-    }
-    else {
-      $sctJSON = CRM_Contribute_BAO_ContributionPage::formatMultilingualHonorParams($params);
     }
 
     $dao = CRM_Contribute_BAO_ContributionPage::create($params);

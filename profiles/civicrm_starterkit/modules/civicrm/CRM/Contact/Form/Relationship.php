@@ -317,7 +317,6 @@ class CRM_Contact_Form_Relationship extends CRM_Core_Form {
     if ($this->_action & CRM_Core_Action::UPDATE) {
       $contactField->freeze();
     }
-    $this->assign('relationshipData', $jsData);
 
     $this->add('advcheckbox', 'is_current_employer', $this->_contactType == 'Organization' ? ts('Current Employee') : ts('Current Employer'));
 
@@ -498,7 +497,6 @@ class CRM_Contact_Form_Relationship extends CRM_Core_Form {
           $jsData[$id]["placeholder_$x"] = $type ? ts('- select %1 -', array(strtolower($contactTypes[$type]['label']))) : ts('- select contact -');
         }
       }
-      $this->setMessage($outcome);
     }
     return $jsData;
   }

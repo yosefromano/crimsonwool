@@ -606,12 +606,6 @@ class CRM_Core_DAO_CustomField extends CRM_Core_DAO {
           'bao' => 'CRM_Core_BAO_CustomField',
           'localizable' => 0,
         ) ,
-        'in_selector' => array(
-          'name' => 'in_selector',
-          'type' => CRM_Utils_Type::T_BOOLEAN,
-          'title' => ts('Field Display') ,
-          'description' => 'Should the multi-record custom field values be displayed in tab table listing',
-        ) ,
       );
       CRM_Core_DAO_AllCoreTables::invoke(__CLASS__, 'fields_callback', Civi::$statics[__CLASS__]['fields']);
     }

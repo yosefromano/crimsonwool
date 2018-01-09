@@ -651,12 +651,6 @@ class CRM_Activity_Form_Activity extends CRM_Contact_Form_Task {
         elseif ($values['type'] == 'entityRef') {
           $this->addEntityRef($field, $values['label'], $attribute, $required);
         }
-        elseif ($values['type'] == 'select' && empty($attribute)) {
-          $this->addSelect($field, array('entity' => 'activity'), $required);
-        }
-        elseif ($values['type'] == 'entityRef') {
-          $this->addEntityRef($field, $values['label'], $attribute, $required);
-        }
         else {
           $this->add($values['type'], $field, $values['label'], $attribute, $required, CRM_Utils_Array::value('extra', $values));
         }

@@ -99,9 +99,6 @@ class CRM_Contribute_Form_UpdateSubscription extends CRM_Core_Form {
     elseif ($this->contributionRecurID) {
       $this->_coid = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $this->contributionRecurID, 'id', 'contribution_recur_id');
     }
-    elseif ($this->_crid) {
-      $this->_coid = CRM_Core_DAO::getFieldValue('CRM_Contribute_DAO_Contribution', $this->_crid, 'id', 'contribution_recur_id');
-    }
 
     if (!$this->contributionRecurID || !$this->_subscriptionDetails) {
       CRM_Core_Error::statusBounce(ts('Required information missing.'));

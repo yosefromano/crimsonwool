@@ -211,9 +211,6 @@ class CRM_PCP_Form_Event extends CRM_Event_Form_ManageEvent {
     // Update tab "disabled" css class
     $this->ajaxResponse['tabValid'] = !empty($params['is_active']);
 
-    // Update tab "disabled" css class
-    $this->ajaxResponse['tabValid'] = !empty($params['is_active']);
-
     parent::endPostProcess();
   }
 

@@ -39,10 +39,6 @@ class CRM_Core_Payment_BaseIPN {
    */
   protected $_inputParameters = array();
 
-  protected $_isRecurring = FALSE;
-
-  protected $_isFirstOrLastRecurringPayment = FALSE;
-
   /**
    * Only used by AuthorizeNetIPN.
    *

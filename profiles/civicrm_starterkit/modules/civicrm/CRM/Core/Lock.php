@@ -50,6 +50,7 @@ class CRM_Core_Lock implements \Civi\Core\Lock\LockInterface {
   const TIMEOUT = 3;
 
   protected $_hasLock = FALSE;
+
   protected $_name;
 
   protected $_id;
@@ -239,6 +240,7 @@ class CRM_Core_Lock implements \Civi\Core\Lock\LockInterface {
   public function isAcquired() {
     return $this->_hasLock;
   }
+
   /**
    * CRM-12856 locks were originally set up for jobs, but the concept was extended to caching & groups without
    * understanding that would undermine the job locks (because grabbing a lock implicitly releases existing ones)

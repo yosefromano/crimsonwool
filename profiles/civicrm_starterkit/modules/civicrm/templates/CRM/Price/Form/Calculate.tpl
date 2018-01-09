@@ -37,7 +37,7 @@
   </div>
   <div class="content calc-value" {if $hideTotal}style="display:none;"{/if} id="pricevalue" ></div>
 </div>
-{/if}
+
 <script type="text/javascript">
 {literal}
 
@@ -196,9 +196,7 @@ function display(totalfee) {
       skipPaymentMethod();
     }
 }
-{/literal}
-{/if}
-{literal}
+
 //money formatting/localization
 function formatMoney (amount, c, d, t) {
 var n = amount,

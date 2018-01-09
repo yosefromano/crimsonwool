@@ -174,12 +174,6 @@ class CRM_Core_PseudoConstant {
   private static $accountOptionValues;
 
   /**
-   * Tax Rates
-   * @var array
-   */
-  private static $taxRates;
-
-  /**
    * Low-level option getter, rarely accessed directly.
    * NOTE: Rather than calling this function directly use CRM_*_BAO_*::buildOptions()
    * @see http://wiki.civicrm.org/confluence/display/CRMDOC/Pseudoconstant+%28option+list%29+Reference

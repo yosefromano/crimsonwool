@@ -435,7 +435,6 @@ class CRM_Event_Form_ManageEvent_Registration extends CRM_Event_Form_ManageEvent
    */
   public function buildThankYouBlock(&$form) {
     $attributes = CRM_Core_DAO::getAttribute('CRM_Event_DAO_Event');
-    $attributes['thankyou_text']['click_wysiwyg'] = TRUE;
     $form->add('text', 'thankyou_title', ts('Title'), $attributes['thankyou_title']);
     $form->add('wysiwyg', 'thankyou_text', ts('Introductory Text'), $attributes['thankyou_text'] + array('class' => 'collapsed', 'preset' => 'civievent'));
     $form->add('wysiwyg', 'thankyou_footer_text', ts('Footer Text'), $attributes['thankyou_text'] + array('class' => 'collapsed', 'preset' => 'civievent'));

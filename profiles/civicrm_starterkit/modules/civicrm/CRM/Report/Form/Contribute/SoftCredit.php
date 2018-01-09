@@ -319,7 +319,6 @@ class CRM_Report_Form_Contribute_SoftCredit extends CRM_Report_Form {
             'type' => CRM_Utils_Type::T_STRING,
           ),
         ),
-        'grouping' => 'softcredit-fields',
       ),
     );
 

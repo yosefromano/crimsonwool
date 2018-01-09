@@ -173,8 +173,7 @@ class CRM_Core_DAO_Address extends CRM_Core_DAO {
    */
   public $postal_code_suffix;
   /**
-   * Store both US (zip5) AND international postal codes. App is responsible for country/region appropriate
-   validation.
+   * Store both US (zip5) AND international postal codes. App is responsible for country/region appropriate validation.
    *
    * @var string
    */

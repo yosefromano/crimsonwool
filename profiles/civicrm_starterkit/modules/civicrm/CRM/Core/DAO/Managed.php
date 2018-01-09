@@ -179,20 +179,6 @@ class CRM_Core_DAO_Managed extends CRM_Core_DAO {
             'callback' => 'CRM_Core_ManagedEntities::getCleanupOptions',
           )
         ) ,
-        'cleanup' => array(
-          'name' => 'cleanup',
-          'type' => CRM_Utils_Type::T_STRING,
-          'title' => ts('Cleanup') ,
-          'description' => 'Policy on when to cleanup entity (always, never, unused)',
-          'maxlength' => 32,
-          'size' => CRM_Utils_Type::MEDIUM,
-          'html' => array(
-            'type' => 'Select',
-          ) ,
-          'pseudoconstant' => array(
-            'callback' => 'CRM_Core_ManagedEntities::getCleanupOptions',
-          )
-        ) ,
       );
       CRM_Core_DAO_AllCoreTables::invoke(__CLASS__, 'fields_callback', Civi::$statics[__CLASS__]['fields']);
     }

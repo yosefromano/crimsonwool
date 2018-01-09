@@ -1128,12 +1128,6 @@ INNER JOIN  civicrm_membership membership2 ON membership1.membership_type_id = m
         elseif ($field == 'current_employer_id' && !empty($value)) {
           $label = "$value (" . CRM_Contact_BAO_Contact::displayName($value) . ")";
         }
-        elseif ($field == 'gender_id' && !empty($value)) {
-          $label = $genders[$value];
-        }
-        elseif ($field == 'current_employer_id' && !empty($value)) {
-          $label = "$value (" . CRM_Contact_BAO_Contact::displayName($value) . ")";
-        }
         $rows["move_$field"][$moniker] = $label;
         if ($moniker == 'other') {
           //CRM-14334

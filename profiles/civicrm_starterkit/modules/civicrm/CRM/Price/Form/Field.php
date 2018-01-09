@@ -192,14 +192,6 @@ class CRM_Price_Form_Field extends CRM_Core_Form {
     if (count($financialType)) {
       $this->assign('financialType', $financialType);
     }
-    $enabledComponents = CRM_Core_Component::getEnabledComponents();
-    $eventComponentId = $memberComponentId = NULL;
-    if (array_key_exists('CiviEvent', $enabledComponents)) {
-      $eventComponentId = CRM_Core_Component::getComponentID('CiviEvent');
-    }
-    if (array_key_exists('CiviMember', $enabledComponents)) {
-      $memberComponentId = CRM_Core_Component::getComponentID('CiviMember');
-    }
 
     //Visibility Type Options
     $visibilityType = CRM_Core_PseudoConstant::visibility();

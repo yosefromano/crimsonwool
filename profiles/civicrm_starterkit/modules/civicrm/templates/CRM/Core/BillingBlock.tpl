@@ -216,7 +216,6 @@
   </script>
 {/literal}
 {/if}
-
 {/crmRegion}
 {crmRegion name="billing-block-post"}
   {* Payment processors sometimes need to append something to the end of the billing block. We create a region for
