@@ -11,9 +11,6 @@ to reflect that the patch has been updated or is no longer in use.
 
 == civicrm (profiles/civicrm_starterkit/modules/civicrm) ==
 
-= For PayPal civicrm integration on Pantheon =
-Patch used: patches/externipn.patch
-
 = Creates 2 new options when grouping contribution data in donation receipts =
 Patch used: patches/new-grouping-option.patch
 
