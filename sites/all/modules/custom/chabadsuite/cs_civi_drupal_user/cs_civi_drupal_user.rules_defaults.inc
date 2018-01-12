@@ -24,7 +24,7 @@ function cs_civi_drupal_user_default_rules_configuration() {
         { "civicrm_entity_action_create_user" : {
             "USING" : {
               "civicrm_contact" : [ "civicrm-entity-tag:entity-id-contact" ],
-              "is_active" : 0,
+              "is_active" : 1,
               "notify" : 1,
               "signin" : 0,
               "username_format" : "firstlast"
