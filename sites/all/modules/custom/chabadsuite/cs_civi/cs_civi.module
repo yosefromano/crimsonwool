@@ -5,3 +5,28 @@
  */
 
 include_once 'cs_civi.features.inc';
+
+/**
+ * Implements hook_civicrm_permission().
+ */
+function cs_civi_civicrm_permission(&$permissions) {
+  $permissions += array(
+    'administer advanced CiviCRM features' => array(
+      ts('ChabadSuite CiviCRM: Administer restricted CiviCRM features'),
+      ts('Grants permission for restricted CiviCRM features'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_civicrm_navigationMenu().
+ */
+function cs_civi_civicrm_navigationMenu(&$params) {
+  // Find the System Status item
+  $urls = array_column(array_column($params, 'attributes'), 'url', 'navID');
+  $id = array_search('civicrm/a/#/status', $urls);
+  // Assign the restricted permission
+  if ($id) {
+    $params[$id]['attributes']['permission'] = 'administer advanced CiviCRM features';
+  }
+}
