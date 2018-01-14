@@ -1,0 +1,7 @@
+/**
+ * This file is loaded only on pages using the adminimal theme
+ */
+
+.crm-footer .status {
+  display: none;
+}

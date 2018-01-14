@@ -5,3 +5,19 @@
  */
 
 include_once 'cs_theme.features.inc';
+
+/**
+ * Implements hook_init().
+ */
+function cs_theme_init() {
+  // Load adminimal css file
+  global $theme;
+  if ($theme == 'adminimal') {
+    drupal_add_css(
+      drupal_get_path('module', 'cs_theme') . '/css/adminimal.css',
+      array(
+        'group' => CSS_THEME,
+        'weight' => 100,
+    ));
+  }
+}
