@@ -1,0 +1,13 @@
+<?php
+
+/**
+ * Update the localization menu item
+ */
+function cs_civi_update_7001() {
+  $path = 'civicrm/admin/setting/localization?reset=1';
+  $item = cs_util_civicrm_menu_item_get_by_path($path, TRUE);
+  if ($item) {
+    $item['permission'] = 'administer CiviCRM';
+    CRM_Core_BAO_Navigation::add($item);
+  }
+}
