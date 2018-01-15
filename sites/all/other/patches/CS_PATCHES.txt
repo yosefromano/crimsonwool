@@ -14,6 +14,8 @@ to reflect that the patch has been updated or is no longer in use.
 = Remove remote html (snippet) warning =
 Patch used: patches/civi-remove-html-snippet-warning.patch
 
+= Change permission for showing system status messages =
+Patch used: patches/system-messages-perm.patch
 
 == civicrm_cache_clear ==
 Patch used: patches/civicrm-cache-clear-schema.patch
