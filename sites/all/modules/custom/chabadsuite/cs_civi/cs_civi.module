@@ -11,7 +11,7 @@ include_once 'cs_civi.features.inc';
  */
 function cs_civi_civicrm_permission(&$permissions) {
   $permissions += array(
-    'administer advanced CiviCRM features' => array(
+    'administer restricted CiviCRM features' => array(
       ts('ChabadSuite CiviCRM: Administer restricted CiviCRM features'),
       ts('Grants permission for restricted CiviCRM features'),
     ),
@@ -27,6 +27,6 @@ function cs_civi_civicrm_navigationMenu(&$params) {
   $id = array_search('civicrm/a/#/status', $urls);
   // Assign the restricted permission
   if ($id) {
-    $params[$id]['attributes']['permission'] = 'administer advanced CiviCRM features';
+    $params[$id]['attributes']['permission'] = 'administer restricted CiviCRM features';
   }
 }
