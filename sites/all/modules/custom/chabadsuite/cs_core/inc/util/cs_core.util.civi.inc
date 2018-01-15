@@ -57,10 +57,14 @@ function cs_util_civicrm_menu_items_delete($ids) {
 /**
  * Get a Civi navigation menu item by path
  */
-function cs_util_civicrm_menu_item_get_by_path($path) {
-  $query = db_select('civicrm_navigation', 'cn')
-    ->fields('cn', array('id'))
-    ->condition('url', $path, '=');
-
-  return array_keys($query->execute()->fetchAllKeyed());
+function cs_util_civicrm_menu_item_get_by_path($path, $full = FALSE) {
+  civicrm_initialize();
+  $search = array('url' => $path);
+  $item = array();
+  CRM_Core_BAO_Navigation::retrieve($search, $item);
+  if ($item) {
+    if ($full) return $item;
+    else return $item['id'];
+  }
+  return FALSE;
 }
