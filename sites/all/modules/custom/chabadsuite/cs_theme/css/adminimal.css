@@ -5,3 +5,17 @@
 .crm-footer .status {
   display: none;
 }
+
+.CRM_Admin_Form_Setting_Localization .crm-localization-form-block-inheritLocale {
+  display: none;
+}
+
+.CRM_Admin_Form_Setting_Localization .crm-localization-form-block-makeMultilingual td:nth-child(2) {
+  display: none;
+}
+
+.CRM_Admin_Form_Setting_Localization .crm-localization-form-block-makeMultilingual td:first-child::after {
+  content: 'This feature is not currently available';
+  position: absolute;
+  margin-left: 20px;
+}
