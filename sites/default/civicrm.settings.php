@@ -81,6 +81,11 @@ if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
     $pantheon_db_string .= '/' . $pantheon_db['database'] . '?new_link=true';
   }
 }
+else {
+  global $conf;
+  $db_name = 'cs_' . $conf['site_info']['short_name'];
+  $site_root = getcwd();
+}
 
 /**
  * Content Management System (CMS) Datasource:
@@ -95,7 +100,7 @@ if (!defined('CIVICRM_UF_DSN') && CIVICRM_UF !== 'UnitTests') {
   if (isset($pantheon_conf)) {
     define('CIVICRM_UF_DSN', $pantheon_db_string);
   } else {
-    define( 'CIVICRM_UF_DSN', 'mysql://cms_db_username:cms_db_password@db_server/cms_database?new_link=true');
+    define( 'CIVICRM_UF_DSN', "mysql://root:root@localhost/$db_name?new_link=true");
   }
 }
 
@@ -132,7 +137,7 @@ if (!defined('CIVICRM_DSN')) {
     define('CIVICRM_DSN', $pantheon_db_string);
   }
   else {
-    define('CIVICRM_DSN', 'mysql://crm_db_username:crm_db_password@db_server/crm_database?new_link=true');
+    define('CIVICRM_DSN', "mysql://root:root@localhost/$db_name?new_link=true");
   }
 }
 
@@ -208,7 +213,7 @@ if (isset($pantheon_conf)) {
   $civicrm_root = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/profiles/civicrm_starterkit/modules/civicrm';
 }
 else {
-  $civicrm_root = '/full/path/to/modules/civicrm';
+  $civicrm_root = $site_root . '/profiles/civicrm_starterkit/modules/civicrm/';
 }
 
 if (!defined('CIVICRM_TEMPLATE_COMPILEDIR')) {
@@ -216,7 +221,7 @@ if (!defined('CIVICRM_TEMPLATE_COMPILEDIR')) {
     define('CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/private/civicrm/templates_c/');
   }
   else {
-    define( 'CIVICRM_TEMPLATE_COMPILEDIR', '/full/path/to/files/private/civicrm/templates_c');
+    define( 'CIVICRM_TEMPLATE_COMPILEDIR',  $site_root . '/sites/default/files/private/civicrm/smarty/');
   }
 }
 
@@ -265,16 +270,16 @@ if (!defined('CIVICRM_UF_BASEURL')) {
  */
 global $civicrm_paths;
 if (isset($pantheon_conf)) {
-  $civicrm_paths['civicrm.files']['path'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/civicrm';
-  $civicrm_paths['civicrm.files']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/civicrm/';
+  $civicrm_paths['civicrm.files']['path'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files';
+  $civicrm_paths['civicrm.files']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/';
 
   $civicrm_paths['civicrm.private']['path'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/private/civicrm';
   $civicrm_paths['civicrm.private']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/private/civicrm/';
 } else {
-  $civicrm_paths['civicrm.files']['path'] = 'path/to/files/civicrm';
-  $civicrm_paths['civicrm.files']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/civicrm/';
+  $civicrm_paths['civicrm.files']['path'] = $site_root . '/sites/default/files';
+  $civicrm_paths['civicrm.files']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/';
 
-  $civicrm_paths['civicrm.private']['path'] = '/path/to/files/private/civicrm';
+  $civicrm_paths['civicrm.private']['path'] = $site_root . '/sites/default/files/private/civicrm';
   $civicrm_paths['civicrm.private']['url'] = CIVICRM_UF_BASEURL . 'sites/default/files/private/civicrm/';
 }
 
@@ -295,22 +300,22 @@ if (isset($pantheon_conf)) {
   $civicrm_setting['Directory Preferences']['customFileUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/private/civicrm/custom/';
 
   // Override the Images directory.
-  $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/civicrm/persist/contribute/';
+  $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/';
 
   // Override the Image Upload URL (System Settings > Resource URLs)
-  $civicrm_setting['URL Preferences']['imageUploadURL'] = CIVICRM_UF_BASEURL . 'sites/default/files/civicrm/persist/contribute/';
+  $civicrm_setting['URL Preferences']['imageUploadURL'] = CIVICRM_UF_BASEURL . 'sites/default/files/';
 } else {
   // Override the Temporary Files directory.
-  $civicrm_setting['Directory Preferences']['uploadDir'] = '/path/to/upload-dir';
+  $civicrm_setting['Directory Preferences']['uploadDir'] = $site_root . '/sites/default/files/private/civicrm/upload/';
 
   // Override the Custom Files Upload directory.
-  $civicrm_setting['Directory Preferences']['customFileUploadDir'] = '/path/to/custom-dir';
+  $civicrm_setting['Directory Preferences']['customFileUploadDir'] = $site_root . '/sites/default/files/private/civicrm/custom/';
 
   // Override the Images directory.
-  $civicrm_setting['Directory Preferences']['imageUploadDir'] = '/path/to/image-upload-dir';
+  $civicrm_setting['Directory Preferences']['imageUploadDir'] = $site_root . '/sites/default/files/';
 
   // Override the Image Upload URL (System Settings > Resource URLs)
-  $civicrm_setting['URL Preferences']['imageUploadURL'] = 'http://example.com/example-image-upload-url';
+  $civicrm_setting['URL Preferences']['imageUploadURL'] = CIVICRM_UF_BASEURL . 'sites/default/files/';
 }
 
 /**
@@ -319,7 +324,7 @@ if (isset($pantheon_conf)) {
 if (isset($pantheon_conf)) {
   $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = CIVICRM_UF_BASEURL . 'profiles/civicrm_starterkit/modules/civicrm/';
 } else {
-  $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = 'http://example.com/example-resource-url/';
+  $civicrm_setting['URL Preferences']['userFrameworkResourceURL'] = CIVICRM_UF_BASEURL . 'profiles/civicrm_starterkit/modules/civicrm/';
 }
 
 /**
@@ -338,10 +343,10 @@ if (isset($pantheon_conf)) {
   }
 } else {
   // Override the Extensions directory.
-  $civicrm_setting['Directory Preferences']['extensionsDir'] = '/path/to/extensions-dir';
+  $civicrm_setting['Directory Preferences']['extensionsDir'] = $site_root . '/sites/all/extensions/';
 
   // Override the Extensions Resource URL
-  $civicrm_setting['URL Preferences']['extensionsURL'] = 'http://example.com/pathtoextensiondir';
+  $civicrm_setting['URL Preferences']['extensionsURL'] = CIVICRM_UF_BASEURL . 'sites/all/extensions';
 
   // Disable automatic download / installation of Extensions
   $civicrm_setting['Extension Preferences']['ext_repo_url'] = false;
@@ -358,10 +363,10 @@ if (isset($pantheon_conf)) {
   $civicrm_setting['Directory Preferences']['customPHPPathDir'] = '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/all/civicrm_custom/custom_php/';
 } else {
   // Override the Custom Templates directory
-  $civicrm_setting['Directory Preferences']['customTemplateDir'] = '/path/to/template-dir';
+  $civicrm_setting['Directory Preferences']['customTemplateDir'] = $site_root . '/sites/all/civicrm_custom/custom_templates/';
 
   // Override the Custom PHP directory
-  $civicrm_setting['Directory Preferences']['customPHPPathDir'] = '/path/to/custom-php-dir';
+  $civicrm_setting['Directory Preferences']['customPHPPathDir'] = $site_root . '/sites/all/civicrm_custom/custom_php/';
 }
 
 /**
@@ -376,7 +381,7 @@ if (isset($pantheon_conf)) {
 }
 
 // Disable display of Community Messages on home dashboard (OPTIONAL).
-// $civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false;
+$civicrm_setting['CiviCRM Preferences']['communityMessagesUrl'] = false;
 
 // set triggers to be managed offline per CRM-18212 (OPTIONAL).
 // $civicrm_setting['CiviCRM Preferences']['logging_no_trigger_permission'] = 1;
@@ -399,7 +404,7 @@ if (isset($pantheon_conf)) {
  * More info at http://wiki.civicrm.org/confluence/display/CRMDOC/Command-line+Script+Configuration
  */
 if (!defined('CIVICRM_SITE_KEY')) {
-  define( 'CIVICRM_SITE_KEY', 'cef6bc20cbc863d76cf0513d243fa2b9');
+  define( 'CIVICRM_SITE_KEY', 'a94ef7c7de538900b3e799e2bdba2a88');
 }
 
 /**
@@ -423,9 +428,9 @@ if (isset($pantheon_conf) && $pantheon_conf['pantheon_environment'] != 'live') {
   define('CIVICRM_MAIL_LOG', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/code/sites/default/files/private/civicrm/ConfigAndLog/mail.log');
 }
 
-// if (!isset($pantheon_conf) && !defined('CIVICRM_MAIL_LOG')) {
-//   define( 'CIVICRM_MAIL_LOG', '/full/path/to/files/civicrm/ConfigAndLog/mail.log');
-// }
+if (!isset($pantheon_conf) && !defined('CIVICRM_MAIL_LOG')) {
+  define( 'CIVICRM_MAIL_LOG', $site_root . '/sites/default/files/civicrm/ConfigAndLog/mail.log');
+}
 
 
 if (!defined('CIVICRM_DOMAIN_ID')) {
@@ -570,6 +575,15 @@ else {
 if (CIVICRM_UF === 'UnitTests') {
   if (!defined('CIVICRM_CONTAINER_CACHE')) define('CIVICRM_CONTAINER_CACHE', 'auto');
   if (!defined('CIVICRM_MYSQL_STRICT')) define('CIVICRM_MYSQL_STRICT', true);
+}
+
+
+/**
+ * Include an optional civicrm.site.settings.php. This file is meant to include
+ * settings specific to the site using this upstream.
+ */
+if (is_file(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php')) {
+  include(DRUPAL_ROOT . '/sites/default/civicrm.site.settings.php');
 }
 
 /**
