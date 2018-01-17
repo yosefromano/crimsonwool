@@ -413,7 +413,7 @@ if (!defined('CIVICRM_SITE_KEY')) {
  *
  */
 if (!defined('CIVICRM_MAIL_SMARTY')) {
-  define( 'CIVICRM_MAIL_SMARTY', 0 );
+  define( 'CIVICRM_MAIL_SMARTY', 1 );
 }
 
 /**
