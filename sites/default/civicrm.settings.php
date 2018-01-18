@@ -347,9 +347,6 @@ if (isset($pantheon_conf)) {
 
   // Override the Extensions Resource URL
   $civicrm_setting['URL Preferences']['extensionsURL'] = CIVICRM_UF_BASEURL . 'sites/all/extensions';
-
-  // Disable automatic download / installation of Extensions
-  $civicrm_setting['Extension Preferences']['ext_repo_url'] = false;
 }
 
 /**
