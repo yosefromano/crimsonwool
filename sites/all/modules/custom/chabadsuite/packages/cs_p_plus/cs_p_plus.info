@@ -1,6 +1,6 @@
-name = cs_p_plus
+name = CS Package: Plus
 core = 7.x
-package = Features
+package = ChabadSuite - Packages
 dependencies[] = ctools
 dependencies[] = strongarm
 features[ctools][] = strongarm:strongarm:1
