@@ -12,9 +12,9 @@ class CRM_Extendedreport_Form_Report_Campaign_CampaignProgressReport extends CRM
   protected $_summary = NULL;
   protected $_totalPaid = FALSE;
   protected $_customGroupExtends = array(
-    'Pledge',
+    'Campaign',
   );
-  public $_drilldownReport = array('pledge/details' => 'Pledge Details');
+  protected $_baseTable = 'civicrm_campaign';
   protected $_customGroupGroupBy = TRUE;
 
   /**
@@ -30,6 +30,7 @@ class CRM_Extendedreport_Form_Report_Campaign_CampaignProgressReport extends CRM
             'financial_type_id' => array(
               'title' => ts('Financial type'),
               'alter_display' => 'alterFinancialType',
+              'statistics' => array('GROUP_CONCAT'),
             ),
             'total_amount' => array(
               'title' => ts('Raised'),
@@ -51,6 +52,7 @@ class CRM_Extendedreport_Form_Report_Campaign_CampaignProgressReport extends CRM
               'type' => CRM_Utils_Type::T_BOOLEAN,
               'options' => array(0 => ts('Payment'), 1 => ts('Pledge')),
               'alter_display' => 'alterIsPledge',
+              'statistics' => array('GROUP_CONCAT'),
             ),
             'still_to_raise' => array(
               'title' => ts('Balance to raise'),
@@ -63,6 +65,29 @@ class CRM_Extendedreport_Form_Report_Campaign_CampaignProgressReport extends CRM
               'title' => ts('Date range'),
               'operatorType' => self::OP_SINGLEDATE,
               'pseudofield' => TRUE,
+            ),
+            'financial_type_id' => array(
+              'title' => ts('Financial type'),
+              'alter_display' => 'alterFinancialType',
+              'type' => CRM_Utils_Type::T_INT,
+              'operatorType' => self::OP_MULTISELECT,
+              'options' => $this->_getOptions('Contribution', 'financial_type_id'),
+            ),
+          ),
+          'group_bys' => array(
+            'financial_type_id' => array(
+              'title' => ts('Financial type'),
+              'alter_display' => 'alterFinancialType',
+              'type' => CRM_Utils_Type::T_INT,
+              'operatorType' => self::OP_MULTISELECT,
+              'options' => $this->_getOptions('Contribution', 'financial_type_id'),
+            ),
+            'is_pledge' => array(
+              'title' => ts('Type'),
+              'type' => CRM_Utils_Type::T_BOOLEAN,
+              'options' => array(0 => ts('Payment'), 1 => ts('Pledge')),
+              'alter_display' => 'alterIsPledge',
+              'statistics' => array('GROUP_CONCAT'),
             ),
           ),
         ),
@@ -78,33 +103,13 @@ class CRM_Extendedreport_Form_Report_Campaign_CampaignProgressReport extends CRM
       FROM civicrm_campaign {$this->_aliases['civicrm_campaign']}";
 
     $this->joinProgressTable();
-    if (!$this->isTableSelected('civicrm_contact')) {
-      $this->_aliases['civicrm_contact'] = 'civicrm_contact';
-    }
+    $this->_aliases['civicrm_contact'] = 'civicrm_contact';
 
     $this->_from .= "
-                 LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']}
-                      ON ({$this->_aliases['civicrm_contact']}.id =
-                          progress.contact_id )
-                 {$this->_aclFrom} ";
-
-    // include address field if address column is to be included
-    if ($this->isTableSelected('civicrm_address')) {
-      $this->_from .= "
-                 LEFT JOIN civicrm_address {$this->_aliases['civicrm_address']}
-                           ON ({$this->_aliases['civicrm_contact']}.id =
-                               {$this->_aliases['civicrm_address']}.contact_id) AND
-                               {$this->_aliases['civicrm_address']}.is_primary = 1\n";
-    }
-
-    // include email field if email column is to be included
-    if ($this->isTableSelected('civicrm_email')) {
-      $this->_from .= "
-                 LEFT JOIN civicrm_email {$this->_aliases['civicrm_email']}
-                           ON ({$this->_aliases['civicrm_contact']}.id =
-                               {$this->_aliases['civicrm_email']}.contact_id) AND
-                               {$this->_aliases['civicrm_email']}.is_primary = 1\n";
-    }
+      LEFT JOIN civicrm_contact {$this->_aliases['civicrm_contact']}
+      ON ({$this->_aliases['civicrm_contact']}.id = progress.contact_id )
+      {$this->_aclFrom}
+    ";
   }
 
   /**
@@ -150,12 +155,11 @@ LEFT JOIN
  LEFT JOIN civicrm_pledge_payment pp ON pp.contribution_id = c.id
  WHERE c.contribution_status_id = 1
  AND pp.id IS NULL ";
-  if ($until) {
-    $this->_from .= ' AND c.receive_date <= "' . CRM_Utils_Type::validate(CRM_Utils_Date::processDate($until, 235959), 'Integer') . '"';
-  }
+    if ($until) {
+      $this->_from .= ' AND c.receive_date <= "' . CRM_Utils_Type::validate(CRM_Utils_Date::processDate($until, 235959), 'Integer') . '"';
+    }
 
-    $this->_from .= ") as progress  ON progress.campaign_id = campaign.id
-
+    $this->_from .= ") as progress  ON progress.campaign_id = {$this->_aliases['civicrm_campaign']}.id
     ";
   }
 
@@ -172,12 +176,13 @@ LEFT JOIN
   function selectClause(&$tableName, $tableKey, &$fieldName, &$field) {
     if ($fieldName == 'still_to_raise') {
       $alias = "{$tableName}_{$fieldName}";
-      $this->_columnHeaders["{$tableName}_{$fieldName}"]['title'] = CRM_Utils_Array::value('title', $field);
-      $this->_columnHeaders["{$tableName}_{$fieldName}"]['type'] = CRM_Utils_Array::value('type', $field);
-      $this->_columnHeaders["{$tableName}_{$fieldName}"]['dbAlias'] = CRM_Utils_Array::value('dbAlias', $field);
+      $this->_columnHeaders[$alias]['title'] = CRM_Utils_Array::value('title', $field);
+      $this->_columnHeaders[$alias]['type'] = CRM_Utils_Array::value('type', $field);
+      $this->_columnHeaders[$alias]['dbAlias'] = CRM_Utils_Array::value('dbAlias', $field);
       $this->_selectAliases[] = $alias;
-      return " COALESCE(campaign.goal_revenue - SUM(COALESCE(progress.total_amount, 0)), 0) as $alias ";
+      return " COALESCE(campaign.goal_revenue, 0) - SUM(COALESCE(progress.total_amount, 0)) as $alias ";
     }
+    return parent::selectClause($tableName, $tableKey, $fieldName, $field);
   }
 
   /**
@@ -195,7 +200,7 @@ LEFT JOIN
    * @return string
    */
   function alterIsPledge($value) {
-    return $value ? ts('Pledge') : ts('Payment');
+    return str_replace(array(0, 1), array(ts('Payment without pledge'),ts('Pledge')), $value);
   }
 
   /**
@@ -203,7 +208,7 @@ LEFT JOIN
    */
   function alterDisplay(&$rows) {
     parent::alterDisplay($rows);
-
+    $this->unsetUnreliableColumnsIfNotCampaignGrouped();
     if (isset($this->_columnHeaders['progress_still_to_raise'])) {
       $move = $this->_columnHeaders['progress_still_to_raise'];
       unset($this->_columnHeaders['progress_still_to_raise']);
@@ -231,11 +236,22 @@ LEFT JOIN
       }
 
     }
-    $this->rollupRow['civicrm_campaign_campaign_goal_revenue'] = $grandTotalRaised;
-    $this->rollupRow['progress_still_to_raise'] = $grandTotalLeft;
+    $this->rollupRow['civicrm_campaign_campaign_goal_revenue'] = $runningTotalRaised;
+    $this->rollupRow['progress_still_to_raise'] = $runningTotalLeft;
     $this->assign('grandStat', $this->rollupRow);
   }
 
+  /**
+   * Do we have a group by array that does not include campaign/
+   */
+  protected function groupByCampaignTypeNotCampaign() {
+    if (!empty($this->_groupByArray)) {
+      if (!in_array('campaign.id', $this->_groupByArray)) {
+        return TRUE;
+      }
+    }
+    return FALSE;
+  }
 
   /**
    *  Note: $fieldName param allows inheriting class to build operationPairs
@@ -253,6 +269,19 @@ LEFT JOIN
       );
     }
     return parent::getOperationPair($type, $fieldName);
+  }
+
+  protected function unsetUnreliableColumnsIfNotCampaignGrouped() {
+    if ($this->groupByCampaignTypeNotCampaign()) {
+      if (isset($this->_columnHeaders['progress_still_to_raise'])) {
+        unset($this->_columnHeaders['progress_still_to_raise']);
+        CRM_Core_Session::setStatus(ts('Currently campaign revenue cannot be calculated against the goal if grouping does not include campaign'));
+      }
+      if (isset($this->_columnHeaders['civicrm_campaign_campaign_goal_revenue'])) {
+        unset($this->_columnHeaders['civicrm_campaign_campaign_goal_revenue']);
+        CRM_Core_Session::setStatus(ts('Currently campaign revenue cannot be calculated against the goal if grouping does not include campaign'));
+      }
+    }
   }
 
 }
