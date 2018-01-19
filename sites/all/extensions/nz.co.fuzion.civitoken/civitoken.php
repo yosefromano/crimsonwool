@@ -59,6 +59,17 @@ function civitoken_civicrm_disable() {
 }
 
 /**
+ * Implements hook_civicrm_angularModules().
+ *
+ * Generate a list of Angular modules.
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_caseTypes
+ */
+function civitoken_civicrm_angularModules(&$angularModules) {
+  _civitoken_civix_civicrm_angularModules($angularModules);
+}
+
+/**
  * Implementation of hook_civicrm_upgrade
  *
  * @param $op string, the type of operation being performed; 'check' or 'enqueue'
@@ -111,6 +122,30 @@ function civitoken_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
 * implementation of CiviCRM hook
 */
 function civitoken_civicrm_tokens(&$tokens) {
+  civitoken_civicrm_tokens_all($tokens);
+  $setting = civicrm_api3('Setting', 'get', ['return' => 'civitoken_enabled_tokens', 'sequential' => 1])['values'][0];
+
+  if (empty($setting) || empty($setting['civitoken_enabled_tokens'])) {
+    // Treat un-configured as 'all enabled'.
+    return;
+  }
+
+  foreach ($tokens as $category => $tokenSubset) {
+    foreach ($tokenSubset as $key => $token) {
+      if (!in_array($key, $setting['civitoken_enabled_tokens'])) {
+        unset($tokens[$category][$key]);
+      }
+    }
+    if (empty($tokens[$category])) {
+      unset($tokens[$category]);
+    }
+  }
+}
+
+/**
+ * implementation of CiviCRM hook
+ */
+function civitoken_civicrm_tokens_all(&$tokens) {
   $tokenFunctions = civitoken_initialize();
   $civitokens = array();
   foreach ($tokenFunctions as $token) {
@@ -118,6 +153,24 @@ function civitoken_civicrm_tokens(&$tokens) {
     $tokens[$token] = array_merge($civitokens, $fn($token));
   }
   $tokens['civitokens']= $civitokens;
+}
+
+/**
+ * Get a flattened list of tokens.
+ *
+ * e.g
+ * ['address.address_block' => 'Address Block', 'date.today' => 'Today\'s date']].
+ */
+function civitoken_get_flattened_list_all() {
+  $tokens = array();
+  $flattenedTokens = array();
+  civitoken_civicrm_tokens_all($tokens);
+  foreach ($tokens as $category) {
+    foreach ($category as $token => $title) {
+      $flattenedTokens[$token] = $title;
+    }
+  }
+  return $flattenedTokens;
 }
 
 /**
@@ -176,4 +229,22 @@ function civitoken_initialize() {
   }
   $civitoken_init = 1;
   return $tokens;
+}
+
+/**
+ * Implements hook_civicrm_navigationMenu().
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
+ */
+function civitoken_civicrm_navigationMenu(&$menu) {
+
+  _civitoken_civix_insert_navigation_menu($menu, 'Administer/Communications', array(
+    'label' => ts('Enabled Tokens', array('domain' => 'nz.co.fuzion.civitoken')),
+    'name' => 'enabled_civitokens',
+    'url' => 'civicrm/a/#/civitoken/settings',
+    'permission' => 'administer CiviCRM',
+    'operator' => 'OR',
+    'separator' => 0,
+  ));
+  _civitoken_civix_navigationMenu($menu);
 }
