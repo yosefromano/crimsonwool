@@ -177,7 +177,7 @@
             cj('#original_value_options').removeClass('hiddenElement');
             cj('#original_value_options').change(function() {
                 var value = cj(this).val();
-                cj('#value').val(value);
+                cj('#original_value').val(value);
             });
 
             cj('#original_multi_value').val(selectedOptions.join('\r\n'));
