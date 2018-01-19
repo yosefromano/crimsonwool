@@ -52,7 +52,7 @@ class CRM_Utils_Normalize {
     $config = CRM_Core_Config::singleton();
     $this->_country = $config->defaultContactCountry();
 
-    $this->_nameFields = array('first_name', 'middle_name', 'last_name', 'organization_name', 'household_name');
+    $this->_nameFields = array('first_name', 'middle_name', 'last_name', 'organization_name', 'household_name', 'legal_name', 'nick_name');
     $this->_phoneFields = array('phone');
     $this->_addressFields = array('city', 'postal_code');
   }
@@ -61,7 +61,17 @@ class CRM_Utils_Normalize {
    * Returns normalizer settings
    */
   static function getSettings($name = NULL) {
-    return CRM_Core_BAO_Setting::getItem(CRM_Utils_Normalize::NORMALIZE_PREFERENCES_NAME, $name);
+    if (!empty($name)) {
+      return CRM_Core_BAO_Setting::getItem(CRM_Utils_Normalize::NORMALIZE_PREFERENCES_NAME, $name);
+    }
+    // group name not used anymore, so fetch only normalization related setting (also suppress warning)
+    $settingsField = array('contact_FullFirst', 'contact_OrgCaps', 'phone_normalize',
+      'phone_IntlPrefix', 'address_CityCaps', 'address_StreetCaps', 'address_Zip', 'normalization_stats', 'address_postal_validation');
+    $settings = array();
+    foreach ($settingsField as $fieldName) {
+      $settings[$fieldName] = CRM_Core_BAO_Setting::getItem(CRM_Utils_Normalize::NORMALIZE_PREFERENCES_NAME, $fieldName);
+    }
+    return $settings;
   }
 
   static function setSetting($value, $name) {
@@ -95,6 +105,12 @@ class CRM_Utils_Normalize {
       'dos', 'das', 'do', 'du',
       "s" // skip apostrophe s
     );
+
+    // These will be small
+    $orgHandles = array(
+      'of'
+    );
+
     // These will be capitalized
     $orgstatus = array(
       'llc', 'llp', 'pllc', 'lp', 'pc', // USA
@@ -104,13 +120,14 @@ class CRM_Utils_Normalize {
     );
     // These will be Firstcaped with a dot at the end
     $orgstatusSpecial = array( 'inc', 'co', 'corp', 'ltd' );
-
-    $delimiters = array( "-", ".", "'","D'", "O'", "Mc", " ",);
+    
+    $delimiters = array( "-", ".", "D'", "O'", "Mc", " ",);
 
     if (CRM_Utils_Array::value('contact_FullFirst', $this->_settings)) {
       foreach ($this->_nameFields as $field) {
         $name = CRM_Utils_Array::value($field, $contact);
-        if (empty($name)) {
+        //Handle null value during Contact Merge
+        if (empty($name) || ($name === "null")) {
           continue;
         }
         ///$name = mb_convert_case($name, MB_CASE_TITLE, "UTF-8");
@@ -126,14 +143,17 @@ class CRM_Utils_Normalize {
               } else if ( in_array(str_replace(array('.'), '', strtolower($word)), $orgstatusSpecial) ) {
                 // special status only need first letter to be capitalize
                 $word = str_replace(array('.'), '', strtolower($word)) . '.';
-              }
+              } else if (in_array(strtolower($word), $orgHandles)) {
+                 // lower case few matching word for Organization contact
+                 $word = strtolower($word);
+               }
             } elseif ( CRM_Utils_Array::value('contact_type', $contact) == 'Individual') {
                // lower case few matching word for individual contact
                if (in_array(strtolower($word), $handles)) {
                  $word = strtolower($word);
                }
             }
-            if (!in_array($word, $handles)) {
+            if (!in_array($word, $handles) && !in_array($word, $orgHandles)) {
               $word = ucfirst($word);
             }
             array_push($newWords, $word);
@@ -220,8 +240,40 @@ class CRM_Utils_Normalize {
     $zip_formats = array(
       'US' => '/^(\d{5})(-[0-9]{4})?$/i',
       'FR' => '/^(\d{5})$/i',
-      'NL' => '/^(\d{4})\s*([a-z]{2})$/i',
+      'NL' => '/^(\d{4})\s*([A-Z]{2})$/i',
+      'CA' => '/^([ABCEGHJKLMNPRSTVXY]\d[ABCEGHJKLMNPRSTVWXYZ])\ {0,1}(\d[ABCEGHJKLMNPRSTVWXYZ]\d)$/i'
     );
+
+    // First let's get the country ISO code
+    $country = CRM_Utils_Array::value('country_id', $address) ? CRM_Core_PseudoConstant::countryIsoCode($address['country_id']) : NULL;
+
+    // Reformat address lines
+    $directionals = array(
+      'US' => array('ne', 'nw', 'se', 'sw'),
+      'CA' => array('ne', 'nw', 'se', 'sw', 'po', 'rr'),
+    );
+    if ($value = CRM_Utils_Array::value('address_StreetCaps', $this->_settings)) {
+      foreach( array('street_address','supplemental_address_1', 'supplemental_address_2') as $name) { 
+        $addressValue = CRM_Utils_Array::value($name, $address);
+        if ($value == 1 && $addressValue) {
+          $address[$name] = strtoupper($addressValue);
+        } elseif($value == 2 && $addressValue) {
+          $address[$name] = ucwords(strtolower($addressValue));
+          // Capitalize directionals and other misc items
+          if ($country && array_key_exists($country, $directionals)) {
+            $patterns = array();
+            foreach ($directionals[$country] as $d) {
+              $patterns[] = "/\\b$d\\b/i";
+            }
+            $address[$name] = preg_replace_callback($patterns, function ($matches) {
+              return strtoupper($matches[0]);
+            }, $address[$name]);
+          }
+        }
+      }
+    }
+
+    // Reformat city
     if ($value = CRM_Utils_Array::value('address_CityCaps', $this->_settings)) {
       $city = CRM_Utils_Array::value('city', $address);
       if ($value == 1 && $city) {
@@ -230,29 +282,137 @@ class CRM_Utils_Normalize {
         $address['city'] = ucwords(strtolower($city));
       }
     }
-    if ($value = CRM_Utils_Array::value('address_StreetCaps', $this->_settings)) {
-      foreach( array('street_address','supplemental_address_1', 'supplemental_address_2') as $name) { 
-        $addressValue = CRM_Utils_Array::value($name, $address);
-        if ($value == 1 && $addressValue) {
-          $address[$name] = strtoupper($addressValue);
-        } elseif($value == 2 && $name) {
-          $address[$name] = ucwords(strtolower($addressValue));
-        }
-      }
-    }
+
+    // Reformat postal code ONLY FOR CA
     if (CRM_Utils_Array::value('address_Zip', $this->_settings)) {
-      if (($zip = CRM_Utils_Array::value('postal_code', $address))
-          && ($cid = CRM_Utils_Array::value('country_id', $address))) {
-        $codes = CRM_Core_PseudoConstant::countryIsoCode();
-        if ($regex = CRM_Utils_Array::value($codes[$cid], $zip_formats)) {
+      // http://www.pidm.net/postal%20code.html: there are currently no examples of postal codes written with lower-case letters
+      $address['postal_code'] = strtoupper($address['postal_code']);
+
+      if ($country == 'CA' && ($zip = CRM_Utils_Array::value('postal_code', $address))) {
+        if ($regex = CRM_Utils_Array::value($country, $zip_formats)) {
           if (!preg_match($regex, $zip, $matches)) {
+
+            // Zip code is invalid for country
+            // 1. send an email if configured
+            if (CRM_Utils_Array::value('address_postal_validation', $this->_settings)) {
+              // Get email Id from Normalize Admin page
+              $emailTo = CRM_Utils_Array::value('address_postal_validation', $this->_settings);
+              if (!empty($emailTo) && !empty($address['contact_id'])) {
+                // Send Email
+                $this->sendEmail($emailTo, $address['contact_id']);
+              }
+            }
+            // 2. display an error message on screen
             CRM_Core_Session::setStatus(ts('Invalid Zip Code format %1', array(1 => $zip)));
+          } else {
+            // Zip code is valid
+            //Check for Single Space and add Space If user not added
+            $space_regex = '/^([a-zA-Z]\d[a-zA-Z][ -])?(\d[a-zA-Z]\d)$/';
+            if(!preg_match($space_regex, $zip)) {
+              $address['postal_code'] = substr($zip, 0, 3) . ' ' . substr($zip, 3);
+            }
           }
         }
+
+        // Set the State/Province as per Zip code ONLY FOR CANADA
+        // Task : https://projects.cividesk.com/projects/28/tasks/858
+        if($country == 'CA') {
+          $first_char = strtoupper(substr($zip, 0, 1));
+          $three_char = strtoupper(substr($zip, 0, 3));
+          if (!empty($first_char)) {
+            switch ($first_char) {
+              case 'A':
+                //Newfoundland and Labrador - 1104
+                $address['state_province_id'] = 1104;
+                break;
+              case 'B':
+                //Nova Scotia - 1106
+                $address['state_province_id'] = 1106;
+                break;
+              case 'C':
+                //Prince Edwards Island - 1109
+                $address['state_province_id'] = 1109;
+                break;
+              case 'E':
+                //New Brunswick - 1103
+                $address['state_province_id'] = 1103;
+                break;
+              case 'G':
+              case 'H':
+              case 'J':
+                //Quebec - 1110
+                $address['state_province_id'] = 1110;
+                break;
+              case 'K':
+              case 'L':
+              case 'M':
+              case 'N':
+              case 'P':
+                //Ontario -  1108
+                $address['state_province_id'] = 1108;
+                break;
+              case 'R':
+                //Manitoba - 1102
+                $address['state_province_id'] = 1102;
+                break;
+              case 'S':
+                //Saskatchewan - 1111
+                $address['state_province_id'] = 1111;
+                break;
+              case 'T':
+                //Alberta - 1100
+                $address['state_province_id'] = 1100;
+                break;
+              case 'V':
+                //British Columbia - 1101
+                $address['state_province_id'] = 1101;
+                break;
+              case 'Y':
+                //Yukon Territories - 1112
+                $address['state_province_id'] = 1112;
+                break;
+            }
+          }
+          if (!empty($three_char)) {
+            switch ($three_char) {
+              case 'X0A':
+              case 'X0B':
+              case 'X0G':
+                //Nuvanut - 1107
+                $address['state_province_id'] = 1107;
+                break;
+              case 'X1A':
+              case 'X0E':
+              case 'X0G':
+                //Northwest Territories - 1105
+                $address['state_province_id'] = 1105;
+                break;
+            }
+          }
+        }
+
       }
     }
-
     return TRUE;
+  }
+
+  function sendEmail($emailTo,$contactId) {
+    list($domainEmailName, $domainEmailAddress) = CRM_Core_BAO_Domain::getNameAndEmail();
+    list($contact_name, $contact_email) = CRM_Contact_BAO_Contact::getContactDetails($contactId);
+    $mailBody = "<html><head></head><body>";
+    $mailBody .= "User <a href='{$_SERVER['HTTP_HOST']}/civicrm/contact/view?reset=1&cid={$contactId}'>{$contact_name} </a> has added invalid postal code <br/>";
+    $mailBody .= "</body></html>";
+
+    $mailParams = array(
+      'groupName' => 'empower notification',
+      'from' => '"' . $domainEmailName . '" <' . $domainEmailAddress . '>',
+      'subject' => 'Invalid Postal Code Added for contact :',
+      'text' => $mailBody,
+      'html' => $mailBody,
+    );
+    $mailParams['toName']  = $emailTo;
+    $mailParams['toEmail'] = $emailTo;
+    CRM_Utils_Mail::send($mailParams);
   }
 
   function getNameFields() {

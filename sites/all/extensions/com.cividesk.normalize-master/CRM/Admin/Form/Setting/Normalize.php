@@ -80,7 +80,7 @@ class CRM_Admin_Form_Setting_Normalize extends CRM_Admin_Form_Setting {
     $optionsStreet = array(
       'O' => ts('Street Address no format'),
       '1' => ts('Capitalize Street Address'),
-      '2' => ts('Capitalize first letter of each word in Street Address')
+      '2' => ts('Capitalize first letter of each word in Street Address, and directionals such as NE, NW, etc.')
     );
     $this->addRadio( 'address_StreetCaps', ts(''), $optionsStreet );
     
@@ -88,6 +88,10 @@ class CRM_Admin_Form_Setting_Normalize extends CRM_Admin_Form_Setting {
       'address_Zip',
       ts('Normalize zip codes and flag incorrect entries')
     );
+
+    // Added element to send email for failure of Country Postal code
+    $this->add('text', 'address_postal_validation', ts('Enter email Id to notify admin for invalid postal code'));
+    //$this->addRule('cividesk_postal_validation', ts('Please enter a valid postal code.'), 'postal');
 
     //added these element to process normalization.
     $this->addElement('text', "to_contact_id", ts("To Contact ID"));
