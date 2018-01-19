@@ -13,7 +13,13 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
 
   protected $ruleAction;
 
+  protected $rule;
+
   protected $action;
+
+  protected $triggerClass;
+
+  protected $hasCase = false;
 
   /**
    * Overridden parent method to do pre-form building processing
@@ -25,6 +31,7 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
     $this->ruleActionId = CRM_Utils_Request::retrieve('rule_action_id', 'Integer');
     $this->ruleAction = new CRM_Civirules_BAO_RuleAction();
     $this->action = new CRM_Civirules_BAO_Action();
+    $this->rule = new CRM_Civirules_BAO_Rule();
     $this->ruleAction->id = $this->ruleActionId;
     if ($this->ruleAction->find(true)) {
       $this->action->id = $this->ruleAction->action_id;
@@ -33,6 +40,18 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
       }
     } else {
       throw new Exception('CiviRules Could not find rule action with id '.$this->ruleActionId);
+    }
+
+    $this->rule->id = $this->ruleAction->rule_id;
+    if (!$this->rule->find(true)) {
+      throw new Exception('Civirules could not find rule');
+    }
+
+    $this->triggerClass = CRM_Civirules_BAO_Trigger::getTriggerObjectByTriggerId($this->rule->trigger_id, true);
+    $this->triggerClass->setTriggerId($this->rule->trigger_id);
+    $providedEntities = $this->triggerClass->getProvidedEntities();
+    if (isset($providedEntities['Case'])) {
+      $this->hasCase = true;
     }
 
     parent::preProcess();
@@ -47,7 +66,7 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
 
   protected function getMessageTemplates() {
     $return = array('' => ts('-- please select --'));
-    $dao = CRM_Core_DAO::executeQuery("SELECT * FROM `civicrm_msg_template` WHERE `is_active` = 1 AND `workflow_id` IS NULL");
+    $dao = CRM_Core_DAO::executeQuery("SELECT * FROM `civicrm_msg_template` WHERE `is_active` = 1 AND `workflow_id` IS NULL ORDER BY msg_title");
     while($dao->fetch()) {
       $return[$dao->id] = $dao->msg_title;
     }
@@ -72,6 +91,11 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
     $this->addRule("alternative_receiver_address", ts('Email is not valid.'), 'email');
 
     $this->add('select', 'template_id', ts('Message template'), $this->getMessageTemplates(), true);
+
+    if ($this->hasCase) {
+      $this->add('checkbox','file_on_case', ts('File e-mail on case'));
+    }
+    $this->assign('has_case', $this->hasCase);
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
@@ -104,6 +128,10 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
       $defaultValues['alternative_receiver_address'] = $data['alternative_receiver_address'];
       $defaultValues['alternative_receiver'] = true;
     }
+    $defaultValues['file_on_case'] = false;
+    if (!empty($data['file_on_case'])) {
+      $defaultValues['file_on_case'] = true;
+    }
     return $defaultValues;
   }
 
@@ -119,6 +147,10 @@ class CRM_Emailapi_Form_CivirulesAction extends CRM_Core_Form {
     $data['alternative_receiver_address'] = '';
     if (!empty($this->_submitValues['alternative_receiver_address'])) {
       $data['alternative_receiver_address'] = $this->_submitValues['alternative_receiver_address'];
+    }
+    $data['file_on_case'] = false;
+    if (!empty($this->_submitValues['file_on_case'])) {
+      $data['file_on_case'] = true;
     }
 
     $ruleAction = new CRM_Civirules_BAO_RuleAction();

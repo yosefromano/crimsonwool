@@ -30,6 +30,11 @@ function civicrm_api3_email_send($params) {
   $contactIds = explode(",", $params['contact_id']);
   $alternativeEmailAddress = !empty($params['alternative_receiver_address']) ? $params['alternative_receiver_address'] : false;
 
+  $case_id = false;
+  if (isset($params['case_id'])) {
+    $case_id = $params['case_id'];
+  }
+
   // Compatibility with CiviCRM > 4.3
   if($version >= 4.4) {
     $messageTemplates = new CRM_Core_DAO_MessageTemplate();
@@ -95,8 +100,9 @@ function civicrm_api3_email_send($params) {
         $returnProperties[$value] = 1;
       }
     }
-    list($details) = CRM_Utils_Token::getTokenDetails(array($contactId), $returnProperties, false, false, null, $tokens);
-    $contact = reset($details);
+    if ($case_id) {
+      $contact['case.id'] = $case_id;
+    }
 
     if ($alternativeEmailAddress) {
       /**
@@ -120,6 +126,7 @@ function civicrm_api3_email_send($params) {
       $toName = $contact['display_name'];
     }
 
+    CRM_Utils_Hook::tokenValues($contact, $contact['contact_id'], NULL, $tokens);
     // call token hook
     $hookTokens = array();
     CRM_Utils_Hook::tokens($hookTokens);
@@ -139,10 +146,12 @@ function civicrm_api3_email_send($params) {
     }
     $html = $body_html;
     $text = $body_text;
-
-    $smarty = CRM_Core_Smarty::singleton();
-    foreach ($type as $elem) {
-      $$elem = $smarty->fetch("string:{$$elem}");
+    
+    if (defined('CIVICRM_MAIL_SMARTY') && CIVICRM_MAIL_SMARTY) {
+      $smarty = CRM_Core_Smarty::singleton();
+      foreach ($type as $elem) {
+        $$elem = $smarty->fetch("string:{$$elem}");
+      }
     }
 
     // do replacements in message subject
@@ -151,8 +160,10 @@ function civicrm_api3_email_send($params) {
     $messageSubject = CRM_Utils_Token::replaceComponentTokens($messageSubject, $contact, $tokens, true);
     $messageSubject = CRM_Utils_Token::replaceHookTokens($messageSubject, $contact, $categories, true);
 
-    $messageSubject = $smarty->fetch("string:{$messageSubject}");
-
+    if (defined('CIVICRM_MAIL_SMARTY') && CIVICRM_MAIL_SMARTY) {
+      $messageSubject = $smarty->fetch("string:{$messageSubject}");
+    }
+    
     // set up the parameters for CRM_Utils_Mail::send
     $mailParams = array(
         'groupName' => 'E-mail from API',
@@ -160,6 +171,7 @@ function civicrm_api3_email_send($params) {
         'toName' => $toName,
         'toEmail' => $email,
         'subject' => $messageSubject,
+        'messageTemplateID' => $messageTemplates->id,
     );
 
     if (!$html || $contact['preferred_mail_format'] == 'Text' || $contact['preferred_mail_format'] == 'Both') {
@@ -175,63 +187,62 @@ function civicrm_api3_email_send($params) {
       throw new API_Exception('Error sending e-mail to ' . $contact['display_name'] . ' <' . $email . '> ');
     }
 
-    if (!$alternativeEmailAddress) {
-      $returnValues[$contactId] = array(
-        'contact_id' => $contactId,
-        'send' => 1,
-        'status_msg' => 'Succesfully send e-mail to ' . $contact['display_name'] . ' <' . $email . '> ',
-      );
+    //create activity for sending e-mail.
+    $activityTypeID = CRM_Core_OptionGroup::getValue('activity_type', 'Email', 'name');
 
-
-      //create activity for sending e-mail.
-      $activityTypeID = CRM_Core_OptionGroup::getValue('activity_type', 'Email', 'name');
-
-      // CRM-6265: save both text and HTML parts in details (if present)
-      if ($html and $text) {
-        $details = "-ALTERNATIVE ITEM 0-\n$html\n-ALTERNATIVE ITEM 1-\n$text\n-ALTERNATIVE END-\n";
-      }
-      else {
-        $details = $html ? $html : $text;
-      }
-
-      $activityParams = array(
-        'source_contact_id' => $contactId,
-        'activity_type_id' => $activityTypeID,
-        'activity_date_time' => date('YmdHis'),
-        'subject' => $messageSubject,
-        'details' => $details,
-        // FIXME: check for name Completed and get ID from that lookup
-        'status_id' => 2,
-      );
-
-      $activity = CRM_Activity_BAO_Activity::create($activityParams);
-
-      // Compatibility with CiviCRM >= 4.4
-      if ($version >= 4.4) {
-        $activityContacts = CRM_Core_OptionGroup::values('activity_contacts', FALSE, FALSE, FALSE, NULL, 'name');
-        $targetID = CRM_Utils_Array::key('Activity Targets', $activityContacts);
-
-        $activityTargetParams = array(
-          'activity_id' => $activity->id,
-          'contact_id' => $contactId,
-          'record_type_id' => $targetID
-        );
-        CRM_Activity_BAO_ActivityContact::create($activityTargetParams);
-      }
-      else {
-        $activityTargetParams = array(
-          'activity_id' => $activity->id,
-          'target_contact_id' => $contactId,
-        );
-        CRM_Activity_BAO_Activity::createActivityTarget($activityTargetParams);
-      }
-    } else {
-    	$returnValues[$contactId] = array(
-        'contact_id' => $contactId,
-        'send' => 1,
-        'status_msg' => 'Succesfully send e-mail to ' . ' <' . $email . '> ',
-      );
+    // CRM-6265: save both text and HTML parts in details (if present)
+    if ($html and $text) {
+      $details = "-ALTERNATIVE ITEM 0-\n$html\n-ALTERNATIVE ITEM 1-\n$text\n-ALTERNATIVE END-\n";
     }
+    else {
+      $details = $html ? $html : $text;
+    }
+
+    $activityParams = array(
+      'source_contact_id' => $contactId,
+      'activity_type_id' => $activityTypeID,
+      'activity_date_time' => date('YmdHis'),
+      'subject' => $messageSubject,
+      'details' => $details,
+      // FIXME: check for name Completed and get ID from that lookup
+      'status_id' => 2,
+    );
+
+    $activity = CRM_Activity_BAO_Activity::create($activityParams);
+
+    // Compatibility with CiviCRM >= 4.4
+    if ($version >= 4.4) {
+      $activityContacts = CRM_Core_OptionGroup::values('activity_contacts', FALSE, FALSE, FALSE, NULL, 'name');
+      $targetID = CRM_Utils_Array::key('Activity Targets', $activityContacts);
+
+      $activityTargetParams = array(
+        'activity_id' => $activity->id,
+        'contact_id' => $contactId,
+        'record_type_id' => $targetID
+      );
+      CRM_Activity_BAO_ActivityContact::create($activityTargetParams);
+    }
+    else {
+      $activityTargetParams = array(
+        'activity_id' => $activity->id,
+        'target_contact_id' => $contactId,
+      );
+      CRM_Activity_BAO_Activity::createActivityTarget($activityTargetParams);
+    }
+
+    if (!empty($case_id)) {
+      $caseActivity = array(
+        'activity_id' => $activity->id,
+        'case_id' => $case_id,
+      );
+      CRM_Case_BAO_Case::processCaseActivity($caseActivity);
+    }
+
+    $returnValues[$contactId] = array(
+      'contact_id' => $contactId,
+      'send' => 1,
+      'status_msg' => 'Succesfully send e-mail to ' . ' <' . $email . '> ',
+    );
   }
 
 
