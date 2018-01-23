@@ -1,0 +1,35 @@
+<?php
+/**
+ * @file
+ * Code for the cs_p_plus feature.
+ */
+
+include_once 'cs_p_plus.features.inc';
+
+/**
+ * Implements hook_init().
+ */
+function cs_p_plus_init() {
+  // Disable the X-Frame-Options header
+  if (cs_p_plus_settings('disable_x_frame')) {
+    $GLOBALS['conf']['x_frame_options'] = '';
+  }
+}
+
+/**
+ * Returns the current settings for this package, or a particular requested setting
+ */
+function cs_p_plus_settings($setting = NULL) {
+  static $settings = NULL;
+  if (!$settings) {
+    $defaults = array(
+      'disable_x_frame' => TRUE,
+    );
+    $overrides = variable_get('cs_p_plus_settings', array());
+    $settings = array_merge($defaults, $overrides);
+  }
+  if ($setting) {
+    return $settings[$setting];
+  }
+  else return $settings;
+}
