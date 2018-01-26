@@ -13,7 +13,7 @@ projects[drupal][version] = "7.51"
 ; ====== CIVICRM RELATED =========
 
 libraries[civicrm][download][type] = get
-libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.27-drupal.tar.gz"
+libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.29-drupal.tar.gz"
 libraries[civicrm][destination] = modules
 libraries[civicrm][directory_name] = civicrm
 
@@ -42,10 +42,7 @@ libraries[civicrm][patch][ipnstd] = ./patches/ipnStd.patch
 ; https://www.drupal.org/node/2347897
 libraries[civicrm][patch][2347897] = ./patches/binding-extension-47-2347897.patch
 
-; Required for install
-; Populate with Pantheon environment settings on install
-; https://www.drupal.org/node/1978838
-libraries[civicrm][patch][1978838] = ./patches/pre-populate-db-settings-47-1978838.patch
+; === Installer ===
 
 ; Ensure the baseURL is correct in the installer in Pantheon.
 libraries[civicrm][patch][installerbaseurl] = ./patches/installer-baseurl.patch
@@ -58,8 +55,9 @@ libraries[civicrm][patch][2130213] = ./patches/ignore-timezone-on-install-47-213
 ; https://www.drupal.org/node/1844558
 libraries[civicrm][patch][1844558] = ./patches/settings_location-for-profiles.patch
 
-;Improving profile install UX when installing from a profile
-libraries[civicrm][patch][1849424-use] = ./patches/1849424-use-vars-in-link-2.patch
+; Populate with Pantheon environment settings on install
+; https://www.drupal.org/node/1978838
+libraries[civicrm][patch][pre-populate-installer] = ./patches/pre-populate-installer.patch
 libraries[civicrm][patch][1849424-pass] = ./patches/1849424-pass-vars-in-link-2.patch
 
 ; Cached Symfony container

@@ -54,35 +54,25 @@ else {
   define('CIVICRM_WINDOWS', 0);
 }
 
-// set installation type - drupal
-if (!session_id()) {
-  if (defined('PANTHEON_ENVIRONMENT')) {
-    ini_set('session.save_handler', 'files');
-  }
-  session_start();
-}
-
-// unset civicrm session if any
-if (array_key_exists('CiviCRM', $_SESSION)) {
-  unset($_SESSION['CiviCRM']);
-}
-
-if (isset($_GET['civicrm_install_type'])) {
-  $_SESSION['civicrm_install_type'] = $_GET['civicrm_install_type'];
-}
-else {
-  if (!isset($_SESSION['civicrm_install_type'])) {
-    $_SESSION['civicrm_install_type'] = "drupal";
-  }
-}
-
 global $installType;
 global $crmPath;
 global $pkgPath;
 global $installDirPath;
 global $installURLPath;
 
-$installType = strtolower($_SESSION['civicrm_install_type']);
+// Set the install type
+// this is sent as a query string when the page is first loaded
+// and subsequently posted to the page as a hidden field
+if (isset($_POST['civicrm_install_type'])) {
+  $installType = $_POST['civicrm_install_type'];
+}
+elseif (isset($_GET['civicrm_install_type'])) {
+  $installType = strtolower($_GET['civicrm_install_type']);
+}
+else {
+  // default value if not set
+  $installType = "drupal";
+}
 
 if ($installType == 'drupal' || $installType == 'backdrop') {
   $crmPath = dirname(dirname($_SERVER['SCRIPT_FILENAME']));
@@ -103,96 +93,6 @@ $pkgPath = $crmPath . DIRECTORY_SEPARATOR . 'packages';
 
 require_once $crmPath . '/CRM/Core/ClassLoader.php';
 CRM_Core_ClassLoader::singleton()->register();
-
-// Load civicrm database config
-if (isset($_POST['mysql'])) {
-  $databaseConfig = $_POST['mysql'];
-}
-else {
-  $databaseConfig = array(
-    "server"   => "localhost",
-    "username" => "civicrm",
-    "password" => "",
-    "database" => "civicrm",
-  );
-}
-
-if ($installType == 'wordpress') {
-  // Load WP database config
-  if (isset($_POST['mysql'])) {
-    $databaseConfig = $_POST['mysql'];
-  }
-  else {
-    $databaseConfig = array(
-      "server"   => DB_HOST,
-      "username" => DB_USER,
-      "password" => DB_PASSWORD,
-      "database" => DB_NAME,
-    );
-  }
-}
-
-if ($installType == 'drupal') {
-  // Load drupal database config
-  if (isset($_POST['drupal'])) {
-    $drupalConfig = $_POST['drupal'];
-  }
-  else {
-    $drupalConfig = array(
-      "server" => "localhost",
-      "username" => "drupal",
-      "password" => "",
-      "database" => "drupal",
-    );
-  }
-}
-
-if ($installType == 'backdrop') {
-  // Load backdrop database config
-  if (isset($_POST['backdrop'])) {
-    $backdropConfig = $_POST['backdrop'];
-  }
-  else {
-    $backdropConfig = array(
-      "server" => "localhost",
-      "username" => "backdrop",
-      "password" => "",
-      "database" => "backdrop",
-    );
-  }
-}
-
-/**
- * Pantheon Systems:
- *
- * Repopulate needed variables based on the Pantheon environment if applicable.
- * http://www.kalamuna.com/news/civicrm-pantheon
- *
- */
-if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
-  $env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
-  if (!empty($env['conf']['pantheon_binding'])) {
-    $pantheon_db = $env['databases']['default']['default'];
-    $pantheon_conf = $env['conf'];
-    
-    //server w/ port
-    $server = 'dbserver.' . $pantheon_conf['pantheon_environment'] . '.' . $pantheon_conf['pantheon_site_uuid'] . '.drush.in' . ':' . $pantheon_db['port'];
-    
-    $databaseConfig = array(
-      "server" => $server,
-      "username" => $pantheon_db['username'],
-      "password" => $pantheon_db['password'],
-      "database" => $pantheon_db['database'],
-    );
-    
-    $drupalConfig = array(
-      "server" => $server,
-      "username" => $pantheon_db['username'],
-      "password" => $pantheon_db['password'],
-      "database" => $pantheon_db['database'],
-    );
-  }
-}
 
 $loadGenerated = 0;
 if (isset($_POST['loadGenerated'])) {
@@ -397,6 +297,34 @@ elseif ($installType == 'wordpress') {
     $errorTitle = ts("Oops! Incorrect CiviCRM version");
     $errorMsg = ts("This installer can only be used for the WordPress version of CiviCRM.");
     errorDisplayPage($errorTitle, $errorMsg);
+  }
+}
+
+/**
+ * Pantheon database credentials
+ */
+if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
+  $env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
+  if (!empty($env['conf']['pantheon_binding'])) {
+    $pantheon_db = $env['databases']['default']['default'];
+    $pantheon_conf = $env['conf'];
+
+    //server w/ port
+    $server = 'dbserver.' . $pantheon_conf['pantheon_environment'] . '.' . $pantheon_conf['pantheon_site_uuid'] . '.drush.in' . ':' . $pantheon_db['port'];
+
+    $databaseConfig = array(
+      "server" => $server,
+      "username" => $pantheon_db['username'],
+      "password" => $pantheon_db['password'],
+      "database" => $pantheon_db['database'],
+    );
+
+    $drupalConfig = array(
+      "server" => $server,
+      "username" => $pantheon_db['username'],
+      "password" => $pantheon_db['password'],
+      "database" => $pantheon_db['database'],
+    );
   }
 }
 
@@ -616,12 +544,9 @@ class InstallRequirements {
 
     $this->errors = NULL;
 
-    // See also: CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER
-    $this->requirePHPVersion('5.3.4', array(
+    $this->requirePHPVersion(array(
       ts("PHP Configuration"),
       ts("PHP5 installed"),
-      NULL,
-      ts("PHP version %1", array(1 => phpversion())),
     ));
 
     // Check that we can identify the root folder successfully
@@ -881,36 +806,30 @@ class InstallRequirements {
   }
 
   /**
-   * @param $minVersion
-   * @param $testDetails
-   * @param null $maxVersion
+   * @param array $testDetails
+   * @return bool
    */
-  public function requirePHPVersion($minVersion, $testDetails, $maxVersion = NULL) {
+  public function requirePHPVersion($testDetails) {
 
     $this->testing($testDetails);
 
     $phpVersion = phpversion();
-    $aboveMinVersion = version_compare($phpVersion, $minVersion) >= 0;
-    $belowMaxVersion = $maxVersion ? version_compare($phpVersion, $maxVersion) < 0 : TRUE;
+    $aboveMinVersion = version_compare($phpVersion, CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER) >= 0;
 
-    if ($aboveMinVersion && $belowMaxVersion) {
-      if (version_compare(phpversion(), CRM_Upgrade_Incremental_General::MIN_RECOMMENDED_PHP_VER) < 0) {
-        $testDetails[2] = ts('This webserver is running an outdated version of PHP (%1). It is strongly recommended to upgrade to PHP %2 or later, as older versions can present a security risk.', array(
-          1 => phpversion(),
+    if ($aboveMinVersion) {
+      if (version_compare($phpVersion, CRM_Upgrade_Incremental_General::MIN_RECOMMENDED_PHP_VER) < 0) {
+        $testDetails[2] = ts('This webserver is running an outdated version of PHP (%1). It is strongly recommended to upgrade to PHP %2 or later, as older versions can present a security risk. The preferred version is %3.', array(
+          1 => $phpVersion,
           2 => CRM_Upgrade_Incremental_General::MIN_RECOMMENDED_PHP_VER,
+          3 => CRM_Upgrade_Incremental_General::RECOMMENDED_PHP_VER,
         ));
         $this->warning($testDetails);
       }
       return TRUE;
     }
 
-    if (!$testDetails[2]) {
-      if (!$aboveMinVersion) {
-        $testDetails[2] = ts("You need PHP version %1 or later, only %2 is installed. Please upgrade your server, or ask your web-host to do so.", array(1 => $minVersion, 2 => $phpVersion));
-      }
-      else {
-        $testDetails[2] = ts("PHP version %1 is not supported. PHP version earlier than %2 is required. You might want to downgrade your server, or ask your web-host to do so.", array(1 => $maxVersion, 2 => $phpVersion));
-      }
+    if (empty($testDetails[2])) {
+      $testDetails[2] = ts("You need PHP version %1 or later, only %2 is installed. Please upgrade your server, or ask your web-host to do so.", array(1 => CRM_Upgrade_Incremental_General::MIN_INSTALL_PHP_VER, 2 => $phpVersion));
     }
 
     $this->error($testDetails);
@@ -1655,12 +1574,13 @@ class Installer extends InstallRequirements {
         $output .= "<li>" . ts("Use the <a %1>Configuration Checklist</a> to review and configure settings for your new site", array(1 => "target='_blank' href='$cmsURL'")) . "</li>";
         $output .= $commonOutputMessage;
 
-        echo '</ul>';
-        echo '</div>';
+        $output .= '</ul>';
+        $output .= '</div>';
+        echo $output;
 
         $c = CRM_Core_Config::singleton(FALSE);
         $c->free();
-        $wpInstallRedirect = admin_url("?page=CiviCRM&q=civicrm&reset=1");
+        $wpInstallRedirect = admin_url('admin.php?page=CiviCRM&q=civicrm&reset=1');
         echo "<script>
          window.location = '$wpInstallRedirect';
         </script>";

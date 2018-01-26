@@ -1,8 +1,117 @@
-diff --git a/install/index.php b/install/index.php
-index b743e86..b2cd436 100644
 --- a/install/index.php
 +++ b/install/index.php
-@@ -1490,84 +1490,10 @@ class Installer extends InstallRequirements {
+@@ -257,21 +257,6 @@
+     }
+   }
+ 
+-  // Bootstrap Drupal to get settings and user
+-  $base_root = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? 'https' : 'http';
+-  $base_root .= '://' . $_SERVER['HTTP_HOST'];
+-  $base_url = $base_root;
+-  drupal_bootstrap(DRUPAL_BOOTSTRAP_FULL);
+-
+-  // Check that user is logged in and has administrative permissions
+-  // This is necessary because the script exposes the database settings in the form and these could be viewed by unauthorised users
+-  if ((!function_exists('user_access')) || (!user_access('administer site configuration'))) {
+-    $errorTitle = ts("You don't have permission to access this page");
+-    $errorMsg = ts("The installer can only be run by a user with the permission to administer site configuration.");
+-    errorDisplayPage($errorTitle, $errorMsg);
+-    exit();
+-  }
+-
+   if (!defined('VERSION') or version_compare(VERSION, '6.0') < 0) {
+     $errorTitle = ts("Oops! Incorrect Drupal version");
+     $errorMsg = ts("This version of CiviCRM can only be used with Drupal 6.x or 7.x. Please ensure that '%1' exists if you are running Drupal 7.0 and over.", array(1 => implode("' or '", $drupalVersionFiles)));
+@@ -315,67 +300,31 @@
+   }
+ }
+ 
+-// Load CiviCRM database config
+-if (isset($_POST['mysql'])) {
+-  $databaseConfig = $_POST['mysql'];
+-}
+-
+-if ($installType == 'wordpress') {
+-  // Load WP database config
+-  if (isset($_POST['mysql'])) {
+-    $databaseConfig = $_POST['mysql'];
+-  }
+-  else {
++/**
++ * Pantheon database credentials
++ */
++if (!empty($_SERVER['PRESSFLOW_SETTINGS'])) {
++  $env = json_decode($_SERVER['PRESSFLOW_SETTINGS'], TRUE);
++  if (!empty($env['conf']['pantheon_binding'])) {
++    $pantheon_db = $env['databases']['default']['default'];
++    $pantheon_conf = $env['conf'];
++
++    //server w/ port
++    $server = 'dbserver.' . $pantheon_conf['pantheon_environment'] . '.' . $pantheon_conf['pantheon_site_uuid'] . '.drush.in' . ':' . $pantheon_db['port'];
++
+     $databaseConfig = array(
+-      "server" => DB_HOST,
+-      "username" => DB_USER,
+-      "password" => DB_PASSWORD,
+-      "database" => DB_NAME,
++      "server" => $server,
++      "username" => $pantheon_db['username'],
++      "password" => $pantheon_db['password'],
++      "database" => $pantheon_db['database'],
+     );
+-  }
+-}
+-
+-if ($installType == 'drupal') {
+-  // Load drupal database config
+-  if (isset($_POST['drupal'])) {
+-    $drupalConfig = $_POST['drupal'];
+-  }
+-  else {
+-    $dbServer = $databases['default']['default']['host'];
+-    if (!empty($databases['default']['default']['port'])) {
+-      $dbServer .= ':' . $databases['default']['default']['port'];
+-    }
++
+     $drupalConfig = array(
+-      "server" => $dbServer,
+-      "username" => $databases['default']['default']['username'],
+-      "password" => $databases['default']['default']['password'],
+-      "database" => $databases['default']['default']['database'],
++      "server" => $server,
++      "username" => $pantheon_db['username'],
++      "password" => $pantheon_db['password'],
++      "database" => $pantheon_db['database'],
+     );
+-  }
+-}
+-
+-if ($installType == 'backdrop') {
+-  // Load backdrop database config
+-  if (isset($_POST['backdrop'])) {
+-    $backdropConfig = $_POST['backdrop'];
+-  }
+-  else {
+-    $backdropConfig = array(
+-      "server" => "localhost",
+-      "username" => "backdrop",
+-      "password" => "",
+-      "database" => "backdrop",
+-    );
+-  }
+-}
+-
+-// By default set CiviCRM database to be same as CMS database
+-if (!isset($databaseConfig)) {
+-  if (($installType == 'drupal') && (isset($drupalConfig))) {
+-    $databaseConfig = $drupalConfig;
+-  }
+-  if (($installType == 'backdrop') && (isset($backdropConfig))) {
+-    $databaseConfig = $backdropConfig;
+   }
+ }
+ 
+@@ -1467,84 +1416,10 @@
          $installType == 'drupal' &&
          version_compare(VERSION, '7.0-rc1') >= 0
        ) {
@@ -91,3 +200,4 @@ index b743e86..b2cd436 100644
        }
        elseif (
          $installType == 'backdrop'
+

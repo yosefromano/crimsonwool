@@ -7,11 +7,10 @@ The following patches have been applied to this project:
 - ipn.patch
 - ipnStd.patch
 - binding-extension-47-2347897.patch
-- pre-populate-db-settings-47-1978838.patch
 - installer-baseurl.patch
 - ignore-timezone-on-install-47-2130213.patch
 - settings_location-for-profiles.patch
-- 1849424-use-vars-in-link-2.patch
+- pre-populate-installer.patch
 - 1849424-pass-vars-in-link-2.patch
 - smtp-disable-peer-verification.patch
 
