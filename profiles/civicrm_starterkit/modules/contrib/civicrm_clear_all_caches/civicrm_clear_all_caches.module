@@ -8,39 +8,27 @@
  * Implementation of hook_flush_caches().
  */
 function civicrm_clear_all_caches_flush_caches() {
-  // Can't return tables because https://api.drupal.org/api/drupal/includes%21cache.inc/function/DrupalDatabaseCache%3A%3AisValidBin/7
-  // checks if the table begins with cache_ or includes specific fields
-  //return array('civicrm_acl_cache', 'civicrm_acl_contact_cache', 'civicrm_cache', 
-  // 'civicrm_group_contact_cache', 'civicrm_prevnext_cache');
   
-  // this only clears the tables, but is fast
-  
-  //$result = db_truncate('civicrm_acl_cache')->execute();
-  //$result = db_truncate('civicrm_acl_contact_cache')->execute();
-  //$result = db_truncate('civicrm_cache')->execute();
-  //$result = db_truncate('civicrm_group_contact_cache')->execute();
-  //$result = db_truncate('civicrm_prevnext_cache')->execute();
-  
-  // this is from civicrm.drush.inc.  Includes files, but slower
   if (!civicrm_initialize()) {
     watchdog('civicrm_clear_all_caches', t('Failed to initialize CiviCRM'));
     return;
   }
 
-  require_once 'CRM/Core/Config.php';
-  $config = CRM_Core_Config::singleton();
+  require_once('api/v3/System.php');
 
-  // clear db caching
-  CRM_Core_Config::clearDBCache();
+  // Flush all caches using the API
+  // Skip triggers and sessions to minimize impact.
+  $params = array(
+    'version' => 3,
+    'triggers' => 0,
+    'session' => 0
+  );
+  $result = civicrm_api('System', 'flush', $params);
 
-  // also cleanup the templates_c directory
-  $config->cleanup(1, FALSE);
-
-  // also cleanup the session object
-  $session = CRM_Core_Session::singleton();
-  $session->reset(1);
-  
-  watchdog('civicrm_clear_all_caches', t('CiviCRM cache tables cleared by Drupal'));
-  return;
+  if ($result['is_error']) {
+    watchdog('civicrm_clear_all_caches', t('An error occurred: !message', array('!message' => $result['error_message'])), WATCHDOG_ERROR);
+    return;
+  }
+  watchdog('civicrm_clear_all_caches', t('CiviCRM caches, templates and menus have been rebuilt. Triggers and sessions were not flushed. Use "drush cc all" to do a full flush.'));
 }
 

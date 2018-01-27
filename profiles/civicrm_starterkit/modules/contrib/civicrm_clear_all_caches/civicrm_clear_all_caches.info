@@ -1,14 +1,14 @@
 name = CiviCRM Flush Caches
-description = Clears CiviCRM's cache tables when Drupal's cache tables are flushed.
+description = Clears CiviCRM's caches, templates and menus when Drupal's caches are flushed.
 package = CiviCRM-Contrib
 dependencies[] = civicrm
 
 core = 7.x
 
 
-; Information added by drupal.org packaging script on 2013-09-27
-version = "7.x-1.0-beta1"
+; Information added by Drupal.org packaging script on 2017-11-14
+version = "7.x-1.0-beta2"
 core = "7.x"
 project = "civicrm_clear_all_caches"
-datestamp = "1380280888"
+datestamp = "1510684391"
 
