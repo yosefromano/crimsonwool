@@ -62,6 +62,9 @@ a.select2-choice.select2-default {
 	#crm-container.crm-public .label {
 	    width: 100%;
 	 }
+	 #billing-payment-block span.crm-marker {
+	     float: left;
+	 }
 	 #crm-container.crm-public .label label {
 	     float: left;
 	     line-height: 1.5em;
