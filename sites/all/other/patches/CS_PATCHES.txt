@@ -17,6 +17,11 @@ Patch used: patches/civi-remove-html-snippet-warning.patch
 = Change permission for showing system status messages =
 Patch used: patches/system-messages-perm.patch
 
+= CRM-21690, Displaying Transaction Id in Thank you letter =
+Patch used: patches/civi-transaction-id-in-letter.patch
+Issue: https://issues.civicrm.org/jira/browse/CRM-21690
+PR: https://github.com/civicrm/civicrm-core/pull/11570
+
 == civicrm_cache_clear ==
 Patch used: patches/civicrm-cache-clear-schema.patch
 
