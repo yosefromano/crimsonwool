@@ -88,16 +88,19 @@ function relatedpermissions_civicrm_aclWhereClause($type, &$tables, &$whereTable
   if (!$contactID) {
     return;
   }
-  $tmpTableName = _relatedpermissions_get_permissionedtable($contactID);
 
-  $tables ['$tmpTableName'] = $whereTables ['$tmpTableName'] =
-    " LEFT JOIN $tmpTableName permrelationships
+  if (!CRM_Core_Permission::check('edit all contacts')) {
+    $tmpTableName = _relatedpermissions_get_permissionedtable($contactID);
+
+    $tables ['$tmpTableName'] = $whereTables ['$tmpTableName'] =
+      " LEFT JOIN $tmpTableName permrelationships
      ON (contact_a.id = permrelationships.contact_id)";
-  if(empty($where)){
-    $where = " permrelationships.contact_id IS NOT NULL ";
-  }
-  else{
-    $where = '(' . $where . " OR permrelationships.contact_id IS NOT NULL " . ')';
+    if (empty($where)) {
+      $where = " permrelationships.contact_id IS NOT NULL ";
+    }
+    else {
+      $where = '(' . $where . " OR permrelationships.contact_id IS NOT NULL " . ')';
+    }
   }
 }
 /**
@@ -114,14 +117,14 @@ function _relatedpermissions_get_permissionedtable($contactID) {
   else {
     $tmpTableName = 'my_relationships_' . $contactID . '_' . rand(10000, 100000);
     $sql = "CREATE TEMPORARY TABLE $tmpTableName (
-     `contact_id` INT(10) NULL DEFAULT NULL,
+     `contact_id` INT(10) NOT NULL,
      PRIMARY KEY (`contact_id`)
     )";
 
     CRM_Core_DAO::executeQuery($sql);
     $tmpTableSecondaryContacts = 'my_secondary_relationships' . $dateKey . rand(10000, 100000);
     $sql = "CREATE TEMPORARY TABLE $tmpTableSecondaryContacts (
-     `contact_id` INT(10) NULL DEFAULT NULL,
+     `contact_id` INT(10) NOT NULL,
      PRIMARY KEY (`contact_id`),
      `contact_type` VARCHAR(50) NULL DEFAULT NULL
     )";
@@ -236,7 +239,7 @@ function calculateInheritedPermissions($tmpTableSecondaryContacts, $tmpTableName
  * @param unknown $b
  */
 function relatedpermissions_civicrm_pre($op, $entity, $objectID, &$entityArray) {
-  if($entity != 'Relationship' || $op == 'delete') {
+  if ($entity != 'Relationship' || $op == 'delete' || empty($entityArray['relationship_type_id'])) {
     return;
   }
   $relationshipType = explode('_', $entityArray['relationship_type_id']);

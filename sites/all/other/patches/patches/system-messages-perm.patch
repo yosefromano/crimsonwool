@@ -1,0 +1,13 @@
+diff --git a/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check.php b/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check.php
+index 183c864a0..d643c7b88 100644
+--- a/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check.php
++++ b/profiles/civicrm_starterkit/modules/civicrm/CRM/Utils/Check.php
+@@ -80,7 +80,7 @@ class CRM_Utils_Check {
+    * Display daily system status alerts (admin only).
+    */
+   public function showPeriodicAlerts() {
+-    if (CRM_Core_Permission::check('administer CiviCRM')) {
++    if (CRM_Core_Permission::check('administer restricted CiviCRM features')) {
+       $session = CRM_Core_Session::singleton();
+       if ($session->timer('check_' . __CLASS__, self::CHECK_TIMER)) {
+ 

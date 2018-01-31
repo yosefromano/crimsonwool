@@ -1,9 +1,9 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.6                                                |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2015                                |
+ | Copyright CiviCRM LLC (c) 2004-2017                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2015
+ * @copyright CiviCRM LLC (c) 2004-2017
  * $Id$
  *
  */
@@ -89,8 +89,6 @@ class CRM_Core_Smarty extends Smarty {
   private function initialize() {
     $config = CRM_Core_Config::singleton();
 
-/* The following needs to be commented out so that Smarty can load from cache
-
     if (isset($config->customTemplateDir) && $config->customTemplateDir) {
       $this->template_dir = array_merge(array($config->customTemplateDir),
         $config->templateDir
@@ -99,7 +97,9 @@ class CRM_Core_Smarty extends Smarty {
     else {
       $this->template_dir = $config->templateDir;
     }
-    $this->compile_dir = $config->templateCompileDir;
+    $this->compile_dir = CRM_Utils_File::addTrailingSlash(CRM_Utils_File::addTrailingSlash($config->templateCompileDir) . $this->getLocale());
+    CRM_Utils_File::createDir($this->compile_dir);
+    CRM_Utils_File::restrictAccess($this->compile_dir);
 
     // check and ensure it is writable
     // else we sometime suppress errors quietly and this results
@@ -107,10 +107,7 @@ class CRM_Core_Smarty extends Smarty {
     if (!is_writable($this->compile_dir)) {
       echo "CiviCRM does not have permission to write temp files in {$this->compile_dir}, Exiting";
       exit();
-    }*/
-    
-    // This is an arbitrary string but it is needed afaik
-    $this->compile_dir = 'smarty/';
+    }
 
     //Check for safe mode CRM-2207
     if (ini_get('safe_mode')) {
@@ -133,11 +130,14 @@ class CRM_Core_Smarty extends Smarty {
       }
     }
 
+    $smartyDir = dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR . 'packages' . DIRECTORY_SEPARATOR . 'Smarty' . DIRECTORY_SEPARATOR;
+    $pluginsDir = __DIR__ . DIRECTORY_SEPARATOR . 'Smarty' . DIRECTORY_SEPARATOR . 'plugins' . DIRECTORY_SEPARATOR;
+
     if ($customPluginsDir) {
-      $this->plugins_dir = array($customPluginsDir, $config->smartyDir . 'plugins', $config->pluginsDir);
+      $this->plugins_dir = array($customPluginsDir, $smartyDir . 'plugins', $pluginsDir);
     }
     else {
-      $this->plugins_dir = array($config->smartyDir . 'plugins', $config->pluginsDir);
+      $this->plugins_dir = array($smartyDir . 'plugins', $pluginsDir);
     }
 
     // add the session and the config here
@@ -146,21 +146,7 @@ class CRM_Core_Smarty extends Smarty {
     $this->assign_by_ref('config', $config);
     $this->assign_by_ref('session', $session);
 
-    // check default editor and assign to template
-    $defaultWysiwygEditor = $session->get('defaultWysiwygEditor');
-    if (!$defaultWysiwygEditor && !CRM_Core_Config::isUpgradeMode()) {
-      $defaultWysiwygEditor = CRM_Core_BAO_Setting::getItem(CRM_Core_BAO_Setting::SYSTEM_PREFERENCES_NAME,
-        'editor_id'
-      );
-      // For logged-in users, store it in session to reduce db calls
-      if ($session->get('userID')) {
-        $session->set('defaultWysiwygEditor', $defaultWysiwygEditor);
-      }
-    }
-
-    $this->assign('defaultWysiwygEditor', $defaultWysiwygEditor);
-
-    global $tsLocale;
+    $tsLocale = CRM_Core_I18n::getLocale();
     $this->assign('tsLocale', $tsLocale);
 
     // CRM-7163 hack: we don’t display langSwitch on upgrades anyway
@@ -329,6 +315,25 @@ class CRM_Core_Smarty extends Smarty {
       $this->assign($key, $value);
     }
     return $this;
+  }
+
+  /**
+   * Get the locale for translation.
+   *
+   * @return string
+   */
+  private function getLocale() {
+    $tsLocale = CRM_Core_I18n::getLocale();
+    if (!empty($tsLocale)) {
+      return $tsLocale;
+    }
+
+    $config = CRM_Core_Config::singleton();
+    if (!empty($config->lcMessages)) {
+      return $config->lcMessages;
+    }
+
+    return 'en_US';
   }
 
 }
