@@ -123,7 +123,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['fields']['email']['location_op'] = '0';
   $handler->display->display_options['fields']['email']['is_primary'] = 0;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
@@ -235,7 +235,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['fields']['email']['location_op'] = '0';
   $handler->display->display_options['fields']['email']['is_primary'] = 1;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
@@ -333,7 +333,7 @@ function cs_mobileapp_views_default_views() {
   $handler->display->display_options['fields']['email']['location_op'] = '0';
   $handler->display->display_options['fields']['email']['is_primary'] = 0;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
@@ -624,8 +624,7 @@ table.views-table {
   $handler->display->display_options['fields']['street_address']['location_type'] = '0';
   $handler->display->display_options['fields']['street_address']['location_op'] = '0';
   $handler->display->display_options['fields']['street_address']['is_primary'] = 1;
-  $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
-  /* Field: CiviCRM Address: ZIP / Postal Code */
+  /* Field: CiviCRM Address: Postal Code */
   $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
   $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
   $handler->display->display_options['fields']['postal_code']['field'] = 'postal_code';
@@ -635,7 +634,6 @@ table.views-table {
   $handler->display->display_options['fields']['postal_code']['location_type'] = '0';
   $handler->display->display_options['fields']['postal_code']['location_op'] = '0';
   $handler->display->display_options['fields']['postal_code']['is_primary'] = 0;
-  $handler->display->display_options['fields']['postal_code']['is_billing'] = 0;
   /* Field: CiviCRM Address: State/Province */
   $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
   $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
@@ -649,9 +647,8 @@ table.views-table {
   $handler->display->display_options['fields']['state_province']['location_type'] = '0';
   $handler->display->display_options['fields']['state_province']['location_op'] = '0';
   $handler->display->display_options['fields']['state_province']['is_primary'] = 0;
-  $handler->display->display_options['fields']['state_province']['is_billing'] = 0;
   $handler->display->display_options['fields']['state_province']['prov_display'] = '1';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
@@ -676,7 +673,7 @@ table.views-table {
   $handler->display->display_options['fields']['email']['location_op'] = '0';
   $handler->display->display_options['fields']['email']['is_primary'] = 1;
   $handler->display->display_options['fields']['email']['link_to_user'] = '0';
-  /* Contextual filter: CiviCRM Contacts: Contact ID */
+  /* Contextual filter: Broken/missing handler */
   $handler->display->display_options['arguments']['contact_id']['id'] = 'contact_id';
   $handler->display->display_options['arguments']['contact_id']['table'] = 'civicrm_contact';
   $handler->display->display_options['arguments']['contact_id']['field'] = 'contact_id';
@@ -772,8 +769,7 @@ table.views-table {
   $handler->display->display_options['fields']['street_address']['location_type'] = '0';
   $handler->display->display_options['fields']['street_address']['location_op'] = '0';
   $handler->display->display_options['fields']['street_address']['is_primary'] = 1;
-  $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
-  /* Field: CiviCRM Address: ZIP / Postal Code */
+  /* Field: CiviCRM Address: Postal Code */
   $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
   $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
   $handler->display->display_options['fields']['postal_code']['field'] = 'postal_code';
@@ -783,7 +779,6 @@ table.views-table {
   $handler->display->display_options['fields']['postal_code']['location_type'] = '0';
   $handler->display->display_options['fields']['postal_code']['location_op'] = '0';
   $handler->display->display_options['fields']['postal_code']['is_primary'] = 1;
-  $handler->display->display_options['fields']['postal_code']['is_billing'] = 0;
   /* Field: CiviCRM Address: State/Province */
   $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
   $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
@@ -797,9 +792,8 @@ table.views-table {
   $handler->display->display_options['fields']['state_province']['location_type'] = '0';
   $handler->display->display_options['fields']['state_province']['location_op'] = '0';
   $handler->display->display_options['fields']['state_province']['is_primary'] = 1;
-  $handler->display->display_options['fields']['state_province']['is_billing'] = 0;
   $handler->display->display_options['fields']['state_province']['prov_display'] = '1';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
@@ -970,7 +964,9 @@ table.views-table {
   $handler->display->display_options['filters']['contact_id']['table'] = 'civicrm_address';
   $handler->display->display_options['filters']['contact_id']['field'] = 'contact_id';
   $handler->display->display_options['filters']['contact_id']['operator'] = '<';
-  $handler->display->display_options['filters']['contact_id']['value']['value'] = '1';
+  $handler->display->display_options['filters']['contact_id']['value'] = array(
+    'value' => '1',
+  );
   $handler->display->display_options['path'] = 'mobileapp';
 
   /* Display: Page 3 */
@@ -1055,8 +1051,17 @@ table.views-table {
   $handler->display->display_options['fields']['street_address']['location_type'] = '0';
   $handler->display->display_options['fields']['street_address']['location_op'] = '1';
   $handler->display->display_options['fields']['street_address']['is_primary'] = 0;
-  $handler->display->display_options['fields']['street_address']['is_billing'] = 0;
-  /* Field: CiviCRM Address: ZIP / Postal Code */
+  /* Field: CiviCRM Address: City / Suburb */
+  $handler->display->display_options['fields']['city']['id'] = 'city';
+  $handler->display->display_options['fields']['city']['table'] = 'civicrm_address';
+  $handler->display->display_options['fields']['city']['field'] = 'city';
+  $handler->display->display_options['fields']['city']['label'] = '';
+  $handler->display->display_options['fields']['city']['exclude'] = TRUE;
+  $handler->display->display_options['fields']['city']['element_label_colon'] = FALSE;
+  $handler->display->display_options['fields']['city']['location_type'] = '0';
+  $handler->display->display_options['fields']['city']['location_op'] = '1';
+  $handler->display->display_options['fields']['city']['is_primary'] = 0;
+  /* Field: CiviCRM Address: Postal Code */
   $handler->display->display_options['fields']['postal_code']['id'] = 'postal_code';
   $handler->display->display_options['fields']['postal_code']['table'] = 'civicrm_address';
   $handler->display->display_options['fields']['postal_code']['field'] = 'postal_code';
@@ -1066,22 +1071,21 @@ table.views-table {
   $handler->display->display_options['fields']['postal_code']['location_type'] = '0';
   $handler->display->display_options['fields']['postal_code']['location_op'] = '1';
   $handler->display->display_options['fields']['postal_code']['is_primary'] = 0;
-  $handler->display->display_options['fields']['postal_code']['is_billing'] = 0;
   /* Field: CiviCRM Address: State/Province */
   $handler->display->display_options['fields']['state_province']['id'] = 'state_province';
   $handler->display->display_options['fields']['state_province']['table'] = 'civicrm_address';
   $handler->display->display_options['fields']['state_province']['field'] = 'state_province';
   $handler->display->display_options['fields']['state_province']['label'] = '';
   $handler->display->display_options['fields']['state_province']['alter']['alter_text'] = TRUE;
-  $handler->display->display_options['fields']['state_province']['alter']['text'] = '<a href="http://maps.google.com/?q=[street_address] [state_province] [postal_code]"><i class="fa fa-map-marker" aria-hidden="true" style="color:#6d6a6a;"></i>   <strong>[location_type]:</strong>  [street_address] [state_province] [postal_code]</a>';
+  $handler->display->display_options['fields']['state_province']['alter']['text'] = '<a href="http://maps.google.com/?q=[street_address] [city] [state_province] [postal_code]"><i class="fa fa-map-marker" aria-hidden="true" style="color:#6d6a6a;"></i>   <strong>[location_type]:</strong>  [street_address] [city]
+ [state_province] [postal_code]</a>';
   $handler->display->display_options['fields']['state_province']['element_label_colon'] = FALSE;
   $handler->display->display_options['fields']['state_province']['hide_empty'] = TRUE;
   $handler->display->display_options['fields']['state_province']['location_type'] = '0';
   $handler->display->display_options['fields']['state_province']['location_op'] = '1';
   $handler->display->display_options['fields']['state_province']['is_primary'] = 0;
-  $handler->display->display_options['fields']['state_province']['is_billing'] = 0;
   $handler->display->display_options['fields']['state_province']['prov_display'] = '2';
-  /* Field: CiviCRM Phone Details: Phone Number */
+  /* Field: CiviCRM Phone Details: Phone */
   $handler->display->display_options['fields']['phone']['id'] = 'phone';
   $handler->display->display_options['fields']['phone']['table'] = 'civicrm_phone';
   $handler->display->display_options['fields']['phone']['field'] = 'phone';
