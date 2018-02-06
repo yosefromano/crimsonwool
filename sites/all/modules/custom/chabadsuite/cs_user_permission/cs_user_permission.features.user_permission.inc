@@ -960,6 +960,26 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm_entity',
   );
 
+  // Exported permission: 'close all manual batches'.
+  $permissions['close all manual batches'] = array(
+    'name' => 'close all manual batches',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
+  // Exported permission: 'close own manual batches'.
+  $permissions['close own manual batches'] = array(
+    'name' => 'close own manual batches',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'create all_images content'.
   $permissions['create all_images content'] = array(
     'name' => 'create all_images content',
@@ -1916,6 +1936,16 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'admin_menu',
   );
 
+  // Exported permission: 'force merge duplicate contacts'.
+  $permissions['force merge duplicate contacts'] = array(
+    'name' => 'force merge duplicate contacts',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'generate features'.
   $permissions['generate features'] = array(
     'name' => 'generate features',
@@ -1998,6 +2028,16 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'features',
+  );
+
+  // Exported permission: 'manage tags'.
+  $permissions['manage tags'] = array(
+    'name' => 'manage tags',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'merge duplicate contacts'.
@@ -2125,6 +2165,26 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'features',
+  );
+
+  // Exported permission: 'reopen all manual batches'.
+  $permissions['reopen all manual batches'] = array(
+    'name' => 'reopen all manual batches',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
+  // Exported permission: 'reopen own manual batches'.
+  $permissions['reopen own manual batches'] = array(
+    'name' => 'reopen own manual batches',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'reserve campaign contacts'.
