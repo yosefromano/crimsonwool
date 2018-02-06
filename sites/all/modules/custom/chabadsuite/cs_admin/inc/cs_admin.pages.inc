@@ -53,7 +53,7 @@ function cs_admin_main_page($form, &$form_state) {
     );
 
     $form['menus']['manage'] = array(
-      '#markup' => l(t('Manage Menus'), 'admin/people', array(
+      '#markup' => l(t('Manage Menus'), 'admin/structure/menu/manage/main-menu', array(
         'attributes' => array(
           'class' => array('button-blue', 'waves-button', 'waves-effect', 'waves-float', 'waves-classic'),
         )
