@@ -2,9 +2,67 @@
  * This file is loaded only on pages using the adminimal theme
  */
 
+/**
+ * Buttons
+ */
+body.adminimal-skin-material a.button-red,
+body.adminimal-skin-material a.button-blue,
+body.adminimal-skin-material a.button-green,
+body.adminimal-skin-material a.button-orange {
+  color: white;
+}
+
+body.adminimal-skin-material a.button-red:hover,
+body.adminimal-skin-material a.button-blue:hover,
+body.adminimal-skin-material a.button-green:hover,
+body.adminimal-skin-material a.button-orange:hover {
+  text-decoration: none;
+}
+
+/**
+ * Admin menu
+ */
+
+body.adminimal-menu div#admin-menu li.civicrm {
+  background: #666;
+}
+
+body.adminimal-menu div#admin-menu li.civicrm a {
+  line-height: 20px;
+}
+
+/**
+ * CRM menu
+ */
+
+#civicrm-menu {
+  height: 28px;
+}
+
+#civicrm-menu > li.menumain {
+  height: 22px !important;
+}
+
+#civicrm-menu .crm-ChabadSuite_Administration {
+  background-color: #666;
+  transition: background-color .2s;
+}
+
+#civicrm-menu .crm-ChabadSuite_Administration:hover {
+  background-color: #999;
+}
+
+/**
+ * CRM Footer
+ */
+
 .crm-footer .status {
   display: none;
 }
+
+/**
+ * CRM localization page
+ */
 
 .CRM_Admin_Form_Setting_Localization .crm-localization-form-block-inheritLocale {
   display: none;
@@ -18,4 +76,23 @@
   content: 'This feature is not currently available';
   position: absolute;
   margin-left: 20px;
+}
+
+/**
+ * ChabadSuite administration page
+ */
+
+#cs-admin-main-page .row {
+  display: flex;
+}
+
+#cs-admin-main-page #edit-content,
+#cs-admin-main-page #edit-users,
+#cs-admin-main-page #edit-menus {
+    flex-grow: 1;
+    margin-right: 20px;
+}
+
+#cs-admin-main-page #edit-menus {
+  margin-right: 0;
 }

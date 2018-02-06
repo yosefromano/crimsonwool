@@ -1,0 +1,106 @@
+commit 07bee97cfdeeeef463622588762d0d8b4ee3a3ec
+Author: Guy Oron <guyoron@gmail.com>
+Date:   Thu Jan 25 16:56:14 2018 -1000
+
+    more
+
+diff --git a/sites/all/themes/adminimal_theme/skins/material/material.css b/sites/all/themes/adminimal_theme/skins/material/material.css
+index 84dd5971a..5f5cbd2a5 100644
+--- a/sites/all/themes/adminimal_theme/skins/material/material.css
++++ b/sites/all/themes/adminimal_theme/skins/material/material.css
+@@ -710,6 +710,7 @@ div.exposed-filters input#edit-submit:focus {
+ 
+ /* Green Button */
+ input[type="submit"][id^="edit-submit"],
++a.button-green,
+ input#edit-actions-submit,
+ input[id^="save-continue"],
+ input[type="submit"][id^="edit-save"],
+@@ -734,6 +735,7 @@ input.add-new-condition,
+ }
+ 
+ input[type="submit"][id^="edit-submit"]:hover,
++a.button-green:hover,
+ input#edit-actions-submit:hover,
+ input[id^="save-continue"]:hover,
+ input[type="submit"][id^="edit-save"]:hover,
+@@ -761,6 +763,7 @@ input.add-new-condition:active,
+ }
+ 
+ input[type="submit"][id^="edit-submit"]:focus,
++a.button-green:focus,
+ input#edit-actions-submit:focus,
+ input[id^="save-continue"]:focus,
+ input[type="submit"][id^="edit-save"]:focus,
+@@ -780,6 +783,7 @@ input#remove-button,
+ input#edit-remove,
+ input#edit-clear,
+ a.button.remove,
++a.button-red,
+ input[id*="remove-button"],
+ .page-node-delete input#edit-submit,
+ .page-admin-modules-uninstall input#edit-submit,
+@@ -805,6 +809,7 @@ input#remove-button:hover,
+ input#edit-remove:hover,
+ input#edit-clear:hover,
+ a.button.remove:hover,
++a.button-red:hover,
+ input[id*="remove-button"]:hover,
+ .page-node-delete input#edit-submit:hover,
+ body.page-admin-modules-uninstall input#edit-submit:hover,
+@@ -832,6 +837,7 @@ input#edit-remove:focus,
+ input#edit-clear:focus,
+ input[id*="remove-button"]:focus,
+ .page-node-delete input#edit-submit:focus,
++a.button-red:focus,
+ body.page-admin-modules-uninstall input#edit-submit:focus,
+ .remove-condition input:focus,
+ .field-widget-inline-entity-form .ief-entity-operations input[id*="remove"].form-submit:focus {
+@@ -845,6 +851,7 @@ input#edit-next,
+ input#preview-submit,
+ input.ief-entity-submit,
+ input[type="submit"][id^="edit-return"],
++a.button-blue,
+ .field-widget-inline-entity-form .ief-entity-operations input[id*="edit"] {
+   cursor: pointer;
+   border: none;
+@@ -866,6 +873,7 @@ input#edit-next:hover,
+ input#preview-submit:hover,
+ input.ief-entity-submit:hover,
+ input[type="submit"][id^="edit-return"]:hover,
++a.button-blue:hover,
+ .field-widget-inline-entity-form .ief-entity-operations input[id*="edit"]:hover {
+   box-shadow: 0 2px 6px rgba(0,0,0,.3);
+ }
+@@ -887,6 +895,7 @@ input#edit-next:focus,
+ input#preview-submit:focus,
+ input.ief-entity-submit:focus,
+ input[type="submit"][id^="edit-return"]:focus,
++a.button-blue:focus,
+ .field-widget-inline-entity-form .ief-entity-operations input[id*="edit"]:focus {
+   border: none;
+   color: #fff;
+@@ -899,6 +908,7 @@ input[type="submit"][id^="edit-return"]:focus,
+ #edit-actions-cancel,
+ input#edit-buttons-revert,
+ #media-browser-page a.button-no,
++a.button-orange,
+ .field-widget-inline-entity-form input[id*="cancel"] {
+   cursor: pointer;
+   border: none;
+@@ -922,6 +932,7 @@ a#edit-cancel,a#edit-actions-cancel {
+ #edit-actions-cancel:hover,
+ input#edit-buttons-revert:hover,
+ #media-browser-page a.button-no:hover,
++a.button-orange:hover,
+ .field-widget-inline-entity-form input[id*="cancel"]:hover {
+   box-shadow: 0 2px 6px rgba(0,0,0,.3);
+ }
+@@ -940,6 +951,7 @@ input#edit-buttons-revert:active,
+ #edit-cancel:focus,
+ #edit-actions-cancel:focus,
+ input#edit-buttons-revert:focus,
++a.button-orange:focus,
+ .field-widget-inline-entity-form input[id*="cancel"]:focus {
+   background: #333;
+   border: none;

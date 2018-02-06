@@ -30,3 +30,16 @@ function cs_civi_civicrm_navigationMenu(&$params) {
     $params[$id]['attributes']['permission'] = 'administer restricted CiviCRM features';
   }
 }
+
+/**
+ * From https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_navigationMenu/
+ */
+function _cs_civi_getMenuKeyMax($menuArray) {
+  $max = array(max(array_keys($menuArray)));
+  foreach($menuArray as $v) {
+    if (!empty($v['child'])) {
+      $max[] = _cs_civi_getMenuKeyMax($v['child']);
+    }
+  }
+  return max($max);
+}

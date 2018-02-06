@@ -9,4 +9,5 @@ features[user_role][] = CIVI EDITOR
 features[user_role][] = CRON
 features[user_role][] = DRUPAL ADMIN
 features[user_role][] = SUPER ADMIN
+features[user_role][] = SUPER ADMIN
 features[user_role][] = VIEW CIVI
