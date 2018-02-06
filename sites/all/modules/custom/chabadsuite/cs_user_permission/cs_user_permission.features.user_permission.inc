@@ -766,15 +766,6 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'search',
   );
 
-  // Exported permission: 'administer shortcuts'.
-  $permissions['administer shortcuts'] = array(
-    'name' => 'administer shortcuts',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'shortcut',
-  );
-
   // Exported permission: 'administer site configuration'.
   $permissions['administer site configuration'] = array(
     'name' => 'administer site configuration',
@@ -1062,15 +1053,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
-  );
-
-  // Exported permission: 'customize shortcut links'.
-  $permissions['customize shortcut links'] = array(
-    'name' => 'customize shortcut links',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'shortcut',
   );
 
   // Exported permission: 'delete activities'.
@@ -2213,15 +2195,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'comment',
-  );
-
-  // Exported permission: 'switch shortcut sets'.
-  $permissions['switch shortcut sets'] = array(
-    'name' => 'switch shortcut sets',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'shortcut',
   );
 
   // Exported permission: 'translate CiviCRM'.
