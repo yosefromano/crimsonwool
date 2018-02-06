@@ -108,7 +108,6 @@ function cs_user_permission_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'authenticated user' => 'authenticated user',
     ),
@@ -143,6 +142,8 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access administration pages'] = array(
     'name' => 'access administration pages',
     'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
@@ -184,10 +185,20 @@ function cs_user_permission_user_default_permissions() {
   $permissions['access bean overview'] = array(
     'name' => 'access bean overview',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'bean',
+  );
+
+  // Exported permission: 'access chabadsuite admin'.
+  $permissions['access chabadsuite admin'] = array(
+    'name' => 'access chabadsuite admin',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'cs_admin',
   );
 
   // Exported permission: 'access civicrm group role setting'.
@@ -309,6 +320,15 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'webform',
   );
 
+  // Exported permission: 'access restricted chabadsuite administration'.
+  $permissions['access restricted chabadsuite administration'] = array(
+    'name' => 'access restricted chabadsuite administration',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'cs_admin',
+  );
+
   // Exported permission: 'access rules debug'.
   $permissions['access rules debug'] = array(
     'name' => 'access rules debug',
@@ -342,7 +362,6 @@ function cs_user_permission_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
       'anonymous user' => 'anonymous user',
@@ -360,6 +379,16 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'user',
+  );
+
+  // Exported permission: 'access users overview'.
+  $permissions['access users overview'] = array(
+    'name' => 'access users overview',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
   );
 
   // Exported permission: 'add JS snippets for google analytics'.
@@ -508,7 +537,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer blocks'] = array(
     'name' => 'administer blocks',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'block',
@@ -549,6 +577,15 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'administer devel menu items'.
+  $permissions['administer devel menu items'] = array(
+    'name' => 'administer devel menu items',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
+  );
+
   // Exported permission: 'administer features'.
   $permissions['administer features'] = array(
     'name' => 'administer features',
@@ -556,6 +593,15 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'features',
+  );
+
+  // Exported permission: 'administer features menu items'.
+  $permissions['administer features menu items'] = array(
+    'name' => 'administer features menu items',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
   );
 
   // Exported permission: 'administer field collections'.
@@ -636,6 +682,25 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'mailsystem',
   );
 
+  // Exported permission: 'administer main-menu menu items'.
+  $permissions['administer main-menu menu items'] = array(
+    'name' => 'administer main-menu menu items',
+    'roles' => array(
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
+  );
+
+  // Exported permission: 'administer management menu items'.
+  $permissions['administer management menu items'] = array(
+    'name' => 'administer management menu items',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
+  );
+
   // Exported permission: 'administer media browser'.
   $permissions['administer media browser'] = array(
     'name' => 'administer media browser',
@@ -649,7 +714,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer menu'] = array(
     'name' => 'administer menu',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'menu',
@@ -680,6 +744,15 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
+  );
+
+  // Exported permission: 'administer navigation menu items'.
+  $permissions['administer navigation menu items'] = array(
+    'name' => 'administer navigation menu items',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
   );
 
   // Exported permission: 'administer nodes'.
@@ -770,7 +843,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer site configuration'] = array(
     'name' => 'administer site configuration',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'system',
@@ -814,18 +886,24 @@ function cs_user_permission_user_default_permissions() {
   $permissions['administer url aliases'] = array(
     'name' => 'administer url aliases',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'path',
+  );
+
+  // Exported permission: 'administer user-menu menu items'.
+  $permissions['administer user-menu menu items'] = array(
+    'name' => 'administer user-menu menu items',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'menu_admin_per_menu',
   );
 
   // Exported permission: 'administer users'.
   $permissions['administer users'] = array(
     'name' => 'administer users',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'user',
@@ -941,6 +1019,88 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'user',
   );
 
+  // Exported permission: 'cancel users with role 13338524'.
+  $permissions['cancel users with role 13338524'] = array(
+    'name' => 'cancel users with role 13338524',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 173596375'.
+  $permissions['cancel users with role 173596375'] = array(
+    'name' => 'cancel users with role 173596375',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 2'.
+  $permissions['cancel users with role 2'] = array(
+    'name' => 'cancel users with role 2',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 200153887'.
+  $permissions['cancel users with role 200153887'] = array(
+    'name' => 'cancel users with role 200153887',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 203492862'.
+  $permissions['cancel users with role 203492862'] = array(
+    'name' => 'cancel users with role 203492862',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 243709442'.
+  $permissions['cancel users with role 243709442'] = array(
+    'name' => 'cancel users with role 243709442',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 264329633'.
+  $permissions['cancel users with role 264329633'] = array(
+    'name' => 'cancel users with role 264329633',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 2772300'.
+  $permissions['cancel users with role 2772300'] = array(
+    'name' => 'cancel users with role 2772300',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 6660704'.
+  $permissions['cancel users with role 6660704'] = array(
+    'name' => 'cancel users with role 6660704',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'cancel users with role 74538327'.
+  $permissions['cancel users with role 74538327'] = array(
+    'name' => 'cancel users with role 74538327',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
   // Exported permission: 'change own username'.
   $permissions['change own username'] = array(
     'name' => 'change own username',
@@ -984,7 +1144,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['create all_images content'] = array(
     'name' => 'create all_images content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1040,7 +1199,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['create photo_gallery content'] = array(
     'name' => 'create photo_gallery content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1063,6 +1221,16 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'path',
+  );
+
+  // Exported permission: 'create users'.
+  $permissions['create users'] = array(
+    'name' => 'create users',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
   );
 
   // Exported permission: 'create webform content'.
@@ -1110,7 +1278,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete any all_images content'] = array(
     'name' => 'delete any all_images content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1175,7 +1342,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete any photo_gallery content'] = array(
     'name' => 'delete any photo_gallery content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1268,7 +1434,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete own all_images content'] = array(
     'name' => 'delete own all_images content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1343,7 +1508,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['delete own photo_gallery content'] = array(
     'name' => 'delete own photo_gallery content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1419,7 +1583,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['display drupal links'] = array(
     'name' => 'display drupal links',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'admin_menu',
@@ -1549,7 +1712,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit any all_images content'] = array(
     'name' => 'edit any all_images content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1614,7 +1776,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit any photo_gallery content'] = array(
     'name' => 'edit any photo_gallery content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1716,7 +1877,6 @@ function cs_user_permission_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
       'authenticated user' => 'authenticated user',
@@ -1728,7 +1888,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit own all_images content'] = array(
     'name' => 'edit own all_images content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1821,7 +1980,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['edit own photo_gallery content'] = array(
     'name' => 'edit own photo_gallery content',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'node',
@@ -1894,6 +2052,94 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'taxonomy',
   );
 
+  // Exported permission: 'edit users with role 13338524'.
+  $permissions['edit users with role 13338524'] = array(
+    'name' => 'edit users with role 13338524',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 173596375'.
+  $permissions['edit users with role 173596375'] = array(
+    'name' => 'edit users with role 173596375',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 2'.
+  $permissions['edit users with role 2'] = array(
+    'name' => 'edit users with role 2',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 200153887'.
+  $permissions['edit users with role 200153887'] = array(
+    'name' => 'edit users with role 200153887',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 203492862'.
+  $permissions['edit users with role 203492862'] = array(
+    'name' => 'edit users with role 203492862',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 243709442'.
+  $permissions['edit users with role 243709442'] = array(
+    'name' => 'edit users with role 243709442',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 264329633'.
+  $permissions['edit users with role 264329633'] = array(
+    'name' => 'edit users with role 264329633',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 2772300'.
+  $permissions['edit users with role 2772300'] = array(
+    'name' => 'edit users with role 2772300',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 6660704'.
+  $permissions['edit users with role 6660704'] = array(
+    'name' => 'edit users with role 6660704',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
+    ),
+    'module' => 'administerusersbyrole',
+  );
+
+  // Exported permission: 'edit users with role 74538327'.
+  $permissions['edit users with role 74538327'] = array(
+    'name' => 'edit users with role 74538327',
+    'roles' => array(),
+    'module' => 'administerusersbyrole',
+  );
+
   // Exported permission: 'edit webform components'.
   $permissions['edit webform components'] = array(
     'name' => 'edit webform components',
@@ -1927,11 +2173,7 @@ function cs_user_permission_user_default_permissions() {
   $permissions['flush caches'] = array(
     'name' => 'flush caches',
     'roles' => array(
-      'CIVI ADMIN' => 'CIVI ADMIN',
-      'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
-      'VIEW CIVI' => 'VIEW CIVI',
     ),
     'module' => 'admin_menu',
   );
@@ -1992,7 +2234,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['make online contributions'] = array(
     'name' => 'make online contributions',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
     ),
@@ -2080,7 +2321,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['profile create'] = array(
     'name' => 'profile create',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
     ),
@@ -2091,7 +2331,6 @@ function cs_user_permission_user_default_permissions() {
   $permissions['profile edit'] = array(
     'name' => 'profile edit',
     'roles' => array(
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
     ),
@@ -2490,7 +2729,6 @@ function cs_user_permission_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
-      'DRUPAL ADMIN' => 'DRUPAL ADMIN',
       'SUPER ADMIN' => 'SUPER ADMIN',
       'VIEW CIVI' => 'VIEW CIVI',
       'authenticated user' => 'authenticated user',

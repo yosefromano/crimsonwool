@@ -95,3 +95,11 @@ function cs_core_update_7009() {
 function cs_core_update_7013() {
   cs_util_civicrm_menu_item_delete_by_path('civicrm_activity_ical/settings/user', TRUE);
 }
+
+/**
+ * Enable fpa
+ */
+function cs_core_update_7014() {
+  module_enable(array('fpa', 'administerusersbyrole', 'coffee', 'cs_admin', 'menu_admin_per_menu'));
+  module_disable(array('help', 'shortcut'));
+}

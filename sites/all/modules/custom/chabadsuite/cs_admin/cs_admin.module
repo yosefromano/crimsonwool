@@ -1,0 +1,89 @@
+<?php
+
+include_once 'cs_admin.features.inc';
+
+/**
+ * Implements hook_menu().
+ */
+function cs_admin_menu() {
+  $items = array();
+
+  $items['admin/chabadsuite'] = array(
+    'title' => 'ChabadSuite Administration',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('cs_admin_main_page'),
+    'access arguments' => array('access chabadsuite admin'),
+    'weight' => -100,
+    'file' => 'cs_admin.pages.inc',
+    'file path' => drupal_get_path('module', 'cs_admin') . '/inc',
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function cs_admin_permission() {
+  return array(
+    'access chabadsuite admin' => array(
+      'title' => t('Access chabadsuite administration'),
+    ),
+    'access restricted chabadsuite administration' => array(
+      'title' => t('Access restricted chabadsuite administration'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function cs_admin_menu_alter(&$items) {
+  // Hide the index page
+  $items['admin/index']['access callback'] = FALSE;
+
+  // Restrict the civi cron page
+  $items['admin/config/civicrm/civicrm-cron']['access arguments'] = array('access restricted chabadsuite administration');
+
+  // Restrict files thumbnails page
+  $items['admin/content/file/thumbnails']['access arguments'] = array('access restricted chabadsuite administration');
+}
+
+/**
+ * Implements hook_admin_menu_output_alter().
+ */
+function cs_admin_admin_menu_output_alter(&$content) {
+  // For users with only access to menus, move that to top level
+  if (count(element_children($content['menu']['admin/structure'])) == 1) {
+    $content['menu']['admin/structure/menu'] = $content['menu']['admin/structure']['admin/structure/menu'];
+    unset($content['menu']['admin/structure']);
+  }
+
+  if (isset($content['menu']['civicrm'])) {
+    $content['menu']['civicrm']['#access'] = user_access('administer CiviCRM');
+  }
+}
+
+/**
+ * Implements hook_civicrm_navigationMenu().
+ */
+function cs_admin_civicrm_navigationMenu(&$params) {
+
+  //  Get the maximum key of $params
+  $maxKey = _cs_civi_getMenuKeyMax($params);
+
+  // Add CS Admin menu item
+  $params[$maxKey+1] = array(
+    'attributes' => array(
+      'label'      => t('ChabadSuite Administration'),
+      'name'       => t('ChabadSuite Administration'),
+      'url'        => 'admin/chabadsuite',
+      'permission' => null,
+      'operator'   => null,
+      'separator'  => null,
+      'parentID'   => null,
+      'navID'      => $maxKey + 1,
+      'active'     => 1
+    ),
+  );
+}

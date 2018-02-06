@@ -1,6 +1,5 @@
 === CS PATCHES ===
 
-
 This file is for keeping track of patches applied in the ChabadSuite
 platform code.
 
@@ -9,13 +8,23 @@ if there are patches that need to be re-applied. If needed, update this file
 to reflect that the patch has been updated or is no longer in use.
 
 
-== civicrm (profiles/civicrm_starterkit/modules/civicrm) ==
+========================================================================
+== civicrm
+========================================================================
 
 = Remove remote html (snippet) warning =
-Patch used: patches/civi-remove-html-snippet-warning.patch
+* patches/civi-remove-html-snippet-warning.patch
 
 = Change permission for showing system status messages =
-Patch used: patches/system-messages-perm.patch
+* patches/system-messages-perm.patch
+
+
+========================================================================
+== modules
+========================================================================
+
+civicrm_cache_clear
+===================
 
 = CRM-21690, Displaying Transaction Id in Thank you letter =
 Patch used: patches/civi-transaction-id-in-letter.patch
@@ -25,7 +34,19 @@ PR: https://github.com/civicrm/civicrm-core/pull/11570
 == civicrm_cache_clear ==
 Patch used: patches/civicrm-cache-clear-schema.patch
 
+webform
+=======
 
 = Fix webform partial form error message =
-Patch used: patches/webform.patch
-Applied in site's root directory
+* patches/webform.patch
+
+
+========================================================================
+== themes
+========================================================================
+
+adminimal
+=========
+
+= Add classes for general use buttons =
+* adminimal-buttons.patch
