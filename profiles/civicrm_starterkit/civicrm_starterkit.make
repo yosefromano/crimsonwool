@@ -13,7 +13,7 @@ projects[drupal][version] = "7.51"
 ; ====== CIVICRM RELATED =========
 
 libraries[civicrm][download][type] = get
-libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.29-drupal.tar.gz"
+libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.30-drupal.tar.gz"
 libraries[civicrm][destination] = modules
 libraries[civicrm][directory_name] = civicrm
 
@@ -25,16 +25,14 @@ libraries[civicrm][directory_name] = civicrm
 libraries[civicrm][patch][pantheonsettings] = ./patches/pantheon-settings-starterkit-47.patch
 libraries[civicrm][patch][publicfiledir] = ./patches/public_files_config.patch
 
-; Provide modulepath to populate settings
-; https://www.drupal.org/node/2063371
-libraries[civicrm][patch][2063371] = ./patches/2063371-add-modulePath-var-4-4.patch
-
 ; Set session for cron.
 ; Matches settings in CiviCRM core for extern/*.
 libraries[civicrm][patch][cron] = ./patches/cron.patch
 
-; Patch IPN
+; IPN
+; bootstrap Drupal
 libraries[civicrm][patch][externbootstrap] = ./patches/extern-cms-bootstrap.patch
+; Separate Paypal Pro and Standard into separate calls [deprecated]
 libraries[civicrm][patch][ipn] = ./patches/ipn.patch
 libraries[civicrm][patch][ipnstd] = ./patches/ipnStd.patch
 
@@ -54,11 +52,14 @@ libraries[civicrm][patch][2130213] = ./patches/ignore-timezone-on-install-47-213
 ; Define the path to the civicrm.settings.php file because CiviCRM is not in the expected location.
 ; https://www.drupal.org/node/1844558
 libraries[civicrm][patch][1844558] = ./patches/settings_location-for-profiles.patch
+; https://www.drupal.org/node/2063371
+libraries[civicrm][patch][2063371] = ./patches/2063371-add-modulePath-var-4-4.patch
 
 ; Populate with Pantheon environment settings on install
 ; https://www.drupal.org/node/1978838
 libraries[civicrm][patch][pre-populate-installer] = ./patches/pre-populate-installer.patch
-libraries[civicrm][patch][1849424-pass] = ./patches/1849424-pass-vars-in-link-2.patch
+; https://www.drupal.org/node/1849424
+libraries[civicrm][patch][1849424-pass] = ./patches/pass-vars-in-install-link.patch
 
 ; Cached Symfony container
 ; This is a potential issue but not clear at the moment--like it will just rebuild the php file.
