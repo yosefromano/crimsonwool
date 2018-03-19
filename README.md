@@ -1,19 +1,14 @@
 CiviCRM Starterkit for Pantheon
 ===============================
 
+CiviCRM Starterkit is a Drupal 7 distribution that makes it easy to start with the popular open source CRM, CiviCRM.
+
 The [CiviCRM Starterkit](http://civicrmstarterkit.org/) project is not intended to be installed on its own. Instead, you can quickly get started with CiviCRM by [spinning it up on Pantheon](https://dashboard.pantheon.io/products/civicrm_starterkit/spinup). This Pantheon upstream keeps up to date with Pantheon's core Drupal 7 repository, with basic Drupal module security updates, and with updates to the core CiviCRM project.
 
-We're moving to CiviCRM 4.7!
-----------------------------
+Upgrading to CiviCRM 4.7
+----------------
 
 If you require support in upgrading from CiviCRM 4.6 to 4.7 please contact us at [CiviCRM Starterkit](http://civicrmstarterkit.org/contact).
-
-We are upgrading CiviCRM at this time for four good reasons. First, 4.6 doesn't have much life left in it. It's status as long-term support was supposed to end at the [beginning of January 2017](https://civicrm.org/blog/eileen/the-lts-going-forwards) but got informally extended for an undetermined length of time. Second, the LTS is being maintained by volunteers so it doesn't get the same level of support as 4.7. Third, there were a lot of improvements in 4.7 that we can't take advantage of if we stay on 4.6. Lastly, CiviCRM developers moved to a new much more LTS-like release process for 4.7 that means that 4.7 will be stable for quite some time with a greater focus on bug fixing. Major changes will be 'grandfathered' in with opt-in extensions until such time that the old feature can be deprecated.
-
-Though the upgrade may be challenging for some, we believe that it is worth the effort and will do our best to make the process easier.
-
-Upgrading to 4.7
-----------------
 
 You will see the update in the Pantheon dashboard. Make sure to make a backup of your database if you don't already have a regular backup schedule.
 

@@ -712,10 +712,12 @@ ORDER BY   {$orderBy}
   }
 
   /**
-   *
    * Prepares the text and html templates
    * for generating the emails and returns a copy of the
    * prepared templates
+   *
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer/TokenProcessor.
    */
   private function getPreparedTemplates() {
     if (!$this->preparedTemplates) {
@@ -794,7 +796,7 @@ ORDER BY   {$orderBy}
       }
 
       // To check for an html part strip tags
-      if (trim(strip_tags($this->body_html))) {
+      if (trim(strip_tags($this->body_html, '<img>'))) {
 
         $template = array();
         if ($this->header) {
@@ -1166,6 +1168,8 @@ ORDER BY   civicrm_email.is_bulkmail DESC
   /**
    * Compose a message.
    *
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer/TokenProcessor.
    * @param int $job_id
    *   ID of the Job associated with this message.
    * @param int $event_queue_id
@@ -1434,6 +1438,8 @@ ORDER BY   civicrm_email.is_bulkmail DESC
    *
    * Get mailing object and replaces subscribeInvite, domain and mailing tokens.
    *
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer/TokenProcessor.
    * @param CRM_Mailing_BAO_Mailing $mailing
    */
   public static function tokenReplace(&$mailing) {
@@ -1456,6 +1462,9 @@ ORDER BY   civicrm_email.is_bulkmail DESC
 
   /**
    * Get data to resolve tokens.
+   *
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer/TokenProcessor.
    *
    * @param array $token_a
    * @param bool $html
@@ -1739,7 +1748,6 @@ ORDER BY   civicrm_email.is_bulkmail DESC
     CRM_Contact_BAO_Contact_Utils::generateChecksum($mailing->id, NULL, NULL, NULL, 'mailing', 16);
 
     $groupTableName = CRM_Contact_BAO_Group::getTableName();
-    $mailingTableName = CRM_Mailing_BAO_Mailing::getTableName();
 
     /* Create the mailing group record */
     $mg = new CRM_Mailing_DAO_MailingGroup();
@@ -1767,7 +1775,7 @@ ORDER BY   civicrm_email.is_bulkmail DESC
     CRM_Core_BAO_File::processAttachment($params, 'civicrm_mailing', $mailing->id);
 
     // If we're going to autosend, then check validity before saving.
-    if (!empty($params['scheduled_date']) && $params['scheduled_date'] != 'null' && !empty($params['_evil_bao_validator_'])) {
+    if (empty($params['is_completed']) && !empty($params['scheduled_date']) && $params['scheduled_date'] != 'null' && !empty($params['_evil_bao_validator_'])) {
       $cb = Civi\Core\Resolver::singleton()->get($params['_evil_bao_validator_']);
       $errors = call_user_func($cb, $mailing);
       if (!empty($errors)) {
@@ -1783,7 +1791,9 @@ ORDER BY   civicrm_email.is_bulkmail DESC
     if (!empty($params['scheduled_date']) && $params['scheduled_date'] != 'null' && empty($params['_skip_evil_bao_auto_schedule_'])) {
       $job = new CRM_Mailing_BAO_MailingJob();
       $job->mailing_id = $mailing->id;
-      $job->status = 'Scheduled';
+      // If we are creating a new Completed mailing (e.g. import from another system) set the job to completed.
+      // Keeping former behaviour when an id is present is precautionary and may warrant reconsideration later.
+      $job->status = ((empty($params['is_completed']) || !empty($params['id'])) ? 'Scheduled' : 'Complete');
       $job->is_test = 0;
 
       if (!$job->find(TRUE)) {
@@ -1807,6 +1817,8 @@ ORDER BY   civicrm_email.is_bulkmail DESC
   }
 
   /**
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer.
    * @param CRM_Mailing_DAO_Mailing $mailing
    *   The mailing which may or may not be sendable.
    * @return array
@@ -2231,7 +2243,8 @@ ORDER BY   civicrm_email.is_bulkmail DESC
                     ON  {$t['queue']}.job_id = {$t['job']}.id
             WHERE       {$t['url']}.mailing_id = $mailing_id
                     AND {$t['job']}.is_test = 0
-            GROUP BY    {$t['url']}.id");
+            GROUP BY    {$t['url']}.id
+            ORDER BY    unique_clicks DESC");
 
     $report['click_through'] = array();
 
@@ -2670,6 +2683,8 @@ LEFT JOIN civicrm_mailing_group g ON g.mailing_id   = m.id
   }
 
   /**
+   * @deprecated
+   *   This is used by CiviMail but will be made redundant by FlexMailer/TokenProcessor.
    * @return array
    */
   public function getReturnProperties() {
@@ -2915,9 +2930,9 @@ WHERE  civicrm_mailing_job.id = %1
     $config = CRM_Core_Config::singleton();
 
     if ($mode == NULL && CRM_Core_BAO_MailSettings::defaultDomain() == "EXAMPLE.ORG") {
-      throw new CRM_Core_Exception(ts('The <a href="%1">default mailbox</a> has not been configured. You will find <a href="%2">more info in the online user and administrator guide</a>', array(
+      throw new CRM_Core_Exception(ts('The <a href="%1">default mailbox</a> has not been configured. You will find <a href="%2">more info in the online system administrator guide</a>', array(
             1 => CRM_Utils_System::url('civicrm/admin/mailSettings', 'reset=1'),
-            2 => "http://book.civicrm.org/user/advanced-configuration/email-system-configuration/",
+            2 => "https://docs.civicrm.org/sysadmin/en/latest/setup/civimail/",
           )));
     }
 

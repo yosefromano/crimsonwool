@@ -215,7 +215,6 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
 
     switch ($region) {
       case 'html-header':
-      case 'page-footer':
         break;
 
       default:
@@ -240,7 +239,6 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
   public function addScript($code, $region) {
     switch ($region) {
       case 'html-header':
-      case 'page-footer':
         break;
 
       default:
@@ -367,9 +365,14 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
     $system->loadBootStrap(array(), FALSE);
 
     $uid = \Drupal::service('user.auth')->authenticate($name, $password);
-    $contact_id = CRM_Core_BAO_UFMatch::getContactId($uid);
+    if ($uid) {
+      if ($this->loadUser($name)) {
+        $contact_id = CRM_Core_BAO_UFMatch::getContactId($uid);
+        return array($contact_id, $uid, mt_rand());
+      }
+    }
 
-    return array($contact_id, $uid, mt_rand());
+    return FALSE;
   }
 
   /**
@@ -461,7 +464,7 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
     \Drupal\Core\DrupalKernel::createFromRequest($request, $autoloader, 'prod')->prepareLegacyRequest($request);
 
     // Initialize Civicrm
-    \Drupal::service('civicrm');
+    \Drupal::service('civicrm')->initialize();
 
     // We need to call the config hook again, since we now know
     // all the modules that are listening on it (CRM-8655).
@@ -471,7 +474,7 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
       if (!empty($params['uid']) && $username = \Drupal\user\Entity\User::load($uid)->getUsername()) {
         $this->loadUser($username);
       }
-      elseif (!empty($params['name']) && !empty($params['pass']) && $this->authenticate($params['name'], $params['pass'])) {
+      elseif (!empty($params['name']) && !empty($params['pass']) && \Drupal::service('user.auth')->authenticate($params['name'], $params['pass'])) {
         $this->loadUser($params['name']);
       }
     }
@@ -524,6 +527,33 @@ class CRM_Utils_System_Drupal8 extends CRM_Utils_System_DrupalBase {
    */
   public function isUserLoggedIn() {
     return \Drupal::currentUser()->isAuthenticated();
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function isUserRegistrationPermitted() {
+    if (\Drupal::config('user.settings')->get('register') == 'admin_only') {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function isPasswordUserGenerated() {
+    if (\Drupal::config('user.settings')->get('verify_mail') == TRUE) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function updateCategories() {
+    // @todo Is anything necessary?
   }
 
   /**

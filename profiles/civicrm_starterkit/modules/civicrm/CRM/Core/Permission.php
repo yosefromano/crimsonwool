@@ -806,6 +806,10 @@ class CRM_Core_Permission {
         $prefix . ts('view all notes'),
         ts("View notes (for visible contacts) even if they're marked admin only"),
       ),
+      'add contact notes' => array(
+        $prefix . ts('add contact notes'),
+        ts("Create notes for contacts"),
+      ),
       'access AJAX API' => array(
         $prefix . ts('access AJAX API'),
         ts('Allow API access even if Access CiviCRM is not granted'),
@@ -1603,8 +1607,7 @@ class CRM_Core_Permission {
    *   invoices permission and the invoice author is the current user.
    */
   public static function checkDownloadInvoice() {
-    global $user;
-    $cid = CRM_Core_BAO_UFMatch::getContactId($user->uid);
+    $cid = CRM_Core_Session::getLoggedInContactID();
     if (CRM_Core_Permission::check('access CiviContribute') ||
       (CRM_Core_Permission::check('view my invoices') && $_GET['cid'] == $cid)
     ) {

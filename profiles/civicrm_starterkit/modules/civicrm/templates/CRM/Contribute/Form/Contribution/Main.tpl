@@ -68,7 +68,7 @@
 
   {include file="CRM/common/TrackingFields.tpl"}
 
-  <div class="crm-contribution-page-id-{$contributionPageID} crm-block crm-contribution-main-form-block">
+  <div class="crm-contribution-page-id-{$contributionPageID} crm-block crm-form-block crm-contribution-main-form-block">
 
   {if $contact_id && !$ccid}
     <div class="messages status no-popup crm-not-you-message">
@@ -355,7 +355,7 @@
     }
     else {
       cj('#recurHelp').hide();
-      cj('#amount_sum_label').text('{/literal}{ts escape='js'}Total amount{/ts}{literal}');
+      cj('#amount_sum_label').text('{/literal}{ts escape='js'}Total Amount{/ts}{literal}');
     }
   }
 

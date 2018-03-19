@@ -64,7 +64,24 @@ class CRM_Core_DAO extends DB_DataObject {
     BULK_INSERT_COUNT = 200,
     BULK_INSERT_HIGH_COUNT = 200,
     QUERY_FORMAT_WILDCARD = 1,
-    QUERY_FORMAT_NO_QUOTES = 2;
+    QUERY_FORMAT_NO_QUOTES = 2,
+
+    /**
+     * Serialized string separated by and bookended with VALUE_SEPARATOR
+     */
+    SERIALIZE_SEPARATOR_BOOKEND = 1,
+    /**
+     * @deprecated format separated by VALUE_SEPARATOR
+     */
+    SERIALIZE_SEPARATOR_TRIMMED = 2,
+    /**
+     * Recommended serialization format
+     */
+    SERIALIZE_JSON = 3,
+    /**
+     * @deprecated format using php serialize()
+     */
+    SERIALIZE_PHP = 4;
 
   /**
    * Define entities that shouldn't be created or deleted when creating/ deleting
@@ -118,8 +135,15 @@ class CRM_Core_DAO extends DB_DataObject {
     }
     $factory = new CRM_Contact_DAO_Factory();
     CRM_Core_DAO::setFactory($factory);
+    $currentModes = CRM_Utils_SQL::getSqlModes();
     if (CRM_Utils_Constant::value('CIVICRM_MYSQL_STRICT', CRM_Utils_System::isDevelopment())) {
-      CRM_Core_DAO::executeQuery('SET SESSION sql_mode = STRICT_TRANS_TABLES');
+      if (CRM_Utils_SQL::supportsFullGroupBy() && !in_array('ONLY_FULL_GROUP_BY', $currentModes) && CRM_Utils_SQL::isGroupByModeInDefault()) {
+        $currentModes[] = 'ONLY_FULL_GROUP_BY';
+      }
+      if (!in_array('STRICT_TRANS_TABLES', $currentModes)) {
+        $currentModes = array_merge(array('STRICT_TRANS_TABLES'), $currentModes);
+      }
+      CRM_Core_DAO::executeQuery("SET SESSION sql_mode = %1", array(1 => array(implode(',', $currentModes), 'String')));
     }
     CRM_Core_DAO::executeQuery('SET NAMES utf8');
     CRM_Core_DAO::executeQuery('SET @uniqueID = %1', array(1 => array(CRM_Utils_Request::id(), 'String')));
@@ -2584,6 +2608,61 @@ SELECT contact_id
       return FALSE;
     }
     return TRUE;
+  }
+
+  /**
+   * Transform an array to a serialized string for database storage.
+   *
+   * @param array|NULL $value
+   * @param $serializationType
+   * @return string|NULL
+   */
+  public static function serializeField($value, $serializationType) {
+    if ($value === NULL) {
+      return NULL;
+    }
+    switch ($serializationType) {
+      case self::SERIALIZE_SEPARATOR_BOOKEND:
+        return $value === array() ? '' : CRM_Utils_Array::implodePadded($value);
+
+      case self::SERIALIZE_SEPARATOR_TRIMMED:
+        return is_array($value) ? implode(self::VALUE_SEPARATOR, $value) : $value;
+
+      case self::SERIALIZE_JSON:
+        return is_array($value) ? json_encode($value) : $value;
+
+      case self::SERIALIZE_PHP:
+        return is_array($value) ? serialize($value) : $value;
+    }
+  }
+
+  /**
+   * Transform a serialized string from the database into an array.
+   *
+   * @param string|null $value
+   * @param $serializationType
+   * @return array|null
+   */
+  public static function unSerializeField($value, $serializationType) {
+    if ($value === NULL) {
+      return NULL;
+    }
+    if ($value === '') {
+      return array();
+    }
+    switch ($serializationType) {
+      case self::SERIALIZE_SEPARATOR_BOOKEND:
+        return (array) CRM_Utils_Array::explodePadded($value);
+
+      case self::SERIALIZE_SEPARATOR_TRIMMED:
+        return explode(self::VALUE_SEPARATOR, trim($value));
+
+      case self::SERIALIZE_JSON:
+        return strlen($value) ? json_decode($value, TRUE) : array();
+
+      case self::SERIALIZE_PHP:
+        return strlen($value) ? unserialize($value) : array();
+    }
   }
 
 }

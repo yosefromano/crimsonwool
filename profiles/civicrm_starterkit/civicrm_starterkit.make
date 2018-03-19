@@ -13,7 +13,7 @@ projects[drupal][version] = "7.51"
 ; ====== CIVICRM RELATED =========
 
 libraries[civicrm][download][type] = get
-libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.27-drupal.tar.gz"
+libraries[civicrm][download][url] = "https://download.civicrm.org/civicrm-4.7.30-drupal.tar.gz"
 libraries[civicrm][destination] = modules
 libraries[civicrm][directory_name] = civicrm
 
@@ -25,16 +25,14 @@ libraries[civicrm][directory_name] = civicrm
 libraries[civicrm][patch][pantheonsettings] = ./patches/pantheon-settings-starterkit-47.patch
 libraries[civicrm][patch][publicfiledir] = ./patches/public_files_config.patch
 
-; Provide modulepath to populate settings
-; https://www.drupal.org/node/2063371
-libraries[civicrm][patch][2063371] = ./patches/2063371-add-modulePath-var-4-4.patch
-
 ; Set session for cron.
 ; Matches settings in CiviCRM core for extern/*.
 libraries[civicrm][patch][cron] = ./patches/cron.patch
 
-; Patch IPN
+; IPN
+; bootstrap Drupal
 libraries[civicrm][patch][externbootstrap] = ./patches/extern-cms-bootstrap.patch
+; Separate Paypal Pro and Standard into separate calls [deprecated]
 libraries[civicrm][patch][ipn] = ./patches/ipn.patch
 libraries[civicrm][patch][ipnstd] = ./patches/ipnStd.patch
 
@@ -42,10 +40,7 @@ libraries[civicrm][patch][ipnstd] = ./patches/ipnStd.patch
 ; https://www.drupal.org/node/2347897
 libraries[civicrm][patch][2347897] = ./patches/binding-extension-47-2347897.patch
 
-; Required for install
-; Populate with Pantheon environment settings on install
-; https://www.drupal.org/node/1978838
-libraries[civicrm][patch][1978838] = ./patches/pre-populate-db-settings-47-1978838.patch
+; === Installer ===
 
 ; Ensure the baseURL is correct in the installer in Pantheon.
 libraries[civicrm][patch][installerbaseurl] = ./patches/installer-baseurl.patch
@@ -57,10 +52,14 @@ libraries[civicrm][patch][2130213] = ./patches/ignore-timezone-on-install-47-213
 ; Define the path to the civicrm.settings.php file because CiviCRM is not in the expected location.
 ; https://www.drupal.org/node/1844558
 libraries[civicrm][patch][1844558] = ./patches/settings_location-for-profiles.patch
+; https://www.drupal.org/node/2063371
+libraries[civicrm][patch][2063371] = ./patches/2063371-add-modulePath-var-4-4.patch
 
-;Improving profile install UX when installing from a profile
-libraries[civicrm][patch][1849424-use] = ./patches/1849424-use-vars-in-link-2.patch
-libraries[civicrm][patch][1849424-pass] = ./patches/1849424-pass-vars-in-link-2.patch
+; Populate with Pantheon environment settings on install
+; https://www.drupal.org/node/1978838
+libraries[civicrm][patch][pre-populate-installer] = ./patches/pre-populate-installer.patch
+; https://www.drupal.org/node/1849424
+libraries[civicrm][patch][1849424-pass] = ./patches/pass-vars-in-install-link.patch
 
 ; Cached Symfony container
 ; This is a potential issue but not clear at the moment--like it will just rebuild the php file.
@@ -78,19 +77,19 @@ libraries[civicrm][patch][smtpverify] = ./patches/smtp-disable-peer-verification
 ; ====== POPULAR CONTRIB MODULES =========
 
 projects[backup_migrate][subdir] = "contrib"
-projects[backup_migrate][version] = "3.1"
+projects[backup_migrate][version] = "3.4"
 
 projects[civicrm_clear_all_caches][subdir] = "contrib"
-projects[civicrm_clear_all_caches][version] = "1.0-beta1"
+projects[civicrm_clear_all_caches][version] = "1.0-beta2"
 
 projects[civicrm_cron][subdir] = "contrib"
 projects[civicrm_cron][version] = "2.0-beta2"
 
 projects[ctools][subdir] = "contrib"
-projects[ctools][version] = "1.4"
+projects[ctools][version] = "1.12"
 
 projects[captcha][subdir] = "contrib"
-projects[captcha][version] = "1.4"
+projects[captcha][version] = "1.5"
 
 projects[features][subdir] = "contrib"
 projects[features][version] = "2.10"
@@ -99,7 +98,7 @@ projects[fontyourface][subdir] = "contrib"
 projects[fontyourface][version] = "2.8"
 
 projects[imce][subdir] = "contrib"
-projects[imce][version] = "1.9"
+projects[imce][version] = "1.11"
 
 projects[imce_wysiwyg][subdir] = "contrib"
 projects[imce_wysiwyg][version] = "1.0"
@@ -108,7 +107,7 @@ projects[libraries][subdir] = "contrib"
 projects[libraries][version] = "2.3"
 
 projects[module_filter][subdir] = "contrib"
-projects[module_filter][version] = "1.8"
+projects[module_filter][version] = "2.1"
 
 projects[options_element][subdir] = "contrib"
 projects[options_element][version] = "1.12"
@@ -123,10 +122,10 @@ projects[recaptcha][subdir] = "contrib"
 projects[recaptcha][version] = "2.2"
 
 projects[views][subdir] = "contrib"
-projects[views][version] = "3.17"
+projects[views][version] = "3.18"
 
 projects[webform][subdir] = "contrib"
-projects[webform][version] = "4.15"
+projects[webform][version] = "4.16"
 
 projects[webform_civicrm][subdir] = "contrib"
 projects[webform_civicrm][version] = "4.19"

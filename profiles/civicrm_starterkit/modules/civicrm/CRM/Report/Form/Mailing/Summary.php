@@ -117,9 +117,11 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
       'fields' => array(
         'start_date' => array(
           'title' => ts('Start Date'),
+          'dbAlias' => 'MIN(mailing_job_civireport.start_date)',
         ),
         'end_date' => array(
           'title' => ts('End Date'),
+          'dbAlias' => 'MAX(mailing_job_civireport.end_date)',
         ),
       ),
       'filters' => array(
@@ -149,11 +151,13 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
       'order_bys' => array(
         'start_date' => array(
           'title' => ts('Start Date'),
+          'dbAlias' => 'MIN(mailing_job_civireport.start_date)',
         ),
         'end_date' => array(
           'title' => ts('End Date'),
           'default_weight' => '1',
           'default_order' => 'DESC',
+          'dbAlias' => 'MAX(mailing_job_civireport.end_date)',
         ),
       ),
       'grouping' => 'mailing-fields',
@@ -242,7 +246,7 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
       'fields' => array(
         'click_count' => array(
           'name' => 'event_queue_id',
-          'title' => ts('Clicks'),
+          'title' => ts('Unique Clicks'),
         ),
         'CTR' => array(
           'title' => ts('Click through Rate'),
@@ -500,10 +504,6 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
     else {
       $this->_where = "WHERE " . implode(' AND ', $clauses);
     }
-
-    // if ( $this->_aclWhere ) {
-    // $this->_where .= " AND {$this->_aclWhere} ";
-    // }
   }
 
   public function groupBy() {
@@ -511,6 +511,11 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
       "{$this->_aliases['civicrm_mailing']}.id",
     );
     $this->_groupBy = CRM_Contact_BAO_Query::getGroupByFromSelectColumns($this->_selectClauses, $groupBy);
+  }
+
+  public function orderBy() {
+    parent::orderBy();
+    CRM_Contact_BAO_Query::getGroupByFromOrderBy($this->_groupBy, $this->_orderByArray);
   }
 
   public function postProcess() {
@@ -542,7 +547,7 @@ class CRM_Report_Form_Mailing_Summary extends CRM_Report_Form {
         'civicrm_mailing_event_bounce_bounce_count' => ts('Bounce'),
         'civicrm_mailing_event_opened_open_count' => ts('Total Opens'),
         'civicrm_mailing_event_opened_unique_open_count' => ts('Unique Opens'),
-        'civicrm_mailing_event_trackable_url_open_click_count' => ts('Clicks'),
+        'civicrm_mailing_event_trackable_url_open_click_count' => ts('Unique Clicks'),
         'civicrm_mailing_event_unsubscribe_unsubscribe_count' => ts('Unsubscribe'),
       ),
       'rate' => array(

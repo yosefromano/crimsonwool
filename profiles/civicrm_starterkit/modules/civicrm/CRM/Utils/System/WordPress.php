@@ -351,6 +351,20 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
   }
 
   /**
+   * Determine the native ID of the CMS user.
+   *
+   * @param string $username
+   * @return int|NULL
+   */
+  public function getUfId($username) {
+    $userdata = get_user_by('login', $username);
+    if (!$userdata->data->ID) {
+      return NULL;
+    }
+    return $userdata->data->ID;
+  }
+
+  /**
    * @inheritDoc
    */
   public function logout() {
@@ -366,14 +380,18 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
    * @inheritDoc
    */
   public function getUFLocale() {
+    // Polylang plugin
+    if (function_exists('pll_current_language')) {
+      $language = pll_current_language();
+    }
     // WPML plugin
-    if (defined('ICL_LANGUAGE_CODE')) {
+    elseif (defined('ICL_LANGUAGE_CODE')) {
       $language = ICL_LANGUAGE_CODE;
     }
 
     // TODO: set language variable for others WordPress plugin
 
-    if (isset($language)) {
+    if (!empty($language)) {
       return CRM_Core_I18n_PseudoConstant::longForShort(substr($language, 0, 2));
     }
     else {
@@ -607,6 +625,23 @@ class CRM_Utils_System_WordPress extends CRM_Utils_System_Base {
     }
 
     return $isloggedIn;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function isUserRegistrationPermitted() {
+    if (!get_option('users_can_register')) {
+      return FALSE;
+    }
+    return TRUE;
+  }
+
+  /**
+   * @inheritDoc
+   */
+  public function isPasswordUserGenerated() {
+    return TRUE;
   }
 
   /**
