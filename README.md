@@ -5,8 +5,27 @@ CiviCRM Starterkit is a Drupal 7 distribution that makes it easy to start with t
 
 The [CiviCRM Starterkit](http://civicrmstarterkit.org/) project is not intended to be installed on its own. Instead, you can quickly get started with CiviCRM by [spinning it up on Pantheon](https://dashboard.pantheon.io/products/civicrm_starterkit/spinup). This Pantheon upstream keeps up to date with Pantheon's core Drupal 7 repository, with basic Drupal module security updates, and with updates to the core CiviCRM project.
 
-Upgrading to CiviCRM 4.7
-----------------
+Support
+-------
+
+If you are stuck, confused or run into trouble please [contact us](http://civicrmstarterkit.org/contact) and we'll see how we can help. We provide some basic general support for the public. If you require help with your specific website there will likely be a cost.
+
+Updates to Starterkit
+---------------------
+
+### Update to CiviCRM templates compiling. March 2, 2018
+
+We have removed the patch to optionally store compiled templates in Redis. This approach is no longer recommended. Instead, based on Pantheon's recommendations, you should store compiled templates in the `/tmp` folder. You will need to update your `civicrm.settings.php` file to assign `CIVICRM_TEMPLATE_COMPILEDIR` to the `/tmp` directory. Compare your live settings file to `sites/default/default.civicrm.settings.php`. Specifically `CIVICRM_TEMPLATE_COMPILEDIR` should look like this:
+
+```
+if (isset($pantheon_conf)) {
+    define('CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/tmp/civicrm/templates_c/');
+  }
+```
+
+The technical reason for the change. Storing templates in Redis seemed to help with performance because it avoided writing generated PHP files to a network file system. However, storing in Redis meant we couldn't take advantage of "opcache" by PHP since the PHP wasn't written to files. Pantheon recommends writing generated PHP files to the local machine in something like the temp directory. This is a good recommendation for any setup that needs to support multiple webservers. [Read more](https://lab.civicrm.org/dev/cloud-native/issues/1#note_3120)
+
+### Upgrading to CiviCRM 4.7. September, 2017
 
 If you require support in upgrading from CiviCRM 4.6 to 4.7 please contact us at [CiviCRM Starterkit](http://civicrmstarterkit.org/contact).
 
@@ -14,8 +33,7 @@ You will see the update in the Pantheon dashboard. Make sure to make a backup of
 
 Testing the upgrade is super important. We recommend testing it on the dev environment with a clone of the live database, or if you have access to Multidev, then a fresh environment and branch so that you don't bottleneck other code updates while you're testing this major upgrade.
 
-Required changes for 4.7
-------------------------
+#### Required changes for 4.7
 
 There are a number of changes to the settings file so we've included a template at `sites/default/default.civicrm.settings.php` with instructions on what to copy over if you've got an existing site. New sites will still have a settings file automatically created.
 
@@ -41,8 +59,6 @@ Steps for upgrading:
 When you are ready to deploy the upgrade to live, put the live site into maintenance mode. You then have two options: one, you can copy the live database to dev or test and rerun the upgrade and then copy the database to live. Or two, rerun the relevant steps above on live (backup the database and files; disable extensions and CiviCRM integration modules; push the code update to live and run the database upgrade).
 
 It is also useful to consult the [guide on upgrading CiviCRM on Drupal 7](https://wiki.civicrm.org/confluence/display/CRMDOC/Upgrading+CiviCRM+for+Drupal+7). On Pantheon the above steps overrule some of the steps in the latter guide but it is still useful to reference.
-
-Finally, if you are stuck, confused or run into trouble please [contact us](http://civicrmstarterkit.org/contact) and we'll see how we can help.
 
 Alternative approach to CiviCRM on Pantheon
 -------------------------------------------

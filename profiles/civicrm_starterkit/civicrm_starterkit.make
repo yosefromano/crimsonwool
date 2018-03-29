@@ -66,10 +66,6 @@ libraries[civicrm][patch][1849424-pass] = ./patches/pass-vars-in-install-link.pa
 ; If concerned can set it to skip caching the container. In civicrm.settings.php set:
 ; define('CIVICRM_CONTAINER_CACHE', 'never');
 
-; [OPTIONAL IF USING REDIS] Use CiviCRM cache functions to use Redis for storing compiled Smarty templates (Based on github.com/ojkelly commit 85e04b6)
-; Unconventional but CiviCRM works faster and fewer errors in trying to load templates
-; libraries[civicrm][patch][smartyredis] = ./patches/smarty-redis-civi-cache-47.patch
-
 ; [OPTIONAL] SMTP patch for PHP 5.6+
 ; https://civicrm.stackexchange.com/questions/16628/outgoing-mail-settings-civismtp-php-5-6-x-problem
 libraries[civicrm][patch][smtpverify] = ./patches/smtp-disable-peer-verification.patch
