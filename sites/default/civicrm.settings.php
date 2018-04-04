@@ -218,10 +218,10 @@ else {
 
 if (!defined('CIVICRM_TEMPLATE_COMPILEDIR')) {
   if (isset($pantheon_conf)) {
-    define('CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/files/private/civicrm/templates_c/');
+    define('CIVICRM_TEMPLATE_COMPILEDIR', '/srv/bindings/' . $pantheon_conf['pantheon_binding'] . '/tmp/civicrm/templates_c/');
   }
   else {
-    define( 'CIVICRM_TEMPLATE_COMPILEDIR',  $site_root . '/sites/default/files/private/civicrm/smarty/');
+    define( 'CIVICRM_TEMPLATE_COMPILEDIR',  $site_root . '/sites/default/files/private/civicrm/templates_c');
   }
 }
 
