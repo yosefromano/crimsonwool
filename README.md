@@ -13,6 +13,12 @@ If you are stuck, confused or run into trouble please [contact us](http://civicr
 Updates to Starterkit
 ---------------------
 
+### Update to CiviCRM 5.0.1 April 24, 2018
+
+Made some updates to the settings that are optional, including getting smarter about setting the base url, use the tokens to most of the paths and directories, and setting the CiviCRM environment (dev, staging, live) based on Pantheon's environment. For all environments but live, CiviCRM will now prevent scheduled tasks and mailings from running.
+
+New sites will inherit these new settings from the settings template. Otherwise you can apply them manually by looking at default.civicrm.settings.php.
+
 ### Update to CiviCRM templates compiling. March 2, 2018
 
 We have removed the patch to optionally store compiled templates in Redis. This approach is no longer recommended. Instead, based on Pantheon's recommendations, you should store compiled templates in the `/tmp` folder. You will need to update your `civicrm.settings.php` file to assign `CIVICRM_TEMPLATE_COMPILEDIR` to the `/tmp` directory. Compare your live settings file to `sites/default/default.civicrm.settings.php`. Specifically `CIVICRM_TEMPLATE_COMPILEDIR` should look like this:

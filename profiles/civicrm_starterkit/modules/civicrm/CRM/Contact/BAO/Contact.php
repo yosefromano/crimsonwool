@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact {
 
@@ -349,8 +349,9 @@ class CRM_Contact_BAO_Contact extends CRM_Contact_DAO_Contact {
       $skipDelete = TRUE;
     }
 
-    //add website
-    CRM_Core_BAO_Website::create($params['website'], $contact->id, $skipDelete);
+    if (isset($params['website'])) {
+      CRM_Core_BAO_Website::process($params['website'], $contact->id, $skipDelete);
+    }
 
     $userID = CRM_Core_Session::singleton()->get('userID');
     // add notes
@@ -1046,11 +1047,12 @@ WHERE     civicrm_contact.id = " . CRM_Utils_Type::escape($id, 'Integer');
     if (!$id) {
       return FALSE;
     }
-    $query = "
-UPDATE civicrm_contact
-SET image_URL=NULL
-WHERE id={$id}; ";
-    CRM_Core_DAO::executeQuery($query);
+
+    $contact = new self();
+    $contact->id = $id;
+    $contact->image_URL = 'null';
+    $contact->save();
+
     return TRUE;
   }
 
@@ -3524,8 +3526,9 @@ LEFT JOIN civicrm_address add2 ON ( add1.master_id = add2.id )
     $obj = new $daoName();
     $obj->id = $id;
     $obj->find();
+    $hookParams = [];
     if ($obj->fetch()) {
-      CRM_Utils_Hook::pre('delete', $type, $id, CRM_Core_DAO::$_nullArray);
+      CRM_Utils_Hook::pre('delete', $type, $id, $hookParams);
       $contactId = $obj->contact_id;
       $obj->delete();
     }

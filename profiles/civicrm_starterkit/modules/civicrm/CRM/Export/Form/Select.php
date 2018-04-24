@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  * $Id$
  *
  */
@@ -463,8 +463,7 @@ FROM   {$this->_componentTable}
         break;
     }
 
-    $mappingTypeId = CRM_Core_OptionGroup::getValue('mapping_type', $exportType, 'name');
-    $this->set('mappingTypeId', $mappingTypeId);
+    $this->set('mappingTypeId', CRM_Core_PseudoConstant::getKey('CRM_Core_BAO_Mapping', 'mapping_type_id', $exportType));
 
     $mappings = CRM_Core_BAO_Mapping::getMappings($exportType);
     if (!empty($mappings)) {

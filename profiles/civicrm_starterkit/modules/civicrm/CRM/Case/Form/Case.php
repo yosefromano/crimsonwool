@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 
 /**
@@ -354,7 +354,7 @@ class CRM_Case_Form_Case extends CRM_Core_Form {
       $params['subject'] = $params['activity_subject'];
     }
     $caseObj = CRM_Case_BAO_Case::create($params);
-    $params['case_id'] = $caseObj->id;
+    $this->_caseId = $params['case_id'] = $caseObj->id;
     // unset any ids, custom data
     unset($params['id'], $params['custom']);
 
