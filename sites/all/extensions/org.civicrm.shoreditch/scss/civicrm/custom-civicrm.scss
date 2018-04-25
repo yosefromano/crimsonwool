@@ -1,0 +1,29 @@
+@import 'variables';
+@import 'functions';
+@import 'mixins';
+@import '../bootstrap/overrides/variables';
+@import 'SCSSROOT/org.civicrm.shoreditch/base/scss/overrides/variables';
+@import 'SCSSROOT/org.civicrm.shoreditch/base/scss/vendor/bootstrap/variables';
+@import 'SCSSROOT/org.civicrm.shoreditch/base/scss/vendor/bootstrap/mixins/ALL';
+@import 'SCSSROOT/org.civicrm.shoreditch/base/scss/vendor/bootstrap/tooltip';
+@import '../bootstrap/mixins/*';
+@import '../bootstrap/fonts/*';
+@import '../bootstrap/vendor/font-awesome/variables';
+@import '../bootstrap/vendor/font-awesome/path';
+@import '../bootstrap/overrides/style/*';
+@import 'common/common';
+@import 'main-menu/main-menu';
+@import 'contact/contact';
+@import 'search/search';
+@import 'administer/administer';
+@import 'managers/manager';
+@import 'dashboard/dashboard';
+@import 'campaign/campaign';
+@import 'event/event';
+@import 'financial/financial';
+@import 'grant/grant';
+@import 'pledge/pledge';
+
+body {
+  @include open-sans-font-family();
+}
