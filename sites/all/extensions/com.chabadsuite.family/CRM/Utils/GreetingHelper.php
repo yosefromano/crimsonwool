@@ -16,6 +16,7 @@ class CRM_Utils_GreetingHelper {
 		}
     return $contactIDs;
   }
+
   public static function addUpdateJointGreetings($op, $objectName, $objectId) {
 		$contactId = $objectId;
     if ($op == 'delete') {
@@ -78,15 +79,20 @@ class CRM_Utils_GreetingHelper {
 			'greetings.joint_formal_firstname' => 'greetings.joint_formal_firstname',
 		);
 		self::process_spouses($suffixes, $prefixes, $values, $contactIDs , $greetings_token_names, $household_id);
+    //CRM_Core_Error::debug('$values1',$values);
 		self::process_households($suffixes, $prefixes, $values, $contactIDs , $greetings_token_names);
+    //CRM_Core_Error::debug('$values2',$values);
 		// process people not in households and without spouses.
 		self::process_singles($suffixes, $prefixes, $values, $greetings_token_names);
+    //CRM_Core_Error::debug('$values3',$values);
 
 		// process organizations
 		self::process_organizations($suffixes, $prefixes, $values, $greetings_token_names);
+    //CRM_Core_Error::debug('$values4',$values);
 
 		// Deal with 'solo' type greetings, no need to worry about relationships.
 		self::process_solo_greetings($suffixes, $prefixes, $values, $contactIDs, $greetings_token_names);
+    //CRM_Core_Error::debug('$values5',$values);exit;
 		return $values;
 	}
 
@@ -113,7 +119,7 @@ class CRM_Utils_GreetingHelper {
 		$sql = "SELECT c.id, c.first_name, c.nick_name, c.last_name,
 				c.display_name, c.contact_type
 				FROM civicrm_contact c
-				WHERE c.id IN ($ids_for_sql) ";
+				WHERE c.id IN ($ids_for_sql) AND is_deleted <> 1 AND is_deceased <> 1";
 
 		$dao = CRM_Core_DAO::executeQuery($sql);
 
@@ -229,12 +235,10 @@ class CRM_Utils_GreetingHelper {
 				AND rel.is_active = 1
 				AND (rel.contact_id_a IN ($id_list) OR rel.contact_id_b IN ($id_list))
 				AND c1.is_deleted <> 1 and c2.is_deleted <> 1
-				AND c1.is_deceased <> 1 AND  c2.is_deceased <> 1
 			GROUP BY rel.contact_id_a, rel.contact_id_b, c1.prefix_id, c1.first_name, c1.last_name
 			ORDER BY rel.contact_id_b, c1.birth_date";
 
-		$contact_dao =& CRM_Core_DAO::executeQuery( $sqlstr );
-
+		$contact_dao =& CRM_Core_DAO::executeQuery($sqlstr);
 		$i = 0;
 		//Lets get greetings for spouses.
 		while ($contact_dao->fetch()) {
@@ -300,6 +304,7 @@ class CRM_Utils_GreetingHelper {
 			$cur_contact_a["last_name"] = $contact_dao->last_name;
 			$cur_contact_a["suffix"] = $suffix_label;
 			$cur_contact_a["gender"]= $gender_label;
+      $cur_contact_a["gender_id"]= $gender_id;
 			$cur_contact_a["is_deceased"] = $contact_dao->is_deceased;
 
 			// add cur_contact to the family array.
@@ -307,18 +312,18 @@ class CRM_Utils_GreetingHelper {
 			$household_contains_minimum_individual = TRUE;
 
 			$cur_contact_b["contact_id"] = $contact_dao->cid_b;
-			$cur_contact_a["contact_type"] = $contact_dao->contact_type_b;
+			$cur_contact_b["contact_type"] = $contact_dao->contact_type_b;
 			$cur_contact_b["prefix"] = $prefix_label_spouse;
 			$cur_contact_b["first_name"] = $contact_dao->spouse_first_name;
 			$cur_contact_b["nick_name"] = $contact_dao->spouse_nick_name;
 			$cur_contact_b["last_name"] = $contact_dao->spouse_last_name;
 			$cur_contact_b["suffix"] = $suffix_label_spouse;
 			$cur_contact_b["gender"] = $spouse_gender_label;
+			$cur_contact_b["gender_id"] = $spouse_gender_id;
 			$cur_contact_b["is_deceased"] = $contact_dao->spouse_is_deceased;
 
 			// add cur_contact to the family array.
 			$current_family[] = $cur_contact_b;
-			$household_contains_minimum_individual = TRUE;
 
 			// Add current household to family array if hh_id is not empty.
 			if ($household_id <> '') {
@@ -334,15 +339,39 @@ class CRM_Utils_GreetingHelper {
 
 		$contact_dao->free();
 
-		if ($household_contains_minimum_individual == FALSE) {
-			if ($household_id <> '') {
-				$cur_hh["contact_id"] = $household_id;
-				$cur_hh["contact_type"] = "Household";
-				$current_family[] = $cur_hh;
-				self::process_family_greetings($current_family, $values, $greetings_token_names);
-			}
+		if ($household_contains_minimum_individual == FALSE && !empty($household_id)) {
+			$cur_hh["contact_id"] = $household_id;
+			$cur_hh["contact_type"] = "Household";
+			$current_family[] = $cur_hh;
+			self::process_family_greetings($current_family, $values, $greetings_token_names);
 		}
 	}
+
+  public static function prioritizeGender(&$family) {
+    if (count($family) == 1) {
+      return FALSE;
+    }
+    foreach ($family as $key => $value) {
+      if ($value['is_deceased']) {
+        unset($family[$key]);
+        continue;
+      }
+      if ($key == 0 && $value['gender_id'] == 2) {
+        break;
+      }
+      if ($key == 1 && $value['gender_id'] == 2) {
+        if (!empty($family[0])) {
+          $family[1] = $family[0];
+        }
+        else {
+          unset($family[1]);
+        }
+        $family[0] = $value;
+        break;
+      }
+    }
+    $family = array_values($family);
+  }
 
 	/*********************************************************************************
 	 *  Get the greetings for everyone in a single family.
@@ -361,7 +390,7 @@ class CRM_Utils_GreetingHelper {
 		// get family greeting
 		$have_greeting = FALSE;
 		$needed_greets = [];
-
+    self::prioritizeGender($family);
 		foreach ($family as $cur_contact) {
 			$tmp_cid = $cur_contact['contact_id'];
 
@@ -385,10 +414,9 @@ class CRM_Utils_GreetingHelper {
 				}
 			}
 		}
-
 		if ($have_greeting == FALSE) {
 			if (count($family) == 1) {
-				if ($family[0][spouse_last_name]) {
+				if (!empty($family[0]['spouse_last_name'])) {
 					// this is a married couple or a widow.
 					if ($family[0]['is_deceased'] OR $family[0]['spouse_is_deceased']) {
 						//$needed_greets = $this->get_formatted_greeting_for_widow($family[0]['prefix'], $family[0]['first_name'], $family[0]['last_name'], $family[0]['suffix'], $family[0]['gender'], $family[0]['is_deceased'], $family[0]['spouse_prefix'], $family[0]['spouse_first_name'], $family[0]['spouse_last_name'], $family[0]['spouse_suffix'], $family[0]['spouse_gender'], $family[0]['spouse_is_deceased'], $family[0]['nick_name'], $family[0]['spouse_nick_name']);
@@ -401,7 +429,7 @@ class CRM_Utils_GreetingHelper {
 					// this is a person in a one person household.
 					$uses_spouses_name = FALSE;
 					$needed_greets = self::get_formatted_greeting_for_single($family[0]['prefix'], $family[0]['first_name'], $family[0]['last_name'], $family[0]['suffix'], $family[0]['gender'], $uses_spouses_name,  $family[0]['nick_name']);
-				}
+        }
 
 			}
 			elseif (count($family) >= 2) {
@@ -658,7 +686,7 @@ class CRM_Utils_GreetingHelper {
 		return $prefix_info;
 	}
 
-	public static function process_households(&$suffixes, &$prefixes, &$values, &$contactIDs,$greetings_token_names ) {
+	public static function process_households(&$suffixes, &$prefixes, &$values, &$contactIDs,$greetings_token_names) {
 		$token_name_long = $greetings_token_names['greetings.joint_casual'];
 		$token_formal_short = $token_formal_long = $greetings_token_names['greetings.joint_formal'];
 		$token_formal_fn_short = $token_formal_fn_long = $greetings_token_names['greetings.joint_formal_firstname'];
@@ -691,7 +719,6 @@ class CRM_Utils_GreetingHelper {
 		and c1.is_deleted <> 1
 		GROUP BY r2.contact_id_a, r2.contact_id_b, c1.prefix_id, c1.first_name, c1.last_name, reltype.name_a_b
 		ORDER BY  r2.contact_id_b, reltype.name_a_b, c1.birth_date ";
-
 		$contact_dao =& CRM_Core_DAO::executeQuery($sqlstr);
 		$current_hh = [];
 		$last_hh_id = "";
@@ -724,52 +751,32 @@ class CRM_Utils_GreetingHelper {
 
 		$token_solo_casual  = $greetings_token_names['greetings.solo_casual'];
 		$token_solo_casual_nickname_only = $greetings_token_names['greetings.solo_casual_nickname_only'];
-		$cid_list = "";
-		foreach ($values as $cur_contact) {
-			if (!(array_key_exists( $token_joint_casual, $cur_contact))) {
-				$cid = CRM_Utils_Array::value('contact_id', $cur_contact);
-				if (strlen($cid_list) > 0 && strlen($cid) > 0) {
-					$cid_list = $cid_list . ",";
-				}
-				$cid_list = "$cid_list $cid ";
-			}
-		}
-
-		if (strlen($cid_list) > 0){
-			$tmp_pos = strlen($cid_list) - 1;
-			$last = $cid_list[$tmp_pos];
-		}
-		else {
-			$last = "";
-		}
-
-		if ($last == ",") {
-			$cid_list[strlen($cid_list) - 1] = " ";
-		}
-		$cid_list = trim($cid_list);
-
+    if (empty($values)) {
+      return NULL;
+    }
+		$cid_list = implode(',', array_keys($values));
 		if (strlen($cid_list) > 0) {
 			$where_clause = " WHERE c.id IN ($cid_list) ";
 
-			$sqlstr = "(SELECT c.id, c.contact_type, c.prefix_id, c.first_name, c.nick_name, c.last_name, c.suffix_id, c.gender_id
-				FROM civicrm_contact AS c $where_clause AND contact_type = 'Individual')
-				UNION
-				(SELECT c1.id, c1.contact_type, c2.prefix_id, c2.first_name, c2.nick_name, c2.last_name, c2.suffix_id, c2.gender_id
-				FROM civicrm_contact c1,civicrm_relationship r, civicrm_contact c2, civicrm_relationship_type rt
-				where  c1.id in ($cid_list) AND c1.id = r.contact_id_b and r.contact_id_a = c2.id and r.relationship_type_id = rt.id
-				AND r.is_active = 1
-				AND c1.contact_type = 'Household' AND rt.name_a_b = 'Household Member of'
-				group by c1.id
-				having count(c1.id) = 1 )
-				UNION
-				(SELECT c1.id, c1.contact_type, c2.prefix_id, c2.first_name, c2.nick_name, c2.last_name, c2.suffix_id, c2.gender_id
-				FROM civicrm_contact c1,civicrm_relationship r, civicrm_contact c2, civicrm_relationship_type rt
-				where  c1.id in ($cid_list) AND c1.id = r.contact_id_b AND r.contact_id_a = c2.id AND r.relationship_type_id = rt.id
-				AND r.is_active = 1
-				AND c1.contact_type = 'Household' AND rt.name_a_b = 'Head of Household for'
-				group by c1.id
-				having count(c1.id) = 1) " ;
-
+			$sqlstr = "SELECT cc.id, cc.contact_type, cc.prefix_id, cc.first_name, cc.nick_name, cc.last_name, cc.suffix_id, cc.gender_id
+          FROM civicrm_contact cc
+          WHERE cc.id IN ($cid_list) AND cc.id NOT IN (
+            SELECT cr.contact_id_a FROM civicrm_relationship cr
+              INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
+                AND cr.contact_id_a IN ($cid_list) AND cr.is_active = 1
+                AND crt.name_a_b IN ('Head of Household for', 'Household Member of')
+            ) AND cc.id NOT IN (
+              SELECT cr.contact_id_a FROM civicrm_relationship cr
+                INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
+                AND cr.contact_id_a IN ($cid_list) AND cr.is_active = 1
+                AND crt.name_a_b IN ('Partner of', 'Spouse of')
+              UNION
+              SELECT cr.contact_id_b FROM civicrm_relationship cr
+                INNER JOIN civicrm_relationship_type crt ON crt.id = cr.relationship_type_id
+                  AND cr.contact_id_a IN ($cid_list) AND cr.is_active = 1
+                  AND crt.name_a_b IN ('Partner of', 'Spouse of')
+              )
+      ";
 			$contact_dao = CRM_Core_DAO::executeQuery( $sqlstr );
 			//Lets get greetings for singles
 			while ($contact_dao->fetch()) {
@@ -824,14 +831,13 @@ class CRM_Utils_GreetingHelper {
 			}
 			$contact_dao->free();
 		}
-
 		// handle solo greetings (including for married contacts)
 
 		if (strlen($cid_list) > 0) {
 			$where_clause = " WHERE c.id in ( $cid_list) ";
 
 			$sql = " SELECT c.id, c.contact_type, c.prefix_id, c.first_name, c.nick_name,  c.last_name, c.suffix_id, c.gender_id
-				FROM civicrm_contact AS c $where_clause and contact_type = 'Individual' ";
+				FROM civicrm_contact AS c $where_clause and contact_type = 'Individual' AND c.is_deleted <> 1 AND c.is_deceased<> 1";
 
 			$contact_dao = CRM_Core_DAO::executeQuery($sql);
 

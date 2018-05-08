@@ -68,13 +68,13 @@ class CRM_Householdgreetings_Form_Update extends CRM_Core_Form {
       'reset' => TRUE,
     ));
     $contactCount = CRM_Core_DAO::singleValueQuery('SELECT count(id) FROM civicrm_contact WHERE contact_type = "Individual"');
-    $batchSize = 1000;
+    $batchSize = 100;
     for ($startId = 0; $startId <= $contactCount; $startId += $batchSize) {
       $endId = $startId + $batchSize;
       $queue->createItem( new CRM_Queue_Task(
         ['CRM_Householdgreetings_Form_Update', 'updateGreetings'],
         [$startId, $batchSize],
-        "Update Mailings($startId => $endId): Update greetings for contact... "
+        "Update reetings($startId => $endId): Update greetings for contact... "
       ));
     }
 
