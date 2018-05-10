@@ -359,7 +359,7 @@ class CRM_Utils_GreetingHelper {
       if ($key == 0 && $value['gender_id'] == 2) {
         break;
       }
-      if ($key == 1 && $value['gender_id'] == 2) {
+      if ($key == 1 && ($value['gender_id'] == 2 || (empty($value['gender_id']) && $family[0]['gender_id'] == 1))) {
         if (!empty($family[0])) {
           $family[1] = $family[0];
         }
@@ -370,6 +370,7 @@ class CRM_Utils_GreetingHelper {
         break;
       }
     }
+    //CRM_Core_Error::debug('$family', $family);exit;
     $family = array_values($family);
   }
 
