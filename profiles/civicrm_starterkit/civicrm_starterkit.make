@@ -70,70 +70,26 @@ libraries[civicrm][patch][1849424-pass] = ./patches/pass-vars-in-install-link.pa
 ; https://civicrm.stackexchange.com/questions/16628/outgoing-mail-settings-civismtp-php-5-6-x-problem
 libraries[civicrm][patch][smtpverify] = ./patches/smtp-disable-peer-verification.patch
 
-; ====== POPULAR CONTRIB MODULES =========
-
-projects[backup_migrate][subdir] = "contrib"
-projects[backup_migrate][version] = "3.4"
-
-projects[civicrm_clear_all_caches][subdir] = "contrib"
-projects[civicrm_clear_all_caches][version] = "1.0-beta2"
-
-projects[civicrm_cron][subdir] = "contrib"
-projects[civicrm_cron][version] = "2.0-beta2"
-
-projects[ctools][subdir] = "contrib"
-projects[ctools][version] = "1.12"
+; === Modules ===
 
 projects[captcha][subdir] = "contrib"
-projects[captcha][version] = "1.5"
-
-projects[features][subdir] = "contrib"
-projects[features][version] = "2.10"
-
-projects[fontyourface][subdir] = "contrib"
-projects[fontyourface][version] = "2.8"
-
-projects[imce][subdir] = "contrib"
-projects[imce][version] = "1.11"
-
-projects[imce_wysiwyg][subdir] = "contrib"
-projects[imce_wysiwyg][version] = "1.0"
-
-projects[libraries][subdir] = "contrib"
-projects[libraries][version] = "2.3"
-
-projects[module_filter][subdir] = "contrib"
-projects[module_filter][version] = "2.1"
-
-projects[options_element][subdir] = "contrib"
-projects[options_element][version] = "1.12"
-
-projects[profile_status_check][subdir] = "contrib"
-projects[profile_status_check][version] = "1.0-beta2"
-
-projects[profile_switcher][subdir] = "contrib"
-projects[profile_switcher][version] = "1.0-beta1"
-
 projects[recaptcha][subdir] = "contrib"
-projects[recaptcha][version] = "2.2"
-
+projects[civicrm_clear_all_caches][subdir] = "contrib"
+projects[civicrm_cron][subdir] = "contrib"
+projects[ctools][subdir] = "contrib"
+projects[features][subdir] = "contrib"
+projects[libraries][subdir] = "contrib"
+projects[module_filter][subdir] = "contrib"
+projects[options_element][subdir] = "contrib"
 projects[views][subdir] = "contrib"
-projects[views][version] = "3.18"
-
 projects[webform][subdir] = "contrib"
-projects[webform][version] = "4.16"
-
 projects[webform_civicrm][subdir] = "contrib"
-projects[webform_civicrm][version] = "4.19"
-
 projects[wysiwyg][subdir] = "contrib"
-projects[wysiwyg][version] = "2.4"
 
-
-; ====== DRUPAL LIBRARIES =========
+; === Libraries ===
 
 libraries[ckeditor][download][type] = get
-libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.6.2/ckeditor_4.6.2_standard.tar.gz"
+libraries[ckeditor][download][url] = "http://download.cksource.com/CKEditor/CKEditor/CKEditor%204.9.2/ckeditor_4.9.2_standard.tar.gz"
 libraries[ckeditor][destination] = libraries
 libraries[ckeditor][directory_name] = ckeditor
 

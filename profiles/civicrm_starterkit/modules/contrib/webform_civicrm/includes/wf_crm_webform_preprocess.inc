@@ -471,6 +471,16 @@ class wf_crm_webform_preprocess extends wf_crm_webform_base {
           if (isset($this->info[$ent][$c][$table][$n][$name])
             && !(isset($component['cid']) && isset($submitted[$component['cid']]))) {
             $val = $this->info[$ent][$c][$table][$n][$name];
+
+            if ($ent === 'contact') {
+              $createModeKey = 'civicrm_' . $c . '_contact_' . $n . '_' . $table . '_createmode';
+              $multivaluesCreateMode = isset($this->data['config']['create_mode'][$createModeKey]) ? (int) $this->data['config']['create_mode'][$createModeKey] : NULL;
+
+              // Set empty value for field with 'Create only' mode.
+              if ($multivaluesCreateMode === self::MULTIVALUE_FIELDSET_MODE_CREATE_ONLY) {
+                $val = wf_crm_aval($element, '#default_value', '');
+              }
+            }
             if (($element['#type'] == 'checkboxes' || !empty($element['#multiple'])) && !is_array($val)) {
               $val = wf_crm_explode_multivalue_str($val);
             }
@@ -488,6 +498,10 @@ class wf_crm_webform_preprocess extends wf_crm_webform_base {
               else {
                 $val = array_pop($val);
               }
+            }
+            if ($component['type'] == 'autocomplete' && is_string($val) && strlen($val)) {
+              $options = wf_crm_field_options($component, '', $this->data);
+              $val = wf_crm_aval($options, $val);
             }
             // Contact image & custom file fields
             if ($dt == 'File') {
