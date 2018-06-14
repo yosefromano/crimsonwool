@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.7                                                |
+ | CiviCRM version 5                                                  |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
@@ -159,7 +159,7 @@ class CRM_Core_BAO_CustomOption {
           $options[$dao->id]['is_default'] = '';
         }
       }
-
+      $options[$dao->id]['description'] = $dao->description;
       $options[$dao->id]['class'] = $dao->id . ',' . $class;
       $options[$dao->id]['is_active'] = empty($dao->is_active) ? ts('No') : ts('Yes');
       $options[$dao->id]['links'] = CRM_Core_Action::formLink($links,

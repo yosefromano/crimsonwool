@@ -1,5 +1,11 @@
 #Changelog
 
+## June 13, 2018
+
+### Update to CiviCRM 5.2.1
+
+CiviCRM is now set to 5.2.1 and includes database changes. There are no major issues with the upgrade.
+
 ## May 19, 2018.
 
 ### Removed Drupal modules from profile.

@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.7                                                |
+ | CiviCRM version 5                                                  |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
@@ -582,7 +582,7 @@ class CRM_Report_Form_Activity extends CRM_Report_Form {
       $this->_aliases['civicrm_contact'] = 'civicrm_contact_source';
     }
 
-    $this->addAddressFromClause();
+    $this->joinAddressFromContact();
   }
 
   /**

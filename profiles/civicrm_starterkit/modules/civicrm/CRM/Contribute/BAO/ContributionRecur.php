@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 4.7                                                |
+ | CiviCRM version 5                                                  |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
@@ -323,7 +323,7 @@ SELECT r.payment_processor_id
   }
 
   /**
-   * Get list of recurring contribution of contact Ids.
+   * @deprecated Get list of recurring contribution of contact Ids.
    *
    * @param int $contactId
    *   Contact ID.
@@ -333,6 +333,7 @@ SELECT r.payment_processor_id
    *
    */
   public static function getRecurContributions($contactId) {
+    Civi::log()->warning('Deprecated function, use ContributionRecur.get API instead', array('civi.tag' => 'deprecated'));
     $params = array();
     $recurDAO = new CRM_Contribute_DAO_ContributionRecur();
     $recurDAO->contact_id = $contactId;
