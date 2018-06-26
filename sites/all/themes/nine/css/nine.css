@@ -3,11 +3,14 @@
 }
 
 .crm-container .status{
-	color: #fff;
-	background-color: #f0ad4e;
+	color: #777;
+	background-color: #fff;
 	border-color: #eea236;
 }
 
+.crm-container .crm-form-block {
+    background-color: #fafafa;
+}
 
 #crm-container.crm-public label {
 	    padding-left: 4px !important;
@@ -35,15 +38,6 @@ a.select2-choice.select2-default {
     margin-bottom: 20px;
 }
 
-//*	#crm-container.crm-public div#priceset {
-    border: none;
-    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
-    background: #fff;
-    border-radius: 3px;
-    position: relative;
-    margin-bottom: 20px;
-	 padding:1em;
-}*/
 
 	#crm-container.crm-public legend {
     font-family: sans-serif;
