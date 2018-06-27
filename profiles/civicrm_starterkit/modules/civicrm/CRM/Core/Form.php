@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -31,7 +31,7 @@
  * machine. Each form can also operate in various modes
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 
 require_once 'HTML/QuickForm/Page.php';
@@ -1804,6 +1804,10 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     $setDefaultCurrency = TRUE
   ) {
     $currencies = CRM_Core_OptionGroup::values('currencies_enabled');
+    if (!array_key_exists($defaultCurrency, $currencies)) {
+      Civi::log()->warning('addCurrency: Currency ' . $defaultCurrency . ' is disabled but still in use!');
+      $currencies[$defaultCurrency] = $defaultCurrency;
+    }
     $options = array('class' => 'crm-select2 eight');
     if (!$required) {
       $currencies = array('' => '') + $currencies;
@@ -2386,6 +2390,26 @@ class CRM_Core_Form extends HTML_QuickForm_Page {
     // @todo If empty there is a problem - we should probably put in a deprecation notice
     // to warn if that seems to be happening.
     return $currency;
+  }
+
+  /**
+   * Is the form in view or edit mode.
+   *
+   * The 'addField' function relies on the form action being one of a set list
+   * of actions. Checking for these allows for an early return.
+   *
+   * @return bool
+   */
+  protected function isFormInViewOrEditMode() {
+    return in_array($this->_action, [
+      CRM_Core_Action::UPDATE,
+      CRM_Core_Action::ADD,
+      CRM_Core_Action::VIEW,
+      CRM_Core_Action::BROWSE,
+      CRM_Core_Action::BASIC,
+      CRM_Core_Action::ADVANCED,
+      CRM_Core_Action::PREVIEW,
+    ]);
   }
 
 }

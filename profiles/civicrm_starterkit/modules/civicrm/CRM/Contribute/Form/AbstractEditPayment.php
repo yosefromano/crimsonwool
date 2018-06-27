@@ -3,7 +3,7 @@
  +--------------------------------------------------------------------+
  | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
- | Copyright CiviCRM LLC (c) 2004-2017                                |
+ | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
  | This file is a part of CiviCRM.                                    |
  |                                                                    |
@@ -28,7 +28,7 @@
 /**
  *
  * @package CRM
- * @copyright CiviCRM LLC (c) 2004-2017
+ * @copyright CiviCRM LLC (c) 2004-2018
  */
 
 /**
@@ -211,6 +211,13 @@ class CRM_Contribute_Form_AbstractEditPayment extends CRM_Contact_Form_Task {
   public $paymentInstrumentID;
 
   /**
+   * Component - event, membership or contribution.
+   *
+   * @var string
+   */
+  protected $_component;
+
+  /**
    * Array of fields to display on billingBlock.tpl - this is not fully implemented but basically intent is the panes/fieldsets on this page should
    * be all in this array in order like
    *  'credit_card' => array('credit_card_number' ...
@@ -363,6 +370,11 @@ WHERE  contribution_id = {$id}
     }
     elseif (empty($this->_paymentProcessors) || array_keys($this->_paymentProcessors) === array(0)) {
       throw new CRM_Core_Exception(ts('You will need to configure the %1 settings for your Payment Processor before you can submit a credit card transactions.', array(1 => $this->_mode)));
+    }
+    //Assign submitted processor value if it is different from the loaded one.
+    if (!empty($this->_submitValues['payment_processor_id'])
+      && $this->_paymentProcessor['id'] != $this->_submitValues['payment_processor_id']) {
+      $this->_paymentProcessor = CRM_Financial_BAO_PaymentProcessor::getPayment($this->_submitValues['payment_processor_id']);
     }
     $this->_processors = array();
     foreach ($this->_paymentProcessors as $id => $processor) {

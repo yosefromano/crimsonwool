@@ -1,5 +1,5 @@
 diff --git a/CRM/Core/Config/Runtime.php b/CRM/Core/Config/Runtime.php
-index 3282de2..c457aaa 100644
+index 88220f44..76f344f6 100644
 --- a/CRM/Core/Config/Runtime.php
 +++ b/CRM/Core/Config/Runtime.php
 @@ -100,7 +100,7 @@ class CRM_Core_Config_Runtime extends CRM_Core_Config_MagicMerge {
@@ -12,10 +12,10 @@ index 3282de2..c457aaa 100644
        CRM_Utils_File::restrictAccess($this->configAndLogDir);
 
 diff --git a/CRM/Utils/File.php b/CRM/Utils/File.php
-index c69d9c8..4a6dcac 100644
+index 6c759d79..ce13a2d8 100644
 --- a/CRM/Utils/File.php
 +++ b/CRM/Utils/File.php
-@@ -566,28 +566,68 @@ HTACCESS;
+@@ -569,28 +569,68 @@ HTACCESS;
    }
 
    /**
@@ -99,3 +99,17 @@ index c69d9c8..4a6dcac 100644
 
        $_path = CRM_Utils_File::addTrailingSlash($path);
      }
+diff --git a/Civi/Core/Paths.php b/Civi/Core/Paths.php
+index 8cab188a..fa6ddc71 100644
+--- a/Civi/Core/Paths.php
++++ b/Civi/Core/Paths.php
+@@ -56,6 +56,9 @@ class Paths {
+       ->register('civicrm.files', function () {
+         return \CRM_Core_Config::singleton()->userSystem->getDefaultFileStorage();
+       })
++      ->register('civicrm.private', function () {
++        return \CRM_Core_Config::singleton()->userSystem->getDefaultFileStorage();
++      })
+       ->register('wp.frontend.base', function () {
+         return array('url' => rtrim(CIVICRM_UF_BASEURL, '/') . '/');
+       })
