@@ -35,7 +35,8 @@ a.select2-choice.select2-default {
     background: #fff;
     border-radius: 3px;
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 2em;
+    padding-top: 4em;
 }
 
 
@@ -44,7 +45,10 @@ a.select2-choice.select2-default {
     font-size: 20px;
     font-weight: 500;
     position: absolute;
-    top: 14px;
+    top: 9px;
+    border-bottom: solid 1px black;
+    left: 7px;
+    width: 90%;
 }
 
 .label label {
