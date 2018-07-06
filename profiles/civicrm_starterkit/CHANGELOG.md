@@ -1,5 +1,11 @@
 #Changelog
 
+## July 5, 2018
+
+Fixed a minor error with the install profile.
+
+Updated Webform CiviCRM.
+
 ## June 13, 2018
 
 ### Update to CiviCRM 5.2.1

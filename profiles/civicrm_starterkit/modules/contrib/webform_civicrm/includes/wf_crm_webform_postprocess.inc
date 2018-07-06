@@ -748,8 +748,9 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
    */
   private function saveContactLocation($contact, $cid, $c) {
     // Check which location_type_id is to be set as is_primary=1;
-    $is_primary_address_location_type = $contact['address'][1]['location_type_id'];
-    $is_primary_email_location_type = $contact['email'][1]['location_type_id'];
+    $is_primary_address_location_type = wf_crm_aval($contact, 'address:1:location_type_id');
+    $is_primary_email_location_type = wf_crm_aval($contact, 'email:1:location_type_id');
+
     foreach (wf_crm_location_fields() as $location) {
       if (!empty($contact[$location])) {
         $existing = array();
@@ -1537,15 +1538,24 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
     }
     // Calculate totals
     $this->totalContribution = 0;
+    $taxRates = CRM_Core_PseudoConstant::getTaxRates();
     foreach ($this->line_items as &$item) {
-      // tax integration
-      if (!is_null($this->tax_rate)) {
-        $item['line_total'] = $item['unit_price'] * (int) $item['qty'];
-        $item['tax_amount'] = ($this->tax_rate / 100) * $item['line_total'];
-        $this->totalContribution += (1 + $this->tax_rate / 100) * $item['unit_price'] * (int) $item['qty'];
+      // Sales Tax integration
+      if (!empty($item['financial_type_id'])) {
+        $itemTaxRate = isset($taxRates[$item['financial_type_id']]) ? $taxRates[$item['financial_type_id']] : NULL;
       }
       else {
-        $this->totalContribution += $item['line_total'] = $item['unit_price'] * (int) $item['qty'];
+        $itemTaxRate = $this->tax_rate;
+      }
+
+      if (!is_null($itemTaxRate)) {
+        $item['line_total'] = $item['unit_price'] * (int) $item['qty'];
+        $item['tax_amount'] = ($itemTaxRate / 100) * $item['line_total'];
+        $this->totalContribution += ($item['unit_price'] * (int) $item['qty']) + $item['tax_amount'];
+      }
+      else {
+        $item['line_total'] = $item['unit_price'] * (int) $item['qty'];
+        $this->totalContribution += $item['line_total'];
       }
     }
     return round($this->totalContribution, 2);
@@ -1738,8 +1748,8 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
   private function submitLivePayment() {
     $contributionParams = $this->contributionParams();
 
-    // Only if #installments = 1, do we process a single transaction/contribution. #installments = 0 in CiviCRM Core means open ended commitment;
-    $numInstallments = wf_crm_aval($contributionParams, 'installments', 1, TRUE);
+    // Only if #installments = 1, do we process a single transaction/contribution. #installments = 0 (or not set) in CiviCRM Core means open ended commitment;
+    $numInstallments = wf_crm_aval($contributionParams, 'installments', NULL, TRUE);
     $frequencyInterval = wf_crm_aval($contributionParams, 'frequency_unit');
     if ($numInstallments != 1 && !empty($frequencyInterval)) {
       $result = $this->contributionRecur($contributionParams);
@@ -1761,33 +1771,51 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
   }
 
   /**
+   *
    * Generate recurring contribution and transact the first one
    */
-  private function contributionRecur($contributionParams) {
-    $installments = $contributionParams['installments'];
-    if ($installments != 0) {
+  private function contributionRecur($contributionParams, $paymentType = 'live') {
+    $numInstallments = wf_crm_aval($contributionParams, 'installments', NULL, TRUE);
+    // if ($installments === 0) or $installments is not defined we treat as an open-ended recur
+    $contributionFirstAmount = $contributionRecurAmount = $contributionParams['total_amount'];
+    $salesTaxFirstAmount = wf_crm_aval($contributionParams, 'tax_amount', NULL, TRUE);;
+    if ($numInstallments > 0) {
       // DRU-2862396 - we must ensure to only present 2 decimals to CiviCRM:
-      $contributionRecurAmount = floor(($contributionParams['total_amount'] / $installments) * 100) / 100;
-      $contributionFirstAmount = $contributionParams['total_amount'] - $contributionRecurAmount * ($installments - 1);
+      $contributionRecurAmount = floor(($contributionParams['total_amount'] / $numInstallments) * 100) / 100;
+      $contributionFirstAmount = $contributionParams['total_amount'] - $contributionRecurAmount * ($numInstallments - 1);
+      $salesTaxFirstAmount = $salesTaxFirstAmount - floor(($salesTaxFirstAmount / $numInstallments) * 100) / 100 * ($numInstallments - 1);
+
+      // Calculate the line_items for the first contribution:
+      // At this point line_items are set to the full (non-installment) amounts.
+      foreach ($this->line_items as $key => $k) {
+        $this->line_items[$key]['unit_price'] = $k['unit_price'] / $numInstallments;
+        $this->line_items[$key]['line_total'] = $k['line_total'] / $numInstallments;
+        $this->line_items[$key]['tax_amount'] = $k['tax_amount'] / $numInstallments;
+      }
     }
 
     // Create Params for Creating the Recurring Contribution Series and Create it
     $contributionRecurParams = array(
-      'sequential' => 1,
       'contact_id' => $contributionParams['contact_id'],
       'frequency_interval' => wf_crm_aval($contributionParams, 'frequency_interval', 1),
       'frequency_unit' => wf_crm_aval($contributionParams, 'frequency_unit', 'month'),
-      'installments' => $installments,
+      'installments' => $numInstallments,
       'amount' => $contributionRecurAmount,
-      'contribution_status_id' => 5,
+      'contribution_status_id' => 'In Progress',
       'currency' => $contributionParams['currency'],
       'payment_processor_id' =>  $contributionParams['payment_processor_id'],
       'financial_type_id' =>  $contributionParams['financial_type_id'],
     );
+
+    if(empty($contributionParams['payment_processor_id'])) {
+      $contributionRecurParams['payment_processor_id'] = 'null';
+    }
+
     $resultRecur = wf_civicrm_api('ContributionRecur', 'create', $contributionRecurParams);
 
     // Run the Transaction - and Create the Contribution Record - relay Recurring Series information in addition to the already existing Params [and re-key where needed]; at times two keys are required
     $contributionParams['total_amount'] = $contributionFirstAmount;
+    $contributionParams['tax_amount'] = $salesTaxFirstAmount;
     $additionalParams = array(
       'contribution_recur_id' => $resultRecur['id'],
       'contributionRecurID' => $resultRecur['id'],
@@ -1796,7 +1824,12 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
       'frequency_interval' => wf_crm_aval($contributionParams, 'frequency_interval', 1),
       'frequency_unit' => wf_crm_aval($contributionParams, 'frequency_unit', 'month'),
     );
-    $result = wf_civicrm_api('contribution', 'transact', $contributionParams + $additionalParams);
+
+    $APIAction = 'transact';
+    if ($paymentType === 'deferred') {
+      $APIAction = 'create';
+    }
+    $result = wf_civicrm_api('contribution', $APIAction, $contributionParams + $additionalParams);
 
     // If transaction was successful - Update the Recurring Series - currency must be resubmitted or else it will re-default to USD; invoice_id is that of the initiating Contribution
     if (empty($result['error_message'])) {
@@ -1812,11 +1845,27 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
   }
 
   /**
-   * Create Incomplete (Pay-Later or IPN) Contribution
+   * Create Pending (Pay Later) Contribution
    */
   private function createDeferredPayment() {
     $this->contributionIsIncomplete = TRUE;
-    $this->contributionIsPayLater = empty($this->data['contribution'][1]['contribution'][1]['payment_processor_id']);
+
+    $this->contributionIsPayLater = FALSE;
+    if(empty($this->data['contribution'][1]['contribution'][1]['payment_processor_id'])) {
+      $this->contributionIsPayLater = TRUE;
+    }
+    else {
+      $paymentProcessorID = $this->data['contribution'][1]['contribution'][1]['payment_processor_id'];
+      $paymentProcessorClassName = civicrm_api3('PaymentProcessor', 'getvalue', array(
+        'return' => 'class_name',
+        'id' => $paymentProcessorID,
+      ));
+
+      if ($paymentProcessorClassName === 'Payment_Manual') {
+        $this->contributionIsPayLater = TRUE;
+      }
+    }
+
     $params = $this->contributionParams();
     $params['contribution_status_id'] = 'Pending';
     $params['is_pay_later'] = $this->contributionIsPayLater;
@@ -1827,7 +1876,16 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
         $params['payment_instrument_id'] = key($defaultPaymentInstrument);
       }
     }
-    $result = wf_civicrm_api('contribution', 'create', $params);
+
+    $numInstallments = wf_crm_aval($params, 'installments', NULL, TRUE);
+    $frequencyInterval = wf_crm_aval($params, 'frequency_unit');
+    if ($numInstallments != 1 && !empty($frequencyInterval) && $this->contributionIsPayLater) {
+      $result = $this->contributionRecur($params, 'deferred');
+    }
+    else {
+      $result = wf_civicrm_api('contribution', 'create', $params);
+    }
+
     $this->ent['contribution'][1]['id'] = $result['id'];
   }
 
@@ -1931,8 +1989,14 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
     }
 
     // Sales tax integration
-    if (!is_null($this->tax_rate)) {
-      $params['tax_amount'] = round(($params['total_amount'] / ($this->tax_rate + 100)) * $this->tax_rate, 2);
+    $params['tax_amount'] = 0;
+    if (isset($this->form_state['civicrm']['line_items'])) {
+      foreach ($this->form_state['civicrm']['line_items'] as $lineItem) {
+        if (!empty($lineItem['tax_amount'])) {
+          $params['tax_amount'] += $lineItem['tax_amount'];
+        }
+      }
+      $params['tax_amount'] = round($params['tax_amount'], 2);
     }
     $params['description'] = t('Webform Payment: @title', array('@title' => $this->node->title));
     if (!isset($params['source'])) {
@@ -2062,15 +2126,25 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
         }
       }
 
+      // Format (and round) monetary values before saving the line items
+      isset($item['unit_price']) ? $item['unit_price'] = CRM_Utils_Money::format($item['unit_price'], NULL, NULL, TRUE) : NULL;
+      isset($item['line_total']) ? $item['line_total'] = CRM_Utils_Money::format($item['line_total'], NULL, NULL, TRUE) : NULL;
+      isset($item['tax_amount']) ? $item['tax_amount'] = CRM_Utils_Money::format($item['tax_amount'], NULL, NULL, TRUE) : NULL;
+
+      // Save the lineitem
       $line_result = wf_civicrm_api('line_item', 'create', $item);
       $item['id'] = $line_result['id'];
 
       $lineItemRecord = json_decode(json_encode($item), FALSE);
       // Add financial_item and entity_financial_trxn
-      $result = CRM_Financial_BAO_FinancialItem::add($lineItemRecord, $contributionResult);
-      if (!is_null($this->tax_rate)) {
-        $result = CRM_Financial_BAO_FinancialItem::add($lineItemRecord, $contributionResult, TRUE);
+      // hence that we call CRM_Financial_BAO_FinancialItem::add() twice,
+      // once to create the line item 'total amount' financial_item record and the 2nd
+      // one to create the line item 'tax amount' financial_item  record.
+      CRM_Financial_BAO_FinancialItem::add($lineItemRecord, $contributionResult);
+      if (!empty($lineItemRecord->tax_amount)) {
+        CRM_Financial_BAO_FinancialItem::add($lineItemRecord, $contributionResult, TRUE);
       }
+
       // Create participant/membership payment records
       if (isset($item['membership_id']) || isset($item['participant_id'])) {
         $type = isset($item['participant_id']) ? 'participant' : 'membership';
@@ -2155,8 +2229,8 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
       // If value is null then it was hidden by a webform conditional rule - skip it
       if ($val !== NULL && $val !== array(NULL)) {
         list( , $c, $ent, $n, $table, $name) = explode('_', $field_key, 6);
-        // Fieldsets and existing contact fields are not strictly CiviCRM fields, so ignore
-        if ($name === 'existing' || $name === 'fieldset') {
+        // The following are not strictly CiviCRM fields, so ignore
+        if (in_array($name, array('existing', 'fieldset', 'createmode'))) {
           continue;
         }
         // Check to see if configured to ignore hidden field value(s)
@@ -2383,7 +2457,7 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
   }
 
   /**
-   * reorder submitted location values according to existing location values
+   * Reorder submitted location values according to existing location values
    *
    * @param array $submittedLocationValues
    * @param array $existingLocationValues
@@ -2418,14 +2492,9 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
       }
       else {
         foreach (wf_crm_address_fields() as $field)  {
-          $reorderedArray[$index][$field] = isset($eValue[$field]) ? $eValue[$field] : '';
-        }
-        // handle supplemental addresses
-        $subAddressIndex = 1;
-        $subAddField = 'supplemental_address_' . $subAddressIndex;
-        while(isset($eValue[$subAddField]))  {
-          $reorderedArray[$index][$subAddField] = $eValue[$subAddField];
-          $subAddField = 'supplemental_address_' . ++$subAddressIndex;
+          if ($field != 'location_type_id') {
+            $reorderedArray[$index][$field] = isset($eValue[$field]) ? $eValue[$field] : '';
+          }
         }
       }
 
@@ -2445,19 +2514,12 @@ class wf_crm_webform_postprocess extends wf_crm_webform_base {
           }
           else {
             foreach (wf_crm_address_fields() as $field)  {
-              if (isset($sValue[$field]))  {
+              if (isset($sValue[$field]) && $field != 'location_type_id')  {
                 $reorderedArray[$index][$field] = $sValue[$field];
               }
             }
-            // handle supplemental addresses
-            $subAddressIndex = 1;
-            $subAddField = 'supplemental_address_' . $subAddressIndex;
-            while(isset($sValue[$subAddField]))  {
-              $reorderedArray[$index][$subAddField] = $sValue[$subAddField];
-              $subAddField = 'supplemental_address_' . ++$subAddressIndex;
-            }
           }
-           unset($submittedLocationValues[$key]);
+          unset($submittedLocationValues[$key]);
         }
       }
       $index++;
