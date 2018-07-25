@@ -16,13 +16,18 @@ Documentation
 -------------
 
 Further instructions can be found at:
-http://wiki.civicrm.org/confluence/display/CRMDOC/Webform+CiviCRM+Integration
+https://docs.civicrm.org/sysadmin/en/latest/integration/drupal/webform
 
 Issues
 ------
 
 Bugs and Feature requests should be reported in the Issue Queue:
 https://www.drupal.org/project/issues/webform_civicrm
+
+Contributing
+------------
+
+Pull-requests should be submitted with a clear description of the problem and steps to reproduce.
 
 Credits
 -------

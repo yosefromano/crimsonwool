@@ -108,6 +108,11 @@ class wf_crm_admin_component {
       $this->moneyOptions();
     }
 
+    // Fields from webform_autocomplete module
+    elseif ($this->component['type'] === 'autocomplete') {
+      $this->form['options']['#access'] = FALSE;
+    }
+
     // Simplify form for hidden fields
     elseif (($name === 'contact_id' || $name === 'external_identifier') && $this->component['type'] === 'hidden') {
       $this->form['value']['#value'] = '';
@@ -686,7 +691,11 @@ function wf_crm_cs_validate($form, &$form_state) {
 function wf_crm_money_validate($form, &$form_state) {
   $vals = $form_state['values'];
   if (!empty($vals['value']) && !is_numeric($vals['value']) && $vals['type'] != 'formula') {
-    form_error($form['value'], t('This is a CiviCRM currency field. @field must be a number.', array('@field' => $form['value']['#title'])));
+    //Check if default value is a token string.
+    $isTokenString = token_replace($vals['value'], array(), array('clear' => true));
+    if (!empty($isTokenString)) {
+      form_error($form['value'], t('This is a CiviCRM currency field. @field must be a number.', array('@field' => $form['value']['#title'])));
+    }
   }
   foreach (array('items', 'options') as $field) {
     if (!empty($vals['extra'][$field])) {
