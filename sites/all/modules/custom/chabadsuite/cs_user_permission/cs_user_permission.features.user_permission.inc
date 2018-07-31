@@ -80,6 +80,17 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'access CiviMember'.
+  $permissions['access CiviMember'] = array(
+    'name' => 'access CiviMember',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'access CiviPledge'.
   $permissions['access CiviPledge'] = array(
     'name' => 'access CiviPledge',
@@ -398,6 +409,17 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'googleanalytics',
   );
 
+  // Exported permission: 'add contact notes'.
+  $permissions['add contact notes'] = array(
+    'name' => 'add contact notes',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'add contacts'.
   $permissions['add contacts'] = array(
     'name' => 'add contacts',
@@ -575,15 +597,6 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
-  );
-
-  // Exported permission: 'administer devel menu items'.
-  $permissions['administer devel menu items'] = array(
-    'name' => 'administer devel menu items',
-    'roles' => array(
-      'SUPER ADMIN' => 'SUPER ADMIN',
-    ),
-    'module' => 'menu_admin_per_menu',
   );
 
   // Exported permission: 'administer features'.
@@ -790,6 +803,15 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'user',
+  );
+
+  // Exported permission: 'administer private reports'.
+  $permissions['administer private reports'] = array(
+    'name' => 'administer private reports',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'administer redirects'.
@@ -1420,6 +1442,17 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'delete in CiviMember'.
+  $permissions['delete in CiviMember'] = array(
+    'name' => 'delete in CiviMember',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'delete in CiviPledge'.
   $permissions['delete in CiviPledge'] = array(
     'name' => 'delete in CiviPledge',
@@ -1860,6 +1893,17 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'edit memberships'.
+  $permissions['edit memberships'] = array(
+    'name' => 'edit memberships',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'edit message templates'.
   $permissions['edit message templates'] = array(
     'name' => 'edit message templates',
@@ -2034,6 +2078,16 @@ function cs_user_permission_user_default_permissions() {
     'module' => 'civicrm',
   );
 
+  // Exported permission: 'edit system workflow message templates'.
+  $permissions['edit system workflow message templates'] = array(
+    'name' => 'edit system workflow message templates',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
   // Exported permission: 'edit terms in page_type'.
   $permissions['edit terms in page_type'] = array(
     'name' => 'edit terms in page_type',
@@ -2050,6 +2104,16 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'taxonomy',
+  );
+
+  // Exported permission: 'edit user-driven message templates'.
+  $permissions['edit user-driven message templates'] = array(
+    'name' => 'edit user-driven message templates',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'edit users with role 13338524'.
@@ -2203,6 +2267,15 @@ function cs_user_permission_user_default_permissions() {
     'roles' => array(
       'CIVI ADMIN' => 'CIVI ADMIN',
       'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
+  );
+
+  // Exported permission: 'import SQL datasource'.
+  $permissions['import SQL datasource'] = array(
+    'name' => 'import SQL datasource',
+    'roles' => array(
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
@@ -2463,6 +2536,17 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'user',
+  );
+
+  // Exported permission: 'send SMS'.
+  $permissions['send SMS'] = array(
+    'name' => 'send SMS',
+    'roles' => array(
+      'CIVI ADMIN' => 'CIVI ADMIN',
+      'CIVI EDITOR' => 'CIVI EDITOR',
+      'SUPER ADMIN' => 'SUPER ADMIN',
+    ),
+    'module' => 'civicrm',
   );
 
   // Exported permission: 'sign CiviCRM Petition'.
@@ -2841,6 +2925,15 @@ function cs_user_permission_user_default_permissions() {
       'SUPER ADMIN' => 'SUPER ADMIN',
       'anonymous user' => 'anonymous user',
       'authenticated user' => 'authenticated user',
+    ),
+    'module' => 'civicrm',
+  );
+
+  // Exported permission: 'view report sql'.
+  $permissions['view report sql'] = array(
+    'name' => 'view report sql',
+    'roles' => array(
+      'SUPER ADMIN' => 'SUPER ADMIN',
     ),
     'module' => 'civicrm',
   );
