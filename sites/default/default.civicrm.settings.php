@@ -1,7 +1,7 @@
 <?php
 /*
  +--------------------------------------------------------------------+
- | CiviCRM version 5                                                  |
+ | CiviCRM version 4.7                                                |
  +--------------------------------------------------------------------+
  | Copyright CiviCRM LLC (c) 2004-2018                                |
  +--------------------------------------------------------------------+
@@ -506,18 +506,8 @@ else {
   *
   * The standard port for Memcache & APCCache is 11211. For Redis it is 6379.
   */
-  /**
-   * Change this if you are not using the standard port for your cache server.
-   *
-   * The standard port for Memcache & APCCache is 11211. For Redis it is 6379.
-   */
   if (!defined('CIVICRM_DB_CACHE_PORT')) {
-    if (CIVICRM_DB_CACHE_CLASS === 'Redis') {
-      define('CIVICRM_DB_CACHE_PORT', 6379 );
-    }
-    else {
-      define('CIVICRM_DB_CACHE_PORT', 11211);
-    }
+    define('CIVICRM_DB_CACHE_PORT', 11211 );
   }
 
   /**
@@ -549,14 +539,6 @@ else {
   }
 
 } // end Pantheon Redis check
-
-/**
- * The cache system traditionally allowed a wide range of cache-keys, but some
- * cache-keys are prohibited by PSR-16.
- */
-if (!defined('CIVICRM_PSR16_STRICT')) {
-  define('CIVICRM_PSR16_STRICT', FALSE);
-}
 
 /**
  * If you have multilingual site and you are using the "inherit CMS language"
