@@ -1612,7 +1612,7 @@ class CRM_Contact_BAO_Query {
         $contactType = array();
         $subType = array();
         foreach ((array) $values as $key => $type) {
-          $types = explode('__', is_numeric($type) ? $key : $type, 2);
+          $types = explode('__', is_numeric($type) ? $key : $type);
           $contactType[$types[0]] = $types[0];
           // Add sub-type if specified
           if (!empty($types[1])) {
@@ -2341,7 +2341,7 @@ class CRM_Contact_BAO_Query {
         $this->_where[$grouping][] = CRM_Core_DAO::createSQLFilter($fieldName, $value, $type);
       }
       else {
-        if (!self::caseImportant($op)) {
+        if (!strpos($op, 'IN')) {
           $value = $strtolower($value);
         }
         if ($wildcard) {
@@ -3558,13 +3558,14 @@ WHERE  $smartGroupClause
     $n = trim($value);
 
     if ($n) {
+      $value = strtolower($n);
       if (strpos($value, '%') === FALSE) {
         // only add wild card if not there
         $value = "%{$value}%";
       }
       $op = 'LIKE';
       // LOWER roughly translates to 'hurt my database without deriving any benefit' See CRM-19811.
-      $this->_where[$grouping][] = self::buildClause('civicrm_address.street_address', $op, $value, 'String');
+      $this->_where[$grouping][] = self::buildClause('LOWER(civicrm_address.street_address)', $op, $value, 'String');
       $this->_qill[$grouping][] = ts('Street') . " $op '$n'";
     }
     else {
@@ -4041,6 +4042,7 @@ WHERE  $smartGroupClause
     $relationType = $this->getWhereValues('relation_type_id', $grouping);
     $targetName = $this->getWhereValues('relation_target_name', $grouping);
     $relStatus = $this->getWhereValues('relation_status', $grouping);
+    $relPermission = $this->getWhereValues('relation_permission', $grouping);
     $targetGroup = $this->getWhereValues('relation_target_group', $grouping);
 
     $nameClause = $name = NULL;
@@ -4064,7 +4066,7 @@ WHERE  $smartGroupClause
       $relationType[2] = (array) $relationType[2];
       foreach ($relationType[2] as $relType) {
         $rel = explode('_', $relType);
-        self::$_relType = $rel[1];
+        self::$_relType .= $rel[1];
         $params = array('id' => $rel[0]);
         $typeValues = array();
         $rTypeValue = CRM_Contact_BAO_RelationshipType::retrieve($params, $typeValues);
@@ -4186,7 +4188,21 @@ civicrm_relationship.start_date > {$today}
     }
     $where[$grouping][] = "(contact_b.is_deleted = {$onlyDeleted})";
 
-    $this->addRelationshipPermissionClauses($grouping, $where);
+    //check for permissioned, non-permissioned and all permissioned relations
+    if ($relPermission[2] == 1) {
+      $where[$grouping][] = "(
+civicrm_relationship.is_permission_a_b = 1
+)";
+      $this->_qill[$grouping][] = ts('Relationship - Permissioned');
+    }
+    elseif ($relPermission[2] == 2) {
+      //non-allowed permission relationship.
+      $where[$grouping][] = "(
+civicrm_relationship.is_permission_a_b = 0
+)";
+      $this->_qill[$grouping][] = ts('Relationship - Non-permissioned');
+    }
+
     $this->addRelationshipDateClauses($grouping, $where);
     $this->addRelationshipActivePeriodClauses($grouping, $where);
     if (!empty($relTypes)) {
@@ -4216,27 +4232,6 @@ civicrm_relationship.start_date > {$today}
             $whereClause )
       ";
       CRM_Core_DAO::executeQuery($sql);
-    }
-  }
-
-  public function addRelationshipPermissionClauses($grouping, &$where) {
-    $relPermission = $this->getWhereValues('relation_permission', $grouping);
-    if ($relPermission) {
-      if (!is_array($relPermission[2])) {
-        // this form value was scalar in previous versions of Civi
-        $relPermission[2] = array($relPermission[2]);
-      }
-      $where[$grouping][] = "(civicrm_relationship.is_permission_a_b IN (" . implode(",", $relPermission[2]) . "))";
-
-      $allRelationshipPermissions = CRM_Contact_BAO_Relationship::buildOptions('is_permission_a_b');
-      $relQill = '';
-      foreach ($relPermission[2] as $rel) {
-        if (!empty($relQill)) {
-          $relQill .= ' OR ';
-        }
-        $relQill .= ts($allRelationshipPermissions[$rel]);
-      }
-      $this->_qill[$grouping][] = ts('Permissioned Relationships') . ' - ' . $relQill;
     }
   }
 
@@ -5667,15 +5662,12 @@ SELECT COUNT( conts.total_amount ) as cancel_count,
         return $clause;
 
       case 'IS EMPTY':
-        $clause = ($dataType == 'Date') ? " $field IS NULL " : " (NULLIF($field, '') IS NULL) ";
+        $clause = " (NULLIF($field, '') IS NULL) ";
         return $clause;
 
       case 'IS NOT EMPTY':
-        $clause = ($dataType == 'Date') ? " $field IS NOT NULL " : " (NULLIF($field, '') IS NOT NULL) ";
+        $clause = " (NULLIF($field, '') IS NOT NULL) ";
         return $clause;
-
-      case 'RLIKE':
-        return " {$clause} BINARY '{$value}' ";
 
       case 'IN':
       case 'NOT IN':
@@ -5685,7 +5677,7 @@ SELECT COUNT( conts.total_amount ) as cancel_count,
         }
 
       default:
-        if (empty($dataType) || $dataType == 'Date') {
+        if (empty($dataType)) {
           $dataType = 'String';
         }
         if (is_array($value)) {

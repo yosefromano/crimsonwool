@@ -68,7 +68,7 @@
       url: CRM.url('civicrm/ajax/rest'),
       dataType: 'json',
       data: params,
-      type: params.action.indexOf('get') === 0 ? 'GET' : 'POST'
+      type: params.action.indexOf('get') < 0 ? 'POST' : 'GET'
     });
     if (status) {
       // Default status messages

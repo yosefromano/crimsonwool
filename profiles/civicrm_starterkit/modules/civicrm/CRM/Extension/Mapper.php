@@ -282,7 +282,7 @@ class CRM_Extension_Mapper {
 
     $moduleExtensions = NULL;
     if ($this->cache && !$fresh) {
-      $moduleExtensions = $this->cache->get($this->cacheKey . '_moduleFiles');
+      $moduleExtensions = $this->cache->get($this->cacheKey . '/moduleFiles');
     }
 
     if ($fresh == 'NOCACHE') {
@@ -319,7 +319,7 @@ class CRM_Extension_Mapper {
       }
 
       if ($this->cache) {
-        $this->cache->set($this->cacheKey . '_moduleFiles', $moduleExtensions);
+        $this->cache->set($this->cacheKey . '/moduleFiles', $moduleExtensions);
       }
     }
     return $moduleExtensions;
@@ -465,7 +465,7 @@ class CRM_Extension_Mapper {
     $this->infos = array();
     $this->moduleExtensions = NULL;
     if ($this->cache) {
-      $this->cache->delete($this->cacheKey . '_moduleFiles');
+      $this->cache->delete($this->cacheKey . '/moduleFiles');
     }
     // FIXME: How can code so code wrong be so right?
     CRM_Extension_System::singleton()->getClassLoader()->refresh();

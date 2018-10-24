@@ -639,8 +639,7 @@ class iATS_Service_Request {
         return 'The card is over the limit.';
 
       case 'REJECT: 15':
-        // return 'General decline code. Please have cardholder call the number on the back of the card.';
-        return 'General decline code.';
+        return 'General decline code. Please have cardholder call the number on the back of the card.';
 
       case 'REJECT: 16':
         return 'Invalid charge card number. Verify and re-enter credit card information.';
@@ -664,8 +663,7 @@ class iATS_Service_Request {
         return 'Charge card expired.';
 
       case 'REJECT: 25':
-        // return 'Capture card. Reported lost or stolen.';
-        return 'Possibly reported lost or stolen.';
+        return 'Capture card. Reported lost or stolen.';
 
       case 'REJECT: 26':
         return 'Invalid transaction, invalid expiry date. Please confirm and retry transaction.';

@@ -9,6 +9,8 @@
  *
  * @param array $params
  *
+ * @return array
+ *
  * Get entries from iATSPayments in the journal table
  */
 function _civicrm_api3_iats_payments_get_journal_spec(&$params) {
@@ -61,7 +63,7 @@ function civicrm_api3_iats_payments_get_journal($params) {
     'inv' => 'String',
   );
   $i = 0;
-  foreach ($params as $key => $value) {
+  foreach($params as $key => $value) {
     if (isset($select_params[$key])) {
       $i++;
       if (is_string($value)) {
@@ -69,7 +71,7 @@ function civicrm_api3_iats_payments_get_journal($params) {
         $args[$i] = array($value, $select_params[$key]);
       }
       elseif (is_array($value)) {
-        foreach (array_keys($value) as $sql) {
+        foreach(array_keys($value) as $sql) {
           $select .= " AND ($key %$i)";
           $args[$i] = array($sql, 'String');
         }
@@ -78,7 +80,7 @@ function civicrm_api3_iats_payments_get_journal($params) {
   }
   $limit = 25;
   if (isset($params['options']['limit'])) {
-    $limit = (integer) $params['options']['limit'];
+    $limit =  (integer) $params['options']['limit'];
   }
   if ($limit > 0) {
     $i++;
@@ -99,17 +101,18 @@ function civicrm_api3_iats_payments_get_journal($params) {
       /* We index in the transaction_id */
       $record = array();
       foreach (get_object_vars($dao) as $key => $value) {
-        if ('N' != $key && (0 !== strpos($key, '_'))) {
+        if ('N' != $key && (0 !== strpos($key,'_'))) {
           $record[$key] = $value;
         }
       }
       $key = $dao->tnid;
-      $values[$key] = $record;
+      $values[$key] =  $record;
     }
   }
   catch (Exception $e) {
-    CRM_Core_Error::debug_var('params', $params);
+    CRM_Core_Error::debug_var('params',$params);
     // throw API_Exception('iATS Payments journalling failed: '. $e->getMessage());
   }
   return civicrm_api3_create_success($values);
 }
+

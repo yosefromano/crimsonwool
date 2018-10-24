@@ -23,9 +23,6 @@
  | see the CiviCRM license FAQ at http://civicrm.org/licensing        |
  +--------------------------------------------------------------------+
 *}
-{if $userChecksum}
-  {assign var=edit value='0'}
-{/if}
 {crmRegion name="crm-contact-userdashboard-groupcontact-pre"}
 {/crmRegion}
 <div id="groupContact">

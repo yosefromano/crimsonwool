@@ -34,7 +34,7 @@
 /**
  * This class generates form components for search-result tasks.
  */
-class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
+class CRM_Contact_Form_Task extends CRM_Core_Form {
 
   /**
    * The task being performed
@@ -94,14 +94,11 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
    * Common pre-processing function.
    *
    * @param CRM_Core_Form $form
-   *
-   * @throws \CRM_Core_Exception
+   * @param bool $useTable
    */
-  public static function preProcessCommon(&$form) {
+  public static function preProcessCommon(&$form, $useTable = FALSE) {
     $form->_contactIds = array();
     $form->_contactTypes = array();
-
-    $useTable = (CRM_Utils_System::getClassName($form->controller->getStateMachine()) == 'CRM_Export_StateMachine_Standalone');
 
     $isStandAlone = in_array('task', $form->urlPath) || in_array('standalone', $form->urlPath);
     if ($isStandAlone) {
@@ -153,7 +150,7 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
     $form->assign('taskName', CRM_Utils_Array::value($form->_task, $crmContactTaskTasks));
 
     if ($useTable) {
-      $form->_componentTable = CRM_Utils_SQL_TempTable::build()->setCategory('tskact')->setDurable()->setId($qfKey)->getName();
+      $form->_componentTable = CRM_Core_DAO::createTempTableName('civicrm_task_action', TRUE, $qfKey);
       $sql = " DROP TABLE IF EXISTS {$form->_componentTable}";
       CRM_Core_DAO::executeQuery($sql);
 
@@ -172,10 +169,10 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
       // rather than prevnext cache table for most of the task actions except export where we rebuild query to fetch
       // final result set
       if ($useTable) {
-        $allCids = Civi::service('prevnext')->getSelection($cacheKey, "getall");
+        $allCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey, "getall");
       }
       else {
-        $allCids[$cacheKey] = self::getContactIds($form);
+        $allCids[$cacheKey] = $form->getContactIds();
       }
 
       $form->_contactIds = array();
@@ -233,7 +230,7 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
       }
       else {
         // fetching selected contact ids of passed cache key
-        $selectedCids = Civi::service('prevnext')->getSelection($cacheKey);
+        $selectedCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey);
         foreach ($selectedCids[$cacheKey] as $selectedCid => $ignore) {
           if ($useTable) {
             $insertString[] = " ( {$selectedCid} ) ";
@@ -273,7 +270,7 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
     ) {
       $sel = CRM_Utils_Array::value('radio_ts', self::$_searchFormValues);
       $form->assign('searchtype', $sel);
-      $result = self::getSelectedContactNames();
+      $result = CRM_Core_BAO_PrevNextCache::getSelectedContacts();
       $form->assign("value", $result);
     }
 
@@ -286,41 +283,36 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
   }
 
   /**
-   * Get the contact ids for:
-   *   - "Select Records: All xx records"
-   *   - custom search (FIXME: does this still apply to custom search?).
-   * When we call this function we are not using the prev/next cache
+   * Get the contact id for custom search.
    *
-   * @param $form CRM_Core_Form
-   *
-   * @return array $contactIds
+   * we are not using prev/next table in case of custom search
    */
-  public static function getContactIds($form) {
+  public function getContactIds() {
     // need to perform action on all contacts
     // fire the query again and get the contact id's + display name
     $sortID = NULL;
-    if ($form->get(CRM_Utils_Sort::SORT_ID)) {
-      $sortID = CRM_Utils_Sort::sortIDValue($form->get(CRM_Utils_Sort::SORT_ID),
-        $form->get(CRM_Utils_Sort::SORT_DIRECTION)
+    if ($this->get(CRM_Utils_Sort::SORT_ID)) {
+      $sortID = CRM_Utils_Sort::sortIDValue($this->get(CRM_Utils_Sort::SORT_ID),
+        $this->get(CRM_Utils_Sort::SORT_DIRECTION)
       );
     }
 
-    $selectorName = $form->controller->selectorName();
+    $selectorName = $this->controller->selectorName();
 
-    $fv = $form->get('formValues');
-    $customClass = $form->get('customSearchClass');
+    $fv = $this->get('formValues');
+    $customClass = $this->get('customSearchClass');
     $returnProperties = CRM_Core_BAO_Mapping::returnProperties(self::$_searchFormValues);
 
     $selector = new $selectorName($customClass, $fv, NULL, $returnProperties);
 
-    $params = $form->get('queryParams');
+    $params = $this->get('queryParams');
 
     // fix for CRM-5165
-    $sortByCharacter = $form->get('sortByCharacter');
+    $sortByCharacter = $this->get('sortByCharacter');
     if ($sortByCharacter && $sortByCharacter != 1) {
       $params[] = array('sortByCharacter', '=', $sortByCharacter, 0, 0);
     }
-    $queryOperator = $form->get('queryOperator');
+    $queryOperator = $this->get('queryOperator');
     if (!$queryOperator) {
       $queryOperator = 'AND';
     }
@@ -475,29 +467,6 @@ class CRM_Contact_Form_Task extends CRM_Core_Form_Task {
       ));
       $this->_contactIds = array_keys($result['values']);
     }
-  }
-
-  /**
-   * @return array
-   *   List of contact names.
-   *   NOTE: These are raw values from the DB. In current data-model, that means
-   *   they are pre-encoded HTML.
-   */
-  private static function getSelectedContactNames() {
-    $qfKey = CRM_Utils_Request::retrieve('qfKey', 'String');
-    $cacheKey = "civicrm search {$qfKey}";
-
-    $cids = array();
-    // Gymanstic time!
-    foreach (Civi::service('prevnext')->getSelection($cacheKey) as $cacheKey => $values) {
-      $cids = array_unique(array_merge($cids, array_keys($values)));
-    }
-
-    $result = CRM_Utils_SQL_Select::from('civicrm_contact')
-      ->where('id IN (#cids)', ['cids' => $cids])
-      ->execute()
-      ->fetchMap('id', 'sort_name');
-    return $result;
   }
 
   /**

@@ -261,9 +261,9 @@ class HTML_QuickForm_Renderer_ArraySmarty extends HTML_QuickForm_Renderer_Array
             unset($elAry['keys']);
             // where should we put this element...
             if (is_array($this->_currentGroup) && ('group' != $elAry['type'])) {
-                CRM_Utils_Array::pathSet($this->_currentGroup, $keys, $elAry);
+                $this->_currentGroup = CRM_Utils_Array::recursiveBuild($keys, $elAry, $this->_currentGroup);
             } else {
-                CRM_Utils_Array::pathSet($this->_ary, $keys, $elAry);
+                $this->_ary = CRM_Utils_Array::recursiveBuild($keys, $elAry, $this->_ary);
             }
         }
         return;

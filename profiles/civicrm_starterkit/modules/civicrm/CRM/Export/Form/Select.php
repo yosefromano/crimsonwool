@@ -36,7 +36,7 @@
 /**
  * This class gets the name of the file to upload
  */
-class CRM_Export_Form_Select extends CRM_Core_Form_Task {
+class CRM_Export_Form_Select extends CRM_Core_Form {
 
   /**
    * Various Contact types.
@@ -71,6 +71,20 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
   public $_componentTable;
 
   /**
+   * Must be set to entity table name (eg. civicrm_participant) by child class
+   *
+   * @var string
+   */
+  static $tableName = NULL;
+
+  /**
+   * Must be set to entity shortname (eg. event)
+   *
+   * @var string
+   */
+  static $entityShortname = NULL;
+
+  /**
    * Build all the data structures needed to build the form.
    *
    * @param
@@ -94,14 +108,23 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
     $this->_componentIds = array();
     $this->_componentClause = NULL;
 
+    $stateMachine = $this->controller->getStateMachine();
+    $formName = CRM_Utils_System::getClassName($stateMachine);
+    $isStandalone = $formName == 'CRM_Export_StateMachine_Standalone';
+
     // we need to determine component export
+    $componentName = explode('_', $formName);
     $components = array('Contact', 'Contribute', 'Member', 'Event', 'Pledge', 'Case', 'Grant', 'Activity');
 
+    if ($isStandalone) {
+      $componentName = array('CRM', $this->controller->get('entity'));
+    }
+
+    $componentMode = $this->controller->get('component_mode');
     // FIXME: This should use a modified version of CRM_Contact_Form_Search::getModeValue but it doesn't have all the contexts
-    switch ($this->getQueryMode()) {
+    switch ($componentMode) {
       case CRM_Contact_BAO_Query::MODE_CONTRIBUTE:
         $entityShortname = 'Contribute';
-        $entityDAOName = $entityShortname;
         break;
 
       case CRM_Contact_BAO_Query::MODE_MEMBER:
@@ -111,39 +134,31 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
 
       case CRM_Contact_BAO_Query::MODE_EVENT:
         $entityShortname = 'Event';
-        $entityDAOName = $entityShortname;
         break;
 
       case CRM_Contact_BAO_Query::MODE_PLEDGE:
         $entityShortname = 'Pledge';
-        $entityDAOName = $entityShortname;
         break;
 
       case CRM_Contact_BAO_Query::MODE_CASE:
         $entityShortname = 'Case';
-        $entityDAOName = $entityShortname;
         break;
 
       case CRM_Contact_BAO_Query::MODE_GRANT:
         $entityShortname = 'Grant';
-        $entityDAOName = $entityShortname;
         break;
 
       case CRM_Contact_BAO_Query::MODE_ACTIVITY:
         $entityShortname = 'Activity';
-        $entityDAOName = $entityShortname;
         break;
 
       default:
-        // FIXME: Code cleanup, we may not need to do this $componentName code here.
-        $formName = CRM_Utils_System::getClassName($this->controller->getStateMachine());
-        $componentName = explode('_', $formName);
-        if ($formName == 'CRM_Export_StateMachine_Standalone') {
-          $componentName = array('CRM', $this->controller->get('entity'));
-        }
         $entityShortname = $componentName[1]; // Contact
-        $entityDAOName = $entityShortname;
         break;
+    }
+
+    if (empty($entityDAOName)) {
+      $entityDAOName = $entityShortname;
     }
 
     if (in_array($entityShortname, $components)) {
@@ -195,7 +210,7 @@ class CRM_Export_Form_Select extends CRM_Core_Form_Task {
       }
     }
 
-    $formTaskClassName::preProcessCommon($this);
+    $formTaskClassName::preProcessCommon($this, !$isStandalone);
 
     // $component is used on CRM/Export/Form/Select.tpl to display extra information for contact export
     ($this->_exportMode == self::CONTACT_EXPORT) ? $component = FALSE : $component = TRUE;
@@ -343,7 +358,7 @@ FROM   {$this->_componentTable}
    * @return bool|array
    *   mixed true or array of errors
    */
-  public static function formRule($params, $files, $self) {
+  static public function formRule($params, $files, $self) {
     $errors = array();
 
     if (CRM_Utils_Array::value('mergeOption', $params) == self::EXPORT_MERGE_SAME_ADDRESS &&
@@ -371,7 +386,7 @@ FROM   {$this->_componentTable}
   /**
    * Process the uploaded file.
    *
-   * @throws \CRM_Core_Exception
+   * @return void
    */
   public function postProcess() {
     $params = $this->controller->exportValues($this->_name);
@@ -518,15 +533,6 @@ FROM   {$this->_componentTable}
     }
 
     return $options;
-  }
-
-  /**
-   * Get the query mode (eg. CRM_Core_BAO_Query::MODE_CASE)
-   *
-   * @return int
-   */
-  public function getQueryMode() {
-    return (int) ($this->queryMode ?: $this->controller->get('component_mode'));
   }
 
 }

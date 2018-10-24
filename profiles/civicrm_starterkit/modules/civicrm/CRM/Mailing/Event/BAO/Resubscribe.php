@@ -267,12 +267,14 @@ class CRM_Mailing_Event_BAO_Resubscribe {
       $message->setTxtBody($text);
     }
 
+    $emailDomain = CRM_Core_BAO_MailSettings::defaultDomain();
+
     $headers = array(
       'Subject' => $component->subject,
-      'From' => "\"$domainEmailName\" <" . CRM_Core_BAO_Domain::getNoReplyEmailAddress() . '>',
+      'From' => "\"$domainEmailName\" <do-not-reply@$emailDomain>",
       'To' => $eq->email,
-      'Reply-To' => CRM_Core_BAO_Domain::getNoReplyEmailAddress(),
-      'Return-Path' => CRM_Core_BAO_Domain::getNoReplyEmailAddress(),
+      'Reply-To' => "do-not-reply@$emailDomain",
+      'Return-Path' => "do-not-reply@$emailDomain",
     );
     CRM_Mailing_BAO_Mailing::addMessageIdHeader($headers, 'e', $job, $queue_id, $eq->hash);
     $b = CRM_Utils_Mail::setMimeParams($message);

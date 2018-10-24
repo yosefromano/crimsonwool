@@ -500,7 +500,6 @@ class CRM_Report_DAO_ReportInstance extends CRM_Core_DAO {
           'name' => 'is_reserved',
           'type' => CRM_Utils_Type::T_BOOLEAN,
           'title' => ts('Instance is Reserved'),
-          'default' => '0',
           'table_name' => 'civicrm_report_instance',
           'entity' => 'ReportInstance',
           'bao' => 'CRM_Report_BAO_ReportInstance',

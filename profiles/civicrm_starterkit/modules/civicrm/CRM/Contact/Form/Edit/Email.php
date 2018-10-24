@@ -58,7 +58,7 @@ class CRM_Contact_Form_Edit_Email {
     $form->applyFilter('__ALL__', 'trim');
 
     //Email box
-    $form->addField("email[$blockId][email]", array('entity' => 'email', 'aria-label' => ts('Email %1', [1 => $blockId])));
+    $form->addField("email[$blockId][email]", array('entity' => 'email'));
     $form->addRule("email[$blockId][email]", ts('Email is not valid.'), 'email');
     if (isset($form->_contactType) || $blockEdit) {
       //Block type
@@ -77,16 +77,17 @@ class CRM_Contact_Form_Edit_Email {
         $form->addElement('select', "email[$blockId][on_hold]", '', $holdOptions);
       }
       else {
-        $form->addField("email[$blockId][on_hold]", array('entity' => 'email', 'type' => 'advcheckbox', 'aria-label' => ts('On Hold for Email %1?', [1 => $blockId])));
+        $form->addField("email[$blockId][on_hold]", array('entity' => 'email', 'type' => 'advcheckbox'));
       }
 
       //Bulkmail checkbox
       $form->assign('multipleBulk', $multipleBulk);
-      $js = array('id' => "Email_" . $blockId . "_IsBulkmail" , 'aria-label' => ts('Bulk Mailing for Email %1?', [1 => $blockId]));
       if ($multipleBulk) {
+        $js = array('id' => "Email_" . $blockId . "_IsBulkmail");
         $form->addElement('advcheckbox', "email[$blockId][is_bulkmail]", NULL, '', $js);
       }
       else {
+        $js = array('id' => "Email_" . $blockId . "_IsBulkmail");
         if (!$blockEdit) {
           $js['onClick'] = 'singleSelect( this.id );';
         }
@@ -94,7 +95,7 @@ class CRM_Contact_Form_Edit_Email {
       }
 
       //is_Primary radio
-      $js = array('id' => "Email_" . $blockId . "_IsPrimary", 'aria-label' => ts('Email %1 is primary?', [1 => $blockId]));
+      $js = array('id' => "Email_" . $blockId . "_IsPrimary");
       if (!$blockEdit) {
         $js['onClick'] = 'singleSelect( this.id );';
       }

@@ -173,7 +173,6 @@ class CRM_Core_Config_MagicMerge {
       'recaptchaOptions' => array('setting'),
       'recaptchaPublicKey' => array('setting'),
       'recaptchaPrivateKey' => array('setting'),
-      'forceRecaptcha' => array('setting'),
       'replyTo' => array('setting'),
       'secondDegRelPermissions' => array('setting'),
       'smartGroupCacheTimeout' => array('setting'),

@@ -45,21 +45,14 @@ class CRM_Friend_Form extends CRM_Core_Form {
   const NUM_OPTION = 3;
 
   /**
-   * The id of the entity that we are processing.
+   * The id of the entity that we are proceessing.
    *
    * @var int
    */
   protected $_entityId;
 
   /**
-   * Tell a friend id in db.
-   *
-   * @var int
-   */
-  public $_friendId;
-
-  /**
-   * The table name of the entity that we are processing.
+   * The table name of the entity that we are proceessing.
    *
    * @var string
    */

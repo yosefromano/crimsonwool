@@ -34,7 +34,35 @@
 /**
  * This class generates form components for relationship.
  */
-class CRM_Campaign_Form_Task extends CRM_Core_Form_Task {
+class CRM_Campaign_Form_Task extends CRM_Core_Form {
+
+  /**
+   * The additional clause that we restrict the search.
+   *
+   * @var string
+   */
+  protected $_componentClause = NULL;
+
+  /**
+   * The task being performed
+   *
+   * @var int
+   */
+  protected $_task;
+
+  /**
+   * The array that holds all the contact ids
+   *
+   * @var array
+   */
+  public $_contactIds;
+
+  /**
+   * The array that holds all the component ids
+   *
+   * @var array
+   */
+  protected $_componentIds;
 
   /**
    * The array that holds all the voter ids
@@ -65,7 +93,7 @@ class CRM_Campaign_Form_Task extends CRM_Core_Form_Task {
     else {
       $qfKey = CRM_Utils_Request::retrieve('qfKey', 'String', $this);
       $cacheKey = "civicrm search {$qfKey}";
-      $allCids = Civi::service('prevnext')->getSelection($cacheKey, "getall");
+      $allCids = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey, "getall");
       $ids = array_keys($allCids[$cacheKey]);
       $this->assign('totalSelectedVoters', count($ids));
     }

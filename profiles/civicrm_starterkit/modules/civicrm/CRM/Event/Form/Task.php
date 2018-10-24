@@ -34,10 +34,31 @@
  */
 
 /**
- * Class for event form task actions.
- * FIXME: This needs refactoring to properly inherit from CRM_Core_Form_Task and share more functions.
+ * This class generates task actions for CiviEvent
+ *
  */
-class CRM_Event_Form_Task extends CRM_Core_Form_Task {
+class CRM_Event_Form_Task extends CRM_Core_Form {
+
+  /**
+   * The task being performed.
+   *
+   * @var int
+   */
+  protected $_task;
+
+  /**
+   * The additional clause that we restrict the search with.
+   *
+   * @var string
+   */
+  protected $_componentClause = NULL;
+
+  /**
+   * The array that holds all the component ids.
+   *
+   * @var array
+   */
+  protected $_componentIds;
 
   /**
    * The array that holds all the participant ids.
@@ -59,8 +80,9 @@ class CRM_Event_Form_Task extends CRM_Core_Form_Task {
 
   /**
    * @param CRM_Core_Form $form
+   * @param bool $useTable
    */
-  public static function preProcessCommon(&$form) {
+  public static function preProcessCommon(&$form, $useTable = FALSE) {
     $form->_participantIds = array();
 
     $values = $form->controller->exportValues($form->get('searchFormName'));

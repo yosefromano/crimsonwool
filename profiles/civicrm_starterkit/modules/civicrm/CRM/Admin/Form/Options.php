@@ -464,9 +464,9 @@ class CRM_Admin_Form_Options extends CRM_Admin_Form {
           $params['reset_default_for'] = array('filter' => "0, " . $params['filter']);
         }
 
-        //make sure we only have a single space, CRM-6977 and dev/mail/15
+        //make sure we should has to have space, CRM-6977
         if ($this->_gName == 'from_email_address') {
-          $params['label'] = $this->sanitizeFromEmailAddress($params['label']);
+          $params['label'] = str_replace('"<', '" <', $params['label']);
         }
       }
 
@@ -484,7 +484,20 @@ class CRM_Admin_Form_Options extends CRM_Admin_Form {
         $params['color'] = 'null';
       }
 
-      $optionValue = CRM_Core_OptionValue::addOptionValue($params, $this->_gName, $this->_action, $this->_id);
+      $groupParams = array('name' => ($this->_gName));
+      $optionValue = CRM_Core_OptionValue::addOptionValue($params, $groupParams, $this->_action, $this->_id);
+
+      // CRM-11516
+      if (!empty($params['financial_account_id'])) {
+        $relationTypeId = key(CRM_Core_PseudoConstant::accountOptionValues('account_relationship', NULL, " AND v.name LIKE 'Asset Account is' "));
+        $params = array(
+          'entity_table' => 'civicrm_option_value',
+          'entity_id' => $optionValue->id,
+          'account_relationship' => $relationTypeId,
+          'financial_account_id' => $params['financial_account_id'],
+        );
+        CRM_Financial_BAO_FinancialTypeAccount::add($params);
+      }
 
       CRM_Core_Session::setStatus(ts('The %1 \'%2\' has been saved.', array(
             1 => $this->_gLabel,
@@ -493,11 +506,6 @@ class CRM_Admin_Form_Options extends CRM_Admin_Form {
 
       $this->ajaxResponse['optionValue'] = $optionValue->toArray();
     }
-  }
-
-  public function sanitizeFromEmailAddress($email) {
-    preg_match("/^\"(.*)\" *<([^@>]*@[^@>]*)>$/", $email, $parts);
-    return "\"{$parts[1]}\" <$parts[2]>";
   }
 
 }

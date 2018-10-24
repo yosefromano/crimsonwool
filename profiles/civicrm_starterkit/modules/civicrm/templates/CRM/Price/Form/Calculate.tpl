@@ -27,11 +27,13 @@
 {assign var='hideTotal' value=$quickConfig+$noCalcValueDisplay}
 <div id="pricesetTotal" class="crm-section section-pricesetTotal">
   <div class="label
-{if $hideTotal},  hiddenElement{/if}" id="pricelabel">
-    {if ( $extends eq 'Contribution' ) || ( $extends eq 'Membership' )}
-    <span id='amount_sum_label'>{ts}Total Amount{/ts}{else}{ts}Total Fee(s){/ts}</span>
-     {if $isAdditionalParticipants} {ts}for this participant{/ts}{/if}
-    {/if}
+  {if $hideTotal},  hiddenElement{/if}" id="pricelabel">
+    <label>
+      {if ( $extends eq 'Contribution' ) || ( $extends eq 'Membership' )}
+      <span id='amount_sum_label'>{ts}Total Amount{/ts}{else}{ts}Total Fee(s){/ts}</span>
+       {if $isAdditionalParticipants} {ts}for this participant{/ts}{/if}
+      {/if}
+    </label>
   </div>
   <div class="content calc-value" {if $hideTotal}style="display:none;"{/if} id="pricevalue" ></div>
 </div>

@@ -68,7 +68,8 @@ class CRM_Core_Payment_Form {
     $processor['object']->setPaymentInstrumentID($paymentInstrumentID);
     $paymentTypeName = self::getPaymentTypeName($processor);
     $form->assign('paymentTypeName', $paymentTypeName);
-    $form->assign('paymentTypeLabel', self::getPaymentLabel($processor['object']));
+    $paymentTypeLabel = self::getPaymentTypeLabel($processor);
+    $form->assign('paymentTypeLabel', $paymentTypeLabel);
     $form->assign('isBackOffice', $isBackOffice);
     $form->_paymentFields = $form->billingFieldSets[$paymentTypeName]['fields'] = self::getPaymentFieldMetadata($processor);
     $form->_paymentFields = array_merge($form->_paymentFields, self::getBillingAddressMetadata($processor, $form->_bltID));
@@ -115,22 +116,24 @@ class CRM_Core_Payment_Form {
   protected static function addCommonFields(&$form, $paymentFields) {
     $requiredPaymentFields = array();
     foreach ($paymentFields as $name => $field) {
-      if ($field['htmlType'] == 'chainSelect') {
-        $form->addChainSelect($field['name'], array('required' => FALSE));
-      }
-      else {
-        $form->add($field['htmlType'],
-          $field['name'],
-          $field['title'],
-          $field['attributes'],
-          FALSE
-        );
+      // @todo - remove the cc_field check - no longer useful.
+      if (!empty($field['cc_field'])) {
+        if ($field['htmlType'] == 'chainSelect') {
+          $form->addChainSelect($field['name'], array('required' => FALSE));
+        }
+        else {
+          $form->add($field['htmlType'],
+            $field['name'],
+            $field['title'],
+            $field['attributes'],
+            FALSE
+          );
+        }
       }
       // This will cause the fields to be marked as required - but it is up to the payment processor to
       // validate it.
       $requiredPaymentFields[$field['name']] = $field['is_required'];
     }
-
     $form->assign('requiredPaymentFields', $requiredPaymentFields);
   }
 
@@ -204,7 +207,7 @@ class CRM_Core_Payment_Form {
    * @return string
    */
   public static function getPaymentTypeLabel($paymentProcessor) {
-    return ts('%1 Information', [$paymentProcessor->getPaymentTypeLabel()]);
+    return ts(($paymentProcessor['object']->getPaymentTypeLabel()) . ' Information');
   }
 
   /**
@@ -421,27 +424,6 @@ class CRM_Core_Payment_Form {
    */
   public static function getCreditCardExpirationYear($src) {
     return CRM_Utils_Array::value('Y', $src['credit_card_exp_date']);
-  }
-
-  /**
-   * Get the label for the processor.
-   *
-   * We do not use a label if there are no enterable fields.
-   *
-   * @param \CRM_Core_Payment $processor
-   *
-   * @return string
-   */
-  public static function getPaymentLabel($processor) {
-    $isVisible = FALSE;
-    $paymentTypeLabel = self::getPaymentTypeLabel($processor);
-    foreach (self::getPaymentFieldMetadata(['object' => $processor]) as $paymentField) {
-      if ($paymentField['htmlType'] !== 'hidden') {
-        $isVisible = TRUE;
-      }
-    }
-    return $isVisible ? $paymentTypeLabel : '';
-
   }
 
 }

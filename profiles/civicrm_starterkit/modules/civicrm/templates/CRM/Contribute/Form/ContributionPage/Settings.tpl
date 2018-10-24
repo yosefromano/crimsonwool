@@ -95,11 +95,15 @@
   </tr>
   <tr class="crm-contribution-contributionpage-settings-form-block-start_date">
       <td class ="label">{$form.start_date.label} {help id="id-start_date"}</td>
-      <td>{$form.start_date.html}</td>
+      <td>
+          {include file="CRM/common/jcalendar.tpl" elementName=start_date}
+      </td>
     </tr>
   <tr class="crm-contribution-contributionpage-settings-form-block-end_date">
       <td class ="label">{$form.end_date.label}</td>
-      <td>{$form.end_date.html}</td>
+      <td>
+          {include file="CRM/common/jcalendar.tpl" elementName=end_date}
+      </td>
     </tr>
   <tr class="crm-contribution-contributionpage-settings-form-block-honor_block_is_active">
       <td>&nbsp;</td><td>{$form.honor_block_is_active.html}{$form.honor_block_is_active.label} {help id="id-honoree_section"}</td>

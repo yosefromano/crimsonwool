@@ -33,6 +33,11 @@
 class CRM_Financial_BAO_FinancialAccount extends CRM_Financial_DAO_FinancialAccount {
 
   /**
+   * Static holder for the default LT.
+   */
+  static $_defaultContributionType = NULL;
+
+  /**
    * Class constructor.
    */
   public function __construct() {

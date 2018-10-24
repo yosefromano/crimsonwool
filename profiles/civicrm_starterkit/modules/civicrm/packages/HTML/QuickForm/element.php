@@ -345,7 +345,7 @@ class HTML_QuickForm_element extends HTML_Common
             return $values[$elementName];
         } elseif (strpos($elementName, '[')) {
             $keys = explode('[', str_replace(']', '', $elementName));
-            return CRM_Utils_Array::pathGet($values, $keys);
+            return CRM_Utils_Array::recursiveValue($values, $keys);
         } else {
             return null;
         }
@@ -475,9 +475,7 @@ class HTML_QuickForm_element extends HTML_Common
                 return array($name => $value);
             } else {
                 $keys = explode('[', str_replace(']', '', $name));
-                $preparedValue = [];
-                CRM_Utils_Array::pathSet($preparedValue, $keys, $value);
-                return $preparedValue;
+                return CRM_Utils_Array::recursiveBuild($keys, $value);
             }
         }
     }

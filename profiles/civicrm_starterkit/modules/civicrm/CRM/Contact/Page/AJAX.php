@@ -966,19 +966,19 @@ LIMIT {$offset}, {$rowCount}
           $elements[$key] = self::_convertToId($element);
         }
         CRM_Utils_Type::escapeAll($elements, 'Integer');
-        Civi::service('prevnext')->markSelection($cacheKey, $actionToPerform, $elements);
+        CRM_Core_BAO_PrevNextCache::markSelection($cacheKey, $actionToPerform, $elements);
       }
       else {
-        Civi::service('prevnext')->markSelection($cacheKey, $actionToPerform);
+        CRM_Core_BAO_PrevNextCache::markSelection($cacheKey, $actionToPerform);
       }
     }
     elseif ($variableType == 'single') {
       $cId = self::_convertToId($name);
       CRM_Utils_Type::escape($cId, 'Integer');
       $action = ($state == 'checked') ? 'select' : 'unselect';
-      Civi::service('prevnext')->markSelection($cacheKey, $action, $cId);
+      CRM_Core_BAO_PrevNextCache::markSelection($cacheKey, $action, $cId);
     }
-    $contactIds = Civi::service('prevnext')->getSelection($cacheKey);
+    $contactIds = CRM_Core_BAO_PrevNextCache::getSelection($cacheKey);
     $countSelectionCids = count($contactIds[$cacheKey]);
 
     $arrRet = array('getCount' => $countSelectionCids);

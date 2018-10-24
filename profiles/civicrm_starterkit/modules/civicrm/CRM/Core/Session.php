@@ -286,7 +286,7 @@ class CRM_Core_Session {
       $values = &$this->_session[$this->_key];
     }
     else {
-      $values = Civi::cache('session')->get("CiviCRM_{$prefix}");
+      $values = CRM_Core_BAO_Cache::getItem('CiviCRM Session', "CiviCRM_{$prefix}");
     }
 
     if ($values) {

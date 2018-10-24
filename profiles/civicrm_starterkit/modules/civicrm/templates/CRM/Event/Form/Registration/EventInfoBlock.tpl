@@ -34,7 +34,7 @@
     {/if}
     </td>
   </tr>
-  <tr><td>{ts}When{/ts}</td>
+  <tr><td><label>{ts}When{/ts}</label></td>
       <td width="90%">
         {$event.event_start_date|crmDate}
         {if $event.event_end_date}
@@ -51,7 +51,7 @@
 
   {if $isShowLocation}
     {if $location.address.1}
-      <tr><td>{ts}Location{/ts}</td>
+      <tr><td><label>{ts}Location{/ts}</label></td>
           <td>
             {$location.address.1.display|nl2br}
             {if ( $event.is_map &&
@@ -66,7 +66,7 @@
   {/if}{*End of isShowLocation condition*}
 
   {if $location.phone.1.phone || $location.email.1.email}
-    <tr><td>{ts}Contact{/ts}</td>
+    <tr><td><label>{ts}Contact{/ts}</label></td>
         <td>
         {* loop on any phones and emails for this event *}
            {foreach from=$location.phone item=phone}

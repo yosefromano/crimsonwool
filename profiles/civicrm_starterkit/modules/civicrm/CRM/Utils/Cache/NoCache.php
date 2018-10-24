@@ -32,9 +32,6 @@
  */
 class CRM_Utils_Cache_NoCache implements CRM_Utils_Cache_Interface {
 
-  use CRM_Utils_Cache_NaiveMultipleTrait; // TODO Consider native implementation.
-  use CRM_Utils_Cache_NaiveHasTrait; // TODO Native implementation
-
   /**
    * We only need one instance of this object. So we use the singleton
    * pattern and cache the instance in this variable
@@ -57,22 +54,20 @@ class CRM_Utils_Cache_NoCache implements CRM_Utils_Cache_Interface {
   /**
    * @param string $key
    * @param mixed $value
-   * @param null|int|\DateInterval $ttl
    *
    * @return bool
    */
-  public function set($key, $value, $ttl = NULL) {
+  public function set($key, &$value) {
     return FALSE;
   }
 
   /**
    * @param string $key
-   * @param mixed $default
    *
    * @return null
    */
-  public function get($key, $default = NULL) {
-    return $default;
+  public function get($key) {
+    return NULL;
   }
 
   /**
@@ -89,10 +84,6 @@ class CRM_Utils_Cache_NoCache implements CRM_Utils_Cache_Interface {
    */
   public function flush() {
     return FALSE;
-  }
-
-  public function clear() {
-    return $this->flush();
   }
 
 }

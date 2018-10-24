@@ -866,13 +866,9 @@ class CRM_Utils_Array {
    * This is necessary to preserve sort order when sending an array through json_encode.
    *
    * @param array $associative
-   *   Ex: ['foo' => 'bar'].
    * @param string $keyName
-   *   Ex: 'key'.
    * @param string $valueName
-   *   Ex: 'value'.
    * @return array
-   *   Ex: [0 => ['key' => 'foo', 'value' => 'bar']].
    */
   public static function makeNonAssociative($associative, $keyName = 'key', $valueName = 'value') {
     $output = array();
@@ -969,58 +965,38 @@ class CRM_Utils_Array {
   }
 
   /**
-   * Get a single value from an array-tree.
+   * Get a single value from an array-tre.
    *
-   * @param array $values
-   *   Ex: ['foo' => ['bar' => 123]].
-   * @param array $path
-   *   Ex: ['foo', 'bar'].
-   * @param mixed $default
-   * @return mixed
+   * @param array $arr
+   *   Ex: array('foo'=>array('bar'=>123)).
+   * @param array $pathParts
+   *   Ex: array('foo',bar').
+   * @return mixed|NULL
    *   Ex 123.
    */
-  public static function pathGet($values, $path, $default = NULL) {
-    foreach ($path as $key) {
-      if (!is_array($values) || !isset($values[$key])) {
-        return $default;
+  public static function pathGet($arr, $pathParts) {
+    $r = $arr;
+    foreach ($pathParts as $part) {
+      if (!isset($r[$part])) {
+        return NULL;
       }
-      $values = $values[$key];
+      $r = $r[$part];
     }
-    return $values;
-  }
-
-  /**
-   * Check if a key isset which may be several layers deep.
-   *
-   * This is a helper for when the calling function does not know how many layers deep
-   * the path array is so cannot easily check.
-   *
-   * @param array $values
-   * @param array $path
-   * @return bool
-   */
-  public static function pathIsset($values, $path) {
-    foreach ($path as $key) {
-      if (!is_array($values) || !isset($values[$key])) {
-        return FALSE;
-      }
-      $values = $values[$key];
-    }
-    return TRUE;
+    return $r;
   }
 
   /**
    * Set a single value in an array tree.
    *
-   * @param array $values
-   *   Ex: ['foo' => ['bar' => 123]].
+   * @param array $arr
+   *   Ex: array('foo'=>array('bar'=>123)).
    * @param array $pathParts
-   *   Ex: ['foo', 'bar'].
+   *   Ex: array('foo',bar').
    * @param $value
    *   Ex: 456.
    */
-  public static function pathSet(&$values, $pathParts, $value) {
-    $r = &$values;
+  public static function pathSet(&$arr, $pathParts, $value) {
+    $r = &$arr;
     $last = array_pop($pathParts);
     foreach ($pathParts as $part) {
       if (!isset($r[$part])) {
@@ -1041,10 +1017,19 @@ class CRM_Utils_Array {
    * @param string $valueField
    *   Ex: 'value'.
    * @return array
-   * @deprecated
+   *   Ex: array(
+   *     0 => array('key' => 'foo', 'value' => 'bar')
+   *   ).
    */
   public static function toKeyValueRows($array, $keyField = 'key', $valueField = 'value') {
-    return self::makeNonAssociative($array, $keyField, $valueField);
+    $result = array();
+    foreach ($array as $key => $value) {
+      $result[] = array(
+        $keyField => $key,
+        $valueField => $value,
+      );
+    }
+    return $result;
   }
 
   /**
@@ -1165,6 +1150,79 @@ class CRM_Utils_Array {
       }
     }
     return NULL;
+  }
+
+  /**
+   * Check if a key isset which may be several layers deep.
+   *
+   * This is a helper for when the calling function does not know how many layers deep the
+   * path array is so cannot easily check.
+   *
+   * @param array $array
+   * @param array $path
+   * @return bool
+   * @throws \CRM_Core_Exception
+   */
+  public static function recursiveIsset($array, $path) {
+    foreach ($path as $key) {
+      if (!is_array($array) || !isset($array[$key])) {
+        return FALSE;
+      }
+      $array = $array[$key];
+    }
+    return TRUE;
+  }
+
+  /**
+   * Check if a key isset which may be several layers deep.
+   *
+   * This is a helper for when the calling function does not know how many layers deep the
+   * path array is so cannot easily check.
+   *
+   * @param array $array
+   * @param array $path
+   *   An array of keys - e.g [0, 'bob', 8] where we want to check if $array[0]['bob'][8]
+   * @param mixed $default
+   *   Value to return if not found.
+   * @return bool
+   * @throws \CRM_Core_Exception
+   */
+  public static function recursiveValue($array, $path, $default = NULL) {
+    foreach ($path as $key) {
+      if (!is_array($array) || !isset($array[$key])) {
+        return $default;
+      }
+      $array = $array[$key];
+    }
+    return $array;
+  }
+
+  /**
+   * Append the value to the array using the key provided.
+   *
+   * e.g if value is 'llama' & path is [0, 'email', 'location'] result will be
+   * [0 => ['email' => ['location' => 'llama']]
+   *
+   * @param $path
+   * @param $value
+   * @param array $source
+   *
+   * @return array
+   */
+  public static function recursiveBuild($path, $value, $source = []) {
+    $arrayKey = array_shift($path);
+    // Recurse through array keys
+    if ($path) {
+      if (!isset($source[$arrayKey])) {
+        $source[$arrayKey] = [];
+      }
+      $source[$arrayKey] = self::recursiveBuild($path, $value, $source[$arrayKey]);
+    }
+    // Final iteration
+    else {
+      $source[$arrayKey] = $value;
+    }
+    return $source;
   }
 
 }

@@ -274,16 +274,16 @@ WHERE civicrm_case.id = %1";
    *   ID of the case.
    *
    * @param int $contactID
-   * @param int $startArrayAt This is to support legacy calls to Case.Get API which may rely on the first array index being set to 1
    *
    * @return array
    */
-  public static function retrieveContactIdsByCaseId($caseId, $contactID = NULL, $startArrayAt = 0) {
+  public static function retrieveContactIdsByCaseId($caseId, $contactID = NULL) {
     $caseContact = new CRM_Case_DAO_CaseContact();
     $caseContact->case_id = $caseId;
     $caseContact->find();
     $contactArray = array();
-    $count = $startArrayAt;
+    // FIXME: Why does this return a 1-based array?
+    $count = 1;
     while ($caseContact->fetch()) {
       if ($contactID != $caseContact->contact_id) {
         $contactArray[$count] = $caseContact->contact_id;
@@ -684,7 +684,7 @@ LEFT JOIN civicrm_option_group aog ON aog.name='activity_type'
 
       $casesList[$key]['activity_list'] = sprintf('<a title="%s" class="crm-expand-row" href="%s"></a>',
         ts('Activities'),
-        CRM_Utils_System::url('civicrm/case/details', array('caseId' => $case['case_id'], 'cid' => $case['contact_id'], 'type' => $type))
+        CRM_Utils_System::url('civicrm/case/details', array('caseid' => $case['case_id'], 'cid' => $case['contact_id'], 'type' => $type))
       );
 
       $phone = empty($case['phone']) ? '' : '<br /><span class="description">' . $case['phone'] . '</span>';
@@ -725,7 +725,7 @@ LEFT JOIN civicrm_option_group aog ON aog.name='activity_type'
         }
         if (self::checkPermission($actId, 'edit', $case['activity_type_id'], $userID)) {
           $casesList[$key]['date'] .= sprintf('<a class="action-item crm-hover-button" href="%s" title="%s"><i class="crm-i fa-pencil"></i></a>',
-            CRM_Utils_System::url('civicrm/case/activity', array('reset' => 1, 'cid' => $case['contact_id'], 'caseid' => $case['case_id'], 'action' => 'update', 'id' => $actId)),
+            CRM_Utils_System::url('civicrm/case/activity', array('reset' => 1, 'cid' => $case['contact_id'], 'caseid' => $case['case_id'], 'action' => 'update')),
             ts('Edit activity')
           );
         }
@@ -840,13 +840,12 @@ SELECT case_status.label AS case_status, status_id, civicrm_case_type.title AS c
    * @param int $caseID
    *   Case id.
    * @param int $relationshipID
-   * @param bool $activeOnly
    *
    * @return array
    *   case role / relationships
    *
    */
-  public static function getCaseRoles($contactID, $caseID, $relationshipID = NULL, $activeOnly = TRUE) {
+  public static function getCaseRoles($contactID, $caseID, $relationshipID = NULL) {
     $query = '
     SELECT  rel.id as civicrm_relationship_id,
             con.sort_name as sort_name,
@@ -862,11 +861,7 @@ SELECT case_status.label AS case_status, status_id, civicrm_case_type.title AS c
  LEFT JOIN  civicrm_phone ON (civicrm_phone.contact_id = con.id AND civicrm_phone.is_primary = 1)
  LEFT JOIN  civicrm_email ON (civicrm_email.contact_id = con.id AND civicrm_email.is_primary = 1)
      WHERE  (rel.contact_id_a = %1 OR rel.contact_id_b = %1) AND rel.case_id = %2
-       AND con.is_deleted = 0';
-
-    if ($activeOnly) {
-      $query .= ' AND rel.is_active = 1 AND (rel.end_date IS NULL OR rel.end_date > NOW())';
-    }
+       AND  rel.is_active = 1 AND con.is_deleted = 0 AND (rel.end_date IS NULL OR rel.end_date > NOW())';
 
     $params = array(
       1 => array($contactID, 'Positive'),
@@ -1090,6 +1085,7 @@ SELECT case_status.label AS case_status, status_id, civicrm_case_type.title AS c
 
     $contactViewUrl = CRM_Utils_System::url("civicrm/contact/view", "reset=1&cid=", FALSE, NULL, FALSE);
     $hasViewContact = CRM_Core_Permission::giveMeAllACLs();
+    $clientIds = self::retrieveContactIdsByCaseId($caseID);
 
     if (!$userID) {
       $session = CRM_Core_Session::singleton();
@@ -1590,7 +1586,7 @@ SELECT case_status.label AS case_status, status_id, civicrm_case_type.title AS c
  AND civicrm_case.id IN( {$caseID})
  AND civicrm_case.is_deleted     = {$cases['case_deleted']}";
 
-    $query = self::getCaseActivityQuery($type, $userID, $condition);
+    $query = self::getCaseActivityQuery($type, $userID, $condition, $cases['case_deleted']);
 
     $res = CRM_Core_DAO::executeQuery($query);
 
@@ -2744,12 +2740,6 @@ WHERE id IN (' . implode(',', $copiedActivityIds) . ')';
 
       //allow edit operation.
       $allowEditNames = array('Open Case');
-
-      if (CRM_Core_Permission::check('edit inbound email basic information') ||
-        CRM_Core_Permission::check('edit inbound email basic information and content')
-      ) {
-        $allowEditNames[] = 'Inbound Email';
-      }
 
       // do not allow File on Case
       $doNotFileNames = array(

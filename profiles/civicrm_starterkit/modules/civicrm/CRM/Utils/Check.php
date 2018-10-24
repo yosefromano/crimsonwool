@@ -223,7 +223,7 @@ class CRM_Utils_Check {
       break;
     }
 
-    Civi::cache('checks')->set('systemStatusCheckResult', $maxSeverity);
+    Civi::settings()->set('systemStatusCheckResult', $maxSeverity);
 
     return ($max) ? $maxSeverity : $messages;
   }

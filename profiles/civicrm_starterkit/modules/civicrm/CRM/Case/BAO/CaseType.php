@@ -242,8 +242,6 @@ class CRM_Case_BAO_CaseType extends CRM_Case_DAO_CaseType {
     // set activity sets
     if (isset($xml->ActivitySets)) {
       $definition['activitySets'] = array();
-      $definition['timelineActivityTypes'] = array();
-
       foreach ($xml->ActivitySets->ActivitySet as $activitySetXML) {
         // parse basic properties
         $activitySet = array();
@@ -259,11 +257,7 @@ class CRM_Case_BAO_CaseType extends CRM_Case_DAO_CaseType {
         if (isset($activitySetXML->ActivityTypes)) {
           $activitySet['activityTypes'] = array();
           foreach ($activitySetXML->ActivityTypes->ActivityType as $activityTypeXML) {
-            $activityType = json_decode(json_encode($activityTypeXML), TRUE);
-            $activitySet['activityTypes'][] = $activityType;
-            if ($activitySetXML->timeline) {
-              $definition['timelineActivityTypes'][] = $activityType;
-            }
+            $activitySet['activityTypes'][] = json_decode(json_encode($activityTypeXML), TRUE);
           }
         }
         $definition['activitySets'][] = $activitySet;

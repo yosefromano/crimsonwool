@@ -101,12 +101,9 @@ function civicrm_api3_membership_create($params) {
   _civicrm_api3_custom_format_params($params, $values, 'Membership');
   $params = array_merge($params, $values);
 
-  // Calculate membership dates
   // Fixme: This code belongs in the BAO
   if (empty($params['id']) || !empty($params['num_terms'])) {
-    // If this is a new membership or we have a specified number of terms calculate membership dates.
     if (empty($params['id'])) {
-      // This is a new membership, calculate the membership dates.
       $calcDates = CRM_Member_BAO_MembershipType::getDatesForMembershipType(
         $params['membership_type_id'],
         CRM_Utils_Array::value('join_date', $params),
@@ -116,7 +113,6 @@ function civicrm_api3_membership_create($params) {
       );
     }
     else {
-      // This is an existing membership, calculate the membership dates after renewal
       $calcDates = CRM_Member_BAO_MembershipType::getRenewalDatesForMembershipType(
         $params['id'],
         NULL,
@@ -132,20 +128,20 @@ function civicrm_api3_membership_create($params) {
   }
 
   // Fixme: This code belongs in the BAO
-  if (empty($params['id'])) {
-    $params['action'] = CRM_Core_Action::ADD;
-    // we need user id during add mode
-    $ids = array();
-    if (!empty($params['contact_id'])) {
-      $ids['userId'] = $params['contact_id'];
-    }
+  $action = CRM_Core_Action::ADD;
+  // we need user id during add mode
+  $ids = array();
+  if (!empty($params['contact_id'])) {
+    $ids['userId'] = $params['contact_id'];
   }
-  else {
-    // edit mode
-    $params['action'] = CRM_Core_Action::UPDATE;
-    // $ids['membership'] is required in CRM_Price_BAO_LineItem::processPriceSet
+  //for edit membership id should be present
+  // probably not required now.
+  if (!empty($params['id'])) {
     $ids['membership'] = $params['id'];
+    $action = CRM_Core_Action::UPDATE;
   }
+  //need to pass action to handle related memberships.
+  $params['action'] = $action;
 
   $membershipBAO = CRM_Member_BAO_Membership::create($params, $ids, TRUE);
 

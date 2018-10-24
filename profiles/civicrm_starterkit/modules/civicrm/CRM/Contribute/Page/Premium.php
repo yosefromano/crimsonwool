@@ -130,45 +130,45 @@ class CRM_Contribute_Page_Premium extends CRM_Core_Page_Basic {
     $pageID = CRM_Utils_Request::retrieve('id', 'Positive',
       $this, FALSE, 0
     );
-    $premiumDao = new CRM_Contribute_DAO_Premium();
-    $premiumDao->entity_table = 'civicrm_contribution_page';
-    $premiumDao->entity_id = $pageID;
-    $premiumDao->find(TRUE);
-    $premiumID = $premiumDao->id;
+    $dao = new CRM_Contribute_DAO_Premium();
+    $dao->entity_table = 'civicrm_contribution_page';
+    $dao->entity_id = $pageID;
+    $dao->find(TRUE);
+    $premiumID = $dao->id;
     $this->assign('products', FALSE);
     $this->assign('id', $pageID);
     if (!$premiumID) {
       return;
     }
 
-    $premiumsProductDao = new CRM_Contribute_DAO_PremiumsProduct();
-    $premiumsProductDao->premiums_id = $premiumID;
-    $premiumsProductDao->orderBy('weight');
-    $premiumsProductDao->find();
+    $dao = new CRM_Contribute_DAO_PremiumsProduct();
+    $dao->premiums_id = $premiumID;
+    $dao->orderBy('weight');
+    $dao->find();
 
-    while ($premiumsProductDao->fetch()) {
+    while ($dao->fetch()) {
       $productDAO = new CRM_Contribute_DAO_Product();
-      $productDAO->id = $premiumsProductDao->product_id;
+      $productDAO->id = $dao->product_id;
       $productDAO->is_active = 1;
 
       if ($productDAO->find(TRUE)) {
         $premiums[$productDAO->id] = array();
-        $premiums[$productDAO->id]['weight'] = $premiumsProductDao->weight;
+        $premiums[$productDAO->id]['weight'] = $dao->weight;
         CRM_Core_DAO::storeValues($productDAO, $premiums[$productDAO->id]);
 
         $action = array_sum(array_keys($this->links()));
 
-        $premiums[$premiumsProductDao->product_id]['action'] = CRM_Core_Action::formLink(self::links(), $action,
-          array('id' => $pageID, 'pid' => $premiumsProductDao->id),
+        $premiums[$dao->product_id]['action'] = CRM_Core_Action::formLink(self::links(), $action,
+          array('id' => $pageID, 'pid' => $dao->id),
           ts('more'),
           FALSE,
           'premium.contributionpage.row',
           'Premium',
-          $premiumsProductDao->id
+          $dao->id
         );
-        // Financial Type
-        if (!empty($premiumsProductDao->financial_type_id)) {
-          $premiums[$productDAO->id]['financial_type'] = CRM_Core_PseudoConstant::getLabel('CRM_Financial_BAO_FinancialType', 'financial_type', $premiumsProductDao->financial_type_id);
+        //Financial Type
+        if (!empty($dao->financial_type_id)) {
+          $premiums[$productDAO->id]['financial_type_id'] = CRM_Core_DAO::getFieldValue('CRM_Financial_DAO_FinancialType', $dao->financial_type_id, 'name');
         }
       }
     }

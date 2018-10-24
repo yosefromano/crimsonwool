@@ -35,6 +35,5 @@
   </td>
   <td>{if $form.$fieldName.html}{if $fieldSpec.formatter === 'crmMoney'}{$form.$fieldName.html|crmMoney}{else}{$form.$fieldName.html}{/if}{else}{$fieldSpec.place_holder}{/if}<br />
     {if $fieldSpec.description}<span class="description">{$fieldSpec.description}</span>{/if}
-    {if $fieldSpec.documentation_link}{docURL page=$fieldSpec.documentation_link.page}{/if}
   </td>
 {/if}

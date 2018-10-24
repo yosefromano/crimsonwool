@@ -33,6 +33,10 @@
 class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
 
   /**
+   * Static holder for the default LT.
+   */
+  static $_defaultContributionType = NULL;
+  /**
    * Static cache holder of available financial types for this session
    */
   static $_availableFinancialTypes = array();
@@ -56,7 +60,7 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
    * @param array $defaults
    *   (reference ) an assoc array to hold the flattened values.
    *
-   * @return CRM_Financial_DAO_FinancialType
+   * @return CRM_Contribute_BAO_ContributionType
    */
   public static function retrieve(&$params, &$defaults) {
     $financialType = new CRM_Financial_DAO_FinancialType();
@@ -76,7 +80,8 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
    * @param bool $is_active
    *   Value we want to set the is_active field.
    *
-   * @return bool
+   * @return Object
+   *   DAO object on success, null otherwise
    */
   public static function setIsActive($id, $is_active) {
     return CRM_Core_DAO::setFieldValue('CRM_Financial_DAO_FinancialType', $id, 'is_active', $is_active);
@@ -134,7 +139,7 @@ class CRM_Financial_BAO_FinancialType extends CRM_Financial_DAO_FinancialType {
     $financialType = new CRM_Financial_DAO_FinancialType();
     $financialType->id = $financialTypeId;
     $financialType->find(TRUE);
-    // tables to ignore checks for financial_type_id
+    // tables to ingore checks for financial_type_id
     $ignoreTables = array('CRM_Financial_DAO_EntityFinancialAccount');
 
     // TODO: if (!$financialType->find(true)) {

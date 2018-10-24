@@ -31,10 +31,6 @@
  * @copyright CiviCRM LLC (c) 2004-2018
  */
 class CRM_Utils_Cache_APCcache implements CRM_Utils_Cache_Interface {
-
-  use CRM_Utils_Cache_NaiveMultipleTrait; // TODO Consider native implementation.
-  use CRM_Utils_Cache_NaiveHasTrait; // TODO Native implementation
-
   const DEFAULT_TIMEOUT = 3600;
   const DEFAULT_PREFIX = '';
 
@@ -76,19 +72,11 @@ class CRM_Utils_Cache_APCcache implements CRM_Utils_Cache_Interface {
   /**
    * @param $key
    * @param $value
-   * @param null|int|\DateInterval $ttl
    *
    * @return bool
    */
-  public function set($key, $value, $ttl = NULL) {
-    CRM_Utils_Cache::assertValidKey($key);
-    if (is_int($ttl) && $ttl <= 0) {
-      return $this->delete($key);
-    }
-
-    $ttl = CRM_Utils_Date::convertCacheTtl($ttl, $this->_timeout);
-    $expires = time() + $ttl;
-    if (!apc_store($this->_prefix . $key, ['e' => $expires, 'v' => $value], $ttl)) {
+  public function set($key, &$value) {
+    if (!apc_store($this->_prefix . $key, $value, $this->_timeout)) {
       return FALSE;
     }
     return TRUE;
@@ -96,17 +84,11 @@ class CRM_Utils_Cache_APCcache implements CRM_Utils_Cache_Interface {
 
   /**
    * @param $key
-   * @param mixed $default
    *
    * @return mixed
    */
-  public function get($key, $default = NULL) {
-    CRM_Utils_Cache::assertValidKey($key);
-    $result = apc_fetch($this->_prefix . $key, $success);
-    if ($success && isset($result['e']) && $result['e'] > time()) {
-      return $this->reobjectify($result['v']);
-    }
-    return $default;
+  public function get($key) {
+    return apc_fetch($this->_prefix . $key);
   }
 
   /**
@@ -115,33 +97,22 @@ class CRM_Utils_Cache_APCcache implements CRM_Utils_Cache_Interface {
    * @return bool|string[]
    */
   public function delete($key) {
-    CRM_Utils_Cache::assertValidKey($key);
-    apc_delete($this->_prefix . $key);
-    return TRUE;
+    return apc_delete($this->_prefix . $key);
   }
 
   public function flush() {
     $allinfo = apc_cache_info('user');
     $keys = $allinfo['cache_list'];
-    $prefix = $this->_prefix;  // Our keys follows this pattern: ([A-Za-z0-9_]+)?CRM_[A-Za-z0-9_]+
+    $prefix = $this->_prefix . "CRM_";  // Our keys follows this pattern: ([A-Za-z0-9_]+)?CRM_[A-Za-z0-9_]+
     $lp = strlen($prefix);              // Get prefix length
 
     foreach ($keys as $key) {
       $name = $key['info'];
       if ($prefix == substr($name, 0, $lp)) {
         // Ours?
-        apc_delete($name);
+        apc_delete($this->_prefix . $name);
       }
     }
-    return TRUE;
-  }
-
-  public function clear() {
-    return $this->flush();
-  }
-
-  private function reobjectify($value) {
-    return is_object($value) ? unserialize(serialize($value)) : $value;
   }
 
 }

@@ -271,7 +271,7 @@ class CRM_Campaign_Selector_Search extends CRM_Core_Selector_Base implements CRM
 
     if (!$crmPID) {
       $cacheKey = "civicrm search {$this->_key}";
-      Civi::service('prevnext')->deleteItem(NULL, $cacheKey, 'civicrm_contact');
+      CRM_Core_BAO_PrevNextCache::deleteItem(NULL, $cacheKey, 'civicrm_contact');
 
       $sql = $this->_query->searchQuery(0, 0, $sort,
         FALSE, FALSE,
@@ -281,19 +281,18 @@ class CRM_Campaign_Selector_Search extends CRM_Core_Selector_Base implements CRM
         $this->_campaignFromClause
       );
       list($select, $from) = explode(' FROM ', $sql);
-      $selectSQL = "
-      SELECT 'civicrm_contact', contact_a.id, contact_a.id, '$cacheKey', contact_a.display_name
+      $insertSQL = "
+INSERT INTO civicrm_prevnext_cache ( entity_table, entity_id1, entity_id2, cacheKey, data )
+SELECT 'civicrm_contact', contact_a.id, contact_a.id, '$cacheKey', contact_a.display_name
 FROM {$from}
 ";
+      $errorScope = CRM_Core_TemporaryErrorScope::ignoreException();
+      $result = CRM_Core_DAO::executeQuery($insertSQL);
+      unset($errorScope);
 
-      try {
-        Civi::service('prevnext')->fillWithSql($cacheKey, $selectSQL);
-      }
-      catch (CRM_Core_Exception $e) {
-        // Heavy handed, no? Seems like this merits an explanation.
+      if (is_a($result, 'DB_Error')) {
         return;
       }
-
       // also record an entry in the cache key table, so we can delete it periodically
       CRM_Core_BAO_Cache::setItem($cacheKey, 'CiviCRM Search PrevNextCache', $cacheKey);
     }

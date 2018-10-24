@@ -313,17 +313,6 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
         throw new CRM_Contribute_Exception_InactiveContributionPageException(ts('The page you requested is currently unavailable.'), $this->_id);
       }
 
-      $endDate = CRM_Utils_Date::processDate(CRM_Utils_Array::value('end_date', $this->_values));
-      $now = date('YmdHis');
-      if ($endDate && $endDate < $now) {
-        throw new CRM_Contribute_Exception_PastContributionPageException(ts('The page you requested has past its end date on ' . CRM_Utils_Date::customFormat($endDate)), $this->_id);
-      }
-
-      $startDate = CRM_Utils_Date::processDate(CRM_Utils_Array::value('start_date', $this->_values));
-      if ($startDate && $startDate > $now) {
-        throw new CRM_Contribute_Exception_FutureContributionPageException(ts('The page you requested will be active from ' . CRM_Utils_Date::customFormat($startDate)), $this->_id);
-      }
-
       $this->assignBillingType();
 
       // check for is_monetary status
@@ -614,7 +603,11 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
           $this->assign($paymentField, $this->_params[$paymentField]);
         }
       }
-      $this->assign('paymentFieldsetLabel', CRM_Core_Payment_Form::getPaymentLabel($paymentProcessorObject));
+      $paymentFieldsetLabel = ts('%1 Information', array($paymentProcessorObject->getPaymentTypeLabel()));
+      if (empty($paymentFields)) {
+        $paymentFieldsetLabel = '';
+      }
+      $this->assign('paymentFieldsetLabel', $paymentFieldsetLabel);
       $this->assign('paymentFields', $paymentFields);
 
     }
@@ -777,41 +770,12 @@ class CRM_Contribute_Form_ContributionBase extends CRM_Core_Form {
         }
 
         if ($addCaptcha && !$viewOnly) {
-          $this->enableCaptchaOnForm();
+          $captcha = CRM_Utils_ReCAPTCHA::singleton();
+          $captcha->add($this);
+          $this->assign('isCaptcha', TRUE);
         }
       }
     }
-  }
-
-  /**
-   * Enable ReCAPTCHA on Contribution form
-   */
-  protected function enableCaptchaOnForm() {
-    $captcha = CRM_Utils_ReCAPTCHA::singleton();
-    if ($captcha->hasSettingsAvailable()) {
-      $captcha->add($this);
-      $this->assign('isCaptcha', TRUE);
-    }
-  }
-
-  /**
-   * Display ReCAPTCHA warning on Contribution form
-   */
-  protected function displayCaptchaWarning() {
-    if (CRM_Core_Permission::check("administer CiviCRM")) {
-      $captcha = CRM_Utils_ReCAPTCHA::singleton();
-      if (!$captcha->hasSettingsAvailable()) {
-        $this->assign('displayCaptchaWarning', TRUE);
-      }
-    }
-  }
-
-  /**
-   * Check if ReCAPTCHA has to be added on Contribution form forcefully.
-   */
-  protected function hasToAddForcefully() {
-    $captcha = CRM_Utils_ReCAPTCHA::singleton();
-    return $captcha->hasToAddForcefully();
   }
 
   /**

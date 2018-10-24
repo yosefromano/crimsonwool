@@ -55,7 +55,6 @@
     <name>mapping_id</name>
     <table>civicrm_mapping</table>
     <key>id</key>
-    <onDelete>SET NULL</onDelete>
     <add>1.5</add>
   </foreignKey>
   <field>

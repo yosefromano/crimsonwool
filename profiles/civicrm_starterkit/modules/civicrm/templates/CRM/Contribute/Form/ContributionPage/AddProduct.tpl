@@ -53,7 +53,7 @@
         {capture assign=ftUrl}{crmURL p='civicrm/admin/financial/financialType' q="reset=1"}{/capture}
         {ts 1=$ftUrl}There are no financial types configured with linked 'Cost of Sales Premiums' and 'Premiums Inventory Account' accounts. If you want to generate accounting transactions which track the cost of premiums used <a href='%1'>click here</a> to configure financial types and accounts.{/ts}
       {else}
-        {$form.financial_type_id.html} {help id="id-financial_type-product"} <a name='resetfinancialtype' id="resetfinancialtype" style="display: none;">{ts}Reset to default for selected product{/ts}</a>
+        {$form.financial_type_id.html}{help id="id-financial_type-product"}
       {/if}
       </td>
     </tr>
@@ -78,7 +78,7 @@
 
   CRM.$(function($) {
 
-    function getFinancialType(set) {
+    function getFinancialType() {
       var callbackURL = CRM.url('civicrm/ajax/rest', {
         className: 'CRM_Financial_Page_AJAX',
         fnName: 'jqFinancialType',
@@ -88,24 +88,17 @@
         url: callbackURL,
         success: function( data, textStatus ){
           data = eval(data);//get json array
-          if ((data != null) && (set)) {
+          if ( data != null ) {
             $("#financial_type_id").val(data);
           }
 
-          if (data == $("#financial_type_id").val()) {
-            $("#resetfinancialtype").hide();
-          }
-          else {
-            $("#resetfinancialtype").show();
-          }
         }
       });
-    }
 
-    getFinancialType(false);
-    $("#product_id").change(function() { getFinancialType(true); });
-    $("#resetfinancialtype").click(function() { getFinancialType(true); });
-    $("#financial_type_id").change(function() { getFinancialType(false); });
+    }
+    getFinancialType();
+
+    $("#product_id").change(getFinancialType);
 });
 {/literal}
 </script>

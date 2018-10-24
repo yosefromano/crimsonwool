@@ -115,14 +115,12 @@ div.menu-item {
   padding: 1px 10px 1px 4px;
   height: auto;
 }
-#civicrm-menu .menu-item-arrow,
-#root-menu-div .menu-item-arrow {
+img.menu-item-arrow{
   position: absolute;
   right: 4px;
-  top: 6px;
+  top: 8px;
 }
-#civicrm-menu i,
-#root-menu-div i {
+#civicrm-menu i {
   margin-right: 5px;
 }
 li.menu-separator{

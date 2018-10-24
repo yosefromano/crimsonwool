@@ -1,4 +1,5 @@
-{assign var="greeting" value="{contact.email_greeting}"}{if $greeting}{$greeting},{/if}
+{contact.email_greeting},
+
 {if $event.confirm_email_text AND (not $isOnWaitlist AND not $isRequireApproval)}
 {$event.confirm_email_text}
 
@@ -100,7 +101,7 @@
 {if $payer.name}
 You were registered by: {$payer.name}
 {/if}
-{if $event.is_monetary and not $isRequireApproval} {* This section for Paid events only.*}
+{if $event.is_monetary} {* This section for Paid events only.*}
 
 ==========================================================={if $pricesetFieldsCount }===================={/if}
 

@@ -25,7 +25,7 @@
 
   <tr>
    <td>
-     {assign var="greeting" value="{contact.email_greeting}"}{if $greeting}<p>{$greeting},</p>{/if}
+  <p>{contact.email_greeting},</p>
 
     {if $event.confirm_email_text AND (not $isOnWaitlist AND not $isRequireApproval)}
      <p>{$event.confirm_email_text|htmlize}</p>
@@ -177,7 +177,7 @@
        </td>
      </tr>
     {/if}
-    {if $event.is_monetary and not $isRequireApproval}
+    {if $event.is_monetary}
 
       <tr>
        <th {$headerStyle}>
