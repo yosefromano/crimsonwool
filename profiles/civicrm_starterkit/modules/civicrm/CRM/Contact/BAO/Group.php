@@ -448,8 +448,11 @@ class CRM_Contact_BAO_Group extends CRM_Contact_DAO_Group {
     }
 
     if (!empty($params['organization_id'])) {
-      $groupOrg = $params;
-      $groupOrg['group_id'] = $group->id;
+      // dev/core#382 Keeping the id here can cause db errors as it tries to update the wrong record in the Organization table
+      $groupOrg = [
+        'group_id' => $group->id,
+        'organization_id' => $params['organization_id'],
+      ];
       CRM_Contact_BAO_GroupOrganization::add($groupOrg);
     }
 
@@ -539,8 +542,8 @@ class CRM_Contact_BAO_Group extends CRM_Contact_DAO_Group {
    * @param bool $isActive
    *   Value we want to set the is_active field.
    *
-   * @return CRM_Core_DAO|null
-   *   DAO object on success, NULL otherwise
+   * @return bool
+   *   true if we found and updated the object, else false
    */
   public static function setIsActive($id, $isActive) {
     return CRM_Core_DAO::setFieldValue('CRM_Contact_DAO_Group', $id, 'is_active', $isActive);
