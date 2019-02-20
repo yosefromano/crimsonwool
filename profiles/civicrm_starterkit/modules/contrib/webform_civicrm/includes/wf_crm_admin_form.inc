@@ -247,7 +247,6 @@ class wf_crm_admin_form {
     $this->form['contact_' . $n]['contact_subtype_wrapper']['clear'] = array(
       '#markup' => '<div class="clearfix"> </div>',
     );
-
     foreach ($this->sets as $sid => $set) {
       if ($set['entity_type'] != 'contact') {
         continue;
@@ -738,12 +737,13 @@ class wf_crm_admin_form {
     $this->help($this->form['participant']['participant_reg_type'], 'participant_reg_type');
     $this->form['participant']['event_type'] = array(
       '#type' => 'select',
-      '#title' => t('Show Events of Type'),
+      '#title' => t('Show Events of Type(s)'),
       '#options' => array('any' => t('- Any Type -')) + wf_crm_apivalues('event', 'getoptions', array('field' => 'event_type_id')),
       '#default_value' => wf_crm_aval($this->data, 'reg_options:event_type', 'any'),
       '#prefix' => '<div id="event-reg-options-wrapper"><div class="web-civi-checkbox-set">',
       '#parents' => array('reg_options', 'event_type'),
       '#tree' => TRUE,
+      '#multiple' => TRUE,
     );
     $this->form['participant']['show_past_events'] = array(
       '#type' => 'select',
@@ -785,6 +785,19 @@ class wf_crm_admin_form {
       ),
     );
     $this->help($this->form['participant']['show_future_events'], 'reg_options_show_future_events');
+    $this->form['participant']['show_public_events'] = array(
+      '#type' => 'select',
+      '#title' => t('Show Public Events'),
+      '#default_value' => wf_crm_aval($this->data, 'reg_options:show_public_events', 'title'),
+      '#parents' => array('reg_options', 'show_public_events'),
+      '#tree' => TRUE,
+      '#options' => array(
+        'all' => t('Public and Private'),
+        '1' => t('Public'),
+        '0' => t('Private'),
+      ),
+    );
+    $this->help($this->form['participant']['show_public_events'], 'reg_options_show_public_events');
     $this->form['participant']['title_display'] = array(
       '#type' => 'select',
       '#title' => t('Title Display'),
@@ -858,6 +871,7 @@ class wf_crm_admin_form {
     $this->addAjaxItem('participant', 'event_type', 'participants');
     $this->addAjaxItem('participant', 'show_past_events', 'participants');
     $this->addAjaxItem('participant', 'show_future_events', 'participants');
+    $this->addAjaxItem('participant', 'show_public_events', 'participants');
     $this->addAjaxItem('participant', 'title_display', 'participants');
 
     for ($n = 1; $reg_type && (($n <= count($this->data['contact']) && $reg_type != 'all') || $n == 1); ++$n) {
@@ -1014,6 +1028,30 @@ class wf_crm_admin_form {
             $this->form['contribution']['sets'][$sid][$fid] = $this->addItem($fid, $field);
           }
         }
+      }
+    }
+    // LineItem
+    $num = wf_crm_aval($this->data, "lineitem:number_number_of_lineitem", 0);
+    $this->form['contribution']['sets']["lineitem_1_number_of_lineitem"] = array(
+      '#type' => 'select',
+      '#title' => t('Additional Line items'),
+      '#default_value' => $num,
+      '#options' => range(0, 9),
+      '#prefix' => '<div class="number-of">',
+      '#suffix' => '</div>',
+    );
+    $this->addAjaxItem("contribution:sets", "lineitem_1_number_of_lineitem", "lineitem");
+    for ($n = 1; $n <= $num; ++$n) {
+      $fs = "contribution_sets_lineitem_{$n}_fieldset";
+      $this->form['contribution']['sets']['lineitem'][$fs] = array(
+        '#type' => 'fieldset',
+        '#title' => t('Line item !num', array('!num' => $n)),
+        '#attributes' => array('id' => $fs, 'class' => array('web-civi-checkbox-set')),
+        'js_select' => $this->addToggle($fs),
+      );
+      foreach ($this->sets['line_items']['fields'] as $fid => $field) {
+        $fid = "civicrm_1_lineitem_{$n}_$fid";
+        $this->form['contribution']['sets']['lineitem'][$fs][$fid] = $this->addItem($fid, $field);
       }
     }
   }
@@ -1308,6 +1346,9 @@ class wf_crm_admin_form {
         $options = array_keys($options);
         $item['#default_value'] = $options[1];
       }
+      elseif (!empty($this->data[$ent][$c][$table][$n]) && empty($this->data[$ent][$c][$table][$n][$name]) && $item['#default_value'] == 0) {
+        $item['#default_value'] = NULL;
+      }
       if (!empty($field['extra']['multiple'])) {
         $item['#default_value'] = (array) $item['#default_value'];
         if (isset($this->settings[$fid]) && !is_array($this->settings[$fid])
@@ -1448,7 +1489,7 @@ class wf_crm_admin_form {
           $this->data[$ent][$c][$key] = $val;
         }
         // Standalone entities keep their own count independent of contacts
-        elseif ($ent == 'grant' || $ent == 'activity' || $ent == 'case') {
+        elseif ($ent == 'grant' || $ent == 'activity' || $ent == 'case' || $ent == 'lineitem') {
           $this->data[$ent]["number_$key"] = $val;
         }
       }
@@ -1866,7 +1907,7 @@ class wf_crm_admin_form {
       $field['value'] = $settings[$field['form_key']];
     }
     // Create fieldsets for multivalued entities
-    if ($ent != 'contribution' &&
+    if ($ent != 'contribution' && $ent != 'lineitem' &&
       ($ent != 'participant' || wf_crm_aval($settings['data'], 'participant_reg_type') == 'separate')
     ) {
       self::addFieldset($c, $field, $enabled, $settings, $ent, $create_fieldsets);

@@ -144,6 +144,8 @@ AND    TABLE_NAME LIKE 'civicrm_%'
     // CRM-18178
     $this->tables = preg_grep('/_bak$/', $this->tables, PREG_GREP_INVERT);
     $this->tables = preg_grep('/_backup$/', $this->tables, PREG_GREP_INVERT);
+    // dev/core#462
+    $this->tables = preg_grep('/^civicrm_tmp_/', $this->tables, PREG_GREP_INVERT);
 
     // do not log civicrm_mailing_event* tables, CRM-12300
     $this->tables = preg_grep('/^civicrm_mailing_event_/', $this->tables, PREG_GREP_INVERT);
@@ -331,7 +333,7 @@ AND    (TABLE_NAME LIKE 'log_civicrm_%' $nonStandardTableNameString )
         $updateLogConn = TRUE;
       }
       if (!empty($alterSql)) {
-        CRM_Core_DAO::executeQuery("ALTER TABLE {$this->db}.{$logTable} " . implode(', ', $alterSql));
+        CRM_Core_DAO::executeQuery("ALTER TABLE {$this->db}.{$logTable} " . implode(', ', $alterSql), [], TRUE, NULL, FALSE, FALSE);
       }
     }
     if ($updateLogConn) {
