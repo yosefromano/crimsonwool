@@ -46,19 +46,30 @@ class CRM_CivirulesConditions_Contribution_Status extends CRM_Civirules_Conditio
    *
    * @return string
    * @access public
+   * @throws \CiviCRM_API3_Exception
    */
   public function userFriendlyConditionParams() {
-    return 'Contribution status is '.CRM_Core_OptionGroup::getLabel('contribution_status', $this->conditionParams['contribution_status_id']);
+    $contributionStatus =  $status = civicrm_api3('OptionValue', 'getvalue', array(
+      'return' => 'label',
+      'option_group_id' => 'contribution_status',
+      'value' => $this->conditionParams['contribution_status_id']));
+    return 'Contribution status is '.$contributionStatus;
   }
 
   /**
-   * Returns an array with required entity names
+   * This function validates whether this condition works with the selected trigger.
    *
-   * @return array
-   * @access public
+   * This function could be overriden in child classes to provide additional validation
+   * whether a condition is possible in the current setup. E.g. we could have a condition
+   * which works on contribution or on contributionRecur then this function could do
+   * this kind of validation and return false/true
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   * @return bool
    */
-  public function requiredEntities() {
-    return array('Contribution');
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+    return $trigger->doesProvideEntity('Contribution');
   }
 
 }

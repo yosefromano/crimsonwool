@@ -61,13 +61,16 @@ class CRM_CivirulesActions_Activity_UpdateStatus extends CRM_CivirulesActions_Ge
    *
    * @return string
    * @access public
+   * @throws \CiviCRM_API3_Exception
    */
   public function userFriendlyConditionParams() {
     $return = '';
     $params = $this->getActionParameters();
-    $status = CRM_Core_OptionGroup::getLabel('activity_status', $params['status_id']);
+    $status = civicrm_api3('OptionValue', 'getvalue', array(
+      'return' => 'label',
+      'option_group_id' => 'activity_status',
+      'value' => $params['status_id']));
     $return .= ts("Status: %1", array(1 => $status));
-
     return $return;
   }
 

@@ -7,7 +7,7 @@
   </div>
   <div class="crm-section sector-section">
     <div class="label">
-      <label for="financial_type-select">{ts}Activity Type(s){/ts}</label>
+      <label for="activity_type-select">{ts}Activity Type(s){/ts}</label>
     </div>
     <div class="content crm-select-container" id="activity_type_block">
       {$form.activity_type_id.html}

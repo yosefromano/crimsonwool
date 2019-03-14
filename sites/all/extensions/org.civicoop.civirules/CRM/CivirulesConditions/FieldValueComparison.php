@@ -55,7 +55,7 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
    * @return mixed
    */
   protected function convertMultiselectCustomfieldToArray($custom_field_id, $value) {
-    if (CRM_Civirules_Utils_CustomField::isCustomFieldMultiselect($custom_field_id)) {
+    if (CRM_Civirules_Utils_CustomField::isCustomFieldMultiselect($custom_field_id) && !is_array($value)) {
       $value = trim($value, CRM_Core_DAO::VALUE_SEPARATOR);
       $value = explode(CRM_Core_DAO::VALUE_SEPARATOR, $value);
     }
@@ -70,7 +70,9 @@ class CRM_CivirulesConditions_FieldValueComparison extends CRM_CivirulesConditio
    */
   protected function getComparisonValue() {
     $value = parent::getComparisonValue();
-    if (!empty($value)) {
+    if (is_array($value)) {
+      return $this->normalizeValue($value);
+    } elseif (strlen($value) != 0) {
       return $this->normalizeValue($value);
     } else {
       return null;

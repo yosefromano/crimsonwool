@@ -40,7 +40,7 @@ class CRM_CivirulesConditions_Form_ValueComparison extends CRM_CivirulesConditio
       case '>=':
       case '<':
       case '<=':
-        if (empty($fields['value'])) {
+        if (!isset($fields['value']) || strlen($fields['value']) === 0) {
           return array('value' => ts('Compare value is required'));
         }
         break;

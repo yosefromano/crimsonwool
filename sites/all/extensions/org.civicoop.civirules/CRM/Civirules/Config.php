@@ -60,40 +60,20 @@ class CRM_Civirules_Config
   {
     return $this->validTriggerOperations;
   }
+
   protected function setTriggerProperties() {
     $this->validTriggerOperations = array(
       'create',
       'edit',
       'delete',
       'restore',
-      'trash');
+      'trash',
+      'update');
 
-    $this->validTriggerObjectNames = array(
-      'Activity',
-      'Address',
-      'Case',
-      'CaseActivity',
-      'Contact',
-      'Contribution',
-      'ContributionRecur',
-      'Email',
-      'EntityTag',
-      'Event',
-      'Grant',
-      'Group',
-      'GroupContact',
-      'Household',
-      'Individual',
-      'Membership',
-      'MembershipPayment',
-      'Organization',
-      'Participant',
-      'ParticipantPayment',
-      'Phone',
-      'Pledge',
-      'PledgePayment',
-      'PumCaseProject',
-      'Relationship',
-      'Tag');
+    // Load all entities from CiviCRM core.
+    $this->validTriggerObjectNames = array_keys(CRM_Core_DAO_AllCoreTables::daoToClass());
+    $this->validTriggerObjectNames[] = 'Individual';
+    $this->validTriggerObjectNames[] = 'Household';
+    $this->validTriggerObjectNames[] = 'Organization';
   }
 }

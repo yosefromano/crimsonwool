@@ -12,6 +12,17 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
   }
 
   /**
+   * Returns an array of additional entities provided in this trigger
+   *
+   * @return array of CRM_Civirules_TriggerData_EntityDefinition
+   */
+  protected function getAdditionalEntities() {
+    $entities = parent::getAdditionalEntities();
+    $entities[] = new CRM_Civirules_TriggerData_EntityDefinition('Group', 'Group', 'CRM_Contact_DAO_Group', 'Group');
+    return $entities;
+  }
+
+  /**
    * Return the name of the DAO Class. If a dao class does not exist return an empty value
    *
    * @return string
@@ -38,10 +49,12 @@ class CRM_CivirulesPostTrigger_GroupContact extends CRM_Civirules_Trigger_Post {
             GROUP BY `contact_id`";
     $params[1] = array($objectId, 'Integer');
     $dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_DAO_GroupContact');
+    $group = civicrm_api3('Group', 'getsingle', array('id' => $objectId));
     while ($dao->fetch()) {
       $data = array();
       CRM_Core_DAO::storeValues($dao, $data);
       $triggerData = $this->getTriggerDataFromPost($op, $objectName, $objectId, $data);
+      $triggerData->setEntityData('Group', $group);
       CRM_Civirules_Engine::triggerRule($this, clone $triggerData);
     }
   }

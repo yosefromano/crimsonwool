@@ -52,16 +52,36 @@ class CRM_CivirulesCronTrigger_GroupMembership extends CRM_Civirules_Trigger_Cro
       return false;
     }
 
-    $sql = "SELECT c.*
+
+    if (is_array($this->triggerParams['group_id'])) {
+      $this->triggerParams['group_id'] = CRM_Utils_Type::escapeAll($this->triggerParams['group_id'], 'Integer');
+      $groupWhereStatement = "`c`.`group_id` IN (".implode(", ", $this->triggerParams['group_id']).")";
+    } else {
+      $groupWhereStatement = "`c`.`group_id` = '".CRM_Utils_Type::escape($this->triggerParams['group_id'], 'Integer', true)."'";
+    }
+
+    CRM_Contact_BAO_GroupContactCache::loadAll($this->triggerParams['group_id']);
+    $sql = "SELECT c.group_id, c.contact_id
             FROM `civicrm_group_contact` `c`
-            WHERE `c`.`group_id` = %1 AND c.status = 'Added'
-            AND `c`.`contact_id` NOT IN (
-              SELECT `rule_log`.`contact_id`
-              FROM `civirule_rule_log` `rule_log`
-              WHERE `rule_log`.`rule_id` = %2 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
-            )";
-    $params[1] = array($this->triggerParams['group_id'], 'Integer');
-    $params[2] = array($this->ruleId, 'Integer');
+            WHERE {$groupWhereStatement}
+              AND c.status = 'Added'
+              AND `c`.`contact_id` NOT IN (
+                SELECT `rule_log`.`contact_id`
+                FROM `civirule_rule_log` `rule_log`
+                WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
+              )
+            UNION
+            SELECT c.group_id, c.contact_id
+            FROM `civicrm_group_contact_cache` c
+            WHERE {$groupWhereStatement}
+              AND `c`.`contact_id` NOT IN (
+                SELECT `rule_log`.`contact_id`
+                FROM `civirule_rule_log` `rule_log`
+                WHERE `rule_log`.`rule_id` = %1 AND DATE(`rule_log`.`log_date`) = DATE(NOW())
+              )
+    ";
+
+    $params[1] = array($this->ruleId, 'Integer');
     $this->dao = CRM_Core_DAO::executeQuery($sql, $params, true, 'CRM_Contact_DAO_GroupContact');
 
     return true;
@@ -94,13 +114,24 @@ class CRM_CivirulesCronTrigger_GroupMembership extends CRM_Civirules_Trigger_Cro
    */
   public function getTriggerDescription() {
     $groupName = ts('Unknown');
-    try {
-      $groupName = civicrm_api3('Group', 'getvalue', array(
-        'return' => 'title',
-        'id' => $this->triggerParams['group_id']
-      ));
-    } catch (Exception $e) {
-      //do nothing
+    if (is_array($this->triggerParams['group_id'])) {
+      $groupApi = civicrm_api3('Group', 'get', array('id' => array('IN' => $this->triggerParams['group_id']), 'options' => array('limit' => 0)));
+      $groupNames = array();
+      foreach($groupApi['values'] as $group) {
+        $groupNames[] = $group['title'];
+      }
+      if (!empty($groupNames)) {
+        $groupName = implode(", ", $groupNames);
+      }
+    } else {
+      try {
+        $groupName = civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $this->triggerParams['group_id']
+        ]);
+      } catch (Exception $e) {
+        //do nothing
+      }
     }
     return ts('Daily trigger for all members of group %1', array(
       1 => $groupName

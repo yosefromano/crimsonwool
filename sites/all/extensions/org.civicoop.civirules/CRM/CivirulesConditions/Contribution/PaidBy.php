@@ -2,7 +2,7 @@
 
 class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Condition {
 
-  private $conditionParams = array();
+  private $_conditionParams = array();
 
   /**
    * Method to set the Rule Condition data
@@ -12,9 +12,9 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
    */
   public function setRuleConditionData($ruleCondition) {
     parent::setRuleConditionData($ruleCondition);
-    $this->conditionParams = array();
+    $this->_conditionParams = array();
     if (!empty($this->ruleCondition['condition_params'])) {
-      $this->conditionParams = unserialize($this->ruleCondition['condition_params']);
+      $this->_conditionParams = unserialize($this->ruleCondition['condition_params']);
     }
   }
 
@@ -28,14 +28,15 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
   public function isConditionValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isConditionValid = FALSE;
     $contribution = $triggerData->getEntityData('Contribution');
-    switch ($this->conditionParams['operator']) {
+    $paymentInstrumentIds = explode(',', $this->_conditionParams['payment_instrument_id']);
+    switch ($this->_conditionParams['operator']) {
       case 0:
-        if ($contribution['payment_instrument_id'] == $this->conditionParams['payment_instrument_id']) {
+        if (in_array($contribution['payment_instrument_id'], $paymentInstrumentIds)) {
           $isConditionValid = TRUE;
         }
       break;
       case 1:
-        if ($contribution['payment_instrument_id'] != $this->conditionParams['payment_instrument_id']) {
+        if (!in_array($contribution['payment_instrument_id'], $paymentInstrumentIds)) {
           $isConditionValid = TRUE;
         }
       break;
@@ -66,55 +67,60 @@ class CRM_CivirulesConditions_Contribution_PaidBy extends CRM_Civirules_Conditio
    */
   public function userFriendlyConditionParams() {
     $operator = null;
-    if ($this->conditionParams['operator'] == 0) {
-      $operator = 'equals';
+    if ($this->_conditionParams['operator'] == 0) {
+      $operator = 'is one of';
     }
-    if ($this->conditionParams['operator'] == 1) {
-      $operator = 'is not equal to';
+    if ($this->_conditionParams['operator'] == 1) {
+      $operator = 'is not one of';
     }
-    $paymentInstrumentName = $this->getPaymentInstrumentName();
-    if (!empty($paymentInstrumentName)) {
-      return 'Paid by '.$operator.' '.$paymentInstrumentName;
+    $paymentNames = [];
+    $paymentInstrumentIds = explode(',', $this->_conditionParams['payment_instrument_id']);
+    try {
+      $apiParams = [
+        'sequential' => 1,
+        'return' => ["label"],
+        'option_group_id' => "payment_instrument",
+        'options' => ['limit' => 0],
+        'is_active' => 1,
+        'value' => ['IN' => $paymentInstrumentIds],
+      ];
+      $paymentInstruments = civicrm_api3('OptionValue', 'get', $apiParams);
+      foreach ($paymentInstruments['values'] as $paymentInstrument) {
+        $paymentNames[] = $paymentInstrument['label'];
+      }
+    }
+    catch (CiviCRM_API3_Exception $ex) {
+      $logMessage = ts('Could not find payment_instruments in ') . __METHOD__
+        . ts(', error from API OptionValue get: ') . $ex->getMessage();
+      $civiVersion = CRM_Civirules_Utils::getCiviVersion();
+      if ($civiVersion < 4.7) {
+        CRM_Core_Error::debug_log_message($logMessage);
+      }
+      else {
+        Civi::log()->debug($logMessage);
+      }
+    }
+    if (!empty($paymentNames)) {
+      return 'Paid by ' . $operator . ' ' . implode(', ', $paymentNames);
     }
     return '';
   }
 
-  /**
-   * Method to get payment instrument
-   *
-   * @return string|null
-   * @access protected
-   */
-  protected function getPaymentInstrumentName() {
-    $paymentInstrumentName = null;
-    if (!empty($this->conditionParams['payment_instrument_id'])) {
-      $optionGroupParams = array(
-        'name' => 'payment_instrument',
-        'return' => 'id');
-      try {
-        $optionGroupId = civicrm_api3('OptionGroup', 'Getvalue', $optionGroupParams);
-        $optionValueParams = array(
-          'option_group_id' => $optionGroupId,
-          'is_active' => 1,
-          'value' => $this->conditionParams['payment_instrument_id'],
-          'return' => 'label');
-        try {
-          $paymentInstrumentName = civicrm_api3('OptionValue', 'Getvalue', $optionValueParams);
-        } catch (CiviCRM_API3_Exception $ex) {}
-
-      } catch (CiviCRM_API3_Exception $ex) {}
-    }
-    return $paymentInstrumentName;
-  }
 
   /**
-   * Returns an array with required entity names
+   * This function validates whether this condition works with the selected trigger.
    *
-   * @return array
-   * @access public
+   * This function could be overriden in child classes to provide additional validation
+   * whether a condition is possible in the current setup. E.g. we could have a condition
+   * which works on contribution or on contributionRecur then this function could do
+   * this kind of validation and return false/true
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   * @return bool
    */
-  public function requiredEntities() {
-    return array('Contribution');
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+    return $trigger->doesProvideEntity('Contribution');
   }
 
 }

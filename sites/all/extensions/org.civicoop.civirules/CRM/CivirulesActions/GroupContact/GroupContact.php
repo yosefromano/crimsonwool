@@ -74,16 +74,30 @@ abstract class CRM_CivirulesActions_GroupContact_GroupContact extends CRM_Civiru
   public function userFriendlyConditionParams() {
     $params = $this->getActionParameters();
     if (!empty($params['group_id'])) {
-      $group = civicrm_api3('Group', 'getvalue', array('return' => 'title', 'id' => $params['group_id']));
-      return $this->getActionLabel($group);
+      try {
+        $group = civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $params['group_id']
+        ]);
+        return $this->getActionLabel($group);
+      } catch (Exception $e) {
+        return '';
+      }
     } elseif (!empty($params['group_ids']) && is_array($params['group_ids'])) {
       $groups = '';
       foreach($params['group_ids'] as $group_id) {
-        $group = civicrm_api3('Group', 'getvalue', array('return' => 'title', 'id' => $group_id));
-        if (strlen($groups)) {
-          $groups .= ', ';
+        try {
+          $group = civicrm_api3('Group', 'getvalue', [
+            'return' => 'title',
+            'id' => $group_id
+          ]);
+          if (strlen($groups)) {
+            $groups .= ', ';
+          }
+          $groups .= $group;
+        } catch (Exception $e) {
+          // Do nothing.
         }
-        $groups .= $group;
       }
       return $this->getActionLabel($groups);
     }

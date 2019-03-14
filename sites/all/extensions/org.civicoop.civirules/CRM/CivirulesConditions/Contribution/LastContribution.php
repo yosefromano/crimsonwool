@@ -80,14 +80,4 @@ class CRM_CivirulesConditions_Contribution_LastContribution extends CRM_Civirule
     );
   }
 
-  /**
-   * Returns an array with required entity names
-   *
-   * @return array
-   * @access public
-   */
-  public function requiredEntities() {
-    return array();
-  }
-
 }

@@ -38,7 +38,7 @@ class CRM_Civirules_Form_RuleAction extends CRM_Core_Form {
    * @access public
    */
   function preProcess() {
-    $this->ruleId = CRM_Utils_Request::retrieve('rid', 'Integer');
+    $this->ruleId = CRM_Utils_Request::retrieve('rule_id', 'Integer');
     $this->ruleActionId = CRM_Utils_Request::retrieve('id', 'Integer');
 
     $this->rule = new CRM_Civirules_BAO_Rule();

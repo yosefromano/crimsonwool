@@ -168,10 +168,34 @@ abstract class CRM_CivirulesConditions_Generic_FieldValueChangeComparison extend
    */
   public function userFriendlyConditionParams() {
     $originalComparisonValue = $this->getOriginalComparisonValue();
+		$comparisonValue = $this->getComparisonValue();
+		$options = $this->getFieldOptions();
+		if (is_array($options)) {
+			if (is_array($originalComparisonValue)) {
+				foreach($originalComparisonValue as $idx => $val) {
+					if (isset($options[$val])) {
+						$originalComparisonValue[$idx] = $options[$val];
+					}
+				}
+			} elseif (isset($options[$originalComparisonValue])) {
+				$originalComparisonValue = $options[$originalComparisonValue];
+			}
+			
+			if (is_array($comparisonValue)) {
+				foreach($comparisonValue as $idx => $val) {
+					if (isset($options[$val])) {
+						$comparisonValue[$idx] = $options[$val];
+					}
+				}
+			} elseif (isset($options[$comparisonValue])) {
+				$comparisonValue = $options[$comparisonValue];
+			}
+		}
+		
+		
     if (is_array($originalComparisonValue)) {
       $originalComparisonValue = implode(", ", $originalComparisonValue);
     }
-    $comparisonValue = $this->getComparisonValue();
     if (is_array($comparisonValue)) {
       $comparisonValue = implode(", ", $comparisonValue);
     }

@@ -23,7 +23,7 @@ class CRM_CivirulesConditions_Contact_AgeComparisonTest extends CRM_Civirules_Te
       'value' => 56
     ));
 
-    $condition = $this->conditionByName('age_comparison');
+    $condition = $this->conditionByName('contact_age_comparison');
     $condition->setRuleConditionData($ruleCondition);
 
     self::assertFalse($condition->isConditionValid($triggerData), 'No Age means condition must be false');
@@ -50,7 +50,7 @@ class CRM_CivirulesConditions_Contact_AgeComparisonTest extends CRM_Civirules_Te
       'value' => 56
     ));
 
-    $condition = $this->conditionByName('age_comparison');
+    $condition = $this->conditionByName('contact_age_comparison');
     $condition->setRuleConditionData($ruleCondition);
 
     self::assertTrue($condition->isConditionValid($triggerData), 'Adele must be older than 56');

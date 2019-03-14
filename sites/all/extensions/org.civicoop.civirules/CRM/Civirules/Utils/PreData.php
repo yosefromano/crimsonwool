@@ -53,6 +53,22 @@ class CRM_Civirules_Utils_PreData {
     } catch (Exception $e) {
       return;
     }
+    // add custom data fields
+    try {
+      $customData = civicrm_api3('CustomValue', 'get', array(
+        'sequential' => 1,
+        'entity_id' => $id,
+        'entity_table' => ucfirst($entity),
+      ));
+    } catch (Exception $e ) {
+      $customData = array();
+    }
+    if ( empty($customData['is_error']) && ! empty($customData['count']) ) {
+      foreach ($customData['values'] as $customField ) {
+        $data['custom_' . $customField['id']] = $customField['latest'];
+      }
+
+    }
     self::setPreData($entity, $id, $data);
   }
 

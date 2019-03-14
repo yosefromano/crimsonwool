@@ -6,6 +6,7 @@
  * @license AGPL-3.0
  */
 class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
+
   /**
    * Method processAction to execute the action
    *
@@ -15,36 +16,42 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
    */
   public function processAction(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $contactId = $triggerData->getContactId();
-    $processContact = false;
-
+    $processContact = FALSE;
     // retrieve contact type of contact
-    $contactParams = array('id' => $contactId, 'return' => 'contact_type');
-    $contactType = civicrm_api3('Contact', 'Getvalue', $contactParams);
-    // retrieve contact type Donor and only execute if the same
-    $donorType = civicrm_api3('ContactType', 'Getsingle', array('name' => 'Donor'));
     try {
+      $contactParams = array('id' => $contactId, 'return' => 'contact_type');
+      $contactType = civicrm_api3('Contact', 'Getvalue', $contactParams);
+      // retrieve contact type Donor and only execute if the same
+      $donorType = civicrm_api3('ContactType', 'Getsingle', array('name' => 'Donor'));
       switch ($contactType) {
         case 'Individual':
           if ($donorType['parent_id'] = 1) {
-            $processContact = true;
-          }
-        break;
-        case 'Household':
-          if ($donorType['parent_id'] = 2) {
-            $processContact = true;
+            $processContact = TRUE;
           }
           break;
+
+        case 'Household':
+          if ($donorType['parent_id'] = 2) {
+            $processContact = TRUE;
+          }
+          break;
+
         case 'Organization':
           if ($donorType['parent_id'] = 3) {
-            $processContact = true;
+            $processContact = TRUE;
           }
           break;
       }
-    } catch (CiviCRM_API3_Exception $ex) {
+      if ($processContact) {
+        $newParams = array('id' => $contactId, 'contact_sub_type' => 'Donor');
+        try {
+          civicrm_api3('Contact', 'Create', $newParams);
+        }
+        catch (CiviCRM_API3_Exception $ex) {
+        }
+      }
     }
-    if ($processContact) {
-      $newParams = array('id' => $contactId, 'contact_sub_type' => 'Donor');
-      civicrm_api3('Contact', 'Create', $newParams);
+    catch (CiviCRM_API3_Exception $ex) {
     }
   }
   /**
@@ -58,6 +65,5 @@ class CRM_CivirulesActions_CreateDonor extends CRM_Civirules_Action {
   public function getExtraDataInputUrl($ruleActionId) {
     return FALSE;
   }
-
 
 }

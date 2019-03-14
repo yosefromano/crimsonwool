@@ -34,13 +34,19 @@ class CRM_CivirulesConditions_Relationship_IsContactA extends CRM_Civirules_Cond
   }
 
   /**
-   * Returns an array with required entity names
+   * This function validates whether this condition works with the selected trigger.
    *
-   * @return array
-   * @access public
+   * This function could be overriden in child classes to provide additional validation
+   * whether a condition is possible in the current setup. E.g. we could have a condition
+   * which works on contribution or on contributionRecur then this function could do
+   * this kind of validation and return false/true
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   * @return bool
    */
-  public function requiredEntities() {
-    return array('Relationship');
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+    return $trigger->doesProvideEntity('Relationship');
   }
 
 }

@@ -1,5 +1,5 @@
 site_name: CiviRules
-repo_url: https://github.com/CiviCooP/org.civicoop.civirules
+repo_url: https://lab.civicrm.org/extensions/civirules
 theme: material
 
 pages:

@@ -14,13 +14,13 @@ If you install the extension a new menu item will be added right of the Support 
 
 <a href='../img/CiviRules_cookbook_print02.png'><img src='../img/CiviRules_cookbook_print02.png'/></a>
 
-The Find Rules  sub menu item you will help you to search for a existing CiviRules. If you click on the New Rule submenu you will see a form with the basic data of your CiviRule:
+The Find Rules submenu item you will help you to search for a existing CiviRules. If you click on the New Rule submenu you will see a form with the basic data of your CiviRule:
 
 <a href='../img/CiviRules_cookbook_print03.png'><img src='../img/CiviRules_cookbook_print03.png'/></a>
 
 In this form you can add a title for your CiviRule. Spend some time thinking of a good title that all your users will understand and recognize. In this example we will use Send Welcoming Mail to New Regular Donors.
 
-Next we have to select the trigger for the CiviRule. Each CiviRule can only have one trigger. Trigger are when the conditions are checked and the action(s) of the CiviRule are executed. In this example it is when a contact is added so the trigger is 'Contact of any type is added'. When I have entered this I click on the Next button. I will then go to the form where I can add conditions and actions to my CiviRule:
+Next we have to select the trigger for the CiviRule. Each CiviRule can only have one trigger. The trigger is when the condition(s) are checked and the action(s) of the CiviRule are executed. In this example it is when a contact is added so the trigger is 'Contact of any type is added'. When I have entered this I click on the Next button. I will then go to the form where I can add conditions and actions to my CiviRule:
 
 <a href='../img/CiviRules_cookbook_print04.png'><img src='../img/CiviRules_cookbook_print04.png'/></a>
 
@@ -30,7 +30,7 @@ When I click on Add Condition I get a form where I can select a condition, like 
 
 <a href='../img/CiviRules_cookbook_print05.png'><img src='../img/CiviRules_cookbook_print05.png'/></a>
 
-In the list I will get  a list of all conditions that are in the extension. Some conditions will be shipped with the initial extension, but you as a developer you can add you own conditions.
+In the list I will get a list of all conditions that are in the extension. Some conditions will be shipped with the initial extension, but as a developer you can add your own conditions.
 
 In this example I want to check if the new contact is member of the group Regular Donors so I select the condition Contact (not) in group. When I click save I can select the group I want and if the contact should be a member of the group or not be a member of the group(s):
 
@@ -48,7 +48,7 @@ Finally I have to add the action that has to be executed if the condition(s) of 
 
 <a href='../img/CiviRules_cookbook_print08.png'><img src='../img/CiviRules_cookbook_print08.png'/></a>
 
-In the list I will get  a list of all actions that are in the extension. Some actions will be shipped with the initial extension, but you as a developer you can add you own actions.
+In the list I will get a list of all actions that are in the extension. Some actions will be shipped with the initial extension, but as a developer you can add your own actions.
 
 You also get the option to add a delay, which means a certain time (number of minutes, days, weeks) to wait with the execution of the CiviRule. For example you can set a delay of 10 mins so typing errors are corrected before the CiviRule is executed.
 

@@ -1,5 +1,4 @@
 <?php
-require_once('packages/stripe-php/init.php');
 /**
  * Collection of upgrade steps.
  * DO NOT USE a naming scheme other than upgrade_N, where N is an integer.  
@@ -10,18 +9,6 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
 
   // By convention, functions that look like "function upgrade_NNNN()" are
   // upgrade tasks. They are executed in order (like Drupal's hook_update_N).
-
-  /**
-   * Standard: run an install sql script
-   */
-  public function install() {
-  }
-
-  /**
-   * Standard: run an uninstall script
-   */
-  public function uninstall() {
-  }
 
   /**
    * Add is_live column to civicrm_stripe_plans and civicrm_stripe_customers tables.
@@ -115,7 +102,7 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
         }
       }
       catch (CiviCRM_API3_Exception $e) {
-        CRM_Core_Error::debug_log_message("Cannot find a PaymentProcessorType named Stripe.", $out = false);
+        Civi::log()->debug("Cannot find a PaymentProcessorType named Stripe.");
         return;
       }
     }
@@ -175,7 +162,7 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
              ));
           }
           catch (Exception $e) { 
-            CRM_Core_Error::debug_log_message('Update 5004 failed. Has Stripe been removed as a payment processor?', $out = false);
+            Civi::log()->debug('Update 5004 failed. Has Stripe been removed as a payment processor?', $out = false);
             return;
           }
           try {
@@ -187,8 +174,7 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
           } 
           catch (Exception $e) {
             // Don't quit here.  A missing customer in Stipe is OK.  They don't exist, so they can't have a subscription.
-            $debug_code = 'Cannot find Stripe API key: ' . $e->getMessage();
-            CRM_Core_Error::debug_log_message($debug_code, $out = false);
+            Civi::log()->debug('Cannot find Stripe API key: ' . $e->getMessage());
           }
           if (!empty($subscription['data'][0]['id'])) {
             $query_params = array(
@@ -257,8 +243,7 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
         } 
         catch (CiviCRM_API3_Exception $e) {
           // Don't quit here. If we can't find the recurring ID for a single customer, make a note in the error log and carry on.
-          $debug_code = 'Recurring contribution search: ' . $e->getMessage();
-          CRM_Core_Error::debug_log_message($debug_code, $out = false);
+          Civi::log()->debug('Recurring contribution search: ' . $e->getMessage());
         }
         if (!empty($recur_id)) {
           $p = array(
@@ -382,4 +367,34 @@ class CRM_Stripe_Upgrader extends CRM_Stripe_Upgrader_Base {
     }
     return TRUE;
   }
+
+  public function upgrade_5010() {
+    $this->ctx->log->info('Applying Stripe update 5010.  Adding contact_id to civicrm_stripe_customers.');
+    if (!CRM_Core_BAO_SchemaHandler::checkIfFieldExists('civicrm_stripe_customers', 'contact_id', FALSE)) {
+      CRM_Core_DAO::executeQuery('ALTER TABLE `civicrm_stripe_customers` 
+       ADD COLUMN `contact_id` int(10) UNSIGNED DEFAULT NULL COMMENT "FK ID from civicrm_contact"');
+      CRM_Core_DAO::executeQuery('ALTER TABLE `civicrm_stripe_customers` 
+       ADD CONSTRAINT `FK_civicrm_stripe_customers_contact_id` FOREIGN KEY (`contact_id`) REFERENCES `civicrm_contact` (`id`) ON DELETE CASCADE;');
+    }
+
+    $this->ctx->log->info('Applying Stripe update 5010. Getting Contact IDs for civicrm_stripe_customers.');
+    civicrm_api3('StripeCustomer', 'updatecontactids', []);
+
+    return TRUE;
+  }
+
+  public function upgrade_5020() {
+    $this->ctx->log->info('Applying Stripe update 5020.  Migrate civicrm_stripe_subscriptions data to recurring contributions.');
+    civicrm_api3('StripeSubscription', 'updatetransactionids', []);
+
+    return TRUE;
+  }
+
+  public function upgrade_5021() {
+    $this->ctx->log->info('Applying Stripe update 5021.  Copy trxn_id to processor_id so we can cancel recurring contributions.');
+    civicrm_api3('StripeSubscription', 'copytrxnidtoprocessorid', []);
+
+    return TRUE;
+  }
+
 }

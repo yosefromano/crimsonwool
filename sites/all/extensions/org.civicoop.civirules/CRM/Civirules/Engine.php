@@ -67,21 +67,16 @@ class CRM_Civirules_Engine {
    * @access protected
    * @static
    */
-  protected static function executeAction(CRM_Civirules_TriggerData_TriggerData $triggerData, $ruleAction) {
-    $object = CRM_Civirules_BAO_Action::getActionObjectById($ruleAction['action_id'], true);
-    if (!$object) {
-      return;
-    }
-
-    $object->setRuleActionData($ruleAction);
+  public static function executeAction(CRM_Civirules_TriggerData_TriggerData $triggerData, $ruleAction) {
+    $actionEngine = CRM_Civirules_ActionEngine_Factory::getEngine($ruleAction, $triggerData);
 
     //determine if the action should be executed with a delay
-    $delay = self::getActionDelay($ruleAction, $object, $triggerData);
+    $delay = self::getActionDelay($ruleAction, $actionEngine);
     if ($delay instanceof DateTime) {
-      self::delayAction($delay, $object, $triggerData);
+      self::delayAction($delay, $actionEngine);
     } else {
       //there is no delay so process action immediatly
-      $object->processAction($triggerData);
+      $actionEngine->execute();
     }
   }
 
@@ -123,22 +118,42 @@ class CRM_Civirules_Engine {
   /**
    * Executes a delayed action
    *
-   * @param \CRM_Queue_TaskContext $ctx
-   * @param \CRM_Civirules_Action $action
-   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
    * @return bool
    */
-  public static function executeDelayedAction(CRM_Queue_TaskContext $ctx, CRM_Civirules_Action $action, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function executeDelayedAction() {
     try {
-      if ($action->ignoreConditionsOnDelayedProcessing()) {
-        $processAction = true;
-      } else {
-        $processAction = self::areConditionsValid($triggerData);
-      }
-
-      if ($processAction) {
-        $action->processAction($triggerData);
-      }
+    	// Check how many arguments this function has.
+    	// If there are two we could use the ActionEngine if one we should convert the ruleAction to 
+    	// an actionEngine.
+    	// Why is this? Because we want to make sure that as soon as someone upgrades their existing civirules installation
+    	// the old delayed actions should still be executed.
+    	$args = func_get_args();
+			if (count($args) == 2 && $args[1] instanceof CRM_Civirules_ActionEngine_AbstractActionEngine) {
+				$actionEngine = $args[1];
+				$ruleAction = $actionEngine->getRuleAction();
+				$triggerData = $actionEngine->getTriggerData();
+				if (isset($ruleAction['ignore_condition_with_delay']) && $ruleAction['ignore_condition_with_delay']) {
+					$processAction = true;
+				} else {
+					$processAction = self::areConditionsValid($actionEngine->getTriggerData());	
+				}
+				if ($processAction) {
+        	$actionEngine->execute();
+      	}
+			} elseif (count($args) == 3 && $args[1] instanceof CRM_Civirules_Action && $args[2] instanceof CRM_Civirules_TriggerData_TriggerData) {
+				// Process the 'old' way
+				$action = $args[1];
+				$triggerData = $args[2];
+	      if ($action->ignoreConditionsOnDelayedProcessing()) {
+	        $processAction = true;
+	      } else {
+	        $processAction = self::areConditionsValid($triggerData);
+	      }
+	
+	      if ($processAction) {
+	        $action->processAction($triggerData);
+	      }
+			}
     } catch (Exception $e) {
       CRM_Civirules_Utils_LoggerFactory::logError("Failed to execute delayed action",  $e->getMessage(), $triggerData);
     }
@@ -149,10 +164,9 @@ class CRM_Civirules_Engine {
    * Save an action into a queue for delayed processing
    *
    * @param \DateTime $delayTo
-   * @param \CRM_Civirules_Action $action
-   * @param \CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine
    */
-  protected static function delayAction(DateTime $delayTo, CRM_Civirules_Action $action, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function delayAction(DateTime $delayTo, CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine) {
     $queue = CRM_Queue_Service::singleton()->create(array(
       'type' => 'Civirules',
       'name' => self::QUEUE_NAME,
@@ -162,7 +176,7 @@ class CRM_Civirules_Engine {
     //create a task with the action and eventData as parameters
     $task = new CRM_Queue_Task(
       array('CRM_Civirules_Engine', 'executeDelayedAction'), //call back method
-      array($action, $triggerData) //parameters
+      array($actionEngine) //parameters
     );
 
     //save the task with a delay
@@ -182,21 +196,20 @@ class CRM_Civirules_Engine {
    * The delay is calculated by a separate delay class. See CRM_Civirules_DelayDelay
    *
    * @param $ruleAction
-   * @param CRM_Civirules_Action $actionObject
-   * @param CRM_Civirules_TriggerData_TriggerData $triggerData
+   * @param CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine
    * @return bool|\DateTime
    */
-  protected static function getActionDelay($ruleAction, CRM_Civirules_Action $actionObject, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function getActionDelay($ruleAction, CRM_Civirules_ActionEngine_AbstractActionEngine $actionEngine) {
     $delayedTo = new DateTime();
     $now = new DateTime();
     if (!empty($ruleAction['delay'])) {
       $delayClass = unserialize(($ruleAction['delay']));
       if ($delayClass instanceof CRM_Civirules_Delay_Delay) {
-        $delayedTo = $delayClass->delayTo($delayedTo, $triggerData);
+        $delayedTo = $delayClass->delayTo($delayedTo, $actionEngine->getTriggerData());
       }
     }
 
-    $actionDelayedTo = $actionObject->delayTo($delayedTo, $triggerData);
+		$actionDelayedTo = $actionEngine->delayTo($delayedTo);
     if ($actionDelayedTo instanceof DateTime) {
       if ($now < $actionDelayedTo) {
         return $actionDelayedTo;
@@ -216,7 +229,7 @@ class CRM_Civirules_Engine {
    * @access protected
    * @static
    */
-  protected static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function areConditionsValid(CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $isValid = true;
     $firstCondition = true;
 
@@ -257,7 +270,7 @@ class CRM_Civirules_Engine {
    * @access protected
    * @static
    */
-  protected static function checkCondition($ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData) {
+  public static function checkCondition($ruleCondition, CRM_Civirules_TriggerData_TriggerData $triggerData) {
     $condition = CRM_Civirules_BAO_Condition::getConditionObjectById($ruleCondition['condition_id'], false);
     if (!$condition) {
       return false;
@@ -276,13 +289,16 @@ class CRM_Civirules_Engine {
    * @param CRM_Civirules_TriggerData_TriggerData $triggerData
    */
   protected static function logRule(CRM_Civirules_TriggerData_TriggerData $triggerData) {
+    $trigger = $triggerData->getTrigger();
+    $ruleId = $trigger->getRuleId();
+    $contactId = $triggerData->getContactId();
     // todo make sure this also works for entity_id if no contact_id and object EntityTag (if I can still find that)
     $sql = "INSERT INTO `civirule_rule_log` (`rule_id`, `contact_id`, `log_date`) VALUES (%1, %2, NOW())";
-    $params[1] = array($triggerData->getTrigger()->getRuleId(), 'Integer');
-    $params[2] = array($triggerData->getContactId(), 'Integer');
-    if (empty($triggerData->getTrigger()->getRuleId())) {
+    $params[1] = array($ruleId, 'Integer');
+    $params[2] = array($contactId, 'Integer');
+    if (empty($ruleId)) {
       CRM_Civirules_Utils_LoggerFactory::logError("Failed log rule", "RuleId not set", $triggerData);
-    } elseif (empty($triggerData->getContactId())) {
+    } elseif (empty($contactId)) {
       CRM_Civirules_Utils_LoggerFactory::logError("Failed log rule", "contact_id not set", $triggerData);
     } else {
       CRM_Core_DAO::executeQuery($sql, $params);

@@ -34,16 +34,15 @@ class CRM_CivirulesConditions_Form_Form extends CRM_Core_Form
 
     $this->ruleCondition = new CRM_Civirules_BAO_RuleCondition();
     $this->ruleCondition->id = $this->ruleConditionId;
+    if (!$this->ruleCondition->find(true)) {
+      throw new Exception('Civirules could not find ruleCondition');
+    }
     $ruleConditionData = array();
     CRM_Core_DAO::storeValues($this->ruleCondition, $ruleConditionData);
 
     $this->condition = new CRM_Civirules_BAO_Condition();
     $this->rule = new CRM_Civirules_BAO_Rule();
     $this->trigger = new CRM_Civirules_BAO_Trigger();
-
-    if (!$this->ruleCondition->find(true)) {
-      throw new Exception('Civirules could not find ruleCondition');
-    }
 
     $this->condition->id = $this->ruleCondition->condition_id;
     if (!$this->condition->find(true)) {

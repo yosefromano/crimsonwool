@@ -91,7 +91,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
     $this->assign('triggerClass', $this->triggerClass);
 
     $ruleConditionAddUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_condition', 'reset=1&action=add&rid='.$this->ruleId, TRUE);
-    $ruleActionAddUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=add&rid='.$this->ruleId, TRUE);
+    $ruleActionAddUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=add&rule_id='.$this->ruleId, TRUE);
     $this->assign('ruleConditionAddUrl', $ruleConditionAddUrl);
     $this->assign('ruleActionAddUrl', $ruleActionAddUrl);
 
@@ -428,7 +428,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
   protected function setRuleActionActions($ruleActionId, CRM_Civirules_Action $action) {
     $actionActions = array();
 
-    $delaySettingsUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=update&rid='
+    $delaySettingsUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=update&rule_id='
       .$this->ruleId.'&id='.$ruleActionId);
     $actionActions[] = '<a class="action-item" title="Edit delay settings" href="'.$delaySettingsUrl.'">'.ts('Edit delay').'</a>';
 
@@ -437,7 +437,7 @@ class CRM_Civirules_Form_Rule extends CRM_Core_Form {
       $actionActions[] = '<a class="action-item" title="Edit" href="'.$editUrl.'">'.ts('Edit').'</a>';
     }
 
-    $removeUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=delete&rid='
+    $removeUrl = CRM_Utils_System::url('civicrm/civirule/form/rule_action', 'reset=1&action=delete&rule_id='
       .$this->ruleId.'&id='.$ruleActionId);
     $actionActions[] = '<a class="action-item" title="Remove" href="'.$removeUrl.'">Remove</a>';
     return $actionActions;

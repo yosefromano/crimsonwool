@@ -49,20 +49,33 @@ class CRM_CivirulesConditions_GroupContact_GroupId extends CRM_Civirules_Conditi
    */
   public function userFriendlyConditionParams() {
     if (!empty($this->conditionParams['group_id'])) {
-      $group = civicrm_api3('Group', 'getvalue', array('return' => 'title', 'id' => $this->conditionParams['group_id']));
-      return ts('Group is %1', array(1 => $group));
+      try {
+        $group = civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $this->conditionParams['group_id']
+        ]);
+        return ts('Group is %1', [1 => $group]);
+      } catch (Exception $e) {
+        return '';
+      }
     }
     return '';
   }
 
   /**
-   * Returns an array with required entity names
+   * This function validates whether this condition works with the selected trigger.
    *
-   * @return array
-   * @access public
+   * This function could be overriden in child classes to provide additional validation
+   * whether a condition is possible in the current setup. E.g. we could have a condition
+   * which works on contribution or on contributionRecur then this function could do
+   * this kind of validation and return false/true
+   *
+   * @param CRM_Civirules_Trigger $trigger
+   * @param CRM_Civirules_BAO_Rule $rule
+   * @return bool
    */
-  public function requiredEntities() {
-    return array('GroupContact');
+  public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+    return $trigger->doesProvideEntity('GroupContact');
   }
 
 }

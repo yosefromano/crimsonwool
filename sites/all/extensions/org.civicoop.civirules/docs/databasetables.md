@@ -5,7 +5,7 @@ There are a couple of tables in the CiviRules extension. Their names will all st
 |-|-|
 |civirule_rule | holding the basic rule data like name, linked trigger and trigger_params |
 | civirule_condition | holding the basic condtion data |
-| civirule_action holding | the basic action data |
+| civirule_action | holding the basic action data |
 | civirule_trigger | holding the basic trigger data |
 | civirule_rule_action | linking an action to a rule |
 | civirule_rule_condition | linking a condition to a rule |  

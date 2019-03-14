@@ -50,6 +50,41 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/contact/hasbeeningroup</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contact_HasBeenInGroup</page_callback>
+    <title>Has Been in Group</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contact/hasactivityincampaign</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contact_HasActivityInCampaign</page_callback>
+    <title>Has Activity In Campaign</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contact/livesincountry</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contact_LivesInCountry</page_callback>
+    <title>Lives In Country</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/activity/campaign</path>
+    <page_callback>CRM_CivirulesConditions_Form_Activity_Campaign</page_callback>
+    <title>Activity is (not) in Campaign(s)</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/activity/date</path>
+    <page_callback>CRM_CivirulesConditions_Form_Activity_Date</page_callback>
+    <title>Activity Date</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/entitytag/tagid</path>
     <page_callback>CRM_CivirulesConditions_Form_EntityTag_TagId</page_callback>
     <title>EntityTag Tag Id</title>
@@ -71,6 +106,13 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/group/grouptype</path>
+    <page_callback>CRM_CivirulesConditions_Form_Group_GroupType</page_callback>
+    <title>case type</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/relationship/relationshiptype</path>
     <page_callback>CRM_CivirulesConditions_Form_Relationship_RelationshipType</page_callback>
     <title>relationship type</title>
@@ -85,6 +127,13 @@
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
   <item>
+    <path>civicrm/civirule/form/condition/case/caseactivity</path>
+    <page_callback>CRM_CivirulesConditions_Form_Case_CaseActivity</page_callback>
+    <title>case activity</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
     <path>civicrm/civirule/form/condition/membershiptype</path>
     <page_callback>CRM_CivirulesConditions_Form_Membership_Type</page_callback>
     <title>membership type</title>
@@ -95,6 +144,13 @@
     <path>civicrm/civirule/form/condition/activemembershiptype</path>
     <page_callback>CRM_CivirulesConditions_Form_Membership_ActiveMembership</page_callback>
     <title>membership type</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contacthasmembership</path>
+    <page_callback>CRM_CivirulesConditions_Form_Membership_ContactHasMembership</page_callback>
+    <title>contact has membership</title>
     <access_arguments>access CiviCRM</access_arguments>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
@@ -165,6 +221,13 @@
     <path>civicrm/civirule/form/condition/contribution_specificamount</path>
     <page_callback>CRM_CivirulesConditions_Form_Contribution_SpecificAmount</page_callback>
     <title>specific amount count</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/contribution/xthcontribution</path>
+    <page_callback>CRM_CivirulesConditions_Form_Contribution_xthContribution</page_callback>
+    <title>xth contribution of donor</title>
     <access_arguments>access CiviCRM</access_arguments>
     <access_arguments>administer CiviCRM</access_arguments>
   </item>
@@ -334,5 +397,26 @@
     <page_callback>CRM_Civirules_Form_RuleDelete</page_callback>
     <title>RuleDelete</title>
     <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/event_type</path>
+    <page_callback>CRM_CivirulesConditions_Form_Event_EventType</page_callback>
+    <title>Event type</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/participant_role</path>
+    <page_callback>CRM_CivirulesConditions_Form_Participant_ParticipantRole</page_callback>
+    <title>Participant Role</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/civirule/form/condition/participant_status</path>
+    <page_callback>CRM_CivirulesConditions_Form_Participant_ParticipantStatus</page_callback>
+    <title>Participant Status</title>
+    <access_arguments>access CiviCRM</access_arguments>
+    <access_arguments>administer CiviCRM</access_arguments>
   </item>
 </menu>

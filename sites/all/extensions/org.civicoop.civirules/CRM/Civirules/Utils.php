@@ -343,5 +343,80 @@ class CRM_Civirules_Utils {
       return FALSE;
     }
   }
+  
+  /**
+   * Method to get the activity type list
+   *
+   * @return array
+   */
+  public static function getCampaignList() {
+    $campaignList = array();
+    try {
+      $campaigns = civicrm_api3('Campaign', 'get', array(
+        'sequential' => 1,
+        'is_active' => 1,
+        'options' => array('limit' => 0),
+      ));
+      foreach ($campaigns['values'] as $campaign) {
+        if (isset($campaign['title'])) {
+          $campaignList[$campaign['id']] = $campaign['title'];
+        }
+        else {
+          $campaignList[$campaign['id']] = ts('(no title)');
+        }
+      }
+      asort($campaignList);
+    }
+    catch (CiviCRM_API3_Exception $ex) {
+      $campaignList = array();
+    }
+    return $campaignList;
+  }
+
+  /**
+   * Method to set the date operator options
+   *
+   * @return array
+   */
+  public static function getActivityDateOperatorOptions() {
+    return array(
+      'equals',
+      'later than',
+      'later than or equal',
+      'earlier than',
+      'earlier than or equal',
+      'not equal',
+      'between',
+    );
+  }
+
+  /**
+   * Method to set the generic comparison operators
+   *
+   * @return array
+   */
+  public static function getGenericComparisonOperatorOptions() {
+    return array(
+      'equals',
+      'greater than',
+      'greater than or equal',
+      'less than',
+      'less than or equal',
+      'not equal',
+    );
+  }
+
+  /**
+   * Method to get the CiviCRM version
+   *
+   * @return float
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function getCiviVersion() {
+    $apiVersion = (string) civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
+    $civiVersion = (float) substr($apiVersion, 0, 3);
+    return $civiVersion;
+  }
+
 }
 

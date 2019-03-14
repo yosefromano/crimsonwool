@@ -97,7 +97,42 @@ function civirules_civicrm_upgrade($op, CRM_Queue_Queue $queue = NULL) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_managed
  */
 function civirules_civicrm_managed(&$entities) {
+  // First create a backup because the managed entities are gone
+  // so the actions and conditions table are first going to be emptied
+  _civirules_upgrade_to_2x_backup();
   return _civirules_civix_civicrm_managed($entities);
+}
+
+/**
+ * Helper function to create a backup if the current schema version is of a 1.x version.
+ * We need this backup to restore missing actions and rules after upgrading.
+ */
+function _civirules_upgrade_to_2x_backup() {
+  // Check schema version
+  // Schema version 1023 is inserted by a 2x version
+  // So if the schema version is lower than 1023 we are still on a 1x version.
+  $schemaVersion = CRM_Core_DAO::singleValueQuery("SELECT schema_version FROM civicrm_extension WHERE `name` = 'CiviRules'");
+  if ($schemaVersion >= 1023) {
+    return; // No need for preparing the update.
+  }
+
+  if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
+    // Backup the current action and condition connected to a civirule
+    CRM_Core_DAO::executeQuery("
+      CREATE TABLE `civirule_rule_action_backup` 
+      SELECT `civirule_rule_action`.*, `civirule_action`.`class_name` as `action_class_name` 
+      FROM `civirule_rule_action` 
+      INNER JOIN `civirule_action` ON `civirule_rule_action`.`action_id` = `civirule_action`.`id` 
+    ");
+  }
+  if (!CRM_Core_DAO::checkTableExists('civirule_rule_action_backup')) {
+    CRM_Core_DAO::executeQuery("
+      CREATE TABLE `civirule_rule_condition_backup`
+      SELECT `civirule_rule_condition`.*, `civirule_condition`.`class_name` as `condition_class_name` 
+      FROM `civirule_rule_condition` 
+      INNER JOIN `civirule_condition` ON `civirule_rule_condition`.`condition_id` = `civirule_condition`.`id` 
+    ");
+  }
 }
 
 /**
@@ -129,15 +164,21 @@ function civirules_civicrm_alterSettingsFolders(&$metaDataFolders = NULL) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function civirules_civicrm_navigationMenu( &$params ) {
-  //  Get the maximum key of $params
+  // Get the maximum key of $params
   $maxKey = CRM_Civirules_Utils::getMenuKeyMax($params);
-  $childKey = 1;
+  $newNavId = $maxKey + 1;
   // retrieve the custom search id of the find rules search
   $customSearchID = CRM_Civirules_Utils::getFindRulesCsId();
   // retrieve the option group id of the rule tags option group
   $optionGroup = CRM_Civirules_Utils_OptionGroup::getSingleWithName('civirule_rule_tag');
+  // retrieve the id of the "Administer" menu item
+  foreach($params as $key => $item) {
+  	if (isset($item['attributes']['name']) && $item['attributes']['name'] === 'Administer') {
+  	  $administerID = $item['attributes']['navID'];
+  	}
+  }
 
-  $params[$maxKey + 1] = array(
+  $params[$administerID]['child'][$newNavId] = array(
     'attributes' => array(
       'label' => 'CiviRules',
       'name' => 'CiviRules',
@@ -145,13 +186,15 @@ function civirules_civicrm_navigationMenu( &$params ) {
       'permission' => 'administer CiviCRM',
       'operator' => null,
       'separator' => null,
-      'parentID' => null,
-      'navID' => $maxKey + 1,
+      'parentID' => $administerID,
+      'navID' => $newNavId,
       'active' => 1
     ));
+	$parentId = $newNavId;
+	$newNavId++;
   // add child menu for find rules if custom search id set
   if (!empty($customSearchID)) {
-    $params[$maxKey + 1]['child'][$childKey] = array(
+    $params[$administerID]['child'][$parentId]['child'][$newNavId] = array(
       'attributes' => array(
         'label' => ts('Find Rules'),
         'name' => ts('Find Rules'),
@@ -159,15 +202,15 @@ function civirules_civicrm_navigationMenu( &$params ) {
         'permission' => 'administer CiviCRM',
         'operator' => null,
         'separator' => 0,
-        'parentID' => $maxKey + 1,
-        'navID' => $childKey,
+        'parentID' => $parentId,
+        'navID' => $newNavId,
         'active' => 1
       ),
       'child' => null
     );
-    $childKey++;
+    $newNavId++;
   }
-  $params[$maxKey + 1]['child'][$childKey] = array(
+  $params[$administerID]['child'][$parentId]['child'][$newNavId] = array(
     'attributes' => array(
       'label' => ts('New Rule'),
       'name' => ts('New Rule'),
@@ -175,13 +218,13 @@ function civirules_civicrm_navigationMenu( &$params ) {
       'permission' => 'administer CiviCRM',
       'operator' => null,
       'separator' => 0,
-      'parentID' => $maxKey + 1,
-      'navID' => $childKey,
+      'parentID' => $parentId,
+      'navID' => $newNavId,
       'active' => 1
     ),
     'child' => null
   );
-  $childKey++;
+  $newNavId++;
   // add child menu for rule tags if option group id set with version check because 4.4 has other url pattern
   if (isset($optionGroup['id']) && !empty($optionGroup['id'])) {
     try {
@@ -196,7 +239,7 @@ function civirules_civicrm_navigationMenu( &$params ) {
       $ruleTagUrl = CRM_Utils_System::url('civicrm/admin/options', 'reset=1&gid='.$optionGroup['id'], true);
     }
 
-    $params[$maxKey + 1]['child'][$childKey] = array(
+    $params[$administerID]['child'][$parentId]['child'][$newNavId] = array(
       'attributes' => array (
         'label'      => ts('CiviRule Tags'),
         'name'       => ts('CiviRules Tags'),
@@ -204,12 +247,13 @@ function civirules_civicrm_navigationMenu( &$params ) {
         'permission' => 'administer CiviCRM',
         'operator'   => null,
         'separator'  => 0,
-        'parentID'   => $maxKey+1,
-        'navID'      => $childKey,
+        'parentID'   => $parentId,
+        'navID'      => $newNavId,
         'active'     => 1
       ),
       'child' => null
     );
+		$newNavId++;
   }
 }
 
@@ -227,13 +271,39 @@ function civirules_civicrm_validateForm($formName, &$fields, &$files, &$form, &$
   CRM_CivirulesPostTrigger_ContactCustomDataChanged::validateForm($form);
   CRM_CivirulesPostTrigger_IndividualCustomDataChanged::validateForm($form);
   CRM_CivirulesPostTrigger_OrganizationCustomDataChanged::validateForm($form);
+  CRM_CivirulesPostTrigger_HouseholdCustomDataChanged::validateForm($form);
 }
 
 function civirules_civicrm_custom($op, $groupID, $entityID, &$params) {
+  /**
+   * Fix/Hack for issue #208 (https://github.com/CiviCooP/org.civicoop.civirules/issues/208)
+   *
+   * To reproduce:
+   * - create a custom data set for contacts that supports multiple records
+   * - create a rule that triggers on custom data changing
+   * - add a record to that custom data set for a contact
+   * - delete the record
+   * - observe the logs
+   *
+   * This returns the error: "Expected one Contact but found 25"
+   * Traced to CRM/CivirulesPostTrigger/ContactCustomDataChanged.php where there is an api call to contacts getsingle. The issue is that when the custom data record is deleted, there is no remaining entity_id with which to retrieve the contact, and so no id is passed to the getsingle call.
+   *
+   * The fix is to check whether the $op is delete and whether $entityID is empty and then check
+   * whether the contactID is provided in the url.
+   */
+  if ($op == 'delete' && empty($entityID)) {
+    $contactId = CRM_Utils_Request::retrieve('contactId', 'Positive');
+    if (!empty($contactId)) {
+      $entityID = $contactId;
+    }
+  }
+  /** End ugly hack */
+
   CRM_CivirulesPostTrigger_CaseCustomDataChanged::custom($op, $groupID, $entityID, $params);
   CRM_CivirulesPostTrigger_ContactCustomDataChanged::custom($op, $groupID, $entityID, $params);
   CRM_CivirulesPostTrigger_IndividualCustomDataChanged::custom($op, $groupID, $entityID, $params);
   CRM_CivirulesPostTrigger_OrganizationCustomDataChanged::custom($op, $groupID, $entityID, $params);
+  CRM_CivirulesPostTrigger_HouseholdCustomDataChanged::custom($op, $groupID, $entityID, $params);
 }
 
 function civirules_civirules_alter_trigger_data(CRM_Civirules_TriggerData_TriggerData &$triggerData) {
@@ -269,4 +339,15 @@ function civirules_civicrm_entityTypes(&$entityTypes) {
     'class' => 'CRM_Civirules_BAO_Rule',
     'table' => 'civirule_rule',
   );
+}
+
+/**
+ * Implements hook_civicrm_apiWrappers()
+ *
+ * @link https://docs.civicrm.org/dev/en/latest/hooks/hook_civicrm_apiWrappers/
+ */
+function civirules_civicrm_apiWrappers(&$wrappers, $apiRequest) {
+  if ($apiRequest['entity'] == 'Contact' && $apiRequest['action'] == 'create') {
+    $wrappers[] = new CRM_Civirules_TrashRestoreApiWrapper();
+  }
 }

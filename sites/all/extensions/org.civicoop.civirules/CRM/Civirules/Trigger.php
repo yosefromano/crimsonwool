@@ -65,6 +65,44 @@ abstract class CRM_Civirules_Trigger {
   }
 
   /**
+   * Checks whether the trigger provides a certain entity.
+   *
+   * @param string $entity
+   * @return bool
+   */
+  public function doesProvideEntity($entity) {
+    $availableEntities = $this->getProvidedEntities();
+    foreach($availableEntities as $providedEntity) {
+      if (strtolower($providedEntity->entity) == strtolower($entity)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Checks whether the trigger provides a certain set of entities
+   *
+   * @param array<string> $entities
+   * @return bool
+   */
+  public function doesProvideEntities($entities) {
+    $availableEntities = $this->getProvidedEntities();
+    foreach($entities as $entity) {
+      $entityPresent = false;
+      foreach ($availableEntities as $providedEntity) {
+        if (strtolower($providedEntity->entity) == strtolower($entity)) {
+          $entityPresent = true;
+        }
+      }
+      if (!$entityPresent) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
    * Returns an array of additional entities provided in this trigger
    *
    * @return array of CRM_Civirules_TriggerData_EntityDefinition

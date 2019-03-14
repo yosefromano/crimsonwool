@@ -20,27 +20,24 @@ I am going to create this action step by step:
 
 ### Step 1 - Add the Action to the Database
 
-You need to make sure that there is a record in the civirule_action table for your action. Obviously you can enter the record directly in the table, but better is to use the the managed entities system. Managed entities are checked and created by CiviCRM automatically and they are handy when it comes to ensure certain data exist in the database.
+You need to make sure that there is a record in the civirule_action table for your action. We recommend you do some by using an `insert` query.
 
-If you have created your extension with Civix then you can add a file `CRM/CivirulesAction/Contact/SoftDelete.mgd.php`. If you didn't create your extension with civix you should add the `hook_civicrm_managed_entities` to your extension and return the array below. The parameter _class_name_ (linked to the column class_name in the table) should hold the name of the class you are going to create in step 2. So it could be anything you think useful, in the example we will stick to `CRM_CiviRulesActions_Contact_SoftDelete`
+If you have created your extension with Civix then you can add a file `/sql/createSoftDelete.sql` and add an `Upgrader` to your extension to process the sql file (check the relevant section of the [Developer Guide](https://docs.civicrm.org/dev/en/latest/extensions/civix/#generate-upgrader)).
 
-```php
-return array (
-  0 =>
-    array (
-      'name' => 'Civirules:Action.Contact.SoftDelete',
-      'entity' => 'CiviRuleAction',
-      'params' =>
-        array (
-          'version' => 3,
-          'name' => 'SoftDelete',
-          'label' => 'Soft delete a contact',
-          'class_name' => 'CRM_CivirulesActions_Contact_SoftDelete',
-          'is_active' => 1
-        ),
-    ),
-);
+The file `/sql/createSoftDelete.sql` should have this statement:
+
+```mysql
+         
+INSERT INTO civirule_action (name, label, class_name, is_active) 
+VALUES("contact_soft_delete", "Soft delete a contact", "CRM_CivirulesActions_Contact_SoftDelete", 1)
+
 ```
+
+Obviously you can use any name you like for your `class_name`, we have stuck to our structure in this example with `CRM_CivirulesActions_Contact_SoftDelete` but that is not mandatory. 
+
+!!! warning "On managed entities"
+    We have had a few bad experiences using managed entities because the managed entities are always automatically re-created when you do a `clearcache` in drush or in the URL. And if you have just removed the managed entity because it is the cause of a problem that is not very helpful. So we have removed them from CiviRules. But it is possible to use a managed entity for a CiviRule action, we do not recommend it.
+
 
 !!! Note
     You can also use the API to add an Action to CiviRules. Entity is `CiviRuleAction`, action is `Create`.
@@ -114,36 +111,29 @@ I am going to create this action step by step:
 1. use the method userFriendlyConditionParams to show the parameters on the CiviRule summary with a reasonably logic text
 1. add a form on which the contact subtype for the action can be selected
 
-!!! Clearcache
-    If you add your action as a a managed entity (which we think is a good idea) you will obviously have to do a `<yoursite>/civicrm/clearcache` to make sure the new managed entity is available.
-
 ### Step 1 - Add the Action to the Database
 
-You need to make sure that there is a record in the civirule_action table for your action. Obviously you can enter the record directly in the table, but better is to use the the managed entities system. Managed entities are checked and created by CiviCRM automatically and they are handy when it comes to ensure certain data exist in the database.
+You need to make sure that there is a record in the civirule_action table for your action. You need to make sure that there is a record in the civirule_action table for your action. We recommend you do some by using an `insert` query.
 
-If you have created your extension with Civix then you can add a file `CRM/CivirulesAction/Contact/Subtype.mgd.php`. If you didn't create your extension with civix you should add the `hook_civicrm_managed_entities` to your extension and return the array below. The parameter `class_name` (linked to the column `class_name` in the table) should hold the name of the class you are going to create in step 2. So it could be anything you think useful, in the example we will stick to `CRM_CiviRulesActions_Contact_Subtype`.
+If you have created your extension with Civix then you can add a file `/sql/createSubtype.sql` and add an `Upgrader` to your extension to process the sql file (check the relevant section of the [Developer Guide](https://docs.civicrm.org/dev/en/latest/extensions/civix/#generate-upgrader)).
 
-```php
-return array (
-  0 =>
-    array (
-      'name' => 'Civirules:Action.Contact.Subtype',
-      'entity' => 'CiviRuleAction',
-      'params' =>
-        array (
-          'version' => 3,
-          'name' => 'Subtype',
-          'label' => 'Set subtype for contact',
-          'class_name' => 'CRM_CivirulesActions_Contact_Subtype',
-          'is_active' => 1
-        ),
-    ),
-);
+The file `/sql/createSubtype.sql` should have this statement:
+
+```mysql
+         
+INSERT INTO civirule_action (name, label, class_name, is_active) 
+VALUES("contact_sub_type", "Set subtype for a contact", "CRM_CivirulesActions_Contact_Subtype", 1)
+
 ```
 
-!!! API
-    You can also use the API to add an Action to CiviRules. Entity is _CiviRuleAction_, action is _Create.
+Obviously you can use any name you like for your `class_name`, we have stuck to our structure in this example with `CRM_CivirulesActions_Contact_Subtype` but that is not mandatory. 
 
+!!! warning "On managed entities"
+    We have had a few bad experiences using managed entities because the managed entities are always automatically re-created when you do a `clearcache` in drush or in the URL. And if you have just removed the managed entity because it is the cause of a problem that is not very helpful. So we have removed them from CiviRules. But it is possible to use a managed entity for a CiviRule action, we do not recommend it.
+
+
+!!! Note
+    You can also use the API to add an Action to CiviRules. Entity is `CiviRuleAction`, action is `Create`.
 
 ### Step 2 - Add a Class That Extends CRM_CiviRule_Action
 

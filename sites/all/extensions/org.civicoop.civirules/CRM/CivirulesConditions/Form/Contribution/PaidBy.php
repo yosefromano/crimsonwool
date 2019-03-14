@@ -42,8 +42,17 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
   public function buildQuickForm() {
     $this->add('hidden', 'rule_condition_id');
 
-    $this->add('select', 'payment_instrument_id', ts('Payment instrument'), $this->getPaymentInstruments(), true);
-    $this->add('select', 'operator', ts('Operator'), array('equals', 'is not equal to'), true);
+    $this->addEntityRef('payment_instrument_id', ts('Payment Method'), array(
+      'entity' => 'option_value',
+      'api' => array(
+        'params' => array('option_group_id' => 'payment_instrument'),
+      ),
+      'select' => array('minimumInputLength' => 0),
+      'multiple' => TRUE,
+    ));
+    $this->add('select', 'operator', ts('Operator'), array(
+      'is one of',
+      'is not one of'), true);
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
@@ -79,7 +88,6 @@ class CRM_CivirulesConditions_Form_Contribution_PaidBy extends CRM_CivirulesCond
     $data['operator'] = $this->_submitValues['operator'];
     $this->ruleCondition->condition_params = serialize($data);
     $this->ruleCondition->save();
-
     parent::postProcess();
   }
 }

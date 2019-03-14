@@ -12,6 +12,8 @@ require_once 'CRM/Core/Form.php';
 class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
 
   protected $ruleId = NULL;
+  private $_domainVersion = NULL;
+
 
   /**
    * Function to buildQuickForm (extends parent function)
@@ -30,6 +32,9 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
    * @access public
    */
   function preProcess() {
+    $domainVersion = civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
+    $this->_domainVersion = round((float) $domainVersion, 2);
+
     $this->ruleId = CRM_Utils_Request::retrieve('rid', 'Integer');
     $redirectUrl = CRM_Utils_System::url('civicrm/civirule/form/rule', 'action=update&id='.$this->ruleId, TRUE);
     $session = CRM_Core_Session::singleton();
@@ -40,6 +45,16 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       CRM_Civirules_BAO_RuleCondition::deleteWithId($ruleConditionId);
       CRM_Utils_System::redirect($redirectUrl);
     }
+
+    $this->rule = new CRM_Civirules_BAO_Rule();
+    $this->rule->id = $this->ruleId;
+    $this->rule->find(TRUE);
+    $this->trigger = new CRM_Civirules_BAO_Trigger();
+    $this->trigger->id = $this->rule->trigger_id;
+    $this->trigger->find(TRUE);
+
+    $this->triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($this->trigger->class_name, TRUE);
+    $this->triggerObject->setTriggerId($this->trigger->id);
   }
 
   /**
@@ -71,6 +86,38 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
     CRM_Utils_System::redirect($redirectUrl);
   }
 
+  protected function buildConditionList() {
+    $conditions = CRM_Civirules_BAO_Condition::getValues(array());
+    $conditionOptions = array();
+    foreach($conditions as $condition) {
+      if ($this->doesConditionWorkWithTrigger($condition)) {
+        $conditionOptions[$condition['id']] = $condition['label'];
+      }
+    }
+    return $conditionOptions;
+  }
+
+  /**
+   * Returns whether the condition works with the trigger
+   *
+   * @param $condition_id
+   * @return bool
+   */
+  protected function doesConditionWorkWithTrigger($condition) {
+    try {
+      $conditionClass = CRM_Civirules_BAO_Condition::getConditionObjectById($condition['id'], FALSE);
+      if (!$conditionClass) {
+        return FALSE;
+      }
+    } catch (Exception $e) {
+      return false;
+    }
+    if (!$conditionClass->doesWorkWithTrigger($this->triggerObject, $this->rule)) {
+      return false;
+    }
+    return true;
+  }
+
   /**
    * Function to add the form elements
    *
@@ -85,8 +132,14 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
      */
     $linkList = array('AND' => 'AND', 'OR' =>'OR');
     $this->add('select', 'rule_condition_link_select', ts('Select Link Operator'), $linkList);
-    $conditionList = array(' - select - ') + CRM_Civirules_Utils::buildConditionList();
-    asort($conditionList);
+    $foundConditions = $this->buildConditionList();
+    if (!empty($foundConditions)) {
+      $conditionList = array(' - select - ') + $foundConditions;
+      asort($conditionList);
+    }
+    else {
+      $conditionList = array(' - select - ');
+    }
     $this->add('select', 'rule_condition_select', ts('Select Condition'), $conditionList, true, array('class' => 'crm-select2'));
 
     $this->addButtons(array(
@@ -132,24 +185,30 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       $errors['rule_condition_select'] = ts('Not a valid condition, condition class is missing');
       return $errors;
     }
-    $requiredEntities = $conditionClass->requiredEntities();
+
     $rule = new CRM_Civirules_BAO_Rule();
     $rule->id = $fields['rule_id'];
-    $rule->find(true);
+    $rule->find(TRUE);
     $trigger = new CRM_Civirules_BAO_Trigger();
     $trigger->id = $rule->trigger_id;
-    $trigger->find(true);
+    $trigger->find(TRUE);
 
-    $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($trigger->class_name, true);
+    $triggerObject = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($trigger->class_name, TRUE);
     $triggerObject->setTriggerId($trigger->id);
-    $availableEntities = array();
-    foreach($triggerObject->getProvidedEntities() as $entityDef) {
-      $availableEntities[] = strtolower($entityDef->entity);
-    }
-    foreach($requiredEntities as $entity) {
-      if (!in_array(strtolower($entity), $availableEntities)) {
-        $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', array(1 => $trigger->label));
-        return $errors;
+
+    // The code below is deprecated and is only here for backwards compatibility.
+    // The checking of required entities is refactored in using the doesWorkWithTrigger
+    $requiredEntities = $conditionClass->requiredEntities();
+    if (is_array($requiredEntities)) {
+      $availableEntities = [];
+      foreach ($triggerObject->getProvidedEntities() as $entityDef) {
+        $availableEntities[] = strtolower($entityDef->entity);
+      }
+      foreach ($requiredEntities as $entity) {
+        if (!in_array(strtolower($entity), $availableEntities)) {
+          $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', [1 => $trigger->label]);
+          return $errors;
+        }
       }
     }
 
@@ -157,8 +216,7 @@ class CRM_Civirules_Form_RuleCondition extends CRM_Core_Form {
       $errors['rule_condition_select'] = ts('This condition is not available with trigger %1', array(1 => $trigger->label));
       return $errors;
     }
-    
-    
+
     return true;
   }
 

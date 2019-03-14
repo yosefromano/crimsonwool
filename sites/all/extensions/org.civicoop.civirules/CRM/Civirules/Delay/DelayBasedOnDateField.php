@@ -204,7 +204,7 @@ class CRM_Civirules_Delay_DelayBasedOnDateField extends CRM_Civirules_Delay_Dela
     $fields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $group_id));
     $return = array();
     foreach($fields['values'] as $field) {
-      if (!($field['data_type'] & CRM_Utils_Type::T_DATE)) {
+      if (is_numeric($field['data_type']) && !($field['data_type'] & CRM_Utils_Type::T_DATE)) {
         continue; //Field is not a Date field.
       }
       $key = 'custom_'.$field['id'];

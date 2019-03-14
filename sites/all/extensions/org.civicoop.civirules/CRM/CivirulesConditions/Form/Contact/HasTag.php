@@ -9,13 +9,32 @@
 class CRM_CivirulesConditions_Form_Contact_HasTag extends CRM_CivirulesConditions_Form_Form {
 
   /**
-   * Method to get groups
+   * Method to get tags
    *
    * @return array
    * @access protected
    */
   protected function getTags() {
-    return CRM_Core_BAO_Tag::getTags();
+    $bao = new CRM_Core_BAO_Tag();
+    $tags = $bao->getTree('civicrm_contact');
+    $options = array();
+    foreach($tags as $tag_id => $tag) {
+      $parent = '';
+      $this->buildOptionsFromTree($options, $tags, $parent);
+    }
+    asort($options);
+    return $options;
+  }
+
+  protected function buildOptionsFromTree(&$options, $tree, $parent) {
+    foreach($tree as $tag_id => $tag) {
+      if ($tag['is_selectable']) {
+        $options[$tag_id] = trim($parent.' '.$tag['name']);
+      }
+      if (isset($tag['children']) && is_array($tag['children'])) {
+        $this->buildOptionsFromTree($options, $tag['children'], $tag['name'].':');
+      }
+    }
   }
 
   /**

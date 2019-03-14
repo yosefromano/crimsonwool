@@ -19,14 +19,16 @@ class CRM_CivirulesConditions_Utils_GroupContact {
     ) {
       return FALSE;
     }
-
-    $params = array(
-      array('group', 'IN', array($group_id), 0, 0),
-      array('contact_id', '=', $contact_id, 0, 0),
-    );
-    list($contacts, $_) = CRM_Contact_BAO_Query::apiQuery($params, array('contact_id'), null, null, 0, 1, false, false, true);
-
-    if (!empty($contacts)) {
+    try {
+      $groupContactCount = civicrm_api3('GroupContact', 'getcount', [
+        'group_id' => $group_id,
+        'contact_id' => $contact_id,
+      ]);
+    }
+    catch (CiviCRM_API3_Exception $ex) {
+      return FALSE;
+    }
+    if ($groupContactCount > 0) {
       return TRUE;
     }
     return FALSE;

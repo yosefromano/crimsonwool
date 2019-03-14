@@ -68,12 +68,5 @@
     </div><!-- /.crm-accordion-wrapper -->
 </div><!-- /.crm-form-block -->
 {/strip}
-{literal}
-    <script type="text/javascript">
-        cj(function() {
-            cj().crmAccordions();
-        });
-    </script>
-{/literal}
 
 

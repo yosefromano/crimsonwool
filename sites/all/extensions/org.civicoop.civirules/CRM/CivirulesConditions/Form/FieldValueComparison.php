@@ -71,7 +71,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
     $return = array();
     $processedGroups = array();
     foreach($extends as $extend) {
-      $customGroups = civicrm_api3('CustomGroup', 'get', array('extends' => $extend));
+      $customGroups = civicrm_api3('CustomGroup', 'get', array('extends' => $extend, 'options' => array('limit' => 0)));
       foreach($customGroups['values'] as $customGroup) {
         if (in_array($customGroup['id'], $processedGroups)) {
           continue;
@@ -89,7 +89,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   }
 
   protected function getCustomFieldPerGroup($group_id, $group_label) {
-    $fields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $group_id));
+    $fields = civicrm_api3('CustomField', 'get', array('custom_group_id' => $group_id, 'options' => array('limit' => 0)));
     $return = array();
     foreach($fields['values'] as $field) {
       $key = 'custom_'.$field['id'];
@@ -106,7 +106,6 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
    */
   public function buildQuickForm() {
     parent::buildQuickForm();
-
 
     $this->add('hidden', 'rule_condition_id');
     $this->add('select', 'entity', ts('Entity'), $this->getEntityOptions(), true);
@@ -146,9 +145,7 @@ class CRM_CivirulesConditions_Form_FieldValueComparison extends CRM_CivirulesCon
   public function setDefaultValues() {
     $data = array();
     $defaultValues = parent::setDefaultValues();
-    if ($this->ruleCondition->find(true)) {
-      $data = unserialize($this->ruleCondition->condition_params);
-    }
+    $data = unserialize($this->ruleCondition->condition_params);
     if (!empty($data['entity'])) {
       $defaultValues['entity'] = $data['entity'];
     }

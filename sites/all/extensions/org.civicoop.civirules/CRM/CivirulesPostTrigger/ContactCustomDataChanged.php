@@ -49,7 +49,7 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
     $get_called_class = get_called_class();
     $objectName = $get_called_class::getObjectName();
     if ('Contact' == $objectName) {
-      $entity_extensions = array('Contact', 'Individual', 'Organization');
+      $entity_extensions = array('Contact', 'Individual', 'Organization', 'Household');
     } else {
       $entity_extensions = array($objectName);
     }
@@ -62,10 +62,13 @@ class CRM_CivirulesPostTrigger_ContactCustomDataChanged extends CRM_Civirules_Tr
     if (!in_array($custom_group['extends'] , $entity_extensions)) {
       return;
     }
-    $contact = civicrm_api3('Contact', 'getsingle', array('id' => $entityID));
-    foreach($params as $field) {
-      if (!empty($field['custom_field_id'])) {
-        $contact['custom_' . $field['custom_field_id']] = $field['value'];
+    $contact = array();
+    if (!empty($entityID)) {
+      $contact = civicrm_api3('Contact', 'getsingle', ['id' => $entityID]);
+      foreach ($params as $field) {
+        if (!empty($field['custom_field_id'])) {
+          $contact['custom_' . $field['custom_field_id']] = $field['value'];
+        }
       }
     }
     if (self::$preData !== false) {

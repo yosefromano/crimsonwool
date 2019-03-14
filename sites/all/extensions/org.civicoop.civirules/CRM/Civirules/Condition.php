@@ -59,11 +59,14 @@ abstract class CRM_Civirules_Condition {
   /**
    * Returns an array with required entity names
    *
-   * @return array
+   * When returning false we assume the doesWorkWithTrigger does the validation.
+   *
+   * @deprecated
+   * @return array|false
    * @access public
    */
   public function requiredEntities() {
-    return array();
+    return false;
   }
 
   /**

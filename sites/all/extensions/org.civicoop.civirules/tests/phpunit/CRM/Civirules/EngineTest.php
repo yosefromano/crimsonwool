@@ -28,11 +28,14 @@ class CRM_Civirules_EngineTest extends CRM_Civirules_Test_TestCase {
    * Test a trigger has a defined class
    */
   public function testAllTriggersHaveAClass() {
-    $this->markTestSkipped("new_address has a empty class_name (maybe there are more) remove when implemented");
+		// There are more triggers with empty class name. An empty class name means they will be triggered by the default post trigger.
+		// So we should check for whether the class exists.
     $bao = new CRM_Civirules_BAO_Trigger();
     $bao->find();
     while ($bao->fetch()) {
-      $this->assertTrue(isset($bao->class_name), "No trigger should have an empty class name");
+    	// Try to get the class:
+    	$class = CRM_Civirules_BAO_Trigger::getPostTriggerObjectByClassName($bao->class_name, false);
+      $this->assertInstanceOf('CRM_Civirules_Trigger', $class, 'Could not instanciated trigger class for '.$bao->class_name);
     }
   }
 
@@ -70,7 +73,7 @@ class CRM_Civirules_EngineTest extends CRM_Civirules_Test_TestCase {
    */
   public function testNewContact() {
     $this->setUpContactRule('new_contact');
-    $this->assertRuleNotFired('new contact rule just set up, shoudl not be fired');
+    $this->assertRuleNotFired('new contact rule just set up, should not be fired');
 
     $result = civicrm_api3("Contact", "create", array(
       'contact_type' => 'Individual',
@@ -126,7 +129,7 @@ class CRM_Civirules_EngineTest extends CRM_Civirules_Test_TestCase {
    * Test the firing of the trigger for a changed contact (and ignore the create and the delete
    */
   public function testDeletedContact() {
-    $this->setUpContactRule('restored_contact');
+    $this->setUpContactRule('deleted_contact');
     $this->assertRuleNotFired('changed contact rule just set up, should not be fired');
 
     $result = civicrm_api3("Contact", "create", array(
@@ -155,5 +158,4 @@ class CRM_Civirules_EngineTest extends CRM_Civirules_Test_TestCase {
     $this->assertRuleFired("The delete rule must be fired after a delete");
 
   }
-
 }

@@ -39,6 +39,7 @@
             cj('#operator option[value=">="').addClass('hiddenElement');
             cj('#operator option[value="<"').addClass('hiddenElement');
             cj('#operator option[value="<="').addClass('hiddenElement');
+            cj('#operator option[value="contains string"').addClass('hiddenElement');
         }
         if (options.length && multiple) {
             cj('#operator option[value="="').addClass('hiddenElement');
@@ -53,9 +54,9 @@
         }
         if (cj('#operator option:selected').hasClass('hiddenElement')) {
             if (!cj('#operator option[value="'+CRM_civirules_condition_form_initialOperator+'"]').hasClass('hiddenElement')) {
-                cj('#operator option[value="'+CRM_civirules_condition_form_initialOperator+'"]').attr('selected', 'selected');
+                cj('#operator option[value="'+CRM_civirules_condition_form_initialOperator+'"]').prop('selected', true);
             } else {
-                cj('#operator option:not(.hiddenElement)').first().attr('selected', 'selected');
+                cj('#operator option:not(.hiddenElement)').first().prop('selected', true);
             }
             cj('#operator').trigger('change');
         }
@@ -77,7 +78,7 @@
             var select_options = '';
             var multi_select_options = '';
 
-            var currentSelectedOptions = cj('#multi_value').val().match(/[^\r\n]+/g);
+            var currentSelectedOptions = cj('#multi_value').html().match(/[^\r\n]+/g);
             var currentSelectedOption = cj('#value').val();
             var selectedOptions = new Array();
             var selectedOption = '';
@@ -88,7 +89,7 @@
             for(var i=0; i < options.length; i++) {
                 var selected = '';
                 var checked = '';
-                if (currentSelectedOptions.indexOf(options[i].key) >= 0) {
+                if (currentSelectedOptions.indexOf(options[i].key) >= 0 || currentSelectedOptions.indexOf(options[i].key.toString()) >= 0) {
                     checked = 'checked="checked"';
                     selectedOptions[selectedOptions.length] = options[i].key;
                 }

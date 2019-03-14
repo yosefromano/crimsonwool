@@ -17,6 +17,19 @@ class CRM_Civirules_Form_Search_Rules extends CRM_Contact_Form_Search_Custom_Bas
     $domainVersion = civicrm_api3('Domain', 'getvalue', array('current_domain' => "TRUE", 'return' => 'version'));
     $this->_domainVersion = round((float) $domainVersion, 2);
 
+    // Set the user context
+    $session = CRM_Core_Session::singleton();
+    if ($this->_domainVersion <= 4.7) {
+      // Backwards compatible with 4.6 systems
+      $url = CRM_Utils_System::currentPath();
+    } else {
+      $url = CRM_Utils_System::getUrlPath();
+    }
+    $query['_qf_Custom_display'] = CRM_Utils_Request::retrieve('_qf_Custom_display', 'Boolean');
+    $query['qfKey'] = CRM_Utils_Request::retrieve('qfKey', 'String');
+    $userContext = CRM_Utils_System::url($url,$query);
+    $session->pushUserContext($userContext);
+
     parent::__construct($formValues);
   }
 
@@ -34,7 +47,7 @@ class CRM_Civirules_Form_Search_Rules extends CRM_Contact_Form_Search_Custom_Bas
     $form->add('select', 'rule_trigger_id', ts('Rule Trigger(s)'), $this->getRuleTriggers(), FALSE,
       array('id' => 'rule_trigger_id', 'multiple' => 'multiple', 'class' => 'crm-select2'));
     $onlyActive = array(
-      '1' => ts('Only active Rules)'),
+      '1' => ts('Only active Rules'),
       '0' => ts('All Rules'),
     );
     $form->addRadio('only_active_rules', ts('Find only active Rules?'), $onlyActive, NULL, '<br />', TRUE);

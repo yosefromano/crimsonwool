@@ -16,12 +16,12 @@ __Triggers__ that gets CiviRules into action. This will be things like:
 __Conditions__ that determine the conditions to be compared when the trigger occurs. The conditions determine if the action will be executed and can be combined with AND or OR. This could be stuff like:
 
 - when it is the first contribution of a donor
-- when the contribution is of a certain financial type AND the total amount is more than
+- when the contribution is of a certain financial type AND the total amount is more than xxx
 - when the contact is member of group xxx.
 
 __Actions__ that specify what is to happen if the trigger occurs and the conditions are met. Each CiviRule can have one or more actions. This could be:
 
-- send an emai, SMS or PDF
+- send an email, SMS or PDF
 - add a contact to a group
 - add an activity to a contact
 - remove a tag from a contact
@@ -36,6 +36,14 @@ This guide has two parts each aimed at a different audience.
 ## CiviCRM versions
 
 CiviRules has been developed for CiviCRM 4.4 and has been tested with CiviCRM 4.6 (release 1.2), as this is the version our sponsors are on. If you want CiviRules updated to a newer version you can do so (check CiviRules on GitHub: https://github.com/CiviCooP/org.civicoop.civirules. Alternatively, if you want us to do it and have some funding, contact Jaap Jansma (jaap.jansma@civicoop.org) or Erik Hommel (erik.hommel@civicoop.org)
+
+## Other useful extensions and modules
+
+If you want to be able to send SMS, emails or create PDFs when a CiviRule is triggered, you will need to install the [SMS API extension](https://civicrm.org/extensions/sms-api), the [Email API extension](https://civicrm.org/extensions/e-mail-api) and the [PDF creation API extension](https://civicrm.org/extensions/pdf-creation-api) from https://civicrm.org/extensions.
+
+To use webform submission as a trigger, you will need to download the [CiviRules webform Drupal module](https://lab.civicrm.org/partners/civicoop/webform_civirules).
+
+These are not available through the user interface. For instructions on how to install them manually, please see the [System Administrator Guide](https://docs.civicrm.org/sysadmin/en/latest/customize/extensions/).
 
 ## History
 

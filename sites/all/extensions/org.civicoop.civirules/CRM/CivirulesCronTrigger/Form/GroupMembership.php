@@ -26,7 +26,8 @@ class CRM_CivirulesCronTrigger_Form_GroupMembership extends CRM_CivirulesTrigger
   public function buildQuickForm() {
     $this->add('hidden', 'rule_id');
 
-    $this->add('select', 'group_id', ts('Groups'), $this->getGroups(), true);
+    $group = $this->add('select', 'group_id', ts('Groups'), $this->getGroups(), true);
+    $group->setMultiple(TRUE);
 
     $this->addButtons(array(
       array('type' => 'next', 'name' => ts('Save'), 'isDefault' => TRUE,),
@@ -43,6 +44,9 @@ class CRM_CivirulesCronTrigger_Form_GroupMembership extends CRM_CivirulesTrigger
     $defaultValues = parent::setDefaultValues();
     $data = unserialize($this->rule->trigger_params);
     if (!empty($data['group_id'])) {
+      if (!is_array($data['group_id'])) {
+        $data['group_id'] = array($data['group_id']);
+      }
       $defaultValues['group_id'] = $data['group_id'];
     }
     return $defaultValues;

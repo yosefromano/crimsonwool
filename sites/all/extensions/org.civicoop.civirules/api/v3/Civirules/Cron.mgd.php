@@ -13,7 +13,7 @@ return array (
       'version' => 3,
       'name' => 'Civirules cron',
       'description' => 'Trigger civirules cron triggers',
-      'run_frequency' => 'Daily',
+      'run_frequency' => 'Always',
       'api_entity' => 'Civirules',
       'api_action' => 'Cron',
       'parameters' => '',

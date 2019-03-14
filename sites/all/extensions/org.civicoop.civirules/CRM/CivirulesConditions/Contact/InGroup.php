@@ -118,7 +118,14 @@ class CRM_CivirulesConditions_Contact_InGroup extends CRM_Civirules_Condition {
       if (strlen($groups)) {
         $groups .= ', ';
       }
-      $groups .= civicrm_api3('Group', 'getvalue', array('return' => 'title', 'id' => $gid));
+      try {
+        $groups .= civicrm_api3('Group', 'getvalue', [
+          'return' => 'title',
+          'id' => $gid
+        ]);
+      } catch (Exception $e) {
+        // Do nothing.
+      }
     }
 
     return $operatorLabel.' groups ('.$groups.')';

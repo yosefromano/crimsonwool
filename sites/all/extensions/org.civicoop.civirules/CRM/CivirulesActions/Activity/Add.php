@@ -55,6 +55,16 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
         }
       }
     }
+
+    // Issue #152: when a rule is trigger from a public page then source contact id
+    // is empty and that in turn creates a fatal error.
+    // So the solution is to check whether we have a logged in user and if not use
+    // the contact from the trigger as the source contact.
+    if (CRM_Core_Session::getLoggedInContactID()) {
+      $params['source_contact_id'] = CRM_Core_Session::getLoggedInContactID();
+    } else {
+      $params['source_contact_id'] = $triggerData->getContactId();
+    }
     return $params;
   }
 
@@ -77,13 +87,20 @@ class CRM_CivirulesActions_Activity_Add extends CRM_CivirulesActions_Generic_Api
    *
    * @return string
    * @access public
+   * @throws \CiviCRM_API3_Exception
    */
   public function userFriendlyConditionParams() {
     $return = '';
     $params = $this->getActionParameters();
-    $type = CRM_Core_OptionGroup::getLabel('activity_type', $params['activity_type_id']);
+    $type = civicrm_api3('OptionValue', 'getvalue', array(
+      'return' => 'label',
+      'option_group_id' => 'activity_type',
+      'value' => $params['activity_type_id']));
     $return .= ts("Type: %1", array(1 => $type));
-    $status = CRM_Core_OptionGroup::getLabel('activity_status', $params['status_id']);
+    $status = civicrm_api3('OptionValue', 'getvalue', array(
+      'return' => 'label',
+      'option_group_id' => 'activity_status',
+      'value' => $params['status_id']));
     $return .= "<br>";
     $return .= ts("Status: %1", array(1 => $status));
     $subject = $params['subject'];

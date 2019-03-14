@@ -11,7 +11,7 @@ In the tutorial here we will first add a simple condition without its own form p
 
 ## Adding a Condition Without Form Processing
 
-In this tutorial I will add a new condition that can be used in CiviRules. The new condition will be called +First Donation of Contact+ and will answer the question: _is this the first contribution of the financial type Donation for the contact_? The related actions will only be executed if it is indeed the first donation of the contact.
+In this tutorial I will add a new condition that can be used in CiviRules. The new condition will be called **First Donation of Contact** and will answer the question: _is this the first contribution of the financial type Donation for the contact_? The related actions will only be executed if it is indeed the first donation of the contact.
 
 In generic terms this condition is fairly simple: retrieve the contact_id and check if there are any contributions for the contact of the financial type Donation. If so, return FALSE else return TRUE. But now I have to add this to the CiviRules engine as a condition.
 
@@ -22,34 +22,26 @@ I am going to create my condition step by step.
 1. implement the required methods `isConditionValid` and `getExtraDataInputUrl`
 1. link my condition to the entity Contribution with the method `requiredEntities`
 
-!!! Note 
-    __Clearcache required__
-
-    If you add your condition as a a managed entity (which we think is a good idea) you will obviously have to do a `<yoursite>/civicrm/clearcache` (or any other way to clear the CiviCRM caches you are familiar with)  to make sure the new managed entity is available    
-
 ### Step 1 - Add the Condition to the Database
 
-You need to make sure that there is a record in the civirule_condition table for your condition. Obviously you can enter the record directly in the table, but better is to use the the managed entities system. Managed entities are checked and created by CiviCRM automatically and they are handy when it comes to ensure certain data exist in the database.
+You need to make sure that there is a record in the civirule_condition table for your condition. We recommend you do some by using an `insert` query.
 
-If you have created your extension with Civix then you can add a file `CRM/CivirulesConditions/FirstDonation.mgd.php`. If you didn't create your extension with civix you should add the `hook_civicrm_managed_entities` to your extension and return the array below. The parameter _class_name_ (linked to the column class_name in the table) should hold the name of the class you are going to create in step 2. So it could be anything you think useful, in the example we will stick to `CRM_CiviRulesConditions_Contribution_FirstDonation`.   
+If you have created your extension with Civix then you can add a file `/sql/createFirstDonation.sql` and add an `Upgrader` to your extension to process the sql file (check the relevant section of the [Developer Guide](https://docs.civicrm.org/dev/en/latest/extensions/civix/#generate-upgrader)).
 
-```php
-return array (
-  0 =>
-    array (
-      'name' => 'Civirules:Condition.FirstDonation',
-      'entity' => 'CiviRuleCondition',
-      'params' =>
-        array (
-          'version' => 3,
-          'name' => 'first_donation_of_contact',
-          'label' => 'First Donation of a Contact',
-          'class_name' => 'CRM_CivirulesConditions_Contribution_FirstDonation,
-          'is_active' => 1
-        ),
-    ),
-); 
+The file `/sql/createFirstDonation.sql` should have this statement:
+
+```mysql
+  
+INSERT INTO civirule_condition (name, label, class_name, is_active)
+VALUES("first_donation_of_contact", "First Donation of a Contact", "CRM_CivirulesConditions_Contribution_FirstDonation", 1)
+
 ```
+
+Obviously you can use any name you like for your `class_name`, we have stuck to our structure in this example with `CRM_CivirulesConditions_Contribution_FirstDonation` but that is not mandatory. 
+
+!!! warning "On managed entities"
+    We have had a few bad experiences using managed entities because the managed entities are always automatically re-created when you do a `clearcache` in drush or in the URL. And if you have just removed the managed entity because it is the cause of a problem that is not very helpful. So we have removed them from CiviRules. But it is possible to use a managed entity for a CiviRule action, we do not recommend it.
+
 
 !!! Note
     You can also use the API to add a Condition to CiviRules. Entity is `CiviRuleCondition`, action is `Create`.
@@ -134,23 +126,48 @@ If I want to be absolutely sure the contribution I retrieve is the one that has 
 
 To do that I will use the `$eventData->_getEntityData` method to retrieve the data from the entity just created and then compare it. It is a bit superfluous here, but it serves to show how you can use the `$triggerData->getEntityData` method.
 
-### Step 4 - Linking the Condition to the Entity with method requiredEntities
+### Step 4 - Validating whether the condition works with a certain trigger
 
 If I use this condition, it only makes sense if I add this condition to Triggers that deal with some Entities like Individual or Contact. Adding the condition to check for the first contribution to a trigger that deals with GroupContact does not make sense.
 
-The user interface of CiviRules has the ability to check if you tell it what entity you need for your condition. In this example I need data from the entity Contribution, so I add Contribution with the method `requiredEntities` like this:
+The user interface of CiviRules has the ability to check whether your condition works with the given trigger. In this example I need data from the entity Contribution, so I add Contribution with the method `doesWorkWithTrigger` like this:
 
 ```php
 /**
- * Returns an array with required entity names
+ * This function validates whether this condition works with the selected trigger.
  *
- * @return array
- * @access public
+ * This function could be overriden in child classes to provide additional validation
+ * whether a condition is possible in the current setup. E.g. we could have a condition
+ * which works on contribution or on contributionRecur then this function could do
+ * this kind of validation and return false/true
+ *
+ * @param CRM_Civirules_Trigger $trigger
+ * @param CRM_Civirules_BAO_Rule $rule
+ * @return bool
  */
-public function requiredEntities() {
-  return array('Contribution');
+public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+  return $trigger->doesProvideEntity('Contribution');
 }
+
 ```
+
+Ofcourse you can check other things in the `doesWorkWithTrigger` function. Such as whether the `$trigger` is a certain subclass.
+For example the condition for Activity Status Changed checks whether the `$trigger` implements the interface `CRM_Civirules_TriggerData_Interface_OriginalData`:
+
+```php
+
+public function doesWorkWithTrigger(CRM_Civirules_Trigger $trigger, CRM_Civirules_BAO_Rule $rule) {
+  if ($trigger instanceof CRM_Civirules_TriggerData_Interface_OriginalData) {
+    return $trigger->doesProvideEntity('Activity');
+  }
+  return false;
+}
+
+```
+
+If you want to check whether the trigger provides multiple entities you can use the function `$trigger->doesProvideEntities`.
+
+
 ## Adding a Condition With Form Processing
 
 In this tutorial I will add a new condition that can be used in CiviRules. The new condition will be called **Membership Type is (not) ....** and will answer the question: _is the membership (not) of the type specified_? The related actions will only be executed if it is indeed a membership of the specified type (or not of the specified type).
@@ -160,43 +177,52 @@ In generic terms this condition is fairly simple: retrieve the `membership_type_
 I am going to create my condition step by step.
 
 1. make sure the condtion exists in the database
-1. add a class to handle my condtion which extends the class `CRM_Civirules_Condition`
+1. add a class to handle my condition which extends the class `CRM_Civirules_Condition`
 1. implement the required methods `isConditionValid` and `getExtraDataInputUrl`
 1. link my condition to the entity Contribution with the method requiredEntities
 1. storing the condition data with method `setRuleConditionData`
 1. use the method `userFriendlyConditionParams` to show the parameters on the CiviRule summary with a reasonably logic text
 1. adding a form
 
-!!! Clearcache 
-    If you add your condition as a a managed entity (which we think is a good idea) you will obviously have to do a `<yoursite>/civicrm/clearcache` to make sure the new managed entity is available.
-
 I will also include the code of the actual form I will create to select the membership type.
 
 ### Step 1 - Add the Condition to the Database
 
-You need to make sure that there is a record in the civirule_condition table for your condition. Obviously you can enter the record directly in the table, but better is to use the the managed entities system. Managed entities are checked and created by CiviCRM automatically and they are handy when it comes to ensure certain data exist in the database.
+In this tutorial I will add a new condition that can be used in CiviRules. The new condition will be called **Membership is (not) of Type** and will answer the question: _is the membership (not) if the type selected_? The related actions will only be executed if it is indeed of the specified type.
 
-If you have created your extension with Civix then you can add a file `CRM/CivirulesConditions/FirstDonation.mgd.php`. If you didn't create your extension with civix you should add the `hook_civicrm_managed_entities` to your extension and return the array below. The parameter `class_name` (linked to the column class_name in the table) should hold the name of the class you are going to create in step 2. So it could be anything you think useful, in the example we will stick to `CRM_CiviRulesConditions_Membership_Type`.    
+In generic terms this condition is fairly simple: Check if the membership just created, changed or deleted is/is one of/is not/is not one of the specified types. If so, return TRUE else return FALSE. But now I have to add this to the CiviRules engine as a condition. And I need a form to specify which membership types I want to check against.
 
-```php
- return array (
-  0 =>
-    array (
-      'name' => 'Civirules:Condition.MembershipType',
-      'entity' => 'CiviRuleCondition',
-      'params' =>
-        array (
-          'version' => 3,
-          'name' => 'membership_type',
-          'label' => 'Membership type is (not) ...',
-          'class_name' => 'CRM_CivirulesConditions_Membership_Type',
-          'is_active' => 1
-        ),
-    ),
-);
+I am going to create my condition step by step.
+
+1. make sure the condtion exists in the database
+1. add a class to handle my condtion which extends the class `CRM_Civirules_Condition`
+1. implement the required methods `isConditionValid` and `getExtraDataInputUrl`
+1. link my condition to the entity Contribution with the method `requiredEntities`
+
+### Step 1 - Add the Condition to the Database
+
+You need to make sure that there is a record in the civirule_condition table for your condition. We recommend you do some by using an `insert` query.
+
+If you have created your extension with Civix then you can add a file `/sql/createMembershipType.sql` and add an `Upgrader` to your extension to process the sql file (check the relevant section of the [Developer Guide](https://docs.civicrm.org/dev/en/latest/extensions/civix/#generate-upgrader)).
+
+The file `/sql/createMembershipType.sql` should have this statement:
+
+```mysql
+  
+INSERT INTO civirule_condition (name, label, class_name, is_active)
+VALUES("membership_is_of_type", "Membership is (not) of type(s)", "CRM_CivirulesConditions_Membership_Type", 1)
+
 ```
-!!! API    
-    You can also use the API to add a Condition to CiviRules. Entity is `CiviRuleCondition`, action is `Create`
+
+Obviously you can use any name you like for your `class_name`, we have stuck to our structure in this example with `CRM_CivirulesConditions_Membership_Type` but that is not mandatory. 
+
+!!! warning "On managed entities"
+    We have had a few bad experiences using managed entities because the managed entities are always automatically re-created when you do a `clearcache` in drush or in the URL. And if you have just removed the managed entity because it is the cause of a problem that is not very helpful. So we have removed them from CiviRules. But it is possible to use a managed entity for a CiviRule action, we do not recommend it.
+
+
+!!! Note
+    You can also use the API to add a Condition to CiviRules. Entity is `CiviRuleCondition`, action is `Create`.
+
 
 ### Step 2 - Add a Class That Extends CRM_CiviRule_Condition
 

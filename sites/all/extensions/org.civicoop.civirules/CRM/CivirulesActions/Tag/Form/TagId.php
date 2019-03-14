@@ -10,18 +10,32 @@ class CRM_CivirulesActions_Tag_Form_TagId extends CRM_CivirulesActions_Form_Form
 
 
   /**
-   * Method to get groups
+   * Method to get tags
    *
    * @return array
    * @access protected
    */
   protected function getTags() {
-    $tags = CRM_Core_BAO_Tag::getTagsUsedFor();
+    $bao = new CRM_Core_BAO_Tag();
+    $tags = $bao->getTree('civicrm_contact');
     $options = array();
     foreach($tags as $tag_id => $tag) {
-      $options[$tag_id] = $tag;
+      $parent = '';
+      $this->buildOptionsFromTree($options, $tags, $parent);
     }
+    asort($options);
     return $options;
+  }
+
+  protected function buildOptionsFromTree(&$options, $tree, $parent) {
+    foreach($tree as $tag_id => $tag) {
+      if ($tag['is_selectable']) {
+        $options[$tag_id] = trim($parent.' '.$tag['name']);
+      }
+      if (isset($tag['children']) && is_array($tag['children'])) {
+        $this->buildOptionsFromTree($options, $tag['children'], $tag['name'].':');
+      }
+    }
   }
 
   /**

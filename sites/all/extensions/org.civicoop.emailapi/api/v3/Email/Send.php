@@ -9,8 +9,43 @@
  * @see http://wiki.civicrm.org/confluence/display/CRM/API+Architecture+Standards
  */
 function _civicrm_api3_email_send_spec(&$spec) {
-  $spec['contact_id']['api.required'] = 1;
-  $spec['template_id']['api.required'] = 1;
+  $spec['contact_id'] = array(
+  	'title' => 'Contact ID',
+    'api.required' => 1,
+	);
+  $spec['template_id'] = array(
+  	'title' => 'Template ID',
+    'type' => CRM_Utils_Type::T_INT,
+    'api.required' => 1,
+	);
+	$spec['case_id'] = array(
+		'title' => 'Case ID',
+    'type' => CRM_Utils_Type::T_INT,
+	);
+	$spec['contribution_id'] = array(
+		'title' => 'Contribution ID',
+    'type' => CRM_Utils_Type::T_INT,
+	);
+	$spec['alternative_receiver_address'] = array(
+		'title' => 'Alternative receiver address',
+    'type' => CRM_Utils_Type::T_STRING,
+	);
+	$spec['cc'] = array(
+		'title' => 'Cc',
+    'type' => CRM_Utils_Type::T_STRING,
+	);
+	$spec['bcc'] = array(
+		'title' => 'Bcc',
+    'type' => CRM_Utils_Type::T_STRING,
+	);
+	$spec['subject'] = array(
+	  'title' => 'Subject',
+    'type' => CRM_Utils_Type::T_STRING,
+  );
+	$spec['extra_data'] = array(
+	  'title' => 'Extra data',
+    'type' => CRM_Utils_Type::T_TEXT,
+  );
 }
 
 /**
@@ -33,6 +68,17 @@ function civicrm_api3_email_send($params) {
   $case_id = false;
   if (isset($params['case_id'])) {
     $case_id = $params['case_id'];
+  }
+	$contribution_id = false;
+	if (isset($params['contribution_id'])) {
+		$contribution_id = $params['contribution_id'];
+  }
+  elseif (!empty($params['extra_data']['contribution'])) {
+    $contribution_id = $params['extra_data']['contribution']['contribution_id'];
+  }
+	$extra_data = false;
+	if (isset($params['extra_data'])) {
+	  $extra_data = $params['extra_data'];
   }
 
   // Compatibility with CiviCRM > 4.3
@@ -61,47 +107,43 @@ function civicrm_api3_email_send($params) {
 
   $body_text    = $messageTemplates->msg_text;
   $body_html    = $messageTemplates->msg_html;
-  $body_subject = $messageTemplates->msg_subject;
+  if (isset($params['subject']) && !empty($params['subject'])) {
+    $body_subject = $params['subject'];
+  }
+  else {
+    $body_subject = $messageTemplates->msg_subject;
+  }
   if (!$body_text) {
     $body_text = CRM_Utils_String::htmlToText($body_html);
   }
 
   $returnValues = array();
   foreach($contactIds as $contactId) {
-    $params = array(array('contact_id', '=', $contactId, 0, 0));
-    list($contact, $_) = CRM_Contact_BAO_Query::apiQuery($params);
+    $contact_params = array(array('contact_id', '=', $contactId, 0, 0));
+    list($contact, $_) = CRM_Contact_BAO_Query::apiQuery($contact_params);
 
     //CRM-4524
     $contact = reset($contact);
 
     if (!$contact || is_a($contact, 'CRM_Core_Error')) {
-      throw new API_Exception('Could not find contact with ID: ' . $params['contact_id']);
+      throw new API_Exception('Could not find contact with ID: ' . $contact_params['contact_id']);
     }
 
     //CRM-5734
 
     // get tokens to be replaced
-    $tokens = array_merge(CRM_Utils_Token::getTokens($body_text),
+    $tokens = array_merge_recursive(CRM_Utils_Token::getTokens($body_text),
         CRM_Utils_Token::getTokens($body_html),
         CRM_Utils_Token::getTokens($body_subject));
 
-    // get replacement text for these tokens
-    $returnProperties = array(
-        'sort_name' => 1,
-        'email' => 1,
-        'do_not_email' => 1,
-        'is_deceased' => 1,
-        'on_hold' => 1,
-        'display_name' => 1,
-        'preferred_mail_format' => 1,
-    );
-    if (isset($tokens['contact'])) {
-      foreach ($tokens['contact'] as $key => $value) {
-        $returnProperties[$value] = 1;
-      }
-    }
     if ($case_id) {
       $contact['case.id'] = $case_id;
+    }
+		if ($contribution_id) {
+			$contact['contribution_id'] = $contribution_id;
+		}
+		if ($extra_data) {
+		  $contact['extra_data'] = $extra_data;
     }
 
     if ($alternativeEmailAddress) {
@@ -117,7 +159,7 @@ function civicrm_api3_email_send($params) {
       /**
        * Contact is decaused or has opted out from mailings so do not send the e-mail
        */
-      throw new API_Exception('Suppressed sending e-mail to: ' . $contact['display_name']);
+      continue;
     } else {
       /**
        * Send e-mail to the contact
@@ -137,16 +179,24 @@ function civicrm_api3_email_send($params) {
     foreach ($type as $key => $value) {
       $bodyType = "body_{$value}";
       if ($$bodyType) {
-        CRM_Utils_Token::replaceGreetingTokens($$bodyType, NULL, $contact['contact_id']);
-        $$bodyType = CRM_Utils_Token::replaceDomainTokens($$bodyType, $domain, true, $tokens, true);
-        $$bodyType = CRM_Utils_Token::replaceContactTokens($$bodyType, $contact, false, $tokens, false, true);
-        $$bodyType = CRM_Utils_Token::replaceComponentTokens($$bodyType, $contact, $tokens, true);
-        $$bodyType = CRM_Utils_Token::replaceHookTokens($$bodyType, $contact, $categories, true);
+        if ($contribution_id) {
+          try {
+            $contribution = civicrm_api3('Contribution', 'getsingle', ['id' => $contribution_id]);
+            $$bodyType = CRM_Utils_Token::replaceContributionTokens($$bodyType, $contribution, TRUE, $tokens);
+          } catch (Exception $e) {
+            // Do nothing
+          }
+        }
+
+        CRM_Utils_Token::replaceGreetingTokens($$bodyType, $contact, $contact['contact_id']);
+        $$bodyType = CRM_Utils_Token::replaceDomainTokens($$bodyType, $domain, TRUE, $tokens, TRUE);
+        $$bodyType = CRM_Utils_Token::replaceContactTokens($$bodyType, $contact, FALSE, $tokens, FALSE, TRUE);
+        $$bodyType = CRM_Utils_Token::replaceComponentTokens($$bodyType, $contact, $tokens, TRUE);
+        $$bodyType = CRM_Utils_Token::replaceHookTokens($$bodyType, $contact, $categories, TRUE);
       }
     }
     $html = $body_html;
     $text = $body_text;
-    
     if (defined('CIVICRM_MAIL_SMARTY') && CIVICRM_MAIL_SMARTY) {
       $smarty = CRM_Core_Smarty::singleton();
       foreach ($type as $elem) {
@@ -163,7 +213,7 @@ function civicrm_api3_email_send($params) {
     if (defined('CIVICRM_MAIL_SMARTY') && CIVICRM_MAIL_SMARTY) {
       $messageSubject = $smarty->fetch("string:{$messageSubject}");
     }
-    
+
     // set up the parameters for CRM_Utils_Mail::send
     $mailParams = array(
         'groupName' => 'E-mail from API',
@@ -181,7 +231,12 @@ function civicrm_api3_email_send($params) {
     if ($html && ($contact['preferred_mail_format'] == 'HTML' || $contact['preferred_mail_format'] == 'Both')) {
       $mailParams['html'] = $html;
     }
-
+		if (isset($params['cc']) && !empty($params['cc'])) {
+			$mailParams['cc'] = $params['cc'];
+		}
+		if (isset($params['bcc']) && !empty($params['bcc'])) {
+			$mailParams['bcc'] = $params['bcc'];
+		}
     $result = CRM_Utils_Mail::send($mailParams);
     if (!$result) {
       throw new API_Exception('Error sending e-mail to ' . $contact['display_name'] . ' <' . $email . '> ');
@@ -249,4 +304,3 @@ function civicrm_api3_email_send($params) {
   return civicrm_api3_create_success($returnValues, $params, 'Email', 'Send');
   //throw new API_Exception(/*errorMessage*/ 'Everyone knows that the magicword is "sesame"', /*errorCode*/ 1234);
 }
-
