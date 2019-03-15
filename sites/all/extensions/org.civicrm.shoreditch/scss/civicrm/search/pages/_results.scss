@@ -7,7 +7,8 @@
 .CRM_Grant_Form_Search .crm-results-block,
 .CRM_Pledge_Form_Search .crm-results-block,
 .CRM_Contribute_Form_Search .crm-results-block,
-.CRM_Activity_Form_Search .crm-results-block {
+.CRM_Activity_Form_Search .crm-results-block,
+.CRM_Member_Form_Search .crm-results-block {
   @extend %block-with-shadow;
   border-radius: $border-radius-base;
   margin-top: 20px;
@@ -29,10 +30,6 @@
 
     td .qill {
       color: $crm-copy;
-    }
-
-    .select2-container {
-      margin: 0 !important;
     }
   }
 
@@ -81,6 +78,7 @@
     margin: 0 !important;
 
     + .crm-selection-reset {
+      clear: right;
       float: right;
       margin-bottom: 10px !important;
       margin-top: 10px;
@@ -130,6 +128,12 @@
 
         a.action-item {
           display: inline-block;
+        }
+
+        .btn-slide-active {
+          a.action-item {
+            display: block;
+          }
         }
       }
 

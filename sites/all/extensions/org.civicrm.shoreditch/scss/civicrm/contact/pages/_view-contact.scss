@@ -59,8 +59,14 @@
     }
   }
 
-  .modal-dialog td {
-    vertical-align: middle;
+  .crm-block {
+    padding: 0 !important;
+
+    .crm-activity-form-block-custom_data {
+      td:first-child {
+        padding: 0;
+      }
+    }
   }
 
   .action-link a.button {

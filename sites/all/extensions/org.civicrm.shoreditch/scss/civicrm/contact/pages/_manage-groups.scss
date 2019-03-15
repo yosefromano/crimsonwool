@@ -2,21 +2,6 @@
 
 #{civi-page('contact')} {
   #GroupContact {
-    h3 {
-      @include box-shadow($box-shadow);
-      @include panel-header;
-      background: $brand-primary;
-      border: 0;
-      color: $crm-white;
-      margin: 0;
-
-      &.status-removed {
-        background: $brand-danger;
-        border-color: $brand-danger;
-        color: $crm-white !important;
-      }
-    }
-
     .dataTables_wrapper table tbody tr td:last-child {
       text-align: right;
     }
@@ -24,6 +9,7 @@
     table {
       background: transparent;
       border: 0;
+      border-top: 1px solid $crm-grayblue-dark;
       font-family: $font-family-base;
 
       thead tr {
@@ -131,14 +117,6 @@
       }
     }
 
-    .crm-action-menu .select2-default span.select2-chosen {
-      color: $crm-copy;
-
-      .crm-i {
-        display: none;
-      }
-    }
-
     .description {
       @include box-shadow($box-shadow);
       background: $crm-white;
@@ -155,39 +133,12 @@
       text-shadow: none;
       vertical-align: middle;
     }
-
-    .select2-container {
-      background: $crm-white;
-
-      .select2-choice {
-        background: none;
-        border: 1px solid $crm-grayblue-darker;
-        border-radius: $border-radius-base;
-        box-shadow: $crm-select2-box-shadow-inset;
-        font-family: $font-family-base;
-        line-height: 28px;
-      }
-
-      &.select2-dropdown-open .select2-choice {
-        border-color: $brand-primary;
-        box-shadow: none;
-      }
-
-      .select2-arrow {
-        background: none;
-        padding: 0 5px;
-      }
-
-      .select2-search-choice-close {
-        right: 35px;
-      }
-    }
   }
 }
 
 #{civi-page('group')} {
   .help {
-    margin: 20px 0;
+    margin: 0 0 20px;
 
     + .crm-submit-buttons {
       display: none;
@@ -195,14 +146,15 @@
   }
 
   .crm-submit-buttons {
-    @include clearfix;
-    height: auto;
+    margin-bottom: 20px;
+    padding: 0;
 
     a.newGroup.button {
       @extend %btn-civi-primary;
 
       .crm-i {
         bottom: 1px;
+        margin: 0;
         position: relative;
       }
     }
@@ -214,8 +166,7 @@
     padding: 20px !important;
 
     h3 {
-      @include panel-header;
-      margin: -20px -20px 20px;
+      margin: -20px -20px 20px !important;
     }
 
     > table td {
@@ -246,40 +197,10 @@
     box-shadow: $box-shadow;
     margin: 20px 0;
 
-    .crm-datatable-pager-top {
-      background: $gray-lighter;
-      border-bottom: 1px solid $crm-background;
-      border-radius: $border-radius-child $border-radius-child 0 0;
-      margin-top: 10px;
-      padding-bottom: 39px;
-      padding-top: 10px;
-
-      .dataTables_length {
-        padding-left: 20px;
-      }
-
-      .dataTables_paginate {
-        padding-right: 5px;
-        padding-top: 0;
-      }
-    }
-
     .crm-datatable-pager-bottom {
-      background: $crm-gray-lightest;
-      border-radius: 0 0 $border-radius-child $border-radius-child;
-      border-top: 1px solid $crm-background;
-      line-height: 1.8em;
-      padding-bottom: 39px;
-      padding-top: 10px;
-
       .dataTables_info {
         line-height: 2.3em;
         padding-left: 20px;
-      }
-
-      .dataTables_info,
-      .dataTables_paginate {
-        padding-top: 0;
       }
     }
   }
@@ -318,22 +239,6 @@
   #crm-main-content-wrapper div[id*='DataTables_Table_'] {
     div[id*='s2id_autogen'] {
       background: $crm-white;
-
-      .select2-choice {
-        background: none;
-        border: 1px solid $crm-grayblue-darker;
-        border-radius: $border-radius-base;
-        box-shadow: $crm-select2-box-shadow-inset;
-      }
-
-      .select2-arrow {
-        background: none;
-        padding: 0 5px;
-      }
-    }
-
-    .dataTables_length .select2-choice .select2-arrow b {
-      margin-top: 0;
     }
 
     .dataTable thead tr {
@@ -360,7 +265,15 @@
   }
 
   .ui-dialog .CRM_Group_Form_Edit .crm-form-block {
-    padding: 0 13px;
+    margin: 0 -20px;
+
+    .action-link {
+      margin-left: 20px;
+    }
+
+    .help {
+      margin: 10px 20px 20px;
+    }
 
     table tr {
       border-bottom: 0 !important;
@@ -381,10 +294,6 @@
       margin: 20px 0 0 !important;
     }
 
-    .crm-form-textarea {
-      min-height: 70px;
-    }
-
     #s2id_visibility::after {
       display: none;
     }
@@ -400,10 +309,6 @@
         display: block;
         line-height: 1.5em;
       }
-    }
-
-    textarea {
-      line-height: 1.5em;
     }
   }
 
@@ -468,16 +373,8 @@
   }
 
   .CRM_Group_Form_Edit .crm-group-form-block {
-    .crm-form-textarea {
-      min-height: 70px;
-    }
-
-    h3 {
-      @extend .collapsible-title;
-      margin-top: 20px;
-    }
-
     .crm-submit-buttons {
+      border-top: 0;
       margin: 20px 0 0 !important;
     }
   }
@@ -493,10 +390,6 @@
 
 #{civi-page('group-add')} .CRM_Group_Form_Edit .crm-group-form-block {
   padding: 15px;
-
-  textarea {
-    line-height: 1.5em;
-  }
 
   #s2id_visibility::after {
     display: none;

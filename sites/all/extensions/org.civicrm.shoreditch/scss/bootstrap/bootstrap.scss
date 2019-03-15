@@ -1,19 +1,27 @@
-@import "vendor/text-angular/text-angular";
-@import "vendor/angular-xeditable/angular-xeditable";
-@import "vendor/font-awesome/font-awesome";
-@import "vendor/perfect-scrollbar/main";
-@import "vendor/ui-bootstrap/ui-bootstrap";
-@import "vendor/ui-select/ui-select";
-@import "vendor/select2/select2-bootstrap";
+@import 'angular/vendor/**/*';
+@import 'bootstrap/vendor/font-awesome/font-awesome';
+@import 'bootstrap/vendor/perfect-scrollbar/main';
+@import 'bootstrap/vendor/select2/select2-bootstrap';
 
-@import "overrides/variables";
-@import "fonts/*";
-@import "mixins/*";
+@import 'bootstrap/overrides/variables';
+@import 'bootstrap/fonts/*';
+@import 'bootstrap/mixins/*';
 
-@import "SCSSROOT/org.civicrm.shoreditch/base/scss/bootstrap";
-@import "overrides/style/*";
-@import "overrides/vendors/*";
-@import "overrides/crm/*";
-@import "variants/*";
-@import "components/*";
-@import "helper";
+// Reset CMS and old CiviCRM style before adding Bootstrap styles
+@import 'bootstrap/reset/drupal';
+@import 'bootstrap/reset/civicrm';
+
+@import 'base/scss/bootstrap';
+@import 'angular/overrides/**/*';
+@import 'bootstrap/overrides/style/*';
+@import 'bootstrap/overrides/vendors/*';
+@import 'bootstrap/overrides/crm/**/*';
+@import 'bootstrap/variants/*';
+@import 'bootstrap/components/**/*';
+
+@import 'bootstrap/utilities/*';
+
+#{$outside-namespace-marker} {
+  @import 'bootstrap/overrides/crm/outside-namespace/*';
+  @import 'angular/overrides/outside-namespace/**/*';
+}
